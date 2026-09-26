@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "description": "External art sources STEELSEED bakes from. One record per downloaded file: where it came from, who made it, under which licence, and the exact bytes (sha256) the bake used. Files live in the ignored art/.sources/<id>/ directory, are fetched at build time by web/tools/art-fetch.mjs, are never committed and never fetched at runtime. web/tools/sourcelicensegate.mjs enforces the policy in VISUAL-QUALITY-PLAN.md.",
+  "policy": {
+    "allowedLicenses": [
+      "CC0-1.0",
+      "CC-BY-4.0"
+    ],
+    "attributionRequired": [
+      "CC-BY-4.0"
+    ],
+    "notes": "CC0 preferred. CC-BY 4.0 only when nothing CC0 fits; the author is then credited in THIRD_PARTY_NOTICES.md and in the game credits. Never paid or marketplace content, never Quixel Megascans or Fab, never NC, ND or SA variants, never EA or Westwood material, never a file without a stated licence."
+  },
+  "add": "Append an entry with sha256 and bytes set to null, then run `cd web && node tools/art-fetch.mjs --pin` to download it and pin the hash. Run `node tools/art-fetch.mjs --notices` to refresh THIRD_PARTY_NOTICES.md.",
+  "sources": [
+    {
+      "id": "makehuman-base",
+      "title": "Human hm08 anatomical base mesh",
+      "author": "MakeHuman Community",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/mpfb2/437dd513888a92399d1d3200d2e80859fae55abc/src/mpfb/data/3dobjs/base.obj",
+      "licenseUrl": "https://github.com/makehumancommunity/mpfb2/blob/437dd513888a92399d1d3200d2e80859fae55abc/LICENSE.md",
+      "license": "CC0-1.0",
+      "use": "phase-3 anatomical infantry source; core asset data only, original clothing and presentation rig adaptation",
+      "file": "base.obj",
+      "unpack": false,
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c",
+      "bytes": 1749303
+    },
+    {
+      "id": "makehuman-rig",
+      "title": "Game-engine humanoid rig",
+      "author": "MakeHuman Community",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/mpfb2/437dd513888a92399d1d3200d2e80859fae55abc/src/mpfb/data/rigs/standard/rig.game_engine.json",
+      "licenseUrl": "https://github.com/makehumancommunity/mpfb2/blob/437dd513888a92399d1d3200d2e80859fae55abc/LICENSE.md",
+      "license": "CC0-1.0",
+      "use": "phase-3 anatomical infantry source; core asset data only, original clothing and presentation rig adaptation",
+      "file": "rig.game_engine.json",
+      "unpack": false,
+      "sha256": "b324ddb4b707721c19630bfadb87c3e3b38eed3b6e4590bb3cead43ea918f799",
+      "bytes": 40936
+    },
+    {
+      "id": "makehuman-weights",
+      "title": "Authored humanoid skin weights",
+      "author": "MakeHuman Community",
+      "url": "https://raw.githubusercontent.com/makehumancommunity/mpfb2/437dd513888a92399d1d3200d2e80859fae55abc/src/mpfb/data/rigs/standard/weights.game_engine.json",
+      "licenseUrl": "https://github.com/makehumancommunity/mpfb2/blob/437dd513888a92399d1d3200d2e80859fae55abc/LICENSE.md",
+      "license": "CC0-1.0",
+      "use": "phase-3 anatomical infantry source; core asset data only, original clothing and presentation rig adaptation",
+      "file": "weights.game_engine.json",
+      "unpack": false,
+      "sha256": "9f4a773e74ce5ba08415b4f30070338e9f75bae5971b5075b10cd6b9caa58473",
+      "bytes": 3026778
+    },
+    {
+      "id": "ambientcg-ground037",
+      "title": "Ground 037",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Ground037_2K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "phase-1 scanned mossy forest ground; original Blender terrain material graph",
+      "file": "Ground037_2K-JPG.zip",
+      "unpack": true,
+      "sha256": "defa9f880ec692eb3ef5435fd7bc7b8721c0d577f7824ea18ac68537f01ab65b",
+      "bytes": 37874033
+    },
+    {
+      "id": "ambientcg-ground054",
+      "title": "Ground 054",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Ground054_2K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "phase-1 scanned dirt and sandy mud; original Blender terrain material graph",
+      "file": "Ground054_2K-JPG.zip",
+      "unpack": true,
+      "sha256": "643e7c8689bac041f17c660eff6a5459bfe0535d4466737beb0e64902b23235a",
+      "bytes": 32987812
+    },
+    {
+      "id": "ambientcg-grass004",
+      "title": "Grass 004",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Grass004_2K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "phase-1 lush grass ground; procedural PBR source, not photogrammetry",
+      "file": "Grass004_2K-JPG.zip",
+      "unpack": true,
+      "sha256": "d7d3f08e8bb1e59aed0c3dbb85ea0b46d5308481f89b6a3fd62c0ec9e862245b",
+      "bytes": 39900302
+    },
+    {
+      "id": "ambientcg-metal038",
+      "title": "Metal 038",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Metal038_1K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "scratched steel detail beneath original painted-steel treatment; replaces too-smooth Metal032 in phase-0 library",
+      "file": "Metal038_1K-JPG.zip",
+      "unpack": true,
+      "sha256": "804a0e45cc923c71277f89b7e1a7b95bd8786899254e43692eb781b8c3981aae",
+      "bytes": 5291072
+    },
+    {
+      "id": "ambientcg-metal032",
+      "title": "Metal 032",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Metal032_1K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "industrial material library: metal surface maps with original painted-steel treatment for phase-0 tank",
+      "file": "Metal032_1K-JPG.zip",
+      "unpack": true,
+      "sha256": "9e4f363905a647958c273154fa125d2a6440892d0e583f9b3af24bb08b5afc3c",
+      "bytes": 3650556
+    },
+    {
+      "id": "ambientcg-concrete034",
+      "title": "Concrete 034",
+      "author": "ambientCG",
+      "url": "https://ambientcg.com/get?file=Concrete034_1K-JPG.zip",
+      "licenseUrl": "https://docs.ambientcg.com/license/",
+      "license": "CC0-1.0",
+      "use": "industrial material library: building concrete and first textured-ground witness",
+      "file": "Concrete034_1K-JPG.zip",
+      "unpack": true,
+      "sha256": "5839d284d94ffb8d2a56df742ec522b13dd311c52dbd42b8fd33f0409ceedb81",
+      "bytes": 3657575
+    },
+    {
+      "id": "quaternius-base",
+      "title": "Universal Base Characters [Standard] (Superhero male and female base characters)",
+      "author": "Quaternius",
+      "url": "https://quaternius.itch.io/universal-base-characters",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license": "CC0-1.0",
+      "use": "phase-3 troop base mesh replacement candidate; evaluation study and bake source, original clothing and presentation rig adaptation",
+      "file": "Universal Base Characters[Standard].zip",
+      "unpack": true,
+      "sha256": "fdbf1804c90dfc1ea03e992bff7da2dfd1a79318e13270a660180f9308455f40",
+      "bytes": 128968391
+    }
+  ]
+}

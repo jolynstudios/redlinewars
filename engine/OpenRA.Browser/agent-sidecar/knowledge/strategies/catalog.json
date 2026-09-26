@@ -1,0 +1,51 @@
+{
+	"schemaVersion": 1,
+	"catalogVersion": 1,
+	"rulesGraphFile": "../ra-arsenal.json",
+	"rulesHash": "b4b516bdc4397ac93245ae59dc43fe598a885ebc22a4dce1cb9fc94155ed6222",
+	"rulesArtifactHash": "f1549b9a9147415fb9260cac031c5a58c6ad57d09a95a06cccddf7462fd8178e",
+	"rulesGraphHash": "a09c075878bef51d2c1e4c3364d0e2673452d843ec9b50fa4e71c48d93cc8921",
+	"cards": [
+		{
+			"id": "allied-e3-mass",
+			"version": 2,
+			"title": "Rocket Screen",
+			"faction": "allies",
+			"archetype": "pressure",
+			"openingSummary": "POWR>TENT>PROC; produce E1 scouts then a sustained E3 screen; add walls and anti-infantry cover.",
+			"file": "cards/allied-e3-mass.strategy.json",
+			"cardHash": "0da07539b0257d0b535a64c3b0030a3fc0b47cf9abb3fa1f5866d70f062f736a"
+		},
+		{
+			"id": "allied-fast-boom",
+			"version": 2,
+			"title": "Allied Fast Boom",
+			"faction": "allies",
+			"archetype": "boom",
+			"openingSummary": "POWR>TENT>PROC>PROC; defend and scout; WEAP>DOME>FIX; add a second WEAP only after income stabilizes.",
+			"file": "cards/allied-fast-boom.strategy.json",
+			"cardHash": "026de58a9a295bd4ad62b05ab5837229584fca4769a00180a462b0637d1981b5"
+		},
+		{
+			"id": "soviet-grenadier-rush",
+			"version": 2,
+			"title": "Grenadier Flood",
+			"faction": "soviets",
+			"archetype": "rush",
+			"openingSummary": "POWR>BARR; stream split E2 waves; PROC after the first force; scout before committing.",
+			"file": "cards/soviet-grenadier-rush.strategy.json",
+			"cardHash": "bda24d3b8586bbd1cf3239e9ebfa59c4e44a3cd2d8394a412c652eece4d1f0d2"
+		},
+		{
+			"id": "soviet-tank-pressure",
+			"version": 2,
+			"title": "Soviet Tank Pressure",
+			"faction": "soviets",
+			"archetype": "pressure",
+			"openingSummary": "POWR>BARR>PROC>WEAP>FIX; stream 3TNK with FTRK support; add a second WEAP when funded.",
+			"file": "cards/soviet-tank-pressure.strategy.json",
+			"cardHash": "c83c966d8c9abff1c362c3b13f5dbdbcfca924718b974d9e8d6f7e704aec385d"
+		}
+	],
+	"catalogHash": "5f1c34b378de6cfcc564871beae83187b11d8ea0e67a788c70496947aeae657a"
+}

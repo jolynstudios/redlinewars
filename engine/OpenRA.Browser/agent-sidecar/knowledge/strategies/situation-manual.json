@@ -1,0 +1,149 @@
+{
+	"schemaVersion": 1,
+	"manualVersion": 1,
+	"comment": "Options per host-detected situation id. The host names WHAT is happening; this manual enumerates legitimate responses and when each fits; the model picks. Ids and evidence fields match AgentSituationEngine exactly. Options are alternatives, not a ranking.",
+	"engineIds": [
+		"T1.base", "T1.air", "T1.naval", "T1.sw", "T3.harv", "T4",
+		"O2", "O1.retreat", "T2.reinforcement",
+		"E1.power", "E1.funding", "S1.water", "S2.recon"
+	],
+	"entries": [
+		{
+			"id": "T1.base",
+			"title": "BASE ATTACKED (ground/mixed)",
+			"facts": "evidence: visibleEnemyCount/Value, defenderCount/Value, threatVerdict, attackerClass, classCounts, dogRush",
+			"options": [
+				{ "label": "hold", "when": "threatVerdict weak or even", "play": "let defenses and standing orders fire; garrison squad attacks the intruders" },
+				{ "label": "crush-sortie", "when": "attackerClass infantry AND own vehicles >= 3", "play": "attackMove vehicles into the mass — tracked vehicles and the ore truck crush infantry" },
+				{ "label": "anti-armor stand", "when": "attackerClass armor", "play": "rockets+tanks behind defenses; repair buildings DURING the fight (repair costs ~20% of value)" },
+				{ "label": "full recall", "when": "threatVerdict strong OR 2+ critical assets under fire", "play": "reinforce home / move mainArmy back" },
+				{ "label": "mutual raid", "when": "their army is HERE and your army is closer to their base than home", "play": "strike posture=raid on their economy" }
+			],
+			"note": "dogRush=true: never panic-recall — any vehicle crushes dogs and dogs cannot damage vehicles; keep own infantry behind defenses/vehicles."
+		},
+		{
+			"id": "T1.air",
+			"title": "ENEMY AIR (sighted or over base)",
+			"facts": "evidence: visibleEnemyCount/Value, targetType (plane types). Aircraft expend ammo then MUST rearm at afld/hpad; LOW power turns sam/agun off.",
+			"options": [
+				{ "label": "AA response", "when": "own AA thin (few flak/rocket units, no sam/agun)", "play": "move AA units under the flight path; queueBuildPlan sam/agun + ftrk or e3" },
+				{ "label": "disperse", "when": "attackers are strafers (yak/mig)", "play": "split clumped squads and harvesters — strafes hit lines and clumps" },
+				{ "label": "kill the rearm cycle", "when": "enemy afld/hpad in knownEnemyStructures AND spare force", "play": "strike or airStrike the airfields" },
+				{ "label": "absorb + repair", "when": "attackers <= 2 AND own powered AA >= 2", "play": "hold; repair after the pass" }
+			]
+		},
+		{
+			"id": "T1.naval",
+			"title": "NAVAL THREAT",
+			"facts": "evidence: visibleEnemyCount/Value, targetType (ship types). CA/MSUB range 20c outranges every land defense (max 7.5c); destroyers carry AA; only ships or aircraft answer standoff bombardiers.",
+			"options": [
+				{ "label": "counter-navy", "when": "own shore access exists (S1.water) and funding healthy+", "play": "syrd/spen -> screen (dd or ss) -> engage the bombardiers" },
+				{ "label": "shore triage", "when": "buildings inside the shell line and no navy ready", "play": "sell doomed shore structures EARLY (refund is 50% x HP — it decays as they burn); move units out of the line" },
+				{ "label": "air answer", "when": "own strike aircraft exist AND escort AA is thin", "play": "airStrike the ships" }
+			]
+		},
+		{
+			"id": "T1.sw",
+			"title": "SUPERWEAPON (sighted or launched)",
+			"facts": "evidence: superweaponType (mslo/iron/pdox or launch order), status. Their 2000+ investment and timer is your window; low power pauses their timer too.",
+			"options": [
+				{ "label": "strike the silo", "when": "silo cell in knownEnemyStructures and a route exists", "play": "strike posture=assault onto the silo; targetPriority=any" },
+				{ "label": "race", "when": "your win condition is closer than their timer", "play": "push your plan; do not detour" },
+				{ "label": "mitigate", "when": "status=launched or timer unknown", "play": "unclump army and production; keep cash for rebuild and repair" }
+			]
+		},
+		{
+			"id": "T3.harv",
+			"title": "HARVESTER THREATENED",
+			"facts": "evidence: assetId, hpPercent, visibleEnemyCount/Value, crushableAll, canDamageCount, underAttack, attackerClass. The ore truck crushes infantry; dogs deal ZERO damage to vehicles.",
+			"options": [
+				{ "label": "crush", "when": "crushableAll=true AND canDamageCount <= 1", "play": "order the harvester onto the attackers (move to their cell) — fleeing loses mining time it does not need to lose" },
+				{ "label": "flee (default reflex)", "when": "any vehicle attacker OR canDamageCount >= 2", "play": "keep harvesterFlee=true and let the reflex dock it at the refinery" },
+				{ "label": "escort", "when": "second incident within ~2 minutes", "play": "guard 2-3 combat units onto the harvester; sweep the ore line" },
+				{ "label": "re-route", "when": "the contested line is far from defenses", "play": "move it to an alternate patch" }
+			]
+		},
+		{
+			"id": "T4",
+			"title": "STRUCTURE DAMAGED",
+			"facts": "evidence: assetType, hpPercent, repairCostEstimate, sellRefundEstimate. Full repair costs ~20% of value; sell refunds 50% x current HP fraction.",
+			"options": [
+				{ "label": "repair", "when": "attacker gone or threat weak, AND cash > repairCostEstimate", "play": "repair — almost always right for production/power/refinery" },
+				{ "label": "sell", "when": "hpPercent < 25 AND threat strong AND no defenders in time", "play": "sell EARLY or not at all — the refund decays as it burns" },
+				{ "label": "ignore", "when": "cheap structure (silo/wall/fake) or already doomed", "play": "spend the attention elsewhere" }
+			]
+		},
+		{
+			"id": "O2",
+			"title": "ENEMY ECONOMY EXPOSED",
+			"facts": "evidence: targetType, visibleOnly=true. Absence of visible cover is NOT proof of safety — fog may hide defenders.",
+			"options": [
+				{ "label": "fast raid", "when": "route has no known defense line", "play": "strike posture=raid targetPriority=economy with FAST units (jeep/ftrk/1tnk/apc)" },
+				{ "label": "air raid", "when": "own strike aircraft ready", "play": "airStrike the exposed target" },
+				{ "label": "decline", "when": "your army is mid-commitment elsewhere", "play": "note it in memo; opportunity windows reopen" }
+			]
+		},
+		{
+			"id": "O1.retreat",
+			"title": "ENEMY RETREATING",
+			"facts": "mirrors the enemyRetreating alert (stable-cohort centroid recession).",
+			"options": [
+				{ "label": "pursue", "when": "you have a speed edge and no known defense line on the path", "play": "pursue mission (host leashes the chase)" },
+				{ "label": "release", "when": "your force is hurt", "play": "repair, heal, reposition — do not feed a counter-ambush" },
+				{ "label": "counter-strike", "when": "their army is now out of position", "play": "strike the opposite flank or their economy" }
+			]
+		},
+		{
+			"id": "T2.reinforcement",
+			"title": "SQUAD NEEDS REINFORCEMENT",
+			"facts": "mirrors the reinforcementNeeded alert (squad losing with reserves available).",
+			"options": [
+				{ "label": "reinforce", "when": "reserves exist and the fight is even/losing but winnable", "play": "reinforce mission toward the squad" },
+				{ "label": "withdraw", "when": "losing or ambushed", "play": "pull the squad to defenses/repair; regroup — NEVER trickle units in one at a time" },
+				{ "label": "sacrifice for tempo", "when": "the squad is buying time for a bigger play", "play": "accept the trade knowingly; state it in memo" }
+			]
+		},
+		{
+			"id": "E1.power",
+			"title": "POWER LOW/CRITICAL",
+			"facts": "evidence: powerState. Low power: production ~3x slower, sam/agun/tsla and radar OFF, superweapon timers paused. Plant output scales with its damage.",
+			"options": [
+				{ "label": "build power now", "when": "funding is NOT broke", "play": "next build = powr — cheapest and fastest fix; no exceptions under air threat (your AA is off)" },
+				{ "label": "income first", "when": "funding=broke", "play": "a power plant you cannot pay for never finishes — restore income first (harvester if you have fewer than refineries+1, else refinery) or sell/power-down excess drain; queue powr the moment it is affordable" },
+				{ "label": "repair plants first", "when": "power plants are damaged", "play": "repair (20% of value) beats rebuilding (100%)" },
+				{ "label": "shed load", "when": "in extremis", "play": "sell or power-down a non-essential powered structure" }
+			]
+		},
+		{
+			"id": "E1.funding",
+			"title": "FUNDING STATE",
+			"facts": "evidence: funding bucket + funds. Buckets: broke < 500, reserve-only < 2000, healthy < 8000, floating-cash >= 8000.",
+			"options": [
+				{ "label": "broke", "when": "funding=broke", "play": "spend ONLY on income recovery: with fewer harvesters than refineries+1 a harvester is the exit, else the next refinery; protect harvesters (they ARE income); sell walls/fakes in extremis — waiting cures nothing" },
+				{ "label": "reserve-only", "when": "funding=reserve-only", "play": "ONE queue only: economy or the active threat's counter; no tech detours" },
+				{ "label": "healthy", "when": "funding=healthy", "play": "parallel queues; grow to 2 proc / 4+ harvesters, then take the next tech step" },
+				{ "label": "floating-cash", "when": "funding=floating-cash", "play": "convert cash to capacity NOW: extra production building, second front, tech, or a superweapon (mslo) — when its timer completes, fire at their production or power cluster; idle cash plus idle queues is a strategy bug" }
+			]
+		},
+		{
+			"id": "S2.recon",
+			"title": "RECONNAISSANCE STALE",
+			"facts": "evidence: exploredPercent, activeSweepMissions. Most of the map is dark and nothing is scouting — an absent enemy is NOT an absent threat; every plan you make is a guess until you look.",
+			"options": [
+				{ "label": "sweep", "when": "you have any cheap fast unit (dog/jeep/e1)", "play": "assignGroup a scout pair and queueMission sweep — it explores continuously without costing further decisions" },
+				{ "label": "spy plane", "when": "soviet with the support power ready", "play": "spyPlane the quadrant where the enemy most likely lives (usually opposite your spawn)" },
+				{ "label": "accept blindness", "when": "mid-fight or all-in committed", "play": "state it in memo so the choice is deliberate, and scout immediately after" }
+			]
+		},
+		{
+			"id": "S1.water",
+			"title": "WATER-ADJACENT BASE",
+			"facts": "evidence: waterAdjacent=true (static map context, not an alert).",
+			"options": [
+				{ "label": "naval second front", "when": "funding healthy+ AND the water plausibly reaches the enemy", "play": "syrd/spen -> screen ships -> bombardiers (CA/MSUB range 20c outranges all land defenses); scout the shore first" },
+				{ "label": "deny only", "when": "water is shared but funds are tight", "play": "pt/ss picket to deny their navy; skip bombardiers" },
+				{ "label": "ignore", "when": "landlocked pond or enemy unreachable by water", "play": "navy is a second front, not a rescue — spend on land" }
+			]
+		}
+	]
+}

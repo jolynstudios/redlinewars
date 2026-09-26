@@ -1,0 +1,81 @@
+{
+	"schemaVersion": 1,
+	"status": "candidate-input",
+	"description": "Reviewable map-geometry hypotheses for candidate generation. These parameters and seeds are not runtime defaults and are not frozen calibration.",
+	"maps": [
+		{
+			"mapId": "a-nuclear-winter",
+			"title": "A Nuclear Winter",
+			"benchmarkRole": "current AgentModeHost default when the map field is blank",
+			"source": "mods/ra/maps/a-nuclear-winter",
+			"resourceActorTypes": ["mine", "oilb"],
+			"resourceClusterManhattanDistance": 8,
+			"homeExclusionManhattanDistance": 18,
+			"resourceRegionRadius": 2,
+			"chokepointRegionRadius": 2,
+			"chokepointSeeds": [
+				{
+					"id": "choke-west-central",
+					"x": 34,
+					"y": 35,
+					"provenance": "manual candidate from blind map-thumbnail inspection; western central entrance"
+				},
+				{
+					"id": "choke-east-central",
+					"x": 68,
+					"y": 35,
+					"provenance": "manual candidate from blind map-thumbnail inspection; eastern central entrance"
+				},
+				{
+					"id": "choke-north-central",
+					"x": 50,
+					"y": 25,
+					"provenance": "manual candidate from blind map-thumbnail inspection; northern central pass"
+				},
+				{
+					"id": "choke-south-central",
+					"x": 51,
+					"y": 47,
+					"provenance": "manual candidate from blind map-thumbnail inspection; southern central pass"
+				}
+			]
+		},
+		{
+			"mapId": "Siberian-Pass.oramap",
+			"title": "Siberian Pass",
+			"benchmarkRole": "documented pilot shell-launch map; requires the Agent Mode map field to be explicitly pinned",
+			"source": "mods/ra/maps/Siberian-Pass.oramap",
+			"resourceActorTypes": ["mine", "oilb"],
+			"resourceClusterManhattanDistance": 8,
+			"homeExclusionManhattanDistance": 18,
+			"resourceRegionRadius": 2,
+			"chokepointRegionRadius": 2,
+			"chokepointSeeds": [
+				{
+					"id": "choke-northwest-central",
+					"x": 34,
+					"y": 32,
+					"provenance": "manual candidate from blind map-thumbnail inspection; western central approach"
+				},
+				{
+					"id": "choke-northeast-central",
+					"x": 62,
+					"y": 34,
+					"provenance": "manual candidate from blind map-thumbnail inspection; eastern central approach"
+				},
+				{
+					"id": "choke-north-central",
+					"x": 46,
+					"y": 25,
+					"provenance": "manual candidate from blind map-thumbnail inspection; northern diagonal pass"
+				},
+				{
+					"id": "choke-south-central",
+					"x": 51,
+					"y": 41,
+					"provenance": "manual candidate from blind map-thumbnail inspection; southern diagonal pass"
+				}
+			]
+		}
+	]
+}

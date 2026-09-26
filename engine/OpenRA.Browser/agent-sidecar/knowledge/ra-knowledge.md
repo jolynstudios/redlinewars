@@ -1,0 +1,128 @@
+# OpenRA Red Alert rules reference
+
+Generated from the exact RA rules loaded by OpenRA.Utility. Do not edit by hand.
+Legend: build time is approximately cost×0.6 ticks at 25 ticks/s; low power is 3× slower. Build area: the Construction Yard provides a 16-cell radius; ordinary structures extend buildable area only 2 cells around themselves (walls 7, naval yards 8).
+Armor order in weapon versus values: none/wood/light/heavy/concrete. `~` marks faction/tech prerequisites.
+Rows: code|name|queue|cost|prerequisites|power|HP|armor|speed|primary damage; versus%; range cells.
+
+## Buildable actors
+
+- tran|Chinook|Aircraft|900|~hpad,~techlevel.medium|0|14000|light|128|-
+- yak|Yak Attack Plane|Aircraft|1350|~afld,~techlevel.medium|0|6000|light|178|4000;100/50/60/25/25;5
+- hind|Hind|Aircraft|1500|~disabled,~hpad,~techlevel.medium|0|10000|light|112|2500;144/60/72/28/28;5
+- mh60|Black Hawk|Aircraft|1500|~hpad,~techlevel.medium|0|10000|light|112|2500;144/60/72/28/28;5
+- heli|Longbow|Aircraft|2000|~hpad,atek,~techlevel.high|0|12000|light|149|3000;10/74/100/100/50;4
+- mig|MiG Attack Plane|Aircraft|2000|~afld,stek,~techlevel.high|0|8000|light|223|7000;30/90/90/115/100;9
+- kenn|Kennel|Building|200|anypower,~structures.soviet,~techlevel.infonly|-10|30000|wood|0|-
+- powr|Power Plant|Building|300|~techlevel.infonly|100|40000|wood|0|-
+- afld|Airfield|Building|500|dome,~structures.soviet,~techlevel.medium,~!structures.ukraine|-20|100000|wood|0|-
+- afld.ukraine|Airfield|Building|500|dome,~techlevel.medium,~structures.ukraine|-20|100000|wood|0|-
+- apwr|Advanced Power Plant|Building|500|dome,~techlevel.medium|200|70000|wood|0|-
+- barr|Soviet Barracks|Building|500|anypower,~structures.soviet,~techlevel.infonly|-20|60000|wood|0|-
+- hpad|Helipad|Building|500|dome,~structures.allies,~techlevel.medium|-10|80000|wood|0|-
+- tent|Allied Barracks|Building|500|anypower,~structures.allies,~techlevel.infonly|-20|60000|wood|0|-
+- spen|Sub Pen|Building|800|anypower,~structures.soviet,~techlevel.low|-20|100000|wood|0|-
+- syrd|Naval Yard|Building|1000|anypower,~structures.allies,~techlevel.low|-20|100000|wood|0|-
+- fix|Service Depot|Building|1200|weap,~techlevel.medium|-30|80000|wood|0|-
+- proc|Ore Refinery|Building|1400|anypower,~techlevel.infonly|-30|90000|wood|0|-
+- atek|Allied Tech Center|Building|1500|weap,dome,~structures.allies,~techlevel.high|-200|60000|wood|0|-
+- dome|Radar Dome|Building|1500|proc,~techlevel.medium|-40|100000|wood|0|-
+- stek|Soviet Tech Center|Building|1500|weap,dome,~structures.soviet,~techlevel.high|-100|80000|wood|0|-
+- fact|Construction Yard|Building|2000|~disabled|0|150000|wood|0|-
+- weap|War Factory|Building|2000|proc,~techlevel.low|-30|150000|wood|0|-
+- fenc|Wire Fence|Defense|30|fact,~structures.soviet,~techlevel.low|0|15000|wood|0|-
+- fpwr|Fake Power Plant|Defense|30|~structures.france,~techlevel.infonly|0|40000|wood|0|-
+- sbag|Sandbag Wall|Defense|30|fact,~structures.allies,~techlevel.low|0|15000|wood|0|-
+- fapw|Fake Advanced Power Plant|Defense|50|~structures.france,~techlevel.medium|0|70000|wood|0|-
+- tenf|Fake Allied Barracks|Defense|50|~structures.france,~techlevel.infonly|0|60000|wood|0|-
+- spef|Fake Sub Pen|Defense|80|~disabled|0|100000|light|0|-
+- syrf|Fake Naval Yard|Defense|100|~structures.france,~techlevel.medium|0|100000|light|0|-
+- fixf|Fake Service Depot|Defense|120|~structures.france,~techlevel.medium|0|80000|wood|0|-
+- atef|Fake Allied Tech Center|Defense|150|~structures.france,~techlevel.high|0|40000|wood|0|-
+- pdof|Fake Chronosphere|Defense|150|~structures.france,~techlevel.unrestricted|0|100000|wood|0|-
+- silo|Silo|Defense|150|proc,~techlevel.infonly|-10|30000|wood|0|-
+- domf|Fake Radar Dome|Defense|180|~structures.france,~techlevel.medium|0|100000|wood|0|-
+- brik|Concrete Wall|Defense|200|fact,~techlevel.medium|0|40000|concrete|0|-
+- facf|Fake Construction Yard|Defense|200|~structures.france,~techlevel.medium|0|150000|wood|0|-
+- weaf|Fake War Factory|Defense|200|~structures.france,~techlevel.medium|0|150000|wood|0|-
+- mslf|Fake Missile Silo|Defense|250|~structures.france,~techlevel.unrestricted|0|100000|wood|0|-
+- ftur|Flame Tower|Defense|600|barr,~structures.soviet,~techlevel.low|-20|40000|heavy|0|15000;90/50/50/25/20;5
+- pbox|Pillbox|Defense|600|tent,~structures.allies,~techlevel.low|-20|40000|heavy|0|-
+- sam|SAM Site|Defense|700|dome,~structures.soviet,~techlevel.medium|-40|40000|heavy|0|4500;10/74/100/100/50;7.5
+- hbox|Camo Pillbox|Defense|750|tent,~structures.allies,~techlevel.medium|-20|40000|heavy|0|-
+- agun|AA Gun|Defense|800|dome,~structures.allies,~techlevel.medium|-50|40000|heavy|0|900;100/100/100/100/100;10
+- gap|Gap Generator|Defense|800|atek,~structures.allies,~techlevel.high|-60|50000|heavy|0|-
+- gun|Turret|Defense|800|tent,~structures.allies,~techlevel.medium|-40|40000|heavy|0|6000;20/50/75/100/50;6.5
+- tsla|Tesla Coil|Defense|1200|weap,~structures.soviet,~techlevel.medium|-80|40000|heavy|0|10000;1000/60/100/100/100;7
+- pdox|Chronosphere|Defense|1500|atek,~structures.allies,~techlevel.unrestricted|-200|100000|wood|0|-
+- iron|Iron Curtain|Defense|2000|stek,~structures.soviet,~techlevel.unrestricted|-200|100000|wood|0|-
+- mslo|Missile Silo|Defense|2500|techcenter,~techlevel.unrestricted|-150|100000|wood|0|-
+- e1|Rifle Infantry|Infantry|100|~barracks,~techlevel.infonly|0|5000|none|54|1000;150/30/40/10/10;5
+- zombie|Zombie|Infantry|100|~barracks,~bio|0|25000|none|39|3000;97/10/30/10/10;1.5
+- e2|Grenadier|Infantry|150|~barr,~techlevel.infonly|0|5000|none|68|6000;60/100/25/25/100;4
+- dog|Attack Dog|Infantry|200|~kenn,~techlevel.infonly|0|1800|none|100|100000;100/100/100/100/100;3
+- medi|Medic|Infantry|200|~tent,~techlevel.infonly|0|6000|none|49|-5000;100/100/100/100/100;4
+- spy.england|British Spy|Infantry|250|~infantry.england,dome,~tent,~techlevel.medium|0|2500|none|54|15000;100/100/100/100/100;2.5
+- ant|Giant Ant|Infantry|300|~barracks,~bio|0|75000|none|92|6000;90/10/30/10/10;1.5
+- e3|Rocket Soldier|Infantry|300|~barracks,~techlevel.infonly|0|4500|none|54|2400;10/74/100/100/50;7.5
+- e4|Flame Infantry|Infantry|300|~barr,ftur,~techlevel.low|0|4000|none|54|1000;70/80/40/20/10;5
+- fireant|Fire Ant|Infantry|300|~disabled|0|7500|heavy|68|4000;80/85/45/20/15;4
+- scoutant|Scout Ant|Infantry|300|~disabled|0|8500|light|92|6000;90/10/30/10/10;1.5
+- warriorant|Warrior Ant|Infantry|300|~disabled|0|12500|heavy|56|10000;100/10/90/35/20;1.5
+- shok|Shock Trooper|Infantry|350|~barr,stek,tsla,~infantry.russia,~techlevel.high|0|5000|none|54|4500;1000/73/100/60/100;6
+- e6|Engineer|Infantry|400|~barracks,~techlevel.infonly|0|2500|none|54|-
+- mech|Mechanic|Infantry|500|~tent,fix,~techlevel.medium|0|8000|none|49|-2000;100/100/100/100/100;4
+- spy|Spy|Infantry|500|~!infantry.england,dome,~tent,~techlevel.medium|0|2500|none|54|15000;100/100/100/100/100;2.5
+- thf|Thief|Infantry|500|~barr,dome,~techlevel.medium|0|8000|none|72|-
+- e7|Tanya|Infantry|1800|~tent,atek,~techlevel.high|0|10000|none|68|10000;100/100/100/100/100;7
+- lst|Transport|Ship|500|~techlevel.low|0|40000|heavy|115|-
+- pt|Gunboat|Ship|500|~syrd,~techlevel.low|0|20000|heavy|142|2500;28/72/72/100/48;5.5
+- ss|Submarine|Ship|950|~spen,~techlevel.low|0|25000|light|78|18000;100/75/75/100/500;9
+- dd|Destroyer|Ship|1000|~syrd,dome,~techlevel.medium|0|40000|heavy|92|2500;36/88/66/120/60;7.5
+- msub|Missile Submarine|Ship|2000|~spen,stek,~techlevel.high|0|40000|light|44|2500;80/50/48/30/100;20
+- ca|Cruiser|Ship|2400|~syrd,atek,~techlevel.high|0|80000|heavy|44|2500;60/35/60/25/100;20
+- jeep|Ranger|Vehicle|500|~vehicles.allies,~techlevel.low|0|15000|light|164|1000;150/10/30/10/10;4
+- truk|Supply Truck|Vehicle|500|~techlevel.low|0|11000|light|113|-
+- ftrk|Mobile Flak|Vehicle|600|~vehicles.soviet,~techlevel.low|0|15000|light|113|1200;100/100/100/100/100;8
+- 1tnk|Light Tank|Vehicle|700|~vehicles.allies,~techlevel.low|0|23000|heavy|113|2500;32/52/116/48/32;4.75
+- mnly|Minelayer|Vehicle|800|fix,~techlevel.medium|0|30000|heavy|113|-
+- 2tnk|Medium Tank|Vehicle|850|fix,~vehicles.allies,~techlevel.medium|0|46000|heavy|72|4000;30/75/75/115/50;4.75
+- apc|Armored Personnel Carrier|Vehicle|850|~vehicles.soviet,~techlevel.low|0|35000|heavy|128|1000;150/10/30/10/10;4
+- arty|Artillery|Vehicle|850|dome,~vehicles.allies,~techlevel.medium|0|10000|light|72|23000;60/40/60/25/50;12
+- v2rl|V2 Rocket Launcher|Vehicle|900|dome,~vehicles.soviet,~techlevel.medium|0|20000|light|72|4500;90/75/70/40/100;10
+- mgg|Mobile Gap Generator|Vehicle|1000|atek,~vehicles.england,~techlevel.high|0|22000|heavy|72|-
+- mrj|Mobile Radar Jammer|Vehicle|1000|atek,~vehicles.allies,~techlevel.high|0|22000|heavy|68|-
+- stnk|Phase Transport|Vehicle|1000|atek,~vehicles.france,~techlevel.high|0|35000|light|128|5000;10/74/34/100/50;6
+- harv|Ore Truck|Vehicle|1100|proc,~techlevel.infonly|0|60000|heavy|72|-
+- 3tnk|Heavy Tank|Vehicle|1150|fix,~vehicles.soviet,~techlevel.medium|0|60000|heavy|64|4000;30/75/75/115/50;4.75
+- ctnk|Chrono Tank|Vehicle|1350|atek,~vehicles.germany,~techlevel.high|0|40000|light|86|5000;10/74/34/100/50;6
+- ttnk|Tesla Tank|Vehicle|1350|tsla,stek,~vehicles.russia,~techlevel.high|0|40000|light|92|10000;1000/100/100/100/100;7
+- 4tnk|Mammoth Tank|Vehicle|2000|fix,stek,~vehicles.soviet,~techlevel.high|0|90000|heavy|43|6000;30/75/75/115/50;4.75
+- mcv|Mobile Construction Vehicle|Vehicle|2000|fix,~techlevel.medium|0|60000|light|60|-
+- qtnk|MAD Tank|Vehicle|2000|fix,stek,~vehicles.soviet,~techlevel.high|0|90000|heavy|46|-
+- dtrk|Demolition Truck|Vehicle|2500|stek,~vehicles.ukraine,~techlevel.high|0|2800|light|67|0;100/100/100/100/100;2
+
+## Strategy priors
+
+- Deploy the MCV first; the resulting `fact` Construction Yard enables the building queue and build area.
+- Start with `powr`, then `proc`; avoid beginning a second structure until the first is placed.
+- A finished building queue item has `placeable:true`; use `placeBuildingAuto` instead of guessing a cell.
+- Keep power provided above power drained. Low power triples every remaining production ETA.
+- Two refineries support a stable economy; replace lost harvesters before expanding tech.
+- Add `barr` or `tent` for infantry and `weap` for vehicles after basic power and refining.
+- Production queues operate in parallel: structures, infantry, vehicles, aircraft, and naval can build simultaneously.
+- Spend excess cash on production capacity and units; add `silo` near resource capacity.
+- Infantry are cheap scouts and screens; rifle infantry are effective against other infantry.
+- Rockets and heavy anti-armor weapons counter light/heavy vehicles better than rifles do.
+- Tanks pressure vehicles and structures; protect them from concentrated anti-armor infantry and aircraft.
+- Use Yaks against infantry and light targets; their cannon is much weaker against heavy armor and concrete.
+- Use MiGs against structures and armored targets; their warhead is less effective against unarmored infantry.
+- An `airStrike` mission automatically returns aircraft to compatible rearm actors between sorties.
+- Scout a strike cell with `spyPlane` when ready before committing aircraft; otherwise reveal it with normal scouting.
+- Avoid committing aircraft into visible `sam` or `agun` coverage unless the trade is decisive.
+- Static defenses protect a known approach but do not replace scouting or a mobile army.
+- Start a `sweep` mission early with a small cheap group so later attacks use fresher map knowledge.
+- Raid visible economy targets first, especially harvesters and refineries, before shifting pressure to production.
+- Move toward `scouting.frontier` cells when the enemy is absent from the observation; absence under fog is not proof of safety.
+- Attack only visible enemy actor ids; use attack-move into unexplored territory to advance without inventing targets.
+- Preserve the MCV/Construction Yard, refineries, power, and production buildings; rebuild the economy before risky attacks.

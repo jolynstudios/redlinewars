@@ -1,0 +1,16 @@
+{
+  "name": "engine",
+  "version": "1.0.0",
+  "description": "A Libre/Free Real Time Strategy game engine supporting early Westwood classics.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ws": "^8.21.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "type": "commonjs"
+}

@@ -1,0 +1,48 @@
+{
+	"schemaVersion": 1,
+	"seriesSpecVersion": "benchmark-series-v1",
+	"benchmarkSpecVersion": "benchmark-lockstep-v1",
+	"seriesId": "benchmark-sweep-gate-v1",
+	"map": "Siberian-Pass.oramap",
+	"calibration": "../benchmark-calibration/golden-score-v1.frozen-test.json",
+	"pairCount": 3,
+	"seeds": [81173, 81181, 81197],
+	"factionCycle": [
+		["russia", "england"],
+		["england", "russia"]
+	],
+	"tickHorizon": 22500,
+	"decisionHorizon": 40,
+	"decisionTimeoutMs": 120000,
+	"decisionIntervalTicks": 250,
+	"wallClockSafetyMinutes": 45,
+	"budgetTotalUsd": 60,
+	"dollarStop": false,
+	"models": [
+		{
+			"id": "scripted/model-a",
+			"label": "Scripted Candidate A"
+		},
+		{
+			"id": "scripted/model-b",
+			"label": "Scripted Candidate B"
+		},
+		{
+			"id": "benchmark-anchor/normal",
+			"label": "Pinned Normal Anchor",
+			"anchor": true
+		}
+	],
+	"anchor": {
+		"modelId": "benchmark-anchor/normal",
+		"difficulty": "normal",
+		"policyVersion": 1,
+		"policyDigest": "0669c055a2b6c0224df494ac8951662235fcc2c39b558e9f2121403eba1b3de7",
+		"rating": 1200
+	},
+	"runner": {
+		"sidecarUrl": "http://127.0.0.1:4198",
+		"matchPort": 8398,
+		"anchorProxyPort": 4199
+	}
+}

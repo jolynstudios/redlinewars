@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "proto": 2,
+  "ports": {
+    "nodeMux": 14710,
+    "nodeApi": 14711,
+    "nodeFallbackCeiling": 14750,
+    "dedicatedBase": 13400,
+    "relayHttp": 13600,
+    "relayWs": 13601,
+    "pageServerFirst": 18077,
+    "pageServerLast": 18082,
+    "lanBeaconUdp": 47877,
+    "lanMulticastGroup": "239.255.77.87",
+    "lanBeaconTtl": 1
+  },
+  "limits": {
+    "maxNodesPerIp": 2,
+    "maxChannelsPerNode": 16,
+    "maxPlayerSocketsPerIp": 8,
+    "channelRateBps": 65536,
+    "channelBurstBytes": 524288,
+    "registerWindowMs": 5000,
+    "maxNodes": 500,
+    "maxPendingNodes": 100,
+    "maxPendingNodesPerIp": 4,
+    "maxChannels": 2000,
+    "maxRoomsPerNode": 4
+  },
+  "nodeApi": {
+    "schema": 1,
+    "slotsMin": 2,
+    "slotsMax": 5,
+    "slotsMaxOwnerTier": 8,
+    "standingErrorCode": "standing-mode"
+  },
+  "nodeTunnel": {
+    "statusEverySeconds": 5,
+    "roomsEverySeconds": 10,
+    "nodeNameMaxChars": 24,
+    "updateRequiredExitCode": 3,
+    "drainedExitCode": 4
+  },
+  "timeouts": {
+    "socketConnectMs": 15000,
+    "uiConnectMs": 20000,
+    "lobbyTimeoutMs": null,
+    "idleKillDefaultSeconds": 120,
+    "idleKillFloorSeconds": 30,
+    "idleKillAppliesToStates": ["booting", "reserved", "lobby"],
+    "claimTtlSeconds": 90,
+    "placedMatchMaxLifetimeSeconds": 10800,
+    "createTimeoutSeconds": { "donated": 15, "owner": 60 }
+  },
+  "tunnel": {
+    "pingIntervalSeconds": 15,
+    "missedPongLimit": 2
+  },
+  "reconnect": {
+    "initialMs": 3000,
+    "maxMs": 60000,
+    "jitterFraction": 0.2,
+    "stopOnCloseCodes": [4003],
+    "tooManyNodesRetryMs": 60000
+  },
+  "relayCloseCodes": {
+    "4001": { "id": "bad-owner-token", "reason": "bad owner token" },
+    "4002": { "id": "replaced", "reason": "replaced by a newer connection with the same nodeId" },
+    "4003": { "id": "build-refused", "reason": "build not accepted" },
+    "4004": { "id": "too-many-nodes-per-ip", "reason": "too many nodes from this IP" },
+    "4005": { "id": "draining", "reason": "relay draining" },
+    "4006": { "id": "no-register", "reason": "no register within 5 s" },
+    "4008": { "id": "rate-or-caps", "reason": "rate or caps exceeded" }
+  },
+  "playerCloseCodes": {
+    "4404": { "id": "room-unknown", "reason": "room unknown or ended", "clientString": "S6" },
+    "4409": { "id": "room-playing", "reason": "room is playing", "clientString": "S7" },
+    "4403": { "id": "browser-switch", "reason": "request Origin is a site origin and the browser switch does not allow it", "clientString": "S1" },
+    "4429": { "id": "ip-socket-cap", "reason": "more than 8 player sockets from this IP", "clientString": "S8" },
+    "1013": { "id": "saturated", "reason": "relay saturated or channel/rate cap", "clientString": "S9" },
+    "1011": { "id": "tunnel-lost", "reason": "the node's tunnel went away", "clientString": "S10" }
+  },
+  "roomStates": ["booting", "reserved", "lobby", "playing", "ended"],
+  "nodeModes": ["own", "standing", "donate"],
+  "lanBeacon": {
+    "v": 1,
+    "app": "redline",
+    "maxBytes": 1200,
+    "announceEverySeconds": 2,
+    "expirySeconds": 10,
+    "queryEverySeconds": 5,
+    "ifaceEverySeconds": 10,
+    "ratePerSourcePerSecond": 20,
+    "wsPortMin": 1024,
+    "wsPortMax": 65535,
+    "nameMaxChars": 32,
+    "nodeIdMaxChars": 12
+  },
+  "standing": {
+    "restartAfterEndSeconds": 5,
+    "fastDeathWindowSeconds": 60,
+    "fastDeathLimit": 5,
+    "mapsPerEntryMax": 16
+  }
+}

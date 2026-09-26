@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<AssemblyName>OpenRA.Mods.Steelseed</AssemblyName>
+		<RootNamespace>OpenRA</RootNamespace>
+		<OutputPath>../../openra/bin</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="../../OpenRA.Mods.Steelseed/RosterExportCommand.cs" Link="RosterExportCommand.cs" />
+		<ProjectReference Include="../../openra/OpenRA.Game/OpenRA.Game.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="../../openra/OpenRA.Mods.Common/OpenRA.Mods.Common.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+	</ItemGroup>
+</Project>

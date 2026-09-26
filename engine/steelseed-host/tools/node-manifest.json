@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "runtime": ["node-cli.mjs", "roomhost.mjs", "relay-flow.mjs", "placement-policy.mjs", "dedicated-runner.mjs", "sim-build-id.mjs", "ranked-claims.mjs", "ranked-replay.mjs", "ranked-worker.mjs", "ranked-binding.mjs", "lan-beacon.mjs", "lan-listener.mjs", "protocol.json", "nodegate.mjs"],
+  "modules": ["ws"],
+  "data": ["generated"],
+  "examples": ["rooms.example.json"]
+}

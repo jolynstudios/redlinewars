@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!--
+		STEELSEED mod assembly. Deliberately mirrors the inherited engine's other mod
+		assemblies: a minimal, RID-neutral class library that inherits TargetFramework net8.0
+		and OutputPath $(EngineRootPath)/bin from Directory.Build.props.
+
+		Why this exists as its own project rather than living inside OpenRA.Browser:
+		OpenRA.Browser targets the browser-wasm RID and publishes to bin-browser/, so the
+		desktop OpenRA.Utility cannot load it to run the check-yaml validation. A mod manifest's
+		assemblies must be loadable by BOTH the desktop utility (for validation) and the
+		wasm host (at runtime). Only a RID-neutral assembly in bin/ satisfies both.
+
+		This is also how upstream separates gameplay code from a platform host, so it keeps
+		the fork rebasable (ARCHITECTURE.md §1.1).
+
+		Owned by the `mod` node. Contains the map generator and any STEELSEED-specific traits.
+		It must never reference OpenRA.Browser — gameplay code stays platform-agnostic.
+	-->
+	<ItemGroup>
+		<ProjectReference Include="..\OpenRA.Game\OpenRA.Game.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\OpenRA.Mods.Common\OpenRA.Mods.Common.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The generated assetless ra mod (steelseed-host/generated/mods/ra) references
+		     the host trait set (Assetless* loaders/renderers, SteelseedDeployment,
+		     SteelseedEventObserver). Its manifest must stay loadable by BOTH engines
+		     (see the comment above), so the desktop assembly compiles the same sources
+		     the wasm host uses instead of letting the two copies drift apart.
+		     SteelseedLoadScreen.cs is NOT linked: this project keeps its own desktop
+		     variant. -->
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessOrderGenerator.cs" Link="AssetlessOrderGenerator.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessResourceRenderer.cs" Link="AssetlessResourceRenderer.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessSpriteLoader.cs" Link="AssetlessSpriteLoader.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessSpriteSequence.cs" Link="AssetlessSpriteSequence.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessTerrainRenderer.cs" Link="AssetlessTerrainRenderer.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\DisconnectDefeat.cs" Link="DisconnectDefeat.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\SteelseedDeployment.cs" Link="SteelseedDeployment.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\SteelseedEventObserver.cs" Link="SteelseedEventObserver.cs" />
+	</ItemGroup>
+</Project>

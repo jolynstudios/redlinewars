@@ -1,0 +1,19 @@
+{
+  "name": "redline-wars-desktop",
+  "productName": "Redline Wars",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "description": "Redline Wars desktop shell (Jolyn Studios)",
+  "main": "main.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "electron . --selftest",
+    "start:live": "electron .",
+    "package": "node package.mjs"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5",
+    "electron-builder": "^26.16.1"
+  }
+}

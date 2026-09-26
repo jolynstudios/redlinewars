@@ -1,0 +1,368 @@
+{
+	"schemaVersion": 1,
+	"specVersion": "benchmark-lockstep-v1",
+	"fixtureKind": "deterministic-ledger-replay",
+	"description": "Model-blind synthetic barrier replays spanning opening, pressure, reversal, and terminal states. Values are raw host-ledger inputs, never production calibration defaults.",
+	"scenarios": [
+		{
+			"id": "opening-economy-tech-split",
+			"seed": 81001,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"controlRegionCount": 4,
+			"events": [
+				{
+					"kind": "frozen",
+					"barrierId": 1,
+					"worldTick": 100,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 1000,
+							"incomePerMinute": 400,
+							"refineryCapacity": 1200,
+							"producerCapacity": 800,
+							"liquidResources": 500,
+							"techCapability": 1500,
+							"occupiedRegionCount": 1
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 800,
+							"incomePerMinute": 350,
+							"refineryCapacity": 1200,
+							"producerCapacity": 800,
+							"liquidResources": 700,
+							"techCapability": 1200,
+							"occupiedRegionCount": 1
+						}
+					]
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 2,
+					"worldTick": 300,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 1500,
+							"incomePerMinute": 600,
+							"refineryCapacity": 1200,
+							"producerCapacity": 1600,
+							"liquidResources": 900,
+							"techCapability": 2800,
+							"occupiedRegionCount": 2
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 1600,
+							"incomePerMinute": 500,
+							"refineryCapacity": 1200,
+							"producerCapacity": 800,
+							"liquidResources": 1200,
+							"techCapability": 2200,
+							"occupiedRegionCount": 1
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "strategic-structure-breakthrough",
+			"seed": 81002,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"controlRegionCount": 4,
+			"events": [
+				{
+					"kind": "frozen",
+					"barrierId": 1,
+					"worldTick": 100,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 2000,
+							"incomePerMinute": 600,
+							"refineryCapacity": 1500,
+							"producerCapacity": 1500,
+							"liquidResources": 1000,
+							"techCapability": 3500,
+							"occupiedRegionCount": 1
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 2100,
+							"incomePerMinute": 650,
+							"refineryCapacity": 1500,
+							"producerCapacity": 1500,
+							"liquidResources": 900,
+							"techCapability": 3600,
+							"occupiedRegionCount": 2
+						}
+					]
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 2001,
+					"victimOrdinal": 1,
+					"destroyedKind": "Structure",
+					"replacementValue": 1500
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 2002,
+					"victimOrdinal": 1,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 700
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 2,
+					"worldTick": 300,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 2400,
+							"incomePerMinute": 800,
+							"refineryCapacity": 1500,
+							"producerCapacity": 2200,
+							"liquidResources": 1400,
+							"techCapability": 4600,
+							"occupiedRegionCount": 3
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 1200,
+							"incomePerMinute": 450,
+							"refineryCapacity": 900,
+							"producerCapacity": 900,
+							"liquidResources": 600,
+							"techCapability": 2200,
+							"occupiedRegionCount": 1
+						}
+					]
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 2003,
+					"victimOrdinal": 0,
+					"destroyedKind": "Structure",
+					"replacementValue": 500
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 2004,
+					"victimOrdinal": 0,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 400
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 2005,
+					"victimOrdinal": 1,
+					"destroyedKind": "Structure",
+					"replacementValue": 800
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 3,
+					"worldTick": 500,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 1800,
+							"incomePerMinute": 900,
+							"refineryCapacity": 1500,
+							"producerCapacity": 2200,
+							"liquidResources": 1800,
+							"techCapability": 5000,
+							"occupiedRegionCount": 3
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 900,
+							"incomePerMinute": 300,
+							"refineryCapacity": 900,
+							"producerCapacity": 900,
+							"liquidResources": 300,
+							"techCapability": 1800,
+							"occupiedRegionCount": 0
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "counterattack-unequal-intervals",
+			"seed": 81003,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"controlRegionCount": 4,
+			"events": [
+				{
+					"kind": "frozen",
+					"barrierId": 1,
+					"worldTick": 100,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 1400,
+							"incomePerMinute": 500,
+							"refineryCapacity": 1200,
+							"producerCapacity": 800,
+							"liquidResources": 400,
+							"techCapability": 2400,
+							"occupiedRegionCount": 1
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 1300,
+							"incomePerMinute": 500,
+							"refineryCapacity": 1200,
+							"producerCapacity": 800,
+							"liquidResources": 400,
+							"techCapability": 2400,
+							"occupiedRegionCount": 1
+						}
+					]
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 3001,
+					"victimOrdinal": 1,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 300
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 2,
+					"worldTick": 200,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 1700,
+							"incomePerMinute": 650,
+							"refineryCapacity": 1200,
+							"producerCapacity": 1600,
+							"liquidResources": 900,
+							"techCapability": 3200,
+							"occupiedRegionCount": 3
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 900,
+							"incomePerMinute": 700,
+							"refineryCapacity": 1200,
+							"producerCapacity": 1600,
+							"liquidResources": 500,
+							"techCapability": 3300,
+							"occupiedRegionCount": 1
+						}
+					]
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 3002,
+					"victimOrdinal": 0,
+					"destroyedKind": "Structure",
+					"replacementValue": 1000
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 3003,
+					"victimOrdinal": 0,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 800
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 3004,
+					"victimOrdinal": 1,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 500
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 3,
+					"worldTick": 500,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 700,
+							"incomePerMinute": 350,
+							"refineryCapacity": 800,
+							"producerCapacity": 700,
+							"liquidResources": 200,
+							"techCapability": 1800,
+							"occupiedRegionCount": 0
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 1900,
+							"incomePerMinute": 850,
+							"refineryCapacity": 1200,
+							"producerCapacity": 2000,
+							"liquidResources": 1300,
+							"techCapability": 4300,
+							"occupiedRegionCount": 4
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "terminal-override-contradictory-ledger",
+			"seed": 81004,
+			"oos": false,
+			"calibrationEligible": false,
+			"terminalOutcome": "SideBWin",
+			"controlRegionCount": 4,
+			"events": [
+				{
+					"kind": "destroyed",
+					"actorId": 4001,
+					"victimOrdinal": 1,
+					"destroyedKind": "Structure",
+					"replacementValue": 2000
+				},
+				{
+					"kind": "destroyed",
+					"actorId": 4002,
+					"victimOrdinal": 1,
+					"destroyedKind": "CombatUnit",
+					"replacementValue": 1200
+				},
+				{
+					"kind": "frozen",
+					"barrierId": 1,
+					"worldTick": 100,
+					"seats": [
+						{
+							"ordinal": 0,
+							"liveHpAdjustedPower": 3000,
+							"incomePerMinute": 900,
+							"refineryCapacity": 1500,
+							"producerCapacity": 2200,
+							"liquidResources": 1800,
+							"techCapability": 5200,
+							"occupiedRegionCount": 4
+						},
+						{
+							"ordinal": 1,
+							"liveHpAdjustedPower": 500,
+							"incomePerMinute": 200,
+							"refineryCapacity": 800,
+							"producerCapacity": 700,
+							"liquidResources": 100,
+							"techCapability": 1200,
+							"occupiedRegionCount": 0
+						}
+					]
+				}
+			]
+		}
+	]
+}

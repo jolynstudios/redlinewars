@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"era": "era1",
+	"engineCommit": "3faa24c9c237d34a91d2bf5b1876c1bccd34a429",
+	"files": {
+		"AgentMode/AgentModeContracts.cs": "54273f9decf1cb739cc954b1a53a9e9dce3b1d8c25680dbd9cae6ff40064ef5c",
+		"AgentMode/agent-rules.yaml": "8dfdadd4e6f35b94661dd77a82bacd557713316bba4afb5b5e0fb22f32566d24",
+		"agent-sidecar/knowledge/ra-knowledge.md": "c348519cee33020b45309a9a0fb0f3b27db5b4de26cc9d61370e7ab26272e16f",
+		"agent-sidecar/src/contracts.ts": "dc9151946a5633221ddce36e0a03903dde4d46742e1993566e216a08145b5a33",
+		"agent-sidecar/src/instructions.ts": "7957b1e44272c3348afc008d72907108156706907491bcac21ea8f653ee56e4d",
+		"agent-sidecar/src/provider-schema.ts": "5920b8c146513056cb0bd7fef0b9a280ae0e87285dbcb84d01bf349f40979e5d",
+		"agent-sidecar/src/server.ts": "e2ceda9ccb2b3371feb2ba2adcf74aa86dc8f0013ffcff4880c3df92ab15c34b",
+		"wwwroot/agent-worker.js": "eba58db36ccdb54aed6b6a6fc139850e1f54b38269d0e35589900e1610f17c40",
+		"wwwroot/openra-agent-mode.js": "056e60981600ff2e5b867c0abcdbfd7f62e57dcb5774e6656c5d56a03683f3d9"
+	},
+	"doctrineHashes": {
+		"allied-meta": "d1f62ed20423db9210a6539ea5ab34230b04777fad7be7ec8ab0e1c906886c46",
+		"classic-doctrine": "edfb012c7fc8408951347eeb95603d69ef522e3c7aa4180fa6c2989ad95861df",
+		"soviet-armor": "296526673f0945debfdfef0b850d1a561e69d74442f02e0199c91459fc12c5df",
+		"soviet-engineer-strike": "399990b6d6051689f73d892cbf0311be92a85054bd2460dec5191be725c47bd5",
+		"soviet-grenadier-rush": "4f0fb6cb2504960d42725f464e2545dbe9ab96340d1c0b51b084892620d03af8"
+	},
+	"lockHash": "cbdd9e7fb71063b300a039ced7103e640f7ddb016d73b9c4820ea68f00ffb1dd"
+}

@@ -1,0 +1,43 @@
+# T3.20: the community-server unit. The node boots in standing mode (always-on
+# public rooms from /etc/redline-node/rooms.json — copy the zip's
+# rooms.example.json there and edit it), dials out to the spine only, and
+# refuses rooms when its build is older than the spine's acceptedBuilds by
+# exiting with status 3 (--exit-on-update-required), which
+# RestartPreventExitStatus=3 turns into "stay down until the operator
+# installs the new zip". Intentional drain exits 4 and also stays down.
+# No .NET, no open inbound port, no owner token:
+# only REDLINE_NODE_KEY (the local loopback API key) is generated at install.
+[Unit]
+Description=Steelthorn node (community server: standing rooms + match servers)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=steelthorn
+Group=steelthorn
+WorkingDirectory=/opt/redline-node
+# install-node-host.sh writes the generated loopback API key to the
+# key.conf drop-in. Do not put a placeholder Environment assignment here:
+# systemd tokenizes its spaces and logs an invalid-assignment warning on every
+# daemon reload and service restart.
+ExecStart=/usr/bin/node /opt/redline-node/steelseed-host/tools/node-cli.mjs --spine wss://spine.redlinewars.online/node --mode standing --rooms-file /etc/redline-node/rooms.json --data-dir /var/lib/redline-node --max-matches 2 --exit-on-update-required --exit-on-drain
+StateDirectory=redline-node
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=3 4
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

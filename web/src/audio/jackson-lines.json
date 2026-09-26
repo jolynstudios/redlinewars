@@ -1,0 +1,21 @@
+{
+	"select": [
+		"Ready, sir",
+		"No fear"
+	],
+	"move": [
+		"Shut up, I'm on it, sir",
+		"On the double",
+		"HOOHAH!"
+	],
+	"attack": [
+		"Let's get 'em!",
+		"Watch this",
+		"HOOHAH!"
+	],
+	"underAttack": [
+		"Man down!",
+		"They're all over us!",
+		"Fall back, fall back!"
+	]
+}

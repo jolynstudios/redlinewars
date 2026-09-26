@@ -1,0 +1,25 @@
+{
+	"select": [
+		"Channel secure",
+		"I am listening",
+		"You have my attention",
+		"Eyes on the objective"
+	],
+	"move": [
+		"Taking the quiet route",
+		"Blending in",
+		"Keep the channel clear",
+		"Passing through"
+	],
+	"attack": [
+		"Target isolated",
+		"One clean shot",
+		"I'll handle this",
+		"Keep it quiet"
+	],
+	"underAttack": [
+		"Cover blown",
+		"They see me",
+		"Extracting"
+	]
+}

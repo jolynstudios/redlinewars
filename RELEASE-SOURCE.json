@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "product": "Redline Wars: Fractured Order",
+  "sourceCommit": "4c6da147cc103f9c12d4f542e355636097d4a35f",
+  "sourceCommitDate": "2026-09-26T12:09:01+02:00",
+  "exportedWith": "tools/export-release.mjs",
+  "published": 4200,
+  "withheld": {
+    "the marketing site": 1221,
+    "Blender sources and the art pipeline": 915,
+    "tracked compiled binaries of the original host (build output)": 539,
+    "local backup tree": 435,
+    "internal issue notes": 66,
+    "internal measurements and notes": 46,
+    "production infrastructure": 32,
+    "internal document": 22,
+    "brand artwork": 22,
+    "brand artwork (© Jolyn Studios); tools/fallback-art.mjs writes stand-ins": 16,
+    "art pipeline (builds separately licensed art)": 16,
+    "upstream OpenRA's CI and funding templates": 11,
+    "artwork (© Jolyn Studios); tools/fallback-art.mjs writes stand-ins": 4,
+    "internal notes": 4,
+    "art review notes": 3,
+    "replaced by the public edition at the repository root": 3,
+    "internal tooling": 3,
+    "CI naming production hosts and secrets": 2,
+    "scratch scripts": 2,
+    "brand artwork (© Jolyn Studios)": 1,
+    "internal acceptance record": 1,
+    "internal VM lab": 1,
+    "internal plans": 1,
+    "built art packs (separately licensed); tools/fallback-art.mjs writes public stand-ins": 1
+  },
+  "rewritten": [
+    {
+      "path": "engine/OpenRA.Browser/tests/match-results/LEADERBOARD.md",
+      "count": 1,
+      "replacement": "from OpenRA.Browser/tests/match-results"
+    },
+    {
+      "path": "web/tools/nightlight-reference.json",
+      "count": 9,
+      "replacement": "web/shots/nightlights"
+    }
+  ]
+}

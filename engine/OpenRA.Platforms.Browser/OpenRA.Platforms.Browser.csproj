@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../OpenRA.Game/OpenRA.Game.csproj">
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Public Domain and GPLv3+ compatible, but the 1.26.12 NuGet omits its license file.
+         Retain upstream attribution in the third-party notices for a shipped browser build. -->
+    <PackageReference Include="StbTrueTypeSharp" Version="1.26.12" />
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+  <!-- Directory.Build.props strips all analyzers in Release for speed, which would also
+       remove the System.Runtime.InteropServices.JavaScript source generator that emits
+       the [JSImport]/[JSExport] interop. Keep analyzers for this project. -->
+  <Target Name="DisableAnalyzers" />
+</Project>

@@ -1,0 +1,1513 @@
+{
+	"schemaVersion": 1,
+	"calibrationId": "benchmark-calibration-v1-candidate",
+	"status": "candidate-human-review-required",
+	"productionDefault": false,
+	"specVersion": "benchmark-lockstep-v1",
+	"description": "Model-blind candidate only. Values must not enter leaderboard configuration until human blind review and freeze.",
+	"source": {
+		"candidateMapId": "Siberian-Pass.oramap",
+		"scenarioFixture": "OpenRA.Browser/tests/benchmark-calibration/golden-adjudication-scenarios.json",
+		"scenarioFixtureSha256": "b97155e3925fb0d9ce1150a6854880d6e0d975576a9f44aebae7fe27d43b9c39",
+		"mapInputFixture": "OpenRA.Browser/tests/benchmark-calibration/calibration-map-inputs.json",
+		"mapInputFixtureSha256": "7583dea227aa022581916aa7f18575090f7d6fa64a53f2c4d9db5e61811a56aa",
+		"scorerSource": "OpenRA.Browser/AgentMode/AgentAdjudication.cs",
+		"scorerSourceSha256": "5df8b8f38b5fb7a9c868e68d697416aca4d5070c0e892fda79f920b067aefe46",
+		"scenarioSeeds": [
+			81001,
+			81002,
+			81003,
+			81004
+		],
+		"oosRequired": false
+	},
+	"lockedScoring": {
+		"weights": {
+			"liveHpAdjustedPower": 0.25,
+			"structuresByValue": 0.2,
+			"economy": 0.2,
+			"unitReplacementValue": 0.15,
+			"tech": 0.1,
+			"regionControl": 0.1
+		},
+		"drawBand": 0.1
+	},
+	"candidateFloors": {
+		"method": "nearest-rank p25 of positive paired A+B totals across every calibration-eligible frozen sample",
+		"values": {
+			"liveHpAdjustedPower": 2600,
+			"structuresByValue": 1000,
+			"economy": 5702,
+			"unitReplacementValue": 300,
+			"tech": 4800,
+			"regionControl": 2
+		},
+		"provenance": {
+			"liveHpAdjustedPower": {
+				"positiveSampleCount": 8,
+				"minimum": 1800,
+				"maximum": 4100,
+				"orderedTotals": [
+					1800,
+					2600,
+					2600,
+					2700,
+					2700,
+					3100,
+					3600,
+					4100
+				]
+			},
+			"structuresByValue": {
+				"positiveSampleCount": 3,
+				"minimum": 1000,
+				"maximum": 2800,
+				"orderedTotals": [
+					1000,
+					1500,
+					2800
+				]
+			},
+			"economy": {
+				"positiveSampleCount": 8,
+				"minimum": 5688,
+				"maximum": 8753,
+				"orderedTotals": [
+					5688,
+					5702,
+					6561.5,
+					6894,
+					7410,
+					8397,
+					8521.5,
+					8753
+				]
+			},
+			"unitReplacementValue": {
+				"positiveSampleCount": 4,
+				"minimum": 300,
+				"maximum": 1600,
+				"orderedTotals": [
+					300,
+					700,
+					1100,
+					1600
+				]
+			},
+			"tech": {
+				"positiveSampleCount": 8,
+				"minimum": 2700,
+				"maximum": 7100,
+				"orderedTotals": [
+					2700,
+					4800,
+					5000,
+					6100,
+					6500,
+					6800,
+					6800,
+					7100
+				]
+			},
+			"regionControl": {
+				"positiveSampleCount": 8,
+				"minimum": 2,
+				"maximum": 3.75,
+				"orderedTotals": [
+					2,
+					2,
+					2.5,
+					3,
+					3,
+					3.5,
+					3.5,
+					3.75
+				]
+			}
+		}
+	},
+	"candidateMaps": [
+		{
+			"mapId": "Siberian-Pass.oramap",
+			"title": "Siberian Pass",
+			"benchmarkRole": "documented pilot shell-launch map; requires the Agent Mode map field to be explicitly pinned",
+			"source": "mods/ra/maps/Siberian-Pass.oramap",
+			"sourceKind": "oramap-archive",
+			"packageSha256": "2e27b76b6ff7ec832d69a8f3bea28d902ce2302c0814b490f3d6c08201b22223",
+			"mapYamlSha256": "35c6d6288ec73fae60787e490d072626adfef0ebb1e0dc02fed2e95120bbf930",
+			"bounds": {
+				"x": 1,
+				"y": 1,
+				"width": 95,
+				"height": 65
+			},
+			"spawnPoints": [
+				{
+					"x": 16,
+					"y": 50
+				},
+				{
+					"x": 80,
+					"y": 16
+				}
+			],
+			"resourceAnchorCount": 21,
+			"parameters": {
+				"resourceActorTypes": [
+					"mine",
+					"oilb"
+				],
+				"resourceClusterManhattanDistance": 8,
+				"homeExclusionManhattanDistance": 18,
+				"resourceRegionRadius": 2,
+				"chokepointRegionRadius": 2
+			},
+			"controlRegionCount": 15,
+			"controlRegionHash": "e3d5d32395e85bece72e6d5fa679839f455239679311e570f19941b1c7c5c507",
+			"regions": [
+				{
+					"id": "choke-north-central",
+					"kind": "chokepoint",
+					"anchors": [
+						{
+							"x": 46,
+							"y": 25
+						}
+					],
+					"provenance": "manual candidate from blind map-thumbnail inspection; northern diagonal pass",
+					"trimmedOverlapCellCount": 0,
+					"cells": [
+						{
+							"x": 44,
+							"y": 25
+						},
+						{
+							"x": 45,
+							"y": 24
+						},
+						{
+							"x": 45,
+							"y": 25
+						},
+						{
+							"x": 45,
+							"y": 26
+						},
+						{
+							"x": 46,
+							"y": 23
+						},
+						{
+							"x": 46,
+							"y": 24
+						},
+						{
+							"x": 46,
+							"y": 25
+						},
+						{
+							"x": 46,
+							"y": 26
+						},
+						{
+							"x": 46,
+							"y": 27
+						},
+						{
+							"x": 47,
+							"y": 24
+						},
+						{
+							"x": 47,
+							"y": 25
+						},
+						{
+							"x": 47,
+							"y": 26
+						},
+						{
+							"x": 48,
+							"y": 25
+						}
+					]
+				},
+				{
+					"id": "choke-northeast-central",
+					"kind": "chokepoint",
+					"anchors": [
+						{
+							"x": 62,
+							"y": 34
+						}
+					],
+					"provenance": "manual candidate from blind map-thumbnail inspection; eastern central approach",
+					"trimmedOverlapCellCount": 0,
+					"cells": [
+						{
+							"x": 60,
+							"y": 34
+						},
+						{
+							"x": 61,
+							"y": 33
+						},
+						{
+							"x": 61,
+							"y": 34
+						},
+						{
+							"x": 61,
+							"y": 35
+						},
+						{
+							"x": 62,
+							"y": 32
+						},
+						{
+							"x": 62,
+							"y": 33
+						},
+						{
+							"x": 62,
+							"y": 34
+						},
+						{
+							"x": 62,
+							"y": 35
+						},
+						{
+							"x": 62,
+							"y": 36
+						},
+						{
+							"x": 63,
+							"y": 33
+						},
+						{
+							"x": 63,
+							"y": 34
+						},
+						{
+							"x": 63,
+							"y": 35
+						},
+						{
+							"x": 64,
+							"y": 34
+						}
+					]
+				},
+				{
+					"id": "choke-northwest-central",
+					"kind": "chokepoint",
+					"anchors": [
+						{
+							"x": 34,
+							"y": 32
+						}
+					],
+					"provenance": "manual candidate from blind map-thumbnail inspection; western central approach",
+					"trimmedOverlapCellCount": 0,
+					"cells": [
+						{
+							"x": 32,
+							"y": 32
+						},
+						{
+							"x": 33,
+							"y": 31
+						},
+						{
+							"x": 33,
+							"y": 32
+						},
+						{
+							"x": 33,
+							"y": 33
+						},
+						{
+							"x": 34,
+							"y": 30
+						},
+						{
+							"x": 34,
+							"y": 31
+						},
+						{
+							"x": 34,
+							"y": 32
+						},
+						{
+							"x": 34,
+							"y": 33
+						},
+						{
+							"x": 34,
+							"y": 34
+						},
+						{
+							"x": 35,
+							"y": 31
+						},
+						{
+							"x": 35,
+							"y": 32
+						},
+						{
+							"x": 35,
+							"y": 33
+						},
+						{
+							"x": 36,
+							"y": 32
+						}
+					]
+				},
+				{
+					"id": "choke-south-central",
+					"kind": "chokepoint",
+					"anchors": [
+						{
+							"x": 51,
+							"y": 41
+						}
+					],
+					"provenance": "manual candidate from blind map-thumbnail inspection; southern diagonal pass",
+					"trimmedOverlapCellCount": 0,
+					"cells": [
+						{
+							"x": 49,
+							"y": 41
+						},
+						{
+							"x": 50,
+							"y": 40
+						},
+						{
+							"x": 50,
+							"y": 41
+						},
+						{
+							"x": 50,
+							"y": 42
+						},
+						{
+							"x": 51,
+							"y": 39
+						},
+						{
+							"x": 51,
+							"y": 40
+						},
+						{
+							"x": 51,
+							"y": 41
+						},
+						{
+							"x": 51,
+							"y": 42
+						},
+						{
+							"x": 51,
+							"y": 43
+						},
+						{
+							"x": 52,
+							"y": 40
+						},
+						{
+							"x": 52,
+							"y": 41
+						},
+						{
+							"x": 52,
+							"y": 42
+						},
+						{
+							"x": 53,
+							"y": 41
+						}
+					]
+				},
+				{
+					"id": "resource-06-06",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 5,
+							"y": 7
+						},
+						{
+							"type": "mine",
+							"x": 7,
+							"y": 5
+						}
+					],
+					"cells": [
+						{
+							"x": 3,
+							"y": 7
+						},
+						{
+							"x": 4,
+							"y": 6
+						},
+						{
+							"x": 4,
+							"y": 7
+						},
+						{
+							"x": 4,
+							"y": 8
+						},
+						{
+							"x": 5,
+							"y": 5
+						},
+						{
+							"x": 5,
+							"y": 6
+						},
+						{
+							"x": 5,
+							"y": 7
+						},
+						{
+							"x": 5,
+							"y": 8
+						},
+						{
+							"x": 5,
+							"y": 9
+						},
+						{
+							"x": 6,
+							"y": 4
+						},
+						{
+							"x": 6,
+							"y": 5
+						},
+						{
+							"x": 6,
+							"y": 6
+						},
+						{
+							"x": 6,
+							"y": 7
+						},
+						{
+							"x": 6,
+							"y": 8
+						},
+						{
+							"x": 7,
+							"y": 3
+						},
+						{
+							"x": 7,
+							"y": 4
+						},
+						{
+							"x": 7,
+							"y": 5
+						},
+						{
+							"x": 7,
+							"y": 6
+						},
+						{
+							"x": 7,
+							"y": 7
+						},
+						{
+							"x": 8,
+							"y": 4
+						},
+						{
+							"x": 8,
+							"y": 5
+						},
+						{
+							"x": 8,
+							"y": 6
+						},
+						{
+							"x": 9,
+							"y": 5
+						}
+					]
+				},
+				{
+					"id": "resource-18-20",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "oilb",
+							"x": 18,
+							"y": 20
+						}
+					],
+					"cells": [
+						{
+							"x": 16,
+							"y": 20
+						},
+						{
+							"x": 17,
+							"y": 19
+						},
+						{
+							"x": 17,
+							"y": 20
+						},
+						{
+							"x": 17,
+							"y": 21
+						},
+						{
+							"x": 18,
+							"y": 18
+						},
+						{
+							"x": 18,
+							"y": 19
+						},
+						{
+							"x": 18,
+							"y": 20
+						},
+						{
+							"x": 18,
+							"y": 21
+						},
+						{
+							"x": 18,
+							"y": 22
+						},
+						{
+							"x": 19,
+							"y": 19
+						},
+						{
+							"x": 19,
+							"y": 20
+						},
+						{
+							"x": 19,
+							"y": 21
+						},
+						{
+							"x": 20,
+							"y": 20
+						}
+					]
+				},
+				{
+					"id": "resource-35-20",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 35,
+							"y": 20
+						}
+					],
+					"cells": [
+						{
+							"x": 33,
+							"y": 20
+						},
+						{
+							"x": 34,
+							"y": 19
+						},
+						{
+							"x": 34,
+							"y": 20
+						},
+						{
+							"x": 34,
+							"y": 21
+						},
+						{
+							"x": 35,
+							"y": 18
+						},
+						{
+							"x": 35,
+							"y": 19
+						},
+						{
+							"x": 35,
+							"y": 20
+						},
+						{
+							"x": 35,
+							"y": 21
+						},
+						{
+							"x": 35,
+							"y": 22
+						},
+						{
+							"x": 36,
+							"y": 19
+						},
+						{
+							"x": 36,
+							"y": 20
+						},
+						{
+							"x": 36,
+							"y": 21
+						},
+						{
+							"x": 37,
+							"y": 20
+						}
+					]
+				},
+				{
+					"id": "resource-38-42",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "oilb",
+							"x": 38,
+							"y": 42
+						}
+					],
+					"cells": [
+						{
+							"x": 36,
+							"y": 42
+						},
+						{
+							"x": 37,
+							"y": 41
+						},
+						{
+							"x": 37,
+							"y": 42
+						},
+						{
+							"x": 37,
+							"y": 43
+						},
+						{
+							"x": 38,
+							"y": 40
+						},
+						{
+							"x": 38,
+							"y": 41
+						},
+						{
+							"x": 38,
+							"y": 42
+						},
+						{
+							"x": 38,
+							"y": 43
+						},
+						{
+							"x": 38,
+							"y": 44
+						},
+						{
+							"x": 39,
+							"y": 41
+						},
+						{
+							"x": 39,
+							"y": 42
+						},
+						{
+							"x": 39,
+							"y": 43
+						},
+						{
+							"x": 40,
+							"y": 42
+						}
+					]
+				},
+				{
+					"id": "resource-42-60",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 40,
+							"y": 60
+						},
+						{
+							"type": "mine",
+							"x": 43,
+							"y": 60
+						}
+					],
+					"cells": [
+						{
+							"x": 38,
+							"y": 60
+						},
+						{
+							"x": 39,
+							"y": 59
+						},
+						{
+							"x": 39,
+							"y": 60
+						},
+						{
+							"x": 39,
+							"y": 61
+						},
+						{
+							"x": 40,
+							"y": 58
+						},
+						{
+							"x": 40,
+							"y": 59
+						},
+						{
+							"x": 40,
+							"y": 60
+						},
+						{
+							"x": 40,
+							"y": 61
+						},
+						{
+							"x": 40,
+							"y": 62
+						},
+						{
+							"x": 41,
+							"y": 59
+						},
+						{
+							"x": 41,
+							"y": 60
+						},
+						{
+							"x": 41,
+							"y": 61
+						},
+						{
+							"x": 42,
+							"y": 59
+						},
+						{
+							"x": 42,
+							"y": 60
+						},
+						{
+							"x": 42,
+							"y": 61
+						},
+						{
+							"x": 43,
+							"y": 58
+						},
+						{
+							"x": 43,
+							"y": 59
+						},
+						{
+							"x": 43,
+							"y": 60
+						},
+						{
+							"x": 43,
+							"y": 61
+						},
+						{
+							"x": 43,
+							"y": 62
+						},
+						{
+							"x": 44,
+							"y": 59
+						},
+						{
+							"x": 44,
+							"y": 60
+						},
+						{
+							"x": 44,
+							"y": 61
+						},
+						{
+							"x": 45,
+							"y": 60
+						}
+					]
+				},
+				{
+					"id": "resource-48-33",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 48,
+							"y": 33
+						}
+					],
+					"cells": [
+						{
+							"x": 46,
+							"y": 33
+						},
+						{
+							"x": 47,
+							"y": 32
+						},
+						{
+							"x": 47,
+							"y": 33
+						},
+						{
+							"x": 47,
+							"y": 34
+						},
+						{
+							"x": 48,
+							"y": 31
+						},
+						{
+							"x": 48,
+							"y": 32
+						},
+						{
+							"x": 48,
+							"y": 33
+						},
+						{
+							"x": 48,
+							"y": 34
+						},
+						{
+							"x": 48,
+							"y": 35
+						},
+						{
+							"x": 49,
+							"y": 32
+						},
+						{
+							"x": 49,
+							"y": 33
+						},
+						{
+							"x": 49,
+							"y": 34
+						},
+						{
+							"x": 50,
+							"y": 33
+						}
+					]
+				},
+				{
+					"id": "resource-55-06",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 53,
+							"y": 6
+						},
+						{
+							"type": "mine",
+							"x": 56,
+							"y": 6
+						}
+					],
+					"cells": [
+						{
+							"x": 51,
+							"y": 6
+						},
+						{
+							"x": 52,
+							"y": 5
+						},
+						{
+							"x": 52,
+							"y": 6
+						},
+						{
+							"x": 52,
+							"y": 7
+						},
+						{
+							"x": 53,
+							"y": 4
+						},
+						{
+							"x": 53,
+							"y": 5
+						},
+						{
+							"x": 53,
+							"y": 6
+						},
+						{
+							"x": 53,
+							"y": 7
+						},
+						{
+							"x": 53,
+							"y": 8
+						},
+						{
+							"x": 54,
+							"y": 5
+						},
+						{
+							"x": 54,
+							"y": 6
+						},
+						{
+							"x": 54,
+							"y": 7
+						},
+						{
+							"x": 55,
+							"y": 5
+						},
+						{
+							"x": 55,
+							"y": 6
+						},
+						{
+							"x": 55,
+							"y": 7
+						},
+						{
+							"x": 56,
+							"y": 4
+						},
+						{
+							"x": 56,
+							"y": 5
+						},
+						{
+							"x": 56,
+							"y": 6
+						},
+						{
+							"x": 56,
+							"y": 7
+						},
+						{
+							"x": 56,
+							"y": 8
+						},
+						{
+							"x": 57,
+							"y": 5
+						},
+						{
+							"x": 57,
+							"y": 6
+						},
+						{
+							"x": 57,
+							"y": 7
+						},
+						{
+							"x": 58,
+							"y": 6
+						}
+					]
+				},
+				{
+					"id": "resource-57-23",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "oilb",
+							"x": 57,
+							"y": 23
+						}
+					],
+					"cells": [
+						{
+							"x": 55,
+							"y": 23
+						},
+						{
+							"x": 56,
+							"y": 22
+						},
+						{
+							"x": 56,
+							"y": 23
+						},
+						{
+							"x": 56,
+							"y": 24
+						},
+						{
+							"x": 57,
+							"y": 21
+						},
+						{
+							"x": 57,
+							"y": 22
+						},
+						{
+							"x": 57,
+							"y": 23
+						},
+						{
+							"x": 57,
+							"y": 24
+						},
+						{
+							"x": 57,
+							"y": 25
+						},
+						{
+							"x": 58,
+							"y": 22
+						},
+						{
+							"x": 58,
+							"y": 23
+						},
+						{
+							"x": 58,
+							"y": 24
+						},
+						{
+							"x": 59,
+							"y": 23
+						}
+					]
+				},
+				{
+					"id": "resource-61-46",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 61,
+							"y": 46
+						}
+					],
+					"cells": [
+						{
+							"x": 59,
+							"y": 46
+						},
+						{
+							"x": 60,
+							"y": 45
+						},
+						{
+							"x": 60,
+							"y": 46
+						},
+						{
+							"x": 60,
+							"y": 47
+						},
+						{
+							"x": 61,
+							"y": 44
+						},
+						{
+							"x": 61,
+							"y": 45
+						},
+						{
+							"x": 61,
+							"y": 46
+						},
+						{
+							"x": 61,
+							"y": 47
+						},
+						{
+							"x": 61,
+							"y": 48
+						},
+						{
+							"x": 62,
+							"y": 45
+						},
+						{
+							"x": 62,
+							"y": 46
+						},
+						{
+							"x": 62,
+							"y": 47
+						},
+						{
+							"x": 63,
+							"y": 46
+						}
+					]
+				},
+				{
+					"id": "resource-77-45",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "oilb",
+							"x": 77,
+							"y": 45
+						}
+					],
+					"cells": [
+						{
+							"x": 75,
+							"y": 45
+						},
+						{
+							"x": 76,
+							"y": 44
+						},
+						{
+							"x": 76,
+							"y": 45
+						},
+						{
+							"x": 76,
+							"y": 46
+						},
+						{
+							"x": 77,
+							"y": 43
+						},
+						{
+							"x": 77,
+							"y": 44
+						},
+						{
+							"x": 77,
+							"y": 45
+						},
+						{
+							"x": 77,
+							"y": 46
+						},
+						{
+							"x": 77,
+							"y": 47
+						},
+						{
+							"x": 78,
+							"y": 44
+						},
+						{
+							"x": 78,
+							"y": 45
+						},
+						{
+							"x": 78,
+							"y": 46
+						},
+						{
+							"x": 79,
+							"y": 45
+						}
+					]
+				},
+				{
+					"id": "resource-90-60",
+					"kind": "resource",
+					"anchors": [
+						{
+							"type": "mine",
+							"x": 89,
+							"y": 61
+						},
+						{
+							"type": "mine",
+							"x": 91,
+							"y": 59
+						}
+					],
+					"cells": [
+						{
+							"x": 87,
+							"y": 61
+						},
+						{
+							"x": 88,
+							"y": 60
+						},
+						{
+							"x": 88,
+							"y": 61
+						},
+						{
+							"x": 88,
+							"y": 62
+						},
+						{
+							"x": 89,
+							"y": 59
+						},
+						{
+							"x": 89,
+							"y": 60
+						},
+						{
+							"x": 89,
+							"y": 61
+						},
+						{
+							"x": 89,
+							"y": 62
+						},
+						{
+							"x": 89,
+							"y": 63
+						},
+						{
+							"x": 90,
+							"y": 58
+						},
+						{
+							"x": 90,
+							"y": 59
+						},
+						{
+							"x": 90,
+							"y": 60
+						},
+						{
+							"x": 90,
+							"y": 61
+						},
+						{
+							"x": 90,
+							"y": 62
+						},
+						{
+							"x": 91,
+							"y": 57
+						},
+						{
+							"x": 91,
+							"y": 58
+						},
+						{
+							"x": 91,
+							"y": 59
+						},
+						{
+							"x": 91,
+							"y": 60
+						},
+						{
+							"x": 91,
+							"y": 61
+						},
+						{
+							"x": 92,
+							"y": 58
+						},
+						{
+							"x": 92,
+							"y": 59
+						},
+						{
+							"x": 92,
+							"y": 60
+						},
+						{
+							"x": 93,
+							"y": 59
+						}
+					]
+				}
+			]
+		}
+	],
+	"goldenLedgerOutputs": [
+		{
+			"id": "opening-economy-tech-split",
+			"seed": 81001,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"firstFrozenWorldTick": 100,
+			"lastFrozenWorldTick": 300,
+			"durationTicks": 200,
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 1500,
+						"structuresByValue": 0,
+						"economy": 3462,
+						"unitReplacementValue": 0,
+						"tech": 2800,
+						"regionControl": 1.5
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 1600,
+						"structuresByValue": 0,
+						"economy": 3099.5,
+						"unitReplacementValue": 0,
+						"tech": 2200,
+						"regionControl": 1
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				}
+			],
+			"candidateScore": {
+				"score": 0.03498478662186312,
+				"verdict": "Draw",
+				"terminalOverride": false
+			}
+		},
+		{
+			"id": "strategic-structure-breakthrough",
+			"seed": 81002,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"firstFrozenWorldTick": 100,
+			"lastFrozenWorldTick": 500,
+			"durationTicks": 400,
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 1800,
+						"structuresByValue": 2300,
+						"economy": 5352.25,
+						"unitReplacementValue": 700,
+						"tech": 5000,
+						"regionControl": 2.5
+					},
+					"ownStructureLossValue": 500,
+					"ownCombatUnitLossValue": 400
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 900,
+						"structuresByValue": 500,
+						"economy": 3044.75,
+						"unitReplacementValue": 400,
+						"tech": 1800,
+						"regionControl": 1
+					},
+					"ownStructureLossValue": 2300,
+					"ownCombatUnitLossValue": 700
+				}
+			],
+			"candidateScore": {
+				"score": 0.39768992399974057,
+				"verdict": "SideA",
+				"terminalOverride": false
+			}
+		},
+		{
+			"id": "counterattack-unequal-intervals",
+			"seed": 81003,
+			"oos": false,
+			"calibrationEligible": true,
+			"terminalOutcome": "Unresolved",
+			"firstFrozenWorldTick": 100,
+			"lastFrozenWorldTick": 500,
+			"durationTicks": 400,
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 700,
+						"structuresByValue": 0,
+						"economy": 3198.25,
+						"unitReplacementValue": 800,
+						"tech": 1800,
+						"regionControl": 1.625
+					},
+					"ownStructureLossValue": 1000,
+					"ownCombatUnitLossValue": 800
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 1900,
+						"structuresByValue": 1000,
+						"economy": 4211.75,
+						"unitReplacementValue": 800,
+						"tech": 4300,
+						"regionControl": 2.125
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 800
+				}
+			],
+			"candidateScore": {
+				"score": -0.39705648105130414,
+				"verdict": "SideB",
+				"terminalOverride": false
+			}
+		},
+		{
+			"id": "terminal-override-contradictory-ledger",
+			"seed": 81004,
+			"oos": false,
+			"calibrationEligible": false,
+			"terminalOutcome": "SideBWin",
+			"firstFrozenWorldTick": 100,
+			"lastFrozenWorldTick": 100,
+			"durationTicks": 0,
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 3000,
+						"structuresByValue": 2000,
+						"economy": 5893,
+						"unitReplacementValue": 1200,
+						"tech": 5200,
+						"regionControl": 4
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 500,
+						"structuresByValue": 0,
+						"economy": 1794,
+						"unitReplacementValue": 0,
+						"tech": 1200,
+						"regionControl": 0
+					},
+					"ownStructureLossValue": 2000,
+					"ownCombatUnitLossValue": 1200
+				}
+			],
+			"candidateScore": {
+				"score": -1,
+				"verdict": "SideB",
+				"terminalOverride": true
+			}
+		}
+	],
+	"derivationSha256": "a6d60b15d5ae47e978d6140309e34d7800b294a05a246bf07735742d014b95f8"
+}

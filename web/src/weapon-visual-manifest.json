@@ -1,0 +1,2675 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "path": "web/src/core/ra-visual-manifest.json",
+    "sha256": "5723366c47770b8255360df15329c6ade8d1e6dd3c70ef23e79c8cebfeff0f6b",
+    "commit": "7eabcfe1c9fc3ad5f510227496cfc2766c07f5fb"
+  },
+  "authoring": {
+    "source": "web/tools/weaponvisual-forge.mjs",
+    "revision": 1,
+    "sha256": "b5eb2032cb75d285f86c231a460c402e0977b6dab1d372c74ed9e2dc238ff9f4"
+  },
+  "semantics": {
+    "colors": "All material colors are authored linear RGB, not sRGB; intensity/exposure belongs to the consumer.",
+    "sizes": "Artistic world-metre envelopes per named weapon role; neither raw damage nor ABI caliber is a physical bore measurement.",
+    "lifetime": "Visual fade/persistence seconds only, not projectile flight time or hit timing.",
+    "binding": "Armament.cs StableId(info.Weapon): FNV32 over UTF-16, modulo 255 + 1; caliber: abs(first DamageWarhead.Damage) clamped to 65535.",
+    "integration": "Foundation only. No renderer consumer or Bullet/Missile observer route supplied. Require authoritative events/positions; never infer flight from these profiles."
+  },
+  "maxProfiles": 256,
+  "profileCount": 50,
+  "fallback": {
+    "family": "unknown",
+    "tracer": {
+      "style": "none",
+      "colorLinearRGB": [
+        0,
+        0,
+        0
+      ],
+      "widthM": 0,
+      "lifetimeSeconds": 0
+    },
+    "muzzle": {
+      "style": "none",
+      "scaleM": 0
+    },
+    "smoke": "none",
+    "impact": "none"
+  },
+  "profiles": [
+    {
+      "weapon": "105mm",
+      "weaponClass": 39,
+      "caliber": 4000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.092,
+          "lifetimeSeconds": 0.145
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.7
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "105mm"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4000,
+          "refs": [
+            {
+              "actor": "3tnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "120mm",
+      "weaponClass": 196,
+      "caliber": 6000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.105,
+          "lifetimeSeconds": 0.16
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.8
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "120mm"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "4tnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "155mm",
+      "weaponClass": 149,
+      "caliber": 23000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "artillery",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.38,
+            0.08
+          ],
+          "widthM": 0.13,
+          "lifetimeSeconds": 0.2
+        },
+        "muzzle": {
+          "style": "heavy",
+          "scaleM": 1
+        },
+        "smoke": "plume",
+        "impact": "heavy-shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "155mm"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 23000,
+          "refs": [
+            {
+              "actor": "arty",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "25mm",
+      "weaponClass": 242,
+      "caliber": 2500,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.045,
+          "lifetimeSeconds": 0.095
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.34
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "25mm"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "1tnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "2Inch",
+      "weaponClass": 138,
+      "caliber": 2500,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.058,
+          "lifetimeSeconds": 0.11
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.42
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "2Inch"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "pt",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "8Inch",
+      "weaponClass": 153,
+      "caliber": 2500,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "artillery",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.38,
+            0.08
+          ],
+          "widthM": 0.16,
+          "lifetimeSeconds": 0.24
+        },
+        "muzzle": {
+          "style": "heavy",
+          "scaleM": 1.25
+        },
+        "smoke": "plume",
+        "impact": "heavy-shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "8Inch"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "ca",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "ca",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "90mm",
+      "weaponClass": 118,
+      "caliber": 4000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.08,
+          "lifetimeSeconds": 0.13
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.6
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "90mm"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4000,
+          "refs": [
+            {
+              "actor": "2tnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "APTusk",
+      "weaponClass": 170,
+      "caliber": 5000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.09,
+          "lifetimeSeconds": 0.25
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.36
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "light-grey",
+          "lengthM": 0.23,
+          "radiusM": 0.018,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "APTusk"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 5000,
+          "refs": [
+            {
+              "actor": "ctnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "APTusk.stnk",
+      "weaponClass": 11,
+      "caliber": 5000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.085,
+          "lifetimeSeconds": 0.22
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.33
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "light-grey",
+          "lengthM": 0.23,
+          "radiusM": 0.018,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "APTusk.stnk"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 5000,
+          "refs": [
+            {
+              "actor": "stnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "AntFireball",
+      "weaponClass": 175,
+      "caliber": 4000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "flame",
+        "tracer": {
+          "style": "flame",
+          "colorLinearRGB": [
+            1,
+            0.16,
+            0.018
+          ],
+          "widthM": 0.22,
+          "lifetimeSeconds": 0.23
+        },
+        "muzzle": {
+          "style": "flame",
+          "scaleM": 0.28
+        },
+        "smoke": "soot",
+        "impact": "burn"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "AntFireball"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4000,
+          "refs": [
+            {
+              "actor": "fireant",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "ChainGun",
+      "weaponClass": 248,
+      "caliber": 2500,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "mg",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.8,
+            0.4
+          ],
+          "widthM": 0.032,
+          "lifetimeSeconds": 0.085
+        },
+        "muzzle": {
+          "style": "star",
+          "scaleM": 0.24
+        },
+        "smoke": "faint",
+        "impact": "spark"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "ChainGun"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "hind",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "mh60",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "ChainGun.Yak",
+      "weaponClass": 109,
+      "caliber": 4000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "mg",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.8,
+            0.4
+          ],
+          "widthM": 0.035,
+          "lifetimeSeconds": 0.095
+        },
+        "muzzle": {
+          "style": "star",
+          "scaleM": 0.26
+        },
+        "smoke": "faint",
+        "impact": "spark"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "ChainGun.Yak"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4000,
+          "refs": [
+            {
+              "actor": "yak",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Colt45",
+      "weaponClass": 51,
+      "caliber": 10000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "bullet",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.68,
+            0.28
+          ],
+          "widthM": 0.018,
+          "lifetimeSeconds": 0.055
+        },
+        "muzzle": {
+          "style": "compact",
+          "scaleM": 0.1
+        },
+        "smoke": "faint",
+        "impact": "chip"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Colt45"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 10000,
+          "refs": [
+            {
+              "actor": "e7",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e7",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "DemoTruckTargeting",
+      "weaponClass": 52,
+      "caliber": 0,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "utility",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "DemoTruckTargeting"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 0,
+          "refs": [
+            {
+              "actor": "dtrk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "DepthCharge",
+      "weaponClass": 181,
+      "caliber": 6000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "artillery",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            1,
+            0.38,
+            0.08
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "water",
+        "projectile": {
+          "body": "depth-charge",
+          "material": "olive",
+          "lengthM": 0.32,
+          "radiusM": 0.038,
+          "exhaust": false,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.1,
+            "colorLinearRGB": [
+              0.42,
+              0.67,
+              0.68
+            ],
+            "opacity": 0.28,
+            "turbulence": 0.012
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "DepthCharge"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "dd",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "pt",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "DogJaw",
+      "weaponClass": 190,
+      "caliber": 65535,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "melee",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "DogJaw"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 100000,
+          "refs": [
+            {
+              "actor": "dog",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Dragon",
+      "weaponClass": 232,
+      "caliber": 5000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.026,
+          "lifetimeSeconds": 0.15
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.1
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.112,
+          "radiusM": 0.01,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.026,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Dragon"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 5000,
+          "refs": [
+            {
+              "actor": "e3",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "e3",
+              "armamentIndex": 3
+            },
+            {
+              "actor": "e3r1",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "e3r1",
+              "armamentIndex": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "FLAK-23-AA",
+      "weaponClass": 134,
+      "caliber": 1200,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.038,
+          "lifetimeSeconds": 0.085
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.3
+        },
+        "smoke": "puff",
+        "impact": "flak"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "FLAK-23-AA"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1200,
+          "refs": [
+            {
+              "actor": "ftrk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "FLAK-23-AG",
+      "weaponClass": 5,
+      "caliber": 2000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.041,
+          "lifetimeSeconds": 0.09
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.32
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "FLAK-23-AG"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2000,
+          "refs": [
+            {
+              "actor": "ftrk",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "FireballLauncher",
+      "weaponClass": 33,
+      "caliber": 15000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "flame",
+        "tracer": {
+          "style": "flame",
+          "colorLinearRGB": [
+            1,
+            0.16,
+            0.018
+          ],
+          "widthM": 0.3,
+          "lifetimeSeconds": 0.28
+        },
+        "muzzle": {
+          "style": "flame",
+          "scaleM": 0.4
+        },
+        "smoke": "soot",
+        "impact": "burn"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "FireballLauncher"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 15000,
+          "refs": [
+            {
+              "actor": "ftur",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Flamer",
+      "weaponClass": 44,
+      "caliber": 1000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "flame",
+        "tracer": {
+          "style": "flame",
+          "colorLinearRGB": [
+            1,
+            0.16,
+            0.018
+          ],
+          "widthM": 0.16,
+          "lifetimeSeconds": 0.18
+        },
+        "muzzle": {
+          "style": "flame",
+          "scaleM": 0.22
+        },
+        "smoke": "soot",
+        "impact": "burn"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Flamer"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1000,
+          "refs": [
+            {
+              "actor": "e4",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e4",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Grenade",
+      "weaponClass": 11,
+      "caliber": 6000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "artillery",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            1,
+            0.38,
+            0.08
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "blast",
+        "projectile": {
+          "body": "grenade",
+          "material": "olive",
+          "lengthM": 0.045,
+          "radiusM": 0.012,
+          "exhaust": false,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Grenade"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "e2",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e2",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Heal",
+      "weaponClass": 6,
+      "caliber": 5000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "heal",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Heal"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": -5000,
+          "refs": [
+            {
+              "actor": "medi",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "HellfireAA",
+      "weaponClass": 95,
+      "caliber": 3000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.07,
+          "lifetimeSeconds": 0.2
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.28
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.4,
+          "radiusM": 0.02,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "HellfireAA"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 3000,
+          "refs": [
+            {
+              "actor": "heli",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "HellfireAG",
+      "weaponClass": 224,
+      "caliber": 6000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.085,
+          "lifetimeSeconds": 0.24
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.34
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.4,
+          "radiusM": 0.02,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "HellfireAG"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "heli",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "M1Carbine",
+      "weaponClass": 10,
+      "caliber": 1000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "bullet",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.68,
+            0.28
+          ],
+          "widthM": 0.016,
+          "lifetimeSeconds": 0.065
+        },
+        "muzzle": {
+          "style": "compact",
+          "scaleM": 0.12
+        },
+        "smoke": "faint",
+        "impact": "chip"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "M1Carbine"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1000,
+          "refs": [
+            {
+              "actor": "e1",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "e1r1",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "M60mg",
+      "weaponClass": 227,
+      "caliber": 1000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "mg",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.8,
+            0.4
+          ],
+          "widthM": 0.021,
+          "lifetimeSeconds": 0.075
+        },
+        "muzzle": {
+          "style": "star",
+          "scaleM": 0.16
+        },
+        "smoke": "faint",
+        "impact": "spark"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "M60mg"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1000,
+          "refs": [
+            {
+              "actor": "apc",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "jeep",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "MammothTusk",
+      "weaponClass": 14,
+      "caliber": 5000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.1,
+          "lifetimeSeconds": 0.27
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.4
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "light-grey",
+          "lengthM": 0.23,
+          "radiusM": 0.02,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "MammothTusk"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 5000,
+          "refs": [
+            {
+              "actor": "4tnk",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "MandibleHeavy",
+      "weaponClass": 134,
+      "caliber": 10000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "melee",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "MandibleHeavy"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 10000,
+          "refs": [
+            {
+              "actor": "warriorant",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Maverick",
+      "weaponClass": 216,
+      "caliber": 7000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.12,
+          "lifetimeSeconds": 0.29
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.46
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.56,
+          "radiusM": 0.024,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Maverick"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 7000,
+          "refs": [
+            {
+              "actor": "mig",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Nike",
+      "weaponClass": 2,
+      "caliber": 4500,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.095,
+          "lifetimeSeconds": 0.26
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.38
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.46,
+          "radiusM": 0.048,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Nike"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4500,
+          "refs": [
+            {
+              "actor": "sam",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "ParaBomb",
+      "weaponClass": 224,
+      "caliber": 30000,
+      "projectileClass": "lobbed",
+      "style": {
+        "family": "artillery",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            1,
+            0.38,
+            0.08
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "heavy-shell",
+        "projectile": {
+          "body": "bomb",
+          "material": "olive",
+          "lengthM": 0.32,
+          "radiusM": 0.038,
+          "exhaust": false,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "ParaBomb"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 30000,
+          "refs": [
+            {
+              "actor": "badr.bomber",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Pistol",
+      "weaponClass": 191,
+      "caliber": 100,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "bullet",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.68,
+            0.28
+          ],
+          "widthM": 0.012,
+          "lifetimeSeconds": 0.045
+        },
+        "muzzle": {
+          "style": "compact",
+          "scaleM": 0.07
+        },
+        "smoke": "faint",
+        "impact": "chip"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Pistol"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 100,
+          "refs": [
+            {
+              "actor": "c1",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "c1",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "c7",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "c7",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "gnrl",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "gnrl",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "tecn",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "tecn",
+              "armamentIndex": 1
+            },
+            {
+              "actor": "tecn2",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "tecn2",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "PortaTesla",
+      "weaponClass": 129,
+      "caliber": 4500,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "electric",
+        "tracer": {
+          "style": "arc",
+          "colorLinearRGB": [
+            0.38,
+            0.62,
+            1
+          ],
+          "widthM": 0.055,
+          "lifetimeSeconds": 0.09
+        },
+        "muzzle": {
+          "style": "arc",
+          "scaleM": 0.16
+        },
+        "smoke": "none",
+        "impact": "electrical"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "PortaTesla"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4500,
+          "refs": [
+            {
+              "actor": "shok",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "shok",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "RedEye",
+      "weaponClass": 218,
+      "caliber": 2400,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.022,
+          "lifetimeSeconds": 0.14
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.08
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.112,
+          "radiusM": 0.01,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.026,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "RedEye"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2400,
+          "refs": [
+            {
+              "actor": "e3",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e3",
+              "armamentIndex": 2
+            },
+            {
+              "actor": "e3r1",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e3r1",
+              "armamentIndex": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Repair",
+      "weaponClass": 21,
+      "caliber": 2000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "heal",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Repair"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": -2000,
+          "refs": [
+            {
+              "actor": "mech",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "SCUD",
+      "weaponClass": 82,
+      "caliber": 4500,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.18,
+          "lifetimeSeconds": 0.38
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.65
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "heavy-rocket",
+          "material": "olive",
+          "lengthM": 1.06,
+          "radiusM": 0.055,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.11,
+            "lifetimeS": 2,
+            "colorLinearRGB": [
+              0.48,
+              0.5,
+              0.48
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.03
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "SCUD"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 4500,
+          "refs": [
+            {
+              "actor": "v2rl",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "SilencedPPK",
+      "weaponClass": 248,
+      "caliber": 15000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "bullet",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.68,
+            0.28
+          ],
+          "widthM": 0.009,
+          "lifetimeSeconds": 0.03
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "chip"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "SilencedPPK"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 15000,
+          "refs": [
+            {
+              "actor": "spy",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "spy.england",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Stinger",
+      "weaponClass": 126,
+      "caliber": 2500,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.075,
+          "lifetimeSeconds": 0.23
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.3
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.28,
+          "radiusM": 0.025,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Stinger"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "dd",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "StingerAA",
+      "weaponClass": 58,
+      "caliber": 1650,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.06,
+          "lifetimeSeconds": 0.19
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.26
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.28,
+          "radiusM": 0.025,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "StingerAA"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1650,
+          "refs": [
+            {
+              "actor": "dd",
+              "armamentIndex": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "SubMissile",
+      "weaponClass": 207,
+      "caliber": 2500,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.15,
+          "lifetimeSeconds": 0.34
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.52
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "heavy-rocket",
+          "material": "olive",
+          "lengthM": 0.75,
+          "radiusM": 0.052,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.11,
+            "lifetimeS": 2,
+            "colorLinearRGB": [
+              0.48,
+              0.5,
+              0.48
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.03
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "SubMissile"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 2500,
+          "refs": [
+            {
+              "actor": "msub",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "SubMissileAA",
+      "weaponClass": 118,
+      "caliber": 450,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "rocket",
+        "tracer": {
+          "style": "exhaust",
+          "colorLinearRGB": [
+            1,
+            0.32,
+            0.055
+          ],
+          "widthM": 0.08,
+          "lifetimeSeconds": 0.23
+        },
+        "muzzle": {
+          "style": "exhaust",
+          "scaleM": 0.3
+        },
+        "smoke": "trail",
+        "impact": "blast",
+        "projectile": {
+          "body": "missile",
+          "material": "off-white",
+          "lengthM": 0.28,
+          "radiusM": 0.025,
+          "exhaust": true,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.5,
+            "colorLinearRGB": [
+              0.72,
+              0.74,
+              0.76
+            ],
+            "opacity": 0.42,
+            "turbulence": 0.016
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "SubMissileAA"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 450,
+          "refs": [
+            {
+              "actor": "msub",
+              "armamentIndex": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "TTankZap",
+      "weaponClass": 119,
+      "caliber": 10000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "electric",
+        "tracer": {
+          "style": "arc",
+          "colorLinearRGB": [
+            0.38,
+            0.62,
+            1
+          ],
+          "widthM": 0.09,
+          "lifetimeSeconds": 0.12
+        },
+        "muzzle": {
+          "style": "arc",
+          "scaleM": 0.26
+        },
+        "smoke": "none",
+        "impact": "electrical"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "TTankZap"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 10000,
+          "refs": [
+            {
+              "actor": "ttnk",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "TeslaZap",
+      "weaponClass": 3,
+      "caliber": 10000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "electric",
+        "tracer": {
+          "style": "arc",
+          "colorLinearRGB": [
+            0.38,
+            0.62,
+            1
+          ],
+          "widthM": 0.13,
+          "lifetimeSeconds": 0.15
+        },
+        "muzzle": {
+          "style": "arc",
+          "scaleM": 0.36
+        },
+        "smoke": "none",
+        "impact": "electrical"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "TeslaZap"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 10000,
+          "refs": [
+            {
+              "actor": "tsla",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "TorpTube",
+      "weaponClass": 207,
+      "caliber": 18000,
+      "projectileClass": "rocket",
+      "style": {
+        "family": "torpedo",
+        "tracer": {
+          "style": "wake",
+          "colorLinearRGB": [
+            0.32,
+            0.48,
+            0.56
+          ],
+          "widthM": 0.12,
+          "lifetimeSeconds": 0.35
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "water",
+        "projectile": {
+          "body": "torpedo",
+          "material": "light-grey",
+          "lengthM": 0.46,
+          "radiusM": 0.033,
+          "exhaust": false,
+          "trail": {
+            "widthM": 0.065,
+            "lifetimeS": 1.1,
+            "colorLinearRGB": [
+              0.42,
+              0.67,
+              0.68
+            ],
+            "opacity": 0.28,
+            "turbulence": 0.012
+          }
+        }
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "TorpTube"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 18000,
+          "refs": [
+            {
+              "actor": "ss",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "TurretGun",
+      "weaponClass": 235,
+      "caliber": 6000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "cannon",
+        "tracer": {
+          "style": "streak",
+          "colorLinearRGB": [
+            1,
+            0.52,
+            0.14
+          ],
+          "widthM": 0.088,
+          "lifetimeSeconds": 0.15
+        },
+        "muzzle": {
+          "style": "cone",
+          "scaleM": 0.72
+        },
+        "smoke": "puff",
+        "impact": "shell"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "TurretGun"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "gun",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "Vulcan",
+      "weaponClass": 191,
+      "caliber": 1000,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "mg",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.8,
+            0.4
+          ],
+          "widthM": 0.027,
+          "lifetimeSeconds": 0.055
+        },
+        "muzzle": {
+          "style": "star",
+          "scaleM": 0.2
+        },
+        "smoke": "faint",
+        "impact": "spark"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "Vulcan"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 1000,
+          "refs": [
+            {
+              "actor": "e1",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "e1r1",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "ZSU-23",
+      "weaponClass": 108,
+      "caliber": 900,
+      "projectileClass": "directFire",
+      "style": {
+        "family": "mg",
+        "tracer": {
+          "style": "line",
+          "colorLinearRGB": [
+            1,
+            0.8,
+            0.4
+          ],
+          "widthM": 0.037,
+          "lifetimeSeconds": 0.065
+        },
+        "muzzle": {
+          "style": "star",
+          "scaleM": 0.28
+        },
+        "smoke": "faint",
+        "impact": "spark"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "ZSU-23"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 900,
+          "refs": [
+            {
+              "actor": "agun",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "claw",
+      "weaponClass": 213,
+      "caliber": 3000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "melee",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "claw"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 3000,
+          "refs": [
+            {
+              "actor": "zombie",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "weapon": "mandible",
+      "weaponClass": 168,
+      "caliber": 6000,
+      "projectileClass": "ballistic",
+      "style": {
+        "family": "melee",
+        "tracer": {
+          "style": "none",
+          "colorLinearRGB": [
+            0,
+            0,
+            0
+          ],
+          "widthM": 0,
+          "lifetimeSeconds": 0
+        },
+        "muzzle": {
+          "style": "none",
+          "scaleM": 0
+        },
+        "smoke": "none",
+        "impact": "none"
+      },
+      "provenance": {
+        "authoring": {
+          "kind": "original",
+          "source": "web/tools/weaponvisual-forge.mjs",
+          "revision": 1,
+          "key": "mandible"
+        },
+        "authoritative": {
+          "source": "web/src/core/ra-visual-manifest.json",
+          "path": "actors[actor].slot.armaments[armamentIndex]",
+          "damage": 6000,
+          "refs": [
+            {
+              "actor": "ant",
+              "armamentIndex": 0
+            },
+            {
+              "actor": "scoutant",
+              "armamentIndex": 0
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

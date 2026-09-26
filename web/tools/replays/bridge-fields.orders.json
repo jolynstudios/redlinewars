@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "name": "bridge-fields",
+  "serverSeed": 104729,
+  "scenario": {
+    "generatorType": "seedline",
+    "optionId": "Preset",
+    "presetChoice": "amber-crossing",
+    "tileset": "STEELWORKS",
+    "botCount": 1,
+    "botType": "normal"
+  },
+  "requiredBuiltTypes": {
+    "altitude": ["foundry_bellows"]
+  },
+  "orders": [
+    {
+      "tick": 10,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_rivetworks",
+      "extraData": 1,
+      "phase": "build"
+    },
+    {
+      "tick": 20,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "Move",
+      "target": "map-centre",
+      "phase": "expand"
+    },
+    {
+      "tick": 30,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "AttackMove",
+      "target": "enemy-centroid",
+      "phase": "engage"
+    },
+    {
+      "tick": 160,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "Move",
+      "target": "near-spawn",
+      "phase": "defend"
+    },
+    {
+      "tick": 220,
+      "player": "human",
+      "order": "PlaceBuilding",
+      "targetString": "foundry_rivetworks",
+      "target": "near-spawn",
+      "footprint": [3, 2],
+      "phase": "build"
+    },
+    {
+      "tick": 230,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_trackyard",
+      "extraData": 1,
+      "phase": "build"
+    },
+    {
+      "tick": 470,
+      "player": "human",
+      "order": "PlaceBuilding",
+      "targetString": "foundry_trackyard",
+      "target": "near-spawn",
+      "footprint": [5, 2],
+      "phase": "build"
+    },
+    {
+      "tick": 480,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_forge",
+      "extraData": 1,
+      "phase": "build"
+    },
+    {
+      "tick": 770,
+      "player": "human",
+      "order": "PlaceBuilding",
+      "targetString": "foundry_forge",
+      "target": "near-spawn",
+      "footprint": [2, 4],
+      "phase": "defend"
+    },
+    {
+      "tick": 780,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_skyhook",
+      "extraData": 1,
+      "phase": "defend"
+    },
+    {
+      "tick": 1040,
+      "player": "human",
+      "order": "PlaceBuilding",
+      "targetString": "foundry_skyhook",
+      "target": "near-spawn",
+      "footprint": [3, 3],
+      "phase": "win"
+    },
+    {
+      "tick": 1050,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_bellows",
+      "extraData": 1,
+      "phase": "win"
+    }
+  ]
+}

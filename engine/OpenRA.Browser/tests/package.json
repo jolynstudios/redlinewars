@@ -1,0 +1,9 @@
+{
+	"name": "openra-browser-tests",
+	"private": true,
+	"type": "module",
+	"devDependencies": {
+		"@playwright/test": "^1.45.0",
+		"pngjs": "^7.0.0"
+	}
+}

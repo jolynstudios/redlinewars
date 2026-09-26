@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "name": "fixed-skirmish",
+  "serverSeed": 104729,
+  "scenario": {
+    "generatorType": "seedline",
+    "optionId": "Preset",
+    "presetChoice": "amber-crossing",
+    "tileset": "STEELWORKS",
+    "botCount": 1,
+    "botType": "normal"
+  },
+  "orders": [
+    {
+      "tick": 10,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_rivetworks",
+      "extraData": 1,
+      "phase": "build"
+    },
+    {
+      "tick": 220,
+      "player": "human",
+      "order": "PlaceBuilding",
+      "targetString": "foundry_rivetworks",
+      "target": "near-spawn",
+      "footprint": [3, 2],
+      "phase": "build"
+    },
+    {
+      "tick": 230,
+      "player": "human",
+      "order": "StartProduction",
+      "targetString": "foundry_rivet",
+      "extraData": 8,
+      "phase": "build"
+    },
+    {
+      "tick": 850,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "Move",
+      "target": "map-centre",
+      "phase": "expand"
+    },
+    {
+      "tick": 860,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "AttackMove",
+      "target": "enemy-centroid",
+      "phase": "engage"
+    },
+    {
+      "tick": 870,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "AttackMove",
+      "target": "near-spawn",
+      "phase": "defend"
+    },
+    {
+      "tick": 880,
+      "player": "human",
+      "subjects": "mobile-combatants",
+      "subjectTypes": ["foundry_rivet", "foundry_tread"],
+      "order": "Attack",
+      "target": "enemy-command",
+      "targetTypes": ["foundry_crucible", "lattice_nexus"],
+      "phase": "win"
+    }
+  ]
+}

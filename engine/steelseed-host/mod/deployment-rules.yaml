@@ -1,0 +1,35 @@
+# Steelseed-only yard completion conditions; upstream RA rules remain untouched.
+FACT:
+	Production:
+		RequiresCondition: !build-incomplete
+	BaseProvider:
+		PauseOnCondition: being-captured || build-incomplete
+	ProvidesPrerequisite@allies:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@alliesvanilla:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@england:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@france:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@germany:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@soviet:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@sovietvanilla:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@russia:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@ukraine:
+		RequiresCondition: !build-incomplete
+	ProvidesPrerequisite@buildingname:
+		RequiresCondition: !build-incomplete
+
+# Steelseed-only radar reach (owner, 2026-09-25: "the radar doesn't really reveal the map"):
+# the powered dome's outer ring reaches 16 cells instead of 10, and 8 instead of 5 on low
+# power. The inner 6-cell GAPGEN ring and ProvidesRadar stay as upstream.
+DOME:
+	RevealsShroud:
+		Range: 16c0
+	RevealsShroud@Offline:
+		Range: 8c0

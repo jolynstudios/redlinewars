@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Redline Wars</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>
+	// Before the first paint: a cold start (intro=1) runs the intro once; a reload of the same
+	// window (devtools) and every rebuilt landing (back to the menu) go straight to the console.
+	(() => {
+		const q = new URLSearchParams(location.search)
+		let seen = false
+		try { seen = sessionStorage.getItem('redline-intro') === '1'; sessionStorage.setItem('redline-intro', '1') } catch {}
+		const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+		document.documentElement.dataset.motion = reduced ? 'reduced' : 'full'
+		document.documentElement.dataset.intro = q.get('intro') === '1' && !seen ? 'run' : 'done'
+	})()
+</script>
+<style id="shell-tokens">
+	@font-face { font-family: 'Archivo'; src: url('fonts/archivo-latin-standard-normal.woff2') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; font-display: block; }
+	@font-face { font-family: 'Martian Mono'; src: url('fonts/martian-mono-latin-standard-normal.woff2') format('woff2'); font-weight: 100 800; font-stretch: 75% 112.5%; font-display: block; }
+	/* The game's pre-match tokens (web/index.html :root), so the shell and the console match. */
+	:root {
+		color-scheme: dark;
+		--void: #090D11; --panel-solid: #10161B; --char: #151D24; --char-2: #1A2229;
+		--line: rgba(236, 231, 222, .13); --line-2: rgba(236, 231, 222, .26); --line-3: rgba(236, 231, 222, .5);
+		--ink: #E9E5DB; --ink-2: #A8B2BA; --brand: #C93630; --brand-hover: #AE2E29; --brand-ink: #FFF5E8;
+		--active: #7DB9C8; --warning: #D9AE61; --critical: #FF6B63; --healthy: #87BC91; --ice-tint: rgba(125, 185, 200, .14);
+		--spark-a: #FFD27A; --spark-b: #E57A2B;
+		--font-display: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+		--font-mono: 'Martian Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+		--ease-out: cubic-bezier(.16, 1, .3, 1); --ease-in-out: cubic-bezier(.65, 0, .35, 1); --ease-exit: cubic-bezier(.4, 0, 1, 1);
+		--t-tap: 100ms; --t-ui: 180ms; --t-panel: 240ms;
+	}
+	* { box-sizing: border-box; margin: 0; padding: 0; }
+	[hidden] { display: none !important; }
+	html, body { height: 100%; }
+	body { overflow: hidden; background: var(--void); color: var(--ink); font: 400 15px/1.5 var(--font-display); -webkit-font-smoothing: antialiased; }
+	button { font: inherit; color: inherit; }
+	.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+	:focus-visible { outline: 2px solid var(--active); outline-offset: 3px; }
+</style>
+<style id="shell-console">
+	/* ---- battlefield backdrop: stills crossfade under a deep shade and the blueprint grid ---- */
+	.backdrop { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+	.backdrop .bg { position: absolute; inset: -2%; background: center / cover no-repeat; opacity: 0; animation: bg-cycle 32s linear infinite; }
+	.backdrop .bg:nth-child(1) { background-image: url('bg-day-grass.webp'); }
+	.backdrop .bg:nth-child(2) { background-image: url('hero-night.webp'); animation-delay: 8s; }
+	.backdrop .bg:nth-child(3) { background-image: url('bg-night-1.webp'); animation-delay: 16s; }
+	.backdrop .bg:nth-child(4) { background-image: url('bg-night-2.webp'); animation-delay: 24s; }
+	@keyframes bg-cycle { 0% { opacity: 0; transform: scale(1.05); } 6% { opacity: .5; } 25% { opacity: .5; } 31% { opacity: 0; transform: scale(1); } 100% { opacity: 0; } }
+	.backdrop__shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(9, 13, 17, .97) 0%, rgba(9, 13, 17, .86) 44%, rgba(9, 13, 17, .6) 100%), linear-gradient(0deg, rgba(9, 13, 17, .92), transparent 42%); }
+	.grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(236, 231, 222, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(236, 231, 222, .045) 1px, transparent 1px), linear-gradient(rgba(236, 231, 222, .02) 1px, transparent 1px), linear-gradient(90deg, rgba(236, 231, 222, .02) 1px, transparent 1px); background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px; -webkit-mask-image: radial-gradient(ellipse at 42% 46%, #000 25%, transparent 82%); mask-image: radial-gradient(ellipse at 42% 46%, #000 25%, transparent 82%); }
+
+	/* ---- the console ---- */
+	.app { position: relative; z-index: 1; display: grid; grid-template-rows: 64px minmax(0, 1fr) auto; height: 100%; }
+	.cmdbar { display: flex; align-items: center; gap: 16px; padding: 0 32px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, rgba(9, 13, 17, .92), rgba(9, 13, 17, .7)); }
+	.cmdbar__mark { display: block; width: auto; height: 26px; }
+	.cmdbar__sub { padding-left: 16px; border-left: 1px solid var(--line-2); color: var(--ink-2); font: 600 11px/1 var(--font-mono); letter-spacing: .24em; text-transform: uppercase; white-space: nowrap; }
+	.cmdbar__tools { display: flex; gap: 10px; margin-left: auto; }
+	.tool { display: inline-flex; align-items: center; gap: 9px; height: 36px; padding: 0 14px; border: 1px solid var(--line-2); border-radius: 2px; background: rgba(9, 13, 17, .4); color: var(--ink); cursor: pointer; font: 600 11px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; transition: border-color var(--t-ui), background-color var(--t-ui); }
+	.tool:hover { border-color: var(--active); background: var(--ice-tint); }
+	.sound__bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+	.sound__bars i { display: block; width: 2px; height: 100%; background: currentColor; transform-origin: bottom; transform: scaleY(.35); }
+	.tool[aria-pressed="true"] .sound__bars i { animation: eq 1.1s var(--ease-in-out) infinite alternate; }
+	.tool[aria-pressed="true"] .sound__bars i:nth-child(2) { animation-delay: -.4s; }
+	.tool[aria-pressed="true"] .sound__bars i:nth-child(3) { animation-delay: -.7s; }
+	.tool[aria-pressed="true"] .sound__bars i:nth-child(4) { animation-delay: -.2s; }
+	@keyframes eq { from { transform: scaleY(.3); } to { transform: scaleY(1); } }
+
+	.stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, 450px); align-items: center; gap: 56px; min-height: 0; padding: 36px 56px 32px; overflow-y: auto; }
+	.hero__eyebrow { color: var(--active); font: 600 11px/1 var(--font-mono); letter-spacing: .24em; text-transform: uppercase; }
+	.hero__wordmark { display: block; width: auto; height: clamp(76px, 10.4vh, 112px); margin-top: 20px; }
+	.hero__sub { margin-top: 18px; color: var(--ink-2); font: 500 13px/1 var(--font-mono); letter-spacing: .5em; text-transform: uppercase; }
+	.hero__lead { max-width: 36ch; margin-top: 30px; padding-left: 16px; border-left: 2px solid var(--brand); color: var(--ink-2); font: 400 17px/1.6 var(--font-display); }
+	.hero__lead strong { color: var(--ink); font-weight: 600; }
+	.hero__lead em { color: #E36A62; font-style: normal; }
+	.hero__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 38px; }
+	#start-caption { color: var(--ink-2); font: 500 11px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+	#start-caption::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--warning); vertical-align: 1px; }
+	#start-caption[data-ready="true"] { color: var(--ink); }
+	#start-caption[data-ready="true"]::before { background: var(--healthy); box-shadow: 0 0 0 3px rgba(135, 188, 145, .18); }
+
+	/* the game's notched primary button (web/index.html rw-setup), unchanged */
+	.btn { --h: 50px; position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: var(--h); padding: 0 24px; border: 1px solid transparent; border-radius: 2px; background: none; color: var(--ink); cursor: pointer; font: 600 12px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; transition: color var(--t-ui), transform var(--t-tap); }
+	.btn:active { transform: translateY(1px); }
+	.btn:disabled { opacity: .45; cursor: not-allowed; }
+	.btn--quiet { padding-inline: 6px; color: var(--ink-2); }
+	.btn--quiet:hover:not(:disabled) { color: var(--ink); }
+	.btn--primary { --button-face: var(--brand); color: var(--brand-ink); }
+	.btn--primary::before, .btn--primary::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: var(--button-face); transition: background-color var(--t-ui); }
+	.btn--primary::before { clip-path: polygon(12px 0, 100% 0, 100% 78%, 10% 78%, 10% 100%, 0 100%, 0 12px); }
+	.btn--primary::after { clip-path: polygon(43% calc(78% - 5px), calc(100% - 12px) calc(78% - 5px), 100% 78%, calc(100% - 12px) 100%, 50% 100%); }
+	.btn--primary:is(:hover, :focus-visible):not(:disabled)::after { animation: button-slide 430ms ease-out both; }
+	@keyframes button-slide { 0%, 12%, 82%, 100% { transform: translateX(0); } 48%, 58% { transform: translateX(-30%); } }
+	.btn--primary:hover:not(:disabled) { --button-face: var(--brand-hover); }
+	.btn__arrow { transition: transform .25s var(--ease-out); }
+	.btn--primary:hover:not(:disabled) .btn__arrow { transform: translateX(4px); }
+	.btn--launch { --h: 60px; min-width: 300px; padding: 0 32px; font-size: 13px; letter-spacing: .2em; }
+	.btn--launch:hover:not(:disabled) { filter: drop-shadow(0 0 18px rgba(201, 54, 48, .38)); }
+
+	/* modules: chamfered plates with an index and a title */
+	.console { display: grid; gap: 16px; align-content: center; }
+	.module { position: relative; isolation: isolate; }
+	.module::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(26, 34, 41, .9), rgba(16, 22, 27, .92)); border: 1px solid var(--line-2); clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); }
+	.module__head { display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 0 18px; border-bottom: 1px solid var(--line); }
+	.module__index { color: var(--ink-2); font: 500 11px/1 var(--font-mono); letter-spacing: .12em; }
+	.module__title { color: var(--ink); font: 600 12px/1 var(--font-mono); letter-spacing: .22em; text-transform: uppercase; }
+	.module__aside { margin-left: auto; }
+	.module__body { display: grid; gap: 14px; padding: 18px; }
+
+	.loader__track { position: relative; height: 3px; overflow: hidden; background: rgba(236, 231, 222, .1); }
+	.loader__fill { position: absolute; inset: 0; background: var(--brand); box-shadow: 0 0 12px rgba(201, 54, 48, .5); transform: scaleX(0); transform-origin: left; transition: transform 480ms var(--ease-out); }
+	.loader[data-state="klaar"] .loader__fill { background: var(--healthy); box-shadow: none; }
+	.loader[data-state="fout"] .loader__fill { background: var(--critical); }
+	.loader__row { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-top: 10px; }
+	#loader-text { color: var(--ink-2); font: 400 13.5px/1.4 var(--font-display); }
+	#loader-pct { color: var(--ink); font: 600 12px/1 var(--font-mono); font-variant-numeric: tabular-nums; }
+	.kv { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+	.kv dt { color: var(--ink-2); font: 600 10.5px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
+	.kv dd { color: var(--ink); font: 500 14px/1.3 var(--font-display); }
+	/* Alpha notice: amber tag, one plain sentence, the issue tracker one click away. */
+	.alpha-note { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--ink-2); font: 400 13px/1.45 var(--font-display); }
+	.alpha-note__tag { flex: none; align-self: center; display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border: 1px solid color-mix(in srgb, var(--warning) 55%, transparent); color: var(--warning); font: 600 10.5px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
+	.alpha-note .linkbtn { font-size: 13px; }
+
+	.seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: 2px; }
+	.seg button { height: 30px; padding: 0 12px; border: 0; background: none; color: var(--ink-2); cursor: pointer; font: 600 10.5px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; transition: color var(--t-ui), background-color var(--t-ui); }
+	.seg button:hover:not(:disabled) { color: var(--ink); }
+	.seg button[aria-checked="true"] { background: var(--ice-tint); color: var(--ink); box-shadow: inset 0 0 0 1px var(--active); }
+	.seg button:disabled { cursor: wait; }
+
+	.action { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 16px; border: 1px solid var(--line-2); background: rgba(9, 13, 17, .38); color: var(--ink); cursor: pointer; text-align: left; transition: border-color var(--t-ui), background-color var(--t-ui); }
+	.action:hover { border-color: var(--active); background: var(--ice-tint); }
+	.action__text { display: grid; gap: 3px; }
+	.action__title { font: 500 16px/1.25 var(--font-display); }
+	.action__desc { color: var(--ink-2); font: 400 12.5px/1.45 var(--font-display); }
+	.action__arrow { margin-left: auto; color: var(--active); font: 600 14px/1 var(--font-mono); transition: transform var(--t-ui) var(--ease-out); }
+	.action:hover .action__arrow { transform: translateX(4px); }
+
+	.divider { display: flex; align-items: center; gap: 12px; color: var(--ink-2); font: 600 10.5px/1 var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
+	.divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+	.donate { display: grid; gap: 10px; }
+	.donate__head { display: flex; align-items: center; gap: 12px; }
+	.donate__title { font: 500 15px/1.3 var(--font-display); }
+	.donate__desc { color: var(--ink-2); font: 400 12.5px/1.5 var(--font-display); }
+	.donate__row { display: flex; align-items: center; gap: 12px; }
+	.donate__label { color: var(--ink-2); font: 600 10.5px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
+	#donate-status { color: var(--ink-2); font: 400 13px/1.45 var(--font-display); }
+	#donate-status::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--ink-2); vertical-align: 1px; }
+	#donate-status[data-tone="ok"]::before { background: var(--healthy); box-shadow: 0 0 0 3px rgba(135, 188, 145, .18); }
+	#donate-status[data-tone="warn"]::before { background: var(--warning); }
+	#donate-status[data-tone="bad"]::before { background: var(--critical); }
+	.linkbtn { justify-self: start; padding: 0; border: 0; background: none; color: var(--active); cursor: pointer; font: 500 12.5px/1.4 var(--font-display); text-decoration: underline; text-underline-offset: 3px; }
+	.switch { position: relative; display: inline-flex; margin-left: auto; cursor: pointer; }
+	.switch input { position: absolute; inset: 0; z-index: 1; margin: 0; opacity: 0; cursor: pointer; }
+	.switch__track { position: relative; width: 44px; height: 24px; border: 1px solid var(--line-3); border-radius: 12px; background: rgba(9, 13, 17, .5); transition: background-color var(--t-ui), border-color var(--t-ui); }
+	.switch__thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink-2); transition: transform var(--t-ui) var(--ease-out), background-color var(--t-ui); }
+	.switch input:checked + .switch__track { border-color: var(--healthy); background: rgba(135, 188, 145, .18); }
+	.switch input:checked + .switch__track .switch__thumb { background: var(--healthy); transform: translateX(20px); }
+	.switch input:focus-visible + .switch__track { outline: 2px solid var(--active); outline-offset: 2px; }
+	.switch input:disabled + .switch__track { opacity: .5; }
+	#mp-module[data-mp="off"] #mp-on-body, #mp-module[data-mp="on"] #mp-off-body { display: none; }
+	#mp-off-body p { color: var(--ink-2); font: 400 13.5px/1.55 var(--font-display); }
+
+	.legalbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 14px 32px; border-top: 1px solid var(--line); background: rgba(9, 13, 17, .82); color: var(--ink-2); font: 400 12px/1.5 var(--font-display); }
+	.legalbar__studio { display: inline-flex; align-items: center; gap: 12px; }
+	.legalbar__mark { display: block; width: auto; height: 30px; }
+	.legalbar__build { font: 500 10.5px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+	.legalbar .linkbtn { color: var(--ink-2); font-size: 12px; }
+	.legalbar .linkbtn:hover { color: var(--ink); }
+
+	/* ---- sheets and dialogs ---- */
+	.sheet { position: fixed; inset: 0; z-index: 40; display: flex; justify-content: flex-end; background: rgba(4, 6, 9, .68); }
+	.sheet__panel { position: relative; isolation: isolate; display: grid; grid-template-rows: auto minmax(0, 1fr); width: min(560px, 100%); height: 100%; border-left: 1px solid var(--line-2); background: var(--panel-solid); animation: sheet-in 320ms var(--ease-out) both; }
+	@keyframes sheet-in { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+	.sheet__head { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 0 22px; border-bottom: 1px solid var(--line); }
+	.sheet__body { display: grid; align-content: start; gap: 14px; padding: 22px; overflow-y: auto; }
+	.sheet__body p { color: var(--ink-2); font: 400 13.5px/1.6 var(--font-display); }
+	.sheet__body p strong { color: var(--ink); font-weight: 600; }
+	.sheet__label { margin-top: 6px; color: var(--active); font: 600 10.5px/1 var(--font-mono); letter-spacing: .2em; text-transform: uppercase; }
+	.legal-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+	.legal-buttons button { height: 32px; padding: 0 12px; border: 1px solid var(--line-2); border-radius: 2px; background: none; color: var(--ink); cursor: pointer; font: 600 10.5px/1 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; }
+	.legal-buttons button:hover { border-color: var(--active); background: var(--ice-tint); }
+	#legal-view { max-height: 42vh; overflow: auto; padding: 14px; border: 1px solid var(--line); background: var(--void); color: var(--ink-2); font: 400 11.5px/1.55 var(--font-mono); white-space: pre-wrap; }
+	.icon-btn { display: grid; place-items: center; width: 36px; height: 36px; margin-left: auto; border: 1px solid var(--line-2); border-radius: 2px; background: none; color: var(--ink); cursor: pointer; font: 400 20px/1 var(--font-display); }
+	.dialog { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(4, 6, 9, .78); }
+	.dialog__panel { position: relative; isolation: isolate; display: grid; gap: 12px; width: min(460px, 100%); padding: 28px; animation: dialog-in 280ms var(--ease-out) both; }
+	.dialog__panel::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--panel-solid); border: 1px solid var(--line-2); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+	@keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(.985); } to { opacity: 1; transform: none; } }
+	.dialog__eyebrow { color: var(--warning); font: 600 11px/1 var(--font-mono); letter-spacing: .22em; text-transform: uppercase; }
+	.dialog__title { color: var(--ink); font: 340 28px/1.15 var(--font-display); font-stretch: 118%; }
+	.dialog p { color: var(--ink-2); font: 400 14px/1.55 var(--font-display); }
+	#update-builds { color: var(--ink-2); font: 500 11.5px/1.4 var(--font-mono); }
+	.dialog__actions { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 8px; }
+
+	/* the console enters after the intro hands over */
+	html[data-intro="handoff"] [data-enter], html[data-intro="skip"] [data-enter] { animation: enter 420ms var(--ease-out) both; animation-delay: calc(var(--i, 0) * 45ms + 120ms); }
+	html[data-intro="skip"] [data-enter] { animation-duration: 200ms; animation-delay: 0ms; }
+	@keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+	html[data-intro="run"] .hero__wordmark, html[data-intro="studio"] .hero__wordmark, html[data-intro="title"] .hero__wordmark, html[data-intro="handoff"] .hero__wordmark { opacity: 0; }
+
+	@media (max-height: 800px) {
+		.action { min-height: 54px; padding: 9px 14px; }
+		.donate__desc { display: none; }
+		.console { gap: 12px; }
+		.module__head { min-height: 44px; }
+		.stage { padding-top: 24px; padding-bottom: 20px; }
+		.hero__lead { margin-top: 20px; font-size: 15.5px; }
+		.hero__cta { margin-top: 26px; }
+		.module__body { gap: 12px; padding: 14px 18px; }
+	}
+	@media (max-width: 1180px) {
+		.stage { grid-template-columns: minmax(0, 1fr) minmax(360px, 420px); gap: 36px; padding-inline: 36px; }
+		.cmdbar__sub { display: none; }
+	}
+</style>
+<style id="shell-intro">
+	/* ---- intro: studio card, title card, hand-off (transform and opacity only) ---- */
+	.intro { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow: hidden; cursor: default; }
+	.intro__bg { position: absolute; inset: 0; background: var(--void); transition: opacity 480ms var(--ease-exit); }
+	.intro .grid { opacity: .7; }
+	.intro__card { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; justify-items: center; gap: 26px; opacity: 0; pointer-events: none; }
+	.intro__lockup { display: block; width: auto; height: 150px; overflow: visible; }
+	.intro__j, .intro__spark, .intro__jolyn, .intro__studios, .intro__bloom { transform-box: fill-box; transform-origin: center; opacity: 0; }
+	.intro__bloom { fill: url(#bloom); }
+	.intro__wordmark { display: block; width: auto; height: 138px; opacity: 0; transform-origin: center; }
+	.intro__glint { position: absolute; top: 0; left: 0; width: 18%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255, 245, 232, .5), transparent); mix-blend-mode: overlay; opacity: 0; transform: translateX(-120%); }
+	.intro__plate { position: relative; overflow: hidden; transform-origin: center; }
+	.intro__sub { color: var(--ink-2); font: 500 14px/1 var(--font-mono); letter-spacing: .6em; padding-left: .6em; text-transform: uppercase; opacity: 0; }
+	.intro__boot { position: absolute; left: 50%; bottom: 76px; width: min(420px, 60vw); transform: translateX(-50%); opacity: 0; }
+	.intro__track { position: relative; height: 2px; overflow: hidden; background: rgba(236, 231, 222, .12); }
+	.intro__fill { position: absolute; inset: 0; background: var(--brand); box-shadow: 0 0 10px rgba(201, 54, 48, .6); transform: scaleX(0); transform-origin: left; transition: transform 480ms var(--ease-out); }
+	.intro__read { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; color: var(--ink-2); font: 500 10.5px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; }
+	.intro__read #intro-pct { color: var(--ink); font-variant-numeric: tabular-nums; }
+	.intro__credit { position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%); color: rgba(168, 178, 186, .72); font: 500 10px/1 var(--font-mono); letter-spacing: .22em; text-transform: uppercase; white-space: nowrap; opacity: 0; }
+	.intro__skip { position: absolute; right: 30px; bottom: 30px; color: rgba(168, 178, 186, .55); font: 500 10px/1 var(--font-mono); letter-spacing: .18em; text-transform: uppercase; opacity: 0; }
+
+	html[data-intro="studio"] .intro__card--studio { opacity: 1; }
+	html[data-intro="studio"] .intro__j { animation: j-in 620ms var(--ease-out) 120ms both; }
+	html[data-intro="studio"] .intro__spark { animation: spark-in 760ms var(--ease-out) 520ms both; }
+	html[data-intro="studio"] .intro__bloom { animation: bloom 1400ms var(--ease-out) 560ms both; }
+	html[data-intro="studio"] .intro__jolyn { animation: word-in 560ms var(--ease-out) 700ms both; }
+	html[data-intro="studio"] .intro__studios { animation: word-in 560ms var(--ease-out) 820ms both; }
+	html[data-intro="studio"] .intro__boot, html[data-intro="title"] .intro__boot { animation: fade-in 520ms var(--ease-out) 360ms both; }
+	html[data-intro="studio"] .intro__credit, html[data-intro="title"] .intro__credit { animation: fade-in 400ms var(--ease-out) 540ms both; }
+	html[data-intro="studio"] .intro__skip, html[data-intro="title"] .intro__skip { animation: skip-in 400ms var(--ease-out) 900ms both; }
+	@keyframes j-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+	@keyframes spark-in { 0% { opacity: 0; transform: scale(.2) rotate(-45deg); } 55% { opacity: 1; transform: scale(1.28) rotate(6deg); } 100% { opacity: 1; transform: none; } }
+	@keyframes bloom { 0% { opacity: 0; transform: scale(.4); } 30% { opacity: .9; } 100% { opacity: .35; transform: scale(1); } }
+	@keyframes word-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+	@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+	@keyframes skip-in { from { opacity: 0; } to { opacity: 1; } }
+
+	html[data-intro="title"] .intro__card--studio { animation: card-out 280ms var(--ease-exit) both; }
+	html[data-intro="title"] .intro__card--studio .intro__j, html[data-intro="title"] .intro__card--studio .intro__spark, html[data-intro="title"] .intro__card--studio .intro__jolyn, html[data-intro="title"] .intro__card--studio .intro__studios { opacity: 1; }
+	html[data-intro="title"] .intro__card--title { opacity: 1; }
+	html[data-intro="title"] .intro__wordmark { animation: title-in 700ms var(--ease-out) 260ms both; }
+	html[data-intro="title"] .intro__glint { animation: glint 900ms var(--ease-in-out) 760ms both; }
+	html[data-intro="title"] .intro__sub { animation: word-in 560ms var(--ease-out) 620ms both; }
+	@keyframes card-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-6px); } }
+	@keyframes title-in { from { opacity: 0; transform: scale(.975); } to { opacity: 1; transform: none; } }
+	@keyframes glint { 0% { opacity: 0; transform: translateX(-120%); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateX(640%); } }
+
+	/* hand-off: the title's wordmark flies into the landing's hero; everything else fades */
+	html[data-intro="handoff"] .intro { pointer-events: none; }
+	html[data-intro="handoff"] .intro__bg, html[data-intro="handoff"] .intro .grid { opacity: 0; }
+	html[data-intro="handoff"] .intro__card--title { opacity: 1; }
+	html[data-intro="handoff"] .intro__wordmark { opacity: 1; }
+	html[data-intro="handoff"] .intro__plate { transform: translate(var(--hx, 0), var(--hy, 0)) scale(var(--hs, 1)); transition: transform 560ms var(--ease-in-out); }
+	html[data-intro="handoff"] .intro__sub, html[data-intro="handoff"] .intro__boot, html[data-intro="handoff"] .intro__credit, html[data-intro="handoff"] .intro__skip { opacity: 0; transition: opacity 240ms var(--ease-exit); }
+	html[data-intro="handoff"] .intro--fade .intro__plate { transform: none; opacity: 0; transition: opacity 400ms var(--ease-exit); }
+	html[data-intro="skip"] .intro { opacity: 0; transition: opacity 180ms var(--ease-exit); pointer-events: none; }
+
+	/* reduced motion: two plain fades, no flight, no loops */
+	@media (prefers-reduced-motion: reduce) {
+		.intro *, .intro__card { animation-duration: 120ms !important; animation-delay: 0ms !important; }
+		html[data-intro] .intro__plate { transition: none !important; transform: none !important; }
+		html[data-intro="handoff"] .intro { opacity: 0; transition: opacity 120ms linear; }
+		.backdrop .bg { animation: none; }
+		.backdrop .bg:nth-child(2) { opacity: .5; }
+		.tool[aria-pressed="true"] .sound__bars i { animation: none; transform: scaleY(.8); }
+		html[data-intro] [data-enter] { animation-duration: 120ms !important; animation-delay: 0ms !important; }
+		.btn--primary::after, .sheet__panel, .dialog__panel { animation: none !important; }
+	}
+	html[data-motion="reduced"] .intro *, html[data-motion="reduced"] .intro__card { animation-duration: 120ms !important; animation-delay: 0ms !important; }
+	html[data-motion="reduced"] .intro__plate { transition: none !important; transform: none !important; }
+	html[data-motion="reduced"] .backdrop .bg { animation: none; }
+	html[data-motion="reduced"] .backdrop .bg:nth-child(2) { opacity: .5; }
+</style>
+</head>
+<body>
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+		<defs>
+			<!-- Logos from brand/ (pure paths): the Redline Wars wordmark and R mark and the Jolyn
+			     Studios lockup, whose spark j is the J of JOLYN. -->
+			<symbol id="rw-wordmark" viewBox="44 58 1364 284"><path fill="#C93630" d="M52.34,127.93v206.17h85.66v-53.11h288.1l53.11,53.11h379.77l59.07-59.07V65.9H114.39l-62.04,62.02Z"/><path fill="#FFFFFF" d="M744.05,171.84h64.22v12.42h-48.42v12.33h42.85v12.24h-42.85v13.25h49.15v12.52h-64.96v-62.76ZM626.93,171.84h14.43l33.71,31.43c.67.61,1.52,1.45,2.56,2.51,1.04,1.07,2.09,2.15,3.15,3.24,1.06,1.1,1.99,2.07,2.79,2.92h.73c0-1.22-.03-2.74-.09-4.57-.06-1.83-.09-3.35-.09-4.57v-30.97h14.98v62.76h-14.25l-33.35-31.43c-1.58-1.52-3.23-3.17-4.93-4.93-1.71-1.77-3.08-3.2-4.11-4.29h-.73c.06.85.12,2.21.18,4.07.06,1.86.09,3.97.09,6.35v30.24h-15.07v-62.76ZM566.18,171.84h15.71v62.76h-15.71v-62.76ZM471.35,171.84h15.71v49.42h40.11v13.34h-55.82v-62.76ZM357.88,171.84h34.17c7.67,0,14.28,1.2,19.82,3.61,5.54,2.41,9.81,5.94,12.79,10.6,2.98,4.66,4.48,10.4,4.48,17.22s-1.49,12.47-4.48,17.13c-2.98,4.66-7.25,8.19-12.79,10.6-5.54,2.41-12.15,3.61-19.82,3.61h-34.17v-62.76ZM250.72,171.84h64.22v12.42h-48.42v12.33h42.85v12.24h-42.85v13.25h49.15v12.52h-64.96v-62.76ZM138.08,171.84h50.79c4.45,0,8.13.91,11.05,2.74,2.92,1.83,5.1,4.25,6.53,7.26,1.43,3.02,2.15,6.32,2.15,9.91,0,3.78-.96,7.29-2.88,10.55-1.92,3.26-4.83,5.83-8.72,7.72l13.06,24.58h-17.72l-11.05-21.83h-27.5v21.83h-15.71v-62.76Z"/><path fill="#C93630" d="M406.72,217.57c1.92-1.49,3.43-3.35,4.52-5.57,1.1-2.22,1.64-4.8,1.64-7.72v-2.19c0-2.86-.55-5.4-1.64-7.63-1.1-2.22-2.6-4.08-4.52-5.57-1.92-1.49-4.2-2.63-6.85-3.43-2.65-.79-5.56-1.19-8.72-1.19h-17.54v37.82h17.54c3.17,0,6.08-.38,8.72-1.14,2.65-.76,4.93-1.89,6.85-3.38Z"/><path fill="#C93630" d="M190.24,198.11c1.46-1.55,2.19-3.55,2.19-5.98,0-1.64-.32-3.06-.96-4.25s-1.58-2.07-2.83-2.65c-1.25-.58-2.76-.87-4.52-.87h-30.33v16.08h30.33c2.62,0,4.66-.78,6.12-2.33Z"/><path fill="#C93630" d="M1074.46,209.48c-.18.61-.38,1.29-.59,2.05-.21.76-.44,1.58-.69,2.47-.24.88-.47,1.74-.68,2.56-.21.82-.41,1.57-.59,2.24h-.55c-.12-.91-.3-1.96-.55-3.15-.24-1.19-.5-2.33-.78-3.43s-.53-2.01-.78-2.74l-10.78-37.64h-20.92l-10.69,37.64c-.12.49-.29,1.11-.5,1.87-.21.76-.41,1.58-.59,2.47-.18.88-.37,1.77-.55,2.65-.18.88-.33,1.66-.46,2.33h-.64c-.12-.85-.34-1.84-.64-2.97-.31-1.13-.59-2.27-.87-3.43-.27-1.16-.56-2.13-.87-2.92l-11.51-37.64h-16.72l20.56,62.76h19.55l11.33-39.83c.24-.73.5-1.64.78-2.74.27-1.1.55-2.21.82-3.33.27-1.13.5-2.12.69-2.97h.46c.12.79.29,1.71.5,2.74.21,1.04.47,2.12.78,3.24.3,1.13.58,2.15.82,3.06l11.69,39.83h19l20.74-62.76h-15.17l-11.6,37.64Z M1146.81,171.84l-31.34,62.76h16.26l5.39-11.33h35.9l5.39,11.33h17.17l-31.15-62.76h-17.63ZM1142.98,211.12l6.67-14.25c.43-.85.94-2,1.55-3.43.61-1.43,1.23-2.91,1.87-4.43.64-1.52,1.2-2.86,1.69-4.02h.73c.12.24.4.85.82,1.83.43.97.91,2.13,1.46,3.47.55,1.34,1.08,2.59,1.6,3.75.52,1.16.9,2.07,1.14,2.74l6.67,14.34h-24.21Z M1292.57,202.31c1.92-3.26,2.88-6.78,2.88-10.55s-.72-6.9-2.15-9.91c-1.43-3.01-3.61-5.44-6.53-7.26-2.92-1.83-6.61-2.74-11.05-2.74h-50.79v62.76h15.71v-21.83h27.5l11.05,21.83h17.72l-13.06-24.58c3.9-1.89,6.81-4.46,8.72-7.72ZM1277.09,198.11c-1.46,1.55-3.5,2.33-6.12,2.33h-30.33v-16.08h30.33c1.77,0,3.27.29,4.52.87,1.25.58,2.19,1.46,2.83,2.65s.96,2.6.96,4.25c0,2.44-.73,4.43-2.19,5.98Z M1397.09,207.2c-1.43-2.19-3.35-4-5.76-5.44-2.41-1.43-5.12-2.59-8.13-3.47-3.01-.88-6.14-1.58-9.36-2.1-3.23-.52-6.35-.97-9.36-1.37-3.01-.4-5.74-.84-8.18-1.33-2.44-.49-4.36-1.13-5.76-1.92-1.4-.79-2.1-1.86-2.1-3.2,0-1.03.61-1.99,1.83-2.88,1.22-.88,3.11-1.58,5.66-2.1,2.56-.52,5.88-.78,9.96-.78,3.11,0,5.83.3,8.18.91,2.34.61,4.17,1.42,5.48,2.42,1.31,1,1.96,2.18,1.96,3.52v1h15.26v-1.46c0-2.86-.67-5.42-2.01-7.67-1.34-2.25-3.37-4.17-6.08-5.76-2.71-1.58-6.04-2.79-10-3.61-3.96-.82-8.5-1.23-13.61-1.23s-9.61.4-13.66,1.19c-4.05.79-7.51,1.96-10.37,3.52-2.86,1.55-5.06,3.47-6.58,5.76-1.52,2.28-2.28,4.98-2.28,8.08,0,3.29.72,6.06,2.15,8.31,1.43,2.25,3.35,4.1,5.75,5.53,2.41,1.43,5.12,2.59,8.13,3.47,3.02.88,6.14,1.57,9.36,2.06,3.23.49,6.35.94,9.36,1.37,3.01.43,5.74.91,8.18,1.46,2.44.55,4.35,1.25,5.76,2.1,1.4.85,2.1,2.04,2.1,3.56,0,1.04-.37,1.93-1.1,2.7-.73.76-1.71,1.39-2.92,1.87-1.22.49-2.6.87-4.16,1.14-1.55.27-3.17.47-4.84.59-1.68.12-3.33.18-4.98.18-3.78,0-7.11-.24-10-.73-2.89-.49-5.1-1.31-6.62-2.47-1.52-1.16-2.28-2.65-2.28-4.48v-1.1c0-.3.06-.58.18-.82h-15.53c-.12.12-.17.27-.14.46.03.18.05.33.05.46,0,4.26.88,7.74,2.65,10.41,1.77,2.68,4.26,4.78,7.49,6.3,3.23,1.52,6.96,2.57,11.19,3.15,4.23.58,8.82.87,13.75.87,6.58,0,12.38-.69,17.4-2.06,5.02-1.37,8.97-3.55,11.83-6.53,2.86-2.98,4.29-6.94,4.29-11.88,0-3.17-.72-5.85-2.15-8.04Z"/></symbol>
+			<symbol id="rw-mark" viewBox="44 58 312 284"><path fill="#C93630" d="M113.67,65.9l-62.05,62.03v206.17h62.05v-40.28h72.61l40.27,40.28h121.83V65.9H113.67ZM225.13,253.55l-22.7-44.85h-56.48v44.85h-32.28V124.63h104.33c9.12,0,16.7,1.88,22.71,5.63,6,3.75,10.47,8.73,13.41,14.92,2.94,6.19,4.41,12.98,4.41,20.36,0,7.76-1.97,14.98-5.91,21.67-3.94,6.69-9.92,11.98-17.92,15.86l26.83,50.48h-36.41Z M217.53,152.12c-2.56-1.19-5.66-1.78-9.29-1.78h-62.3v33.03h62.3c5.37,0,9.57-1.59,12.58-4.79,3-3.19,4.5-7.29,4.5-12.29,0-3.37-.65-6.29-1.97-8.72-1.31-2.44-3.25-4.25-5.82-5.45Z"/></symbol>
+			<symbol id="jolyn-horizontal" viewBox="23 -2 211.287 88.5"><g><path fill="#E9E5DB" d="M62 31V66A18.5 18.5 0 0 1 43.5 84.5A18.5 18.5 0 0 1 25.0 66L36.0 55V66A7.5 7.5 0 0 0 43.5 73.5A7.5 7.5 0 0 0 51 66V36.5L56.5 31Z"/><path fill="url(#spark)" d="M56.50 0L59.47 11.53L67 14.50L59.47 17.47L56.50 29L53.53 17.47L46 14.50L53.53 11.53Z"/></g><path fill="#E9E5DB" transform="translate(70.904 62.704) scale(0.046215)" d="M508.6 12Q372.47 12 273.23 -29.5Q174 -71 120.5 -150.5Q67 -230 67 -343.53Q67 -458 120.5 -537Q174 -616 273.23 -657.5Q372.47 -699 508.6 -699Q646 -699 745 -657.5Q844 -616 897.5 -537Q951 -458 951 -343.53Q951 -230 897.5 -150.5Q844 -71 745 -29.5Q646 12 508.6 12ZM509 -115Q571 -115 623 -129Q675 -143 713.5 -170Q752 -197 773.5 -238.08Q795 -279.17 795 -333V-356Q795 -409.63 773.5 -450.32Q752 -491 713.5 -518Q675 -545 623 -558.5Q571 -572 509 -572Q447 -572 395 -558.5Q343 -545 304.5 -518Q266 -491 245 -450.32Q224 -409.63 224 -356V-333Q224 -279.17 245 -238.08Q266 -197 304.5 -170Q343 -143 395 -129Q447 -115 509 -115Z M1185 0V-687H1337V-134H1773V0Z M2047 0V-278L1711 -687H1894L2122 -400H2132L2363 -687H2536L2199 -278V0Z M2721 0V-687H2864L3240 -326Q3253 -315 3271 -296Q3289 -277 3308.5 -257Q3328 -237 3342 -221H3350Q3349 -243 3347.5 -274.5Q3346 -306 3346 -326V-687H3492V0H3352L2975 -365Q2948 -391 2918.5 -422.5Q2889 -454 2871 -473H2864Q2865 -460 2866 -427.5Q2867 -395 2867 -353V0Z"/><path fill="#E9E5DB" transform="translate(72.892 84.500) scale(0.017331)" d="M431.08 12Q356.46 12 289.85 2.96Q223.24 -6.08 172.39 -29.5Q121.55 -52.92 92.74 -95.53Q63.93 -138.15 63.93 -204.99Q63.93 -208.84 64.08 -212.61Q64.24 -216.38 64.93 -218.38H186.89Q185.89 -213.76 185.39 -207.65Q184.89 -201.53 184.89 -192.99Q184.89 -158.29 214.36 -135.4Q243.82 -112.51 298.91 -101.36Q353.99 -90.2 428.69 -90.2Q462.62 -90.2 495.97 -93.32Q529.32 -96.43 558.94 -103.13Q588.56 -109.82 611.6 -121.13Q634.64 -132.44 647.91 -149.02Q661.18 -165.61 661.18 -187.61Q661.18 -218.85 637.07 -237.74Q612.95 -256.63 571.72 -268.48Q530.49 -280.32 479.1 -288.25Q427.71 -296.17 372.98 -304.67Q318.25 -313.17 266.86 -326.9Q215.48 -340.63 174.24 -362.55Q133.01 -384.48 108.89 -419.59Q84.78 -454.7 84.78 -506.78Q84.78 -550.16 105.62 -585.31Q126.46 -620.46 169.15 -645.96Q211.84 -671.46 276.73 -685.08Q341.61 -698.69 430 -698.69Q519.7 -698.69 582.77 -683.61Q645.85 -668.54 685.08 -642.07Q724.3 -615.61 742.18 -580.96Q760.06 -546.31 760.06 -507.47V-489.62H639.79V-506.32Q639.79 -531.09 615.02 -551.33Q590.25 -571.56 545.25 -584.03Q500.24 -596.49 438.69 -596.49Q361.15 -596.49 310.91 -585.95Q260.67 -575.41 236.13 -556.37Q211.58 -537.32 211.58 -511.55Q211.58 -484.23 235.7 -467.31Q259.82 -450.38 301.05 -440.03Q342.28 -429.68 393.67 -421.91Q445.05 -414.14 499.79 -405.14Q554.52 -396.14 605.91 -382.6Q657.29 -369.06 698.52 -346.34Q739.76 -323.61 763.87 -288.72Q787.99 -253.84 787.99 -202.45Q787.99 -123.69 742.91 -76.42Q697.84 -29.15 617.38 -8.58Q536.92 12 431.08 12Z M1775.31 0V-578.26H1466.61V-686.69H2207.04V-578.26H1898.35V0Z M3290.98 12Q3165.68 12 3083.95 -26.77Q3002.22 -65.54 2962.26 -137.49Q2922.3 -209.45 2922.3 -307.91V-686.69H3045.34V-310.29Q3045.34 -205.13 3109 -148.36Q3172.66 -91.58 3290.98 -91.58Q3409.3 -91.58 3472.96 -148.36Q3536.62 -205.13 3536.62 -310.29V-686.69H3659.66V-307.91Q3659.66 -209.45 3619.7 -137.49Q3579.74 -65.54 3498.36 -26.77Q3416.97 12 3290.98 12Z M4451.22 0V-686.69H4806.75Q4931.82 -686.69 5021.55 -647.5Q5111.28 -608.31 5159.47 -531.96Q5207.67 -455.62 5207.67 -343Q5207.67 -231.08 5159.47 -154.73Q5111.28 -78.38 5021.55 -39.19Q4931.82 0 4806.75 0ZM4574.26 -103.58H4801.21Q4860.83 -103.58 4911.65 -117.2Q4962.46 -130.82 5000.5 -158.78Q5038.55 -186.75 5059.7 -229.87Q5080.86 -272.99 5080.86 -332V-354.69Q5080.86 -413.7 5059.7 -456.82Q5038.55 -499.95 5000.5 -527.91Q4962.46 -555.88 4911.65 -569.49Q4860.83 -583.11 4801.21 -583.11H4574.26Z M5977.6 0V-686.69H6100.64V0Z M7306.66 12Q7172.06 12 7073.9 -29.04Q6975.75 -70.08 6923.02 -149.42Q6870.29 -228.77 6870.29 -343.36Q6870.29 -458.92 6923.02 -537.77Q6975.75 -616.62 7073.9 -657.65Q7172.06 -698.69 7306.66 -698.69Q7442.51 -698.69 7540.28 -657.65Q7638.05 -616.62 7690.78 -537.77Q7743.51 -458.92 7743.51 -343.36Q7743.51 -228.77 7690.78 -149.42Q7638.05 -70.08 7540.28 -29.04Q7442.51 12 7306.66 12ZM7307.21 -91.58Q7373.67 -91.58 7429.98 -106.15Q7486.29 -120.72 7528.34 -150.08Q7570.39 -179.44 7593.89 -225.13Q7617.39 -270.81 7617.39 -332.82V-355.51Q7617.39 -417.02 7593.89 -462.49Q7570.39 -507.95 7528.34 -537.26Q7486.3 -566.57 7429.99 -580.84Q7373.67 -595.11 7307.21 -595.11Q7240.74 -595.11 7184.27 -580.84Q7127.8 -566.57 7085.61 -537.26Q7043.41 -507.95 7020.25 -462.49Q6997.09 -417.02 6997.09 -355.51V-332.82Q6997.09 -270.81 7020.25 -225.13Q7043.41 -179.44 7085.64 -150.08Q7127.88 -120.72 7184.31 -106.15Q7240.74 -91.58 7307.21 -91.58Z M8840.35 12Q8765.74 12 8699.13 2.96Q8632.51 -6.08 8581.67 -29.5Q8530.82 -52.92 8502.01 -95.53Q8473.2 -138.15 8473.2 -204.99Q8473.2 -208.84 8473.36 -212.61Q8473.51 -216.38 8474.2 -218.38H8596.17Q8595.17 -213.76 8594.67 -207.65Q8594.17 -201.53 8594.17 -192.99Q8594.17 -158.29 8623.63 -135.4Q8653.1 -112.51 8708.18 -101.36Q8763.26 -90.2 8837.97 -90.2Q8871.9 -90.2 8905.25 -93.32Q8938.6 -96.43 8968.22 -103.13Q8997.84 -109.82 9020.88 -121.13Q9043.92 -132.44 9057.19 -149.02Q9070.46 -165.61 9070.46 -187.61Q9070.46 -218.85 9046.34 -237.74Q9022.22 -256.63 8980.99 -268.48Q8939.76 -280.32 8888.37 -288.25Q8836.99 -296.17 8782.25 -304.67Q8727.52 -313.17 8676.14 -326.9Q8624.75 -340.63 8583.52 -362.55Q8542.28 -384.48 8518.17 -419.59Q8494.05 -454.7 8494.05 -506.78Q8494.05 -550.16 8514.9 -585.31Q8535.74 -620.46 8578.43 -645.96Q8621.12 -671.46 8686 -685.08Q8750.88 -698.69 8839.27 -698.69Q8928.97 -698.69 8992.05 -683.61Q9055.12 -668.54 9094.35 -642.07Q9133.58 -615.61 9151.46 -580.96Q9169.34 -546.31 9169.34 -507.47V-489.62H9049.07V-506.32Q9049.07 -531.09 9024.3 -551.33Q8999.53 -571.56 8954.52 -584.03Q8909.52 -596.49 8847.97 -596.49Q8770.42 -596.49 8720.18 -585.95Q8669.94 -575.41 8645.4 -556.37Q8620.86 -537.32 8620.86 -511.55Q8620.86 -484.23 8644.97 -467.31Q8669.09 -450.38 8710.32 -440.03Q8751.56 -429.68 8802.94 -421.91Q8854.33 -414.14 8909.06 -405.14Q8963.79 -396.14 9015.18 -382.6Q9066.57 -369.06 9107.8 -346.34Q9149.03 -323.61 9173.15 -288.72Q9197.26 -253.84 9197.26 -202.45Q9197.26 -123.69 9152.19 -76.42Q9107.11 -29.15 9026.65 -8.58Q8946.19 12 8840.35 12Z"/></symbol>
+			<linearGradient id="spark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset="1" stop-color="#E57A2B"/></linearGradient>
+			<radialGradient id="bloom"><stop offset="0" stop-color="#FFB45A" stop-opacity=".55"/><stop offset=".45" stop-color="#E57A2B" stop-opacity=".18"/><stop offset="1" stop-color="#E57A2B" stop-opacity="0"/></radialGradient>
+		</defs>
+	</svg>
+
+	<div class="backdrop" aria-hidden="true">
+		<div class="bg"></div><div class="bg"></div><div class="bg"></div><div class="bg"></div>
+		<div class="backdrop__shade"></div>
+		<div class="grid"></div>
+	</div>
+
+	<div id="app" class="app">
+		<header class="cmdbar" data-enter style="--i: 0">
+			<svg class="cmdbar__mark" viewBox="44 58 312 284" role="img" aria-label="Redline Wars"><use href="#rw-mark"></use></svg>
+			<span class="cmdbar__sub">Fractured Order · Desktop</span>
+			<div class="cmdbar__tools">
+				<button id="sound-btn" class="tool" type="button" aria-pressed="true" title="Music"><span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound__label">Music on</span></button>
+				<button id="credits-open" class="tool" type="button" aria-haspopup="dialog" aria-controls="credits-sheet">Credits</button>
+				<button id="website-link" class="tool" type="button">redlinewars.online ↗</button>
+			</div>
+		</header>
+
+		<main class="stage">
+			<section class="hero" aria-labelledby="hero-title">
+				<p class="hero__eyebrow" data-enter style="--i: 1">Redline Wars · Desktop</p>
+				<h1 id="hero-title" class="visually-hidden">Redline Wars: Fractured Order</h1>
+				<svg id="hero-wordmark" class="hero__wordmark" viewBox="44 58 1364 284" aria-hidden="true" focusable="false"><use href="#rw-wordmark"></use></svg>
+				<p class="hero__sub" data-enter style="--i: 2">Fractured Order</p>
+				<p class="hero__lead" data-enter style="--i: 3"><strong>The pact is broken.</strong> <em>The red line is crossed.</em> Build your base, secure your resources and command the battlefield.</p>
+				<div class="hero__cta" data-enter style="--i: 4">
+					<button id="start-skirmish" class="btn btn--primary btn--launch" type="button">Start skirmish<span class="btn__arrow" aria-hidden="true">→</span></button>
+					<span id="start-caption" data-ready="false">Starts the moment the engine is ready</span>
+				</div>
+			</section>
+
+			<aside class="console" aria-label="Status and multiplayer">
+				<section class="module" data-enter style="--i: 3" aria-labelledby="status-title">
+					<header class="module__head"><span class="module__index">01</span><h2 id="status-title" class="module__title">Status</h2></header>
+					<div class="module__body">
+						<div id="loader" class="loader" data-state="laden">
+							<div class="loader__track"><i id="loader-bar" class="loader__fill"></i></div>
+							<div class="loader__row"><span id="loader-text">Loading the engine in the background…</span><span id="loader-pct">0%</span></div>
+						</div>
+						<dl id="rooms-row" class="kv"><dt>Open rooms</dt><dd id="players-value">— · relay offline</dd></dl>
+						<p class="alpha-note"><span class="alpha-note__tag">Alpha</span><span>Early alpha: things can break.</span><button id="report-bug" class="linkbtn" type="button">Report a bug ↗</button></p>
+					</div>
+				</section>
+
+				<section id="mp-module" class="module" data-mp="on" data-enter style="--i: 4" aria-labelledby="mp-title">
+					<header class="module__head">
+						<span class="module__index">02</span><h2 id="mp-title" class="module__title">Multiplayer</h2>
+						<div id="mp-switch" class="seg module__aside" role="radiogroup" aria-label="Multiplayer">
+							<button type="button" role="radio" data-mp="off">Off</button><button type="button" role="radio" data-mp="on">On</button>
+						</div>
+					</header>
+					<div id="mp-on-body" class="module__body">
+						<button id="start-multiplayer" class="action" type="button"><span class="action__text"><span class="action__title">Play online</span><span class="action__desc">Join a room or the ranked queue.</span></span><span class="action__arrow" aria-hidden="true">→</span></button>
+						<button id="host-game" class="action" type="button"><span class="action__text"><span class="action__title">Host a game</span><span class="action__desc">On this computer — your network only, or anyone online.</span></span><span class="action__arrow" aria-hidden="true">→</span></button>
+						<p class="divider">Host for others</p>
+						<div class="donate">
+							<div class="donate__head">
+								<span id="donate-title" class="donate__title">Lend your computer to the network</span>
+								<label class="switch"><input id="donate-toggle" type="checkbox" role="switch" aria-labelledby="donate-title" aria-describedby="donate-desc"><span class="switch__track"><span class="switch__thumb"></span></span></label>
+							</div>
+							<p id="donate-desc" class="donate__desc">While this app is open, it runs other players' matches on spare power. You can stop any time; running matches finish first.</p>
+							<div class="donate__row">
+								<span class="donate__label">Match limit</span>
+								<div id="donate-max-seg" class="seg" role="radiogroup" aria-label="Match limit"><button type="button" role="radio" data-max="1">1 match</button><button type="button" role="radio" data-max="2">2 matches</button></div>
+								<select id="donate-max" class="visually-hidden" tabindex="-1" aria-hidden="true"><option value="1">1 match</option><option value="2">2 matches</option></select>
+							</div>
+							<p id="donate-status" data-tone="off">Off — your computer hosts only your own games.</p>
+							<button id="donate-drain" class="linkbtn" type="button" hidden>Stop after current matches</button>
+						</div>
+					</div>
+					<div id="mp-off-body" class="module__body">
+						<p>Multiplayer is off. Skirmish against the AI works offline — turn it on to play online, host a game or host for others.</p>
+						<p id="mp-drain-note" hidden></p>
+					</div>
+				</section>
+			</aside>
+		</main>
+
+		<footer class="legalbar" data-enter style="--i: 5">
+			<span class="legalbar__studio"><svg class="legalbar__mark" viewBox="23 -2 211.287 88.5" role="img" aria-label="Jolyn Studios"><use href="#jolyn-horizontal"></use></svg><span>© 2026 Jolyn Studios · Engine: OpenRA (GPLv3) · EA has not endorsed and does not support this product. <button id="footer-credits" class="linkbtn" type="button">Credits &amp; licences</button></span></span>
+			<span class="legalbar__build">Build <span id="build-id">—</span> · <span id="app-version"></span> · Port <span id="port-label">—</span></span>
+		</footer>
+	</div>
+
+	<div id="credits-sheet" class="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="credits-title">
+		<div class="sheet__panel">
+			<header class="sheet__head"><h2 id="credits-title" class="module__title">Credits &amp; licences</h2><button id="credits-close" class="icon-btn" type="button" aria-label="Close credits">×</button></header>
+			<div class="sheet__body">
+				<p><strong>Redline Wars: Fractured Order</strong> © 2026 Jolyn Studios. The Redline Wars software is available under the GNU GPL v3 or later: the engine and our WebAssembly port, the WebGPU client, the desktop app, the multiplayer and server code and the tools. Source: github.com/jolynstudios/redlinewars. Separately marked models, textures, audio, video and other creative files are under their own licences. The software licence grants no rights to our trademarks.</p>
+				<p><strong>Engine:</strong> OpenRA © The OpenRA Developers and Contributors, GNU GPL v3 or later. Not affiliated with or endorsed by the OpenRA project.</p>
+				<p>Maps from the OpenRA project, by their authors. Made with Suno (music), Cartesia (announcer voices), ElevenLabs (character voices, sound effects), Higgsfield (cinematics) and Meshy (Riki); all voices are text-to-speech. Base meshes and textures: MakeHuman, Quaternius, ambientCG (CC0); the soldiers build on the Female S.W.A.T Tactical Soldier model by pathumtharaka1998 on CGTrader (Royalty Free License). Typefaces: Archivo and Martian Mono (SIL OFL 1.1). Third-party licences and credits: see the notices.</p>
+				<p>Command &amp; Conquer and Red Alert are trademarks of Electronic Arts Inc. EA has not endorsed and does not support this product.</p>
+				<p class="sheet__label">Licences</p>
+				<div class="legal-buttons">
+					<button type="button" data-legal="license">Redline Wars licence</button>
+					<button type="button" data-legal="gpl">GNU GPL v3</button>
+					<button type="button" data-legal="authors">OpenRA authors</button>
+					<button type="button" data-legal="notices">Third-party notices</button>
+					<button type="button" data-legal="ofl-archivo">Archivo (OFL)</button>
+					<button type="button" data-legal="ofl-martian-mono">Martian Mono (OFL)</button>
+					<button type="button" data-legal="gpl-2.0">GNU GPL v2 (FuzzyLogicLibrary)</button>
+					<button type="button" data-legal="lgpl-2.1">GNU LGPL v2.1 (TagLib#)</button>
+					<button type="button" data-legal="lgpl-3.0">GNU LGPL v3 (MP3Sharp)</button>
+				</div>
+				<pre id="legal-view" hidden></pre>
+				<button id="credits-web" class="linkbtn" type="button">The full credits on redlinewars.online ↗</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- S14 (T3.10): the shell raises window.__redlineUpdateRequired when the relay no longer
+	     accepts this build. Shown only through the [hidden] attribute. -->
+	<div id="update-modal" class="dialog" hidden role="dialog" aria-modal="true" aria-labelledby="update-title">
+		<div class="dialog__panel">
+			<p class="dialog__eyebrow">Online</p>
+			<h2 id="update-title" class="dialog__title">Update vereist</h2>
+			<p>Deze versie kan niet meer online spelen.</p>
+			<p id="update-builds" hidden></p>
+			<div class="dialog__actions"><button id="update-close" class="btn btn--quiet" type="button">Sluiten</button><button id="update-download" class="btn btn--primary" type="button">Download de nieuwe versie<span class="btn__arrow" aria-hidden="true">→</span></button></div>
+		</div>
+	</div>
+
+	<div id="intro" class="intro" aria-hidden="true">
+		<div class="intro__bg"></div>
+		<div class="grid"></div>
+		<div class="intro__card intro__card--studio">
+			<svg class="intro__lockup" viewBox="23 -2 211.287 88.5" focusable="false">
+				<g><circle class="intro__bloom" cx="56.5" cy="14.5" r="34"/><g class="intro__j"><path fill="#E9E5DB" d="M62 31V66A18.5 18.5 0 0 1 43.5 84.5A18.5 18.5 0 0 1 25.0 66L36.0 55V66A7.5 7.5 0 0 0 43.5 73.5A7.5 7.5 0 0 0 51 66V36.5L56.5 31Z"/></g><g class="intro__spark"><path fill="url(#spark)" d="M56.50 0L59.47 11.53L67 14.50L59.47 17.47L56.50 29L53.53 17.47L46 14.50L53.53 11.53Z"/></g></g><g class="intro__jolyn"><path fill="#E9E5DB" transform="translate(70.904 62.704) scale(0.046215)" d="M508.6 12Q372.47 12 273.23 -29.5Q174 -71 120.5 -150.5Q67 -230 67 -343.53Q67 -458 120.5 -537Q174 -616 273.23 -657.5Q372.47 -699 508.6 -699Q646 -699 745 -657.5Q844 -616 897.5 -537Q951 -458 951 -343.53Q951 -230 897.5 -150.5Q844 -71 745 -29.5Q646 12 508.6 12ZM509 -115Q571 -115 623 -129Q675 -143 713.5 -170Q752 -197 773.5 -238.08Q795 -279.17 795 -333V-356Q795 -409.63 773.5 -450.32Q752 -491 713.5 -518Q675 -545 623 -558.5Q571 -572 509 -572Q447 -572 395 -558.5Q343 -545 304.5 -518Q266 -491 245 -450.32Q224 -409.63 224 -356V-333Q224 -279.17 245 -238.08Q266 -197 304.5 -170Q343 -143 395 -129Q447 -115 509 -115Z M1185 0V-687H1337V-134H1773V0Z M2047 0V-278L1711 -687H1894L2122 -400H2132L2363 -687H2536L2199 -278V0Z M2721 0V-687H2864L3240 -326Q3253 -315 3271 -296Q3289 -277 3308.5 -257Q3328 -237 3342 -221H3350Q3349 -243 3347.5 -274.5Q3346 -306 3346 -326V-687H3492V0H3352L2975 -365Q2948 -391 2918.5 -422.5Q2889 -454 2871 -473H2864Q2865 -460 2866 -427.5Q2867 -395 2867 -353V0Z"/></g><g class="intro__studios"><path fill="#E9E5DB" transform="translate(72.892 84.500) scale(0.017331)" d="M431.08 12Q356.46 12 289.85 2.96Q223.24 -6.08 172.39 -29.5Q121.55 -52.92 92.74 -95.53Q63.93 -138.15 63.93 -204.99Q63.93 -208.84 64.08 -212.61Q64.24 -216.38 64.93 -218.38H186.89Q185.89 -213.76 185.39 -207.65Q184.89 -201.53 184.89 -192.99Q184.89 -158.29 214.36 -135.4Q243.82 -112.51 298.91 -101.36Q353.99 -90.2 428.69 -90.2Q462.62 -90.2 495.97 -93.32Q529.32 -96.43 558.94 -103.13Q588.56 -109.82 611.6 -121.13Q634.64 -132.44 647.91 -149.02Q661.18 -165.61 661.18 -187.61Q661.18 -218.85 637.07 -237.74Q612.95 -256.63 571.72 -268.48Q530.49 -280.32 479.1 -288.25Q427.71 -296.17 372.98 -304.67Q318.25 -313.17 266.86 -326.9Q215.48 -340.63 174.24 -362.55Q133.01 -384.48 108.89 -419.59Q84.78 -454.7 84.78 -506.78Q84.78 -550.16 105.62 -585.31Q126.46 -620.46 169.15 -645.96Q211.84 -671.46 276.73 -685.08Q341.61 -698.69 430 -698.69Q519.7 -698.69 582.77 -683.61Q645.85 -668.54 685.08 -642.07Q724.3 -615.61 742.18 -580.96Q760.06 -546.31 760.06 -507.47V-489.62H639.79V-506.32Q639.79 -531.09 615.02 -551.33Q590.25 -571.56 545.25 -584.03Q500.24 -596.49 438.69 -596.49Q361.15 -596.49 310.91 -585.95Q260.67 -575.41 236.13 -556.37Q211.58 -537.32 211.58 -511.55Q211.58 -484.23 235.7 -467.31Q259.82 -450.38 301.05 -440.03Q342.28 -429.68 393.67 -421.91Q445.05 -414.14 499.79 -405.14Q554.52 -396.14 605.91 -382.6Q657.29 -369.06 698.52 -346.34Q739.76 -323.61 763.87 -288.72Q787.99 -253.84 787.99 -202.45Q787.99 -123.69 742.91 -76.42Q697.84 -29.15 617.38 -8.58Q536.92 12 431.08 12Z M1775.31 0V-578.26H1466.61V-686.69H2207.04V-578.26H1898.35V0Z M3290.98 12Q3165.68 12 3083.95 -26.77Q3002.22 -65.54 2962.26 -137.49Q2922.3 -209.45 2922.3 -307.91V-686.69H3045.34V-310.29Q3045.34 -205.13 3109 -148.36Q3172.66 -91.58 3290.98 -91.58Q3409.3 -91.58 3472.96 -148.36Q3536.62 -205.13 3536.62 -310.29V-686.69H3659.66V-307.91Q3659.66 -209.45 3619.7 -137.49Q3579.74 -65.54 3498.36 -26.77Q3416.97 12 3290.98 12Z M4451.22 0V-686.69H4806.75Q4931.82 -686.69 5021.55 -647.5Q5111.28 -608.31 5159.47 -531.96Q5207.67 -455.62 5207.67 -343Q5207.67 -231.08 5159.47 -154.73Q5111.28 -78.38 5021.55 -39.19Q4931.82 0 4806.75 0ZM4574.26 -103.58H4801.21Q4860.83 -103.58 4911.65 -117.2Q4962.46 -130.82 5000.5 -158.78Q5038.55 -186.75 5059.7 -229.87Q5080.86 -272.99 5080.86 -332V-354.69Q5080.86 -413.7 5059.7 -456.82Q5038.55 -499.95 5000.5 -527.91Q4962.46 -555.88 4911.65 -569.49Q4860.83 -583.11 4801.21 -583.11H4574.26Z M5977.6 0V-686.69H6100.64V0Z M7306.66 12Q7172.06 12 7073.9 -29.04Q6975.75 -70.08 6923.02 -149.42Q6870.29 -228.77 6870.29 -343.36Q6870.29 -458.92 6923.02 -537.77Q6975.75 -616.62 7073.9 -657.65Q7172.06 -698.69 7306.66 -698.69Q7442.51 -698.69 7540.28 -657.65Q7638.05 -616.62 7690.78 -537.77Q7743.51 -458.92 7743.51 -343.36Q7743.51 -228.77 7690.78 -149.42Q7638.05 -70.08 7540.28 -29.04Q7442.51 12 7306.66 12ZM7307.21 -91.58Q7373.67 -91.58 7429.98 -106.15Q7486.29 -120.72 7528.34 -150.08Q7570.39 -179.44 7593.89 -225.13Q7617.39 -270.81 7617.39 -332.82V-355.51Q7617.39 -417.02 7593.89 -462.49Q7570.39 -507.95 7528.34 -537.26Q7486.3 -566.57 7429.99 -580.84Q7373.67 -595.11 7307.21 -595.11Q7240.74 -595.11 7184.27 -580.84Q7127.8 -566.57 7085.61 -537.26Q7043.41 -507.95 7020.25 -462.49Q6997.09 -417.02 6997.09 -355.51V-332.82Q6997.09 -270.81 7020.25 -225.13Q7043.41 -179.44 7085.64 -150.08Q7127.88 -120.72 7184.31 -106.15Q7240.74 -91.58 7307.21 -91.58Z M8840.35 12Q8765.74 12 8699.13 2.96Q8632.51 -6.08 8581.67 -29.5Q8530.82 -52.92 8502.01 -95.53Q8473.2 -138.15 8473.2 -204.99Q8473.2 -208.84 8473.36 -212.61Q8473.51 -216.38 8474.2 -218.38H8596.17Q8595.17 -213.76 8594.67 -207.65Q8594.17 -201.53 8594.17 -192.99Q8594.17 -158.29 8623.63 -135.4Q8653.1 -112.51 8708.18 -101.36Q8763.26 -90.2 8837.97 -90.2Q8871.9 -90.2 8905.25 -93.32Q8938.6 -96.43 8968.22 -103.13Q8997.84 -109.82 9020.88 -121.13Q9043.92 -132.44 9057.19 -149.02Q9070.46 -165.61 9070.46 -187.61Q9070.46 -218.85 9046.34 -237.74Q9022.22 -256.63 8980.99 -268.48Q8939.76 -280.32 8888.37 -288.25Q8836.99 -296.17 8782.25 -304.67Q8727.52 -313.17 8676.14 -326.9Q8624.75 -340.63 8583.52 -362.55Q8542.28 -384.48 8518.17 -419.59Q8494.05 -454.7 8494.05 -506.78Q8494.05 -550.16 8514.9 -585.31Q8535.74 -620.46 8578.43 -645.96Q8621.12 -671.46 8686 -685.08Q8750.88 -698.69 8839.27 -698.69Q8928.97 -698.69 8992.05 -683.61Q9055.12 -668.54 9094.35 -642.07Q9133.58 -615.61 9151.46 -580.96Q9169.34 -546.31 9169.34 -507.47V-489.62H9049.07V-506.32Q9049.07 -531.09 9024.3 -551.33Q8999.53 -571.56 8954.52 -584.03Q8909.52 -596.49 8847.97 -596.49Q8770.42 -596.49 8720.18 -585.95Q8669.94 -575.41 8645.4 -556.37Q8620.86 -537.32 8620.86 -511.55Q8620.86 -484.23 8644.97 -467.31Q8669.09 -450.38 8710.32 -440.03Q8751.56 -429.68 8802.94 -421.91Q8854.33 -414.14 8909.06 -405.14Q8963.79 -396.14 9015.18 -382.6Q9066.57 -369.06 9107.8 -346.34Q9149.03 -323.61 9173.15 -288.72Q9197.26 -253.84 9197.26 -202.45Q9197.26 -123.69 9152.19 -76.42Q9107.11 -29.15 9026.65 -8.58Q8946.19 12 8840.35 12Z"/></g>
+			</svg>
+		</div>
+		<div class="intro__card intro__card--title">
+			<div class="intro__plate"><svg id="intro-wordmark" class="intro__wordmark" viewBox="44 58 1364 284" focusable="false"><use href="#rw-wordmark"></use></svg><span class="intro__glint"></span></div>
+			<p class="intro__sub">Fractured Order</p>
+		</div>
+		<div class="intro__boot"><div class="intro__track"><i id="intro-fill" class="intro__fill"></i></div><div class="intro__read"><span id="intro-stage">Booting the engine</span><span id="intro-pct">0%</span></div></div>
+		<p class="intro__credit">Engine: OpenRA · GPLv3</p>
+		<p class="intro__skip">Press any key to skip</p>
+	</div>
+
+	<audio id="landing-music" loop></audio>
+	<script src="landing.js"></script>
+</body>
+</html>

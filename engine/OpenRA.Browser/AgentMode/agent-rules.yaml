@@ -1,0 +1,8 @@
+World:
+	AgentSupportPowerObserver:
+
+Player:
+	DummyBot@AgentAI:
+		Name: bot-normal-ai.name
+		Type: agent
+	AgentDamageObserver:

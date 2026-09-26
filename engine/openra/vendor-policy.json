@@ -1,0 +1,71 @@
+{
+	"schemaVersion": 1,
+	"upstream": "https://github.com/proofofworks/OpenRA-Web.git",
+	"commit": "7eabcfe1c9fc3ad5f510227496cfc2766c07f5fb",
+	"license": "GPL-3.0-or-later",
+	"sourceLayout": {
+		"core": [
+			"AUTHORS",
+			"COPYING",
+			"VERSION",
+			"Directory.Build.props",
+			"OpenRA.Game",
+			"OpenRA.Mods.Common",
+			"OpenRA.Mods.Cnc",
+			"OpenRA.Platforms.Browser",
+			"OpenRA.Platforms.Default",
+			"OpenRA.Utility"
+		],
+		"redAlertGameplayText": [
+			"mods/ra/rules/misc.yaml",
+			"mods/ra/rules/ai.yaml",
+			"mods/ra/rules/player.yaml",
+			"mods/ra/rules/world.yaml",
+			"mods/ra/rules/defaults.yaml",
+			"mods/ra/rules/vehicles.yaml",
+			"mods/ra/rules/husks.yaml",
+			"mods/ra/rules/structures.yaml",
+			"mods/ra/rules/infantry.yaml",
+			"mods/ra/rules/civilian.yaml",
+			"mods/ra/rules/decoration.yaml",
+			"mods/ra/rules/aircraft.yaml",
+			"mods/ra/rules/ships.yaml",
+			"mods/ra/rules/fakes.yaml",
+			"mods/ra/rules/map-generators.yaml",
+			"mods/ra/weapons",
+			"mods/ra/tilesets",
+			"mods/ra/sequences",
+			"mods/ra/fluent/ra.ftl",
+			"mods/ra/fluent/rules.ftl"
+		],
+		"redAlertMaps": "mods/ra/maps/*.oramap"
+	},
+	"mapExtraction": {
+		"acceptedEntries": ["map.yaml", "map.bin", "map.png"],
+		"retainedEntries": ["map.yaml", "map.bin"],
+		"requiresMod": "ra",
+		"rejectEntries": ["*.lua", "rules.yaml", "weapons.yaml", "sequences.yaml", "*.aud", "*.shp", "*.pal"],
+		"rejectAuthors": ["Westwood Studios"]
+	},
+	"excluded": {
+		"reasons": {
+			"presentation": ["mods/ra/chrome.yaml", "mods/ra/metrics.yaml", "mods/ra/cursors.yaml", "mods/ra/uibits", "mods/ra/bits"],
+			"audio": ["mods/ra/audio"],
+			"browserUi": ["OpenRA.Browser"],
+			"fonts": ["mods/ra/ZoodRangmah.ttf"],
+			"campaignAndLua": [
+				"mods/ra/maps/*/*.lua",
+				"mods/ra/rules/campaign-palettes.yaml",
+				"mods/ra/rules/campaign-rules.yaml",
+				"mods/ra/rules/campaign-tooltips.yaml",
+				"mods/ra/rules/coop-missions-rules.yaml"
+			],
+			"campaigns": ["mods/ra/maps/*/map.yaml", "mods/ra/maps/*/map.bin", "mods/ra/maps/*/map.png"],
+			"agentModeAndBenchmarks": ["OpenRA.Browser/AgentMode", "OpenRA.Browser/agent-sidecar", "OpenRA.Browser/tests"]
+		},
+		"extensions": [".aud", ".des", ".int", ".lua", ".pal", ".png", ".shp", ".sno", ".tem", ".ttf", ".vqa", ".wav", ".wsa"]
+	},
+	"integrationRoot": "../steelseed-host",
+	"futureSessionTransports": ["local", "network"],
+	"implementedSessionTransports": ["local"]
+}

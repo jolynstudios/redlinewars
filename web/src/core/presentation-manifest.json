@@ -1,0 +1,8375 @@
+{
+  "actors": {
+    "1tnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                0.65,
+                0.44296,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "25mm"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "772107bf18f9178273b742604c84873931bf3ee86e632bf718b9ea78f372bd45"
+    },
+    "2tnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                0.78,
+                0.53,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "90mm"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "a4cdd88a38ec3902ca56f420120c3a5fd289e0a7544d9961518c05aa97e80383"
+    },
+    "3tnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                0.76,
+                0.4575,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "105mm"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "3cb299fcb0ebff910df37fabf6c7cdef237aa26a7c391f6263fb57148195819e"
+    },
+    "4tnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              1
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake l",
+              "position": [
+                1.195,
+                0.575,
+                -0.135
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake r",
+              "position": [
+                1.195,
+                0.575,
+                0.135
+              ]
+            }
+          ],
+          "weapon": "120mm"
+        },
+        {
+          "barrels": [
+            [
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube l",
+              "position": [
+                0.214,
+                0.544,
+                -0.485
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube l.001",
+              "position": [
+                0.214,
+                0.544,
+                -0.425
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube l.002",
+              "position": [
+                0.214,
+                0.608,
+                -0.485
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube l.003",
+              "position": [
+                0.214,
+                0.608,
+                -0.425
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube r",
+              "position": [
+                0.214,
+                0.544,
+                0.425
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube r.001",
+              "position": [
+                0.214,
+                0.544,
+                0.485
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube r.002",
+              "position": [
+                0.214,
+                0.608,
+                0.425
+              ]
+            },
+            {
+              "bone": 17,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tusk missile tube r.003",
+              "position": [
+                0.214,
+                0.608,
+                0.485
+              ]
+            }
+          ],
+          "weapon": "MammothTusk"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "6e38e6054a3ddb2fe4c8e89b97cfb3d92dec416964029ab257eef0b111b70891"
+    },
+    "agun": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              1
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.857493,
+                0.514496,
+                0.0
+              ],
+              "part": "barrel muzzle flash hider",
+              "position": [
+                0.375017,
+                0.429213,
+                -0.048
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.857493,
+                0.514496,
+                0.0
+              ],
+              "part": "barrel muzzle flash hider.001",
+              "position": [
+                0.375017,
+                0.429213,
+                0.048
+              ]
+            }
+          ],
+          "weapon": "ZSU-23"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "add9205f8113ea64527fd5f8f901ceb1dd163697f607c76b6db840d6e05a8e22"
+    },
+    "ant": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible",
+              "position": [
+                0.588753,
+                0.298064,
+                -0.072538
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible.001",
+              "position": [
+                0.587886,
+                0.297266,
+                0.069811
+              ]
+            }
+          ],
+          "weapon": "mandible"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "fe6a5a32bb7721f20fd9d2b1b52fb044ebe6e25d044b97bef6f10c972cb86cc9"
+    },
+    "apc": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "machine gun flash hider",
+              "position": [
+                0.644,
+                0.927227,
+                0.088
+              ]
+            }
+          ],
+          "weapon": "M60mg"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "572a06d0d5e447f0b9c9c82303bf2ee5ab1a4352db9145540dc22730e94c6c06"
+    },
+    "arty": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                0.907126,
+                0.624733,
+                -0.05
+              ]
+            }
+          ],
+          "weapon": "155mm"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "086deb71070cbc255aac7b015f3a75192b4beb6f16de03410c00755a5fe2c544"
+    },
+    "badr": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -0.72,
+            0.238,
+            -0.208
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust.001",
+          "position": [
+            -0.72,
+            0.238,
+            0.208
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "f46ed40c4e33dbd03d7686d925d26fcc141c8812466fbb5e3dae865d52bfcaf7"
+    },
+    "badr.bomber": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "bomb bay door",
+              "position": [
+                0.05,
+                0.094,
+                -0.063
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "bomb bay door.001",
+              "position": [
+                0.05,
+                0.094,
+                0.063
+              ]
+            }
+          ],
+          "weapon": "ParaBomb"
+        }
+      ],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -0.72,
+            0.238,
+            -0.208
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust.001",
+          "position": [
+            -0.72,
+            0.238,
+            0.208
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "392f37515dadf20c8b8300973a12da682a859141acbff3b69180b65b6c22c4c2"
+    },
+    "badr.d2": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -0.72,
+            0.238,
+            -0.208
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust.001",
+          "position": [
+            -0.72,
+            0.238,
+            0.208
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "d49b236e280ea6cb66c6c624a98d6a2cce627c235d420c66ab337e97cd50292e"
+    },
+    "badr.d3": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -0.72,
+            0.238,
+            -0.208
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust.001",
+          "position": [
+            -0.72,
+            0.238,
+            0.208
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "23e6ecf3945f686918528a89e67bc1838e70dc9b54c47152389575bf368ce325"
+    },
+    "badr.d4": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -0.72,
+            0.238,
+            -0.208
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust.001",
+          "position": [
+            -0.72,
+            0.238,
+            0.208
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "13bacc1c45cb159288c3ba40eba9ef71362c41a4aa64fe5cf1c6555d1f69a199"
+    },
+    "c1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "eac81500d9e0aeb30b9cd81c2b3561e97ad486a1af06af89b4f11d1f1600467d"
+    },
+    "c7": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5b7baff76db6cafe232a140bbe0e4cadc6dcae83c7554672686dede6bbcee99e"
+    },
+    "ca": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                -0.33,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.001",
+              "position": [
+                -0.33,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.002",
+              "position": [
+                1.295,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.003",
+              "position": [
+                1.295,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "70603902393eb89e369aeda8b73a161dda8a85d995f28b2d961130a141efa672",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.3451399946212768
+        },
+        "length": 2.753999948501587,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -1.2436199569702149
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "ca.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                -0.33,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.001",
+              "position": [
+                -0.33,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.002",
+              "position": [
+                1.295,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.003",
+              "position": [
+                1.295,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "9f57a3f806a55ecb283f016d4145d42d608513eef7372e5653e3ebb21baf69e5",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.3451399946212768
+        },
+        "length": 2.753999948501587,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -1.2436199569702149
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "ca.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                -0.33,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.001",
+              "position": [
+                -0.33,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.002",
+              "position": [
+                1.295,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.003",
+              "position": [
+                1.295,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "71df93724d86e9f05f870e73fcb0ec83f79a9d43b62ffa65d9243cb530660e28",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.3451399946212768
+        },
+        "length": 2.753999948501587,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -1.2436199569702149
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "ca.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                -0.33,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.001",
+              "position": [
+                -0.313433,
+                0.29672,
+                0.07142
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.002",
+              "position": [
+                1.241099,
+                0.304517,
+                -0.025845
+              ]
+            },
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.003",
+              "position": [
+                1.241099,
+                0.29672,
+                0.07142
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5fa2499aeaa9e8d71b08f7d5b49f01885052fd9f34db676d7ebc98933e06eba8",
+      "wake": {
+        "beam": 0.586694985628128,
+        "bow": {
+          "leftZ": -0.07040339827537537,
+          "rightZ": 0.07040339827537537,
+          "x": 1.28892897605896
+        },
+        "length": 2.634572386741638,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.1760084956884384,
+          "rightZ": 0.1760084956884384,
+          "x": -1.1875690674781798
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "ca.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                -0.33,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.001",
+              "position": [
+                -0.33,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.002",
+              "position": [
+                1.295,
+                0.3,
+                -0.051
+              ]
+            },
+            {
+              "bone": 2,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake.003",
+              "position": [
+                1.295,
+                0.3,
+                0.051
+              ]
+            }
+          ],
+          "weapon": "8Inch"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "49e0ba4df1da192f64e22387fbc40b3201155f0f3e62e4ac197a06c95d2b92e4",
+      "wake": {
+        "beam": 0.5851461291313171,
+        "bow": {
+          "leftZ": -0.07021753549575806,
+          "rightZ": 0.07021753549575806,
+          "x": 1.2463145852088928
+        },
+        "length": 2.5440328121185303,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.17554383873939514,
+          "rightZ": 0.17554383873939514,
+          "x": -1.1450762581825256
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "ctnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6,
+              7
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube",
+              "position": [
+                0.255,
+                0.655,
+                -0.33
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.001",
+              "position": [
+                0.255,
+                0.655,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.002",
+              "position": [
+                0.255,
+                0.715,
+                -0.33
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.003",
+              "position": [
+                0.255,
+                0.715,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.004",
+              "position": [
+                0.255,
+                0.655,
+                0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.005",
+              "position": [
+                0.255,
+                0.655,
+                0.33
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.006",
+              "position": [
+                0.255,
+                0.715,
+                0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "launcher tube.007",
+              "position": [
+                0.255,
+                0.715,
+                0.33
+              ]
+            }
+          ],
+          "weapon": "APTusk"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "a9d0b937b00da8bf70207a3aa48ad13ae17cc9ced3085669a6b41beef4df1018"
+    },
+    "dd": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "Stinger"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.82,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.82,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "StingerAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "2f68723ed33c552abaa5fed35538a79e7b786db740797860ea1b1956409e8412",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.0462200331687928
+        },
+        "length": 2.1420000791549683,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.9672600412368774
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "dd.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "Stinger"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.82,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.82,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "StingerAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "b18162ca2a82a6e042aab89153f058631301c480b36e0acea3700c5d69d6de2f",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.0462200331687928
+        },
+        "length": 2.1420000791549683,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.9672600412368774
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "dd.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "Stinger"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.82,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.82,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "StingerAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5444abf14f16ddaac1304579a567dab0726b0772075c4ab27de6e9f6508d6b25",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.0462200331687928
+        },
+        "length": 2.1420000791549683,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.9672600412368774
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "dd.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "Stinger"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.82,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.82,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "StingerAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "9dcfc235b4977ff0f7479f872832d0eb4f3ab291ec0dcb5fde556f953a396f4e",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.0462200331687928
+        },
+        "length": 2.1420000791549683,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.9672600412368774
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "dd.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "Stinger"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.82,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.82,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube -1",
+              "position": [
+                0.43,
+                0.49,
+                -0.17
+              ]
+            },
+            {
+              "bone": 1,
+              "direction": [
+                0.863779,
+                0.503871,
+                0.0
+              ],
+              "part": "presentation missile tube 1",
+              "position": [
+                0.43,
+                0.49,
+                0.17
+              ]
+            }
+          ],
+          "weapon": "StingerAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "a7a249041dafef1e7c47924af5eb765ea521b1b60cacb489396ebb53ab9f3888",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 1.0462200331687928
+        },
+        "length": 2.1420000791549683,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.9672600412368774
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "dog": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "dog muzzle",
+              "position": [
+                0.155705,
+                0.15637,
+                0.000956
+              ]
+            }
+          ],
+          "weapon": "DogJaw"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "2270c3928b4c681378e7e2849bce1dae72ad25e9962b641a65baf9320087b26d"
+    },
+    "dtrk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shaped demolition charge",
+              "position": [
+                -0.0536,
+                0.368,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "DemoTruckTargeting"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "e14105199001cf5acd234171e212e9fc0c9d0cc91f27b1a6e6e9941a992d7d9d"
+    },
+    "e1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "Vulcan"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "M1Carbine"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "3ef218ea7e70e85c82ae84e87b37ab0cf7615c76e6257d6fc8d250a0faec7a93"
+    },
+    "e1r1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "Vulcan"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "M1Carbine"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "027c2b81274010789f3dead27e528624dab79cf7f074e1279e9f244dc1b68bbd"
+    },
+    "e2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "hand.001",
+              "position": [
+                0.0736,
+                0.1978,
+                0.0368
+              ]
+            }
+          ],
+          "weapon": "Grenade"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "hand.001",
+              "position": [
+                0.0736,
+                0.1978,
+                0.0368
+              ]
+            }
+          ],
+          "weapon": "Grenade"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "2ccbc04667b99782b45f9f69f786700aa42924ef1129f33b41ca70a552e623d5"
+    },
+    "e3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "RedEye"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "Dragon"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "RedEye"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "Dragon"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "24e0845352e0d295dcd5462b83fd2dd4077ea3c48406ef1d4f7b9c9f117bba94"
+    },
+    "e3r1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "RedEye"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "Dragon"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "RedEye"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "shoulder rocket tube",
+              "position": [
+                0.1932,
+                0.2622,
+                0.069
+              ]
+            }
+          ],
+          "weapon": "Dragon"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "438c2ed94b673bf0451e29d4ad2cb47c7807bbbd194af11defaa9d575ad7944f"
+    },
+    "e4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "flame nozzle",
+              "position": [
+                0.1748,
+                0.2024,
+                -0.0184
+              ]
+            }
+          ],
+          "weapon": "Flamer"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "flame nozzle",
+              "position": [
+                0.1748,
+                0.2024,
+                -0.0184
+              ]
+            }
+          ],
+          "weapon": "Flamer"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "eedf1f4bdf5500b92054a493accd04d87ba3eaf8b8044f6ebc55252454b25d89"
+    },
+    "e7": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "automatic pistol",
+              "position": [
+                0.138,
+                0.2116,
+                -0.0552
+              ]
+            },
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "automatic pistol.001",
+              "position": [
+                0.138,
+                0.2116,
+                0.0368
+              ]
+            }
+          ],
+          "weapon": "Colt45"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "automatic pistol",
+              "position": [
+                0.138,
+                0.2116,
+                -0.0552
+              ]
+            },
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "automatic pistol.001",
+              "position": [
+                0.138,
+                0.2116,
+                0.0368
+              ]
+            }
+          ],
+          "weapon": "Colt45"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "95c75de2a164e6175de60875f268836e2c4ee0b2d71cf5ccad36ab74db85b613"
+    },
+    "fireant": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible",
+              "position": [
+                0.588753,
+                0.298064,
+                -0.072538
+              ]
+            }
+          ],
+          "weapon": "AntFireball"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "203a816ba847bc98929774f09a77b87dc3c659e5a933b244f714ef086e6f7889"
+    },
+    "ftrk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "autocannon barrel",
+              "position": [
+                -0.007682,
+                0.459242,
+                -0.033625
+              ]
+            }
+          ],
+          "weapon": "FLAK-23-AA"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "autocannon barrel",
+              "position": [
+                -0.007682,
+                0.459242,
+                -0.033625
+              ]
+            }
+          ],
+          "weapon": "FLAK-23-AG"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "4db418641b2e6614e506e992f03c86747e289a54d3b61d38b2e280efd4557e69"
+    },
+    "ftur": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "flame projector barrel",
+              "position": [
+                0.32,
+                0.458,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "FireballLauncher"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "f6d9416d9ead1e5c4d7ab308ef3d9212bce2a2822dc6bccfc05ab5dd2a547c3c"
+    },
+    "gnrl": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "7f5bb4415ce44711f1dbd8913383a18d8b62e352b2f8ff95e6bd5dea7f32a052"
+    },
+    "gun": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "barrel muzzle brake",
+              "position": [
+                0.472,
+                0.241,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TurretGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "7a6febc8ded82bacb443415ab0677ac17fe23b544f89141259a6b735cf846dbc"
+    },
+    "gun.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "barrel muzzle brake",
+              "position": [
+                0.472,
+                0.241,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TurretGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "962072392aad68d4a0efe116be9125870215cd338593feb4720a67b95e7e1fc0"
+    },
+    "gun.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "barrel muzzle brake",
+              "position": [
+                0.472,
+                0.241,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TurretGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "c4447ee195ea5608aff748fda152ac2cc930af27c47f14f8cd6bc6452caca621"
+    },
+    "gun.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "barrel muzzle brake",
+              "position": [
+                0.472,
+                0.241,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TurretGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "a2a30dcd3564be19b186a14f7643b86e18d656357a016f8dd5e9c21caeb45a43"
+    },
+    "gun.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "barrel muzzle brake",
+              "position": [
+                0.472,
+                0.241,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TurretGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "1b573d78844604045574a080fec4913ef2d4e23feabe604ebf89099d301dcbd6"
+    },
+    "heli": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6,
+              7
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAA"
+        },
+        {
+          "barrels": [
+            [
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAG"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.144,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.17796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "c2b14cee6d82e210b0a98c131d62b71612c51efe8f1c27d10245e91047c7a90e"
+    },
+    "heli.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6,
+              7
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAA"
+        },
+        {
+          "barrels": [
+            [
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAG"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.144,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.17796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "3c11da977ca0321105f46e691ee0d2355d55700a442417acb57da5f492309354"
+    },
+    "heli.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6,
+              7
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAA"
+        },
+        {
+          "barrels": [
+            [
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAG"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.144,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.17796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "254e9dbc759dd042e1e8d76cfd0b9a3ab9e54fae97d4a6faf647a433a799c674"
+    },
+    "heli.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1,
+              2,
+              3
+            ],
+            [
+              4,
+              5,
+              6,
+              7
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAA"
+        },
+        {
+          "barrels": [
+            [
+              4,
+              5,
+              6,
+              7
+            ],
+            [
+              0,
+              1,
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile",
+              "position": [
+                0.22,
+                0.28,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.001",
+              "position": [
+                0.22,
+                0.28,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.002",
+              "position": [
+                0.22,
+                0.228,
+                -0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.003",
+              "position": [
+                0.22,
+                0.228,
+                -0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.004",
+              "position": [
+                0.22,
+                0.28,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.005",
+              "position": [
+                0.22,
+                0.28,
+                0.285
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.006",
+              "position": [
+                0.22,
+                0.228,
+                0.225
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "anti-armour missile.007",
+              "position": [
+                0.22,
+                0.228,
+                0.285
+              ]
+            }
+          ],
+          "weapon": "HellfireAG"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.144,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.17796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "7f5cd46dbe360cb67a5f31562abd800cc77f3de91450be2d92543c3aed9dc47e"
+    },
+    "hind": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel",
+              "position": [
+                0.94,
+                0.206,
+                -0.02
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel.001",
+              "position": [
+                0.94,
+                0.206,
+                0.02
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.134,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.16796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "c50964ef0187b3a2a9db5c4cafe78c1b8db4cb8ca798a52b165f2b9201c641de"
+    },
+    "hind.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel",
+              "position": [
+                0.94,
+                0.206,
+                -0.02
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel.001",
+              "position": [
+                0.94,
+                0.206,
+                0.02
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.134,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.16796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "8a504b56f7b8b8b0485f88a29af699d923c7c466379eaddd70f64132d52446cd"
+    },
+    "hind.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel",
+              "position": [
+                0.94,
+                0.206,
+                -0.02
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel.001",
+              "position": [
+                0.94,
+                0.206,
+                0.02
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.134,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.16796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "93e3c1708c309cbf46220cb918eb18bca30b66ead7c6422b2d9068640d05e8c7"
+    },
+    "hind.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel",
+              "position": [
+                0.94,
+                0.206,
+                -0.02
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "chin gun barrel.001",
+              "position": [
+                0.94,
+                0.206,
+                0.02
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.134,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.16796,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "ef947ee4332a3c2a1510bcda79774675244e9744ddc7225ce7a13e2c10c4921a"
+    },
+    "jeep": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "machine gun barrel",
+              "position": [
+                0.168,
+                0.441,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "M60mg"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "44a2197f4d10de2c416a1e81606c96533ed070a8dd2afa387e72aec3444af829"
+    },
+    "lst": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "bbeb98c80611817ce2b530d0fcf4e17125bfe47869562683ca31e73804bd1bad",
+      "wake": {
+        "beam": 0.7200000286102295,
+        "bow": {
+          "leftZ": -0.08640000343322754,
+          "rightZ": 0.08640000343322754,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.21600000858306884,
+          "rightZ": 0.21600000858306884,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "lst.d1": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5d693df9d152ca9e293e8872a97ef919dd7ead9205f2cc0fdf959d3287ab326c",
+      "wake": {
+        "beam": 0.7200000286102295,
+        "bow": {
+          "leftZ": -0.08640000343322754,
+          "rightZ": 0.08640000343322754,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.21600000858306884,
+          "rightZ": 0.21600000858306884,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "lst.d2": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "ca6526a2443085dff37dd8986c32a669d5483fa1767e1d7a2f69d9489cd15b7c",
+      "wake": {
+        "beam": 0.7200000286102295,
+        "bow": {
+          "leftZ": -0.08640000343322754,
+          "rightZ": 0.08640000343322754,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.21600000858306884,
+          "rightZ": 0.21600000858306884,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "lst.d3": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "bf2953f3075cd3aba7cf8679016ddf2464e7057533e3bc88da3d81c2d35fd900",
+      "wake": {
+        "beam": 0.6955042481422424,
+        "bow": {
+          "leftZ": -0.08346050977706909,
+          "rightZ": 0.08346050977706909,
+          "x": 0.7597513675689697
+        },
+        "length": 1.553785800933838,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.20865127444267273,
+          "rightZ": 0.20865127444267273,
+          "x": -0.7008072853088378
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "lst.d4": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "29e712061f094b3be1997aeee5ec9cba9ce025003c97324535efe433c84feac1",
+      "wake": {
+        "beam": 0.7023977637290955,
+        "bow": {
+          "leftZ": -0.08428773164749145,
+          "rightZ": 0.08428773164749145,
+          "x": 0.7481693518161773
+        },
+        "length": 1.5291712880134583,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.21071932911872862,
+          "rightZ": 0.21071932911872862,
+          "x": -0.6892516589164733
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "mech": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tool case",
+              "position": [
+                0.1242,
+                0.1656,
+                -0.0414
+              ]
+            }
+          ],
+          "weapon": "Repair"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "c362c00f3f46e86e8c3cb1678b8f0db1fbfa3f8eae008952e23fd3cfbe3c82e5"
+    },
+    "medi": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "medical kit",
+              "position": [
+                0.1242,
+                0.1656,
+                -0.0414
+              ]
+            }
+          ],
+          "weapon": "Heal"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "58425c76e86f9dddd3766d39455eadd86bef36ec4d388f2cecee088f0ac80302"
+    },
+    "mh60": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel -1",
+              "position": [
+                0.48,
+                0.25,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel 1",
+              "position": [
+                0.48,
+                0.25,
+                0.29
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.19796000000000002,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "179b352d00c1d9a2d874d632e15adcd4c59f8afefc6ae5621197ceb459f97ba7"
+    },
+    "mh60.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel -1",
+              "position": [
+                0.48,
+                0.25,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel 1",
+              "position": [
+                0.48,
+                0.25,
+                0.29
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.19796000000000002,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "a2eee5b21fa413fa92cbae35fa07adaba85bfa67704873fc72bfffaa53abeeff"
+    },
+    "mh60.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel -1",
+              "position": [
+                0.48,
+                0.25,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel 1",
+              "position": [
+                0.48,
+                0.25,
+                0.29
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.19796000000000002,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "3e83210aba4f4a91374dbc53fd4fcc619ecd248403dd6c03d3623bfd14caa08d"
+    },
+    "mh60.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel -1",
+              "position": [
+                0.48,
+                0.25,
+                -0.29
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation gun barrel 1",
+              "position": [
+                0.48,
+                0.25,
+                0.29
+              ]
+            }
+          ],
+          "weapon": "ChainGun"
+        }
+      ],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down",
+          "part": "presentation lamp lens down",
+          "position": [
+            0.4,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.65564,
+            0.19796000000000002,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "f4776341a172deb8f3aa4fed83703491c67b2f72f4183452a030c98a9b414d12"
+    },
+    "mig": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile",
+              "position": [
+                0.34,
+                0.128,
+                -0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.001",
+              "position": [
+                0.34,
+                0.128,
+                -0.46
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.002",
+              "position": [
+                0.34,
+                0.128,
+                0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.003",
+              "position": [
+                0.34,
+                0.128,
+                0.46
+              ]
+            }
+          ],
+          "weapon": "Maverick"
+        }
+      ],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle",
+          "position": [
+            -0.79,
+            0.152,
+            -0.224
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle.001",
+          "position": [
+            -0.79,
+            0.152,
+            0.224
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "302ff505b9e4081736d9f6edb9ef2b4138547bf70e2ac68289688c60cfdde82d"
+    },
+    "mig.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile",
+              "position": [
+                0.34,
+                0.128,
+                -0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.001",
+              "position": [
+                0.34,
+                0.128,
+                -0.46
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.002",
+              "position": [
+                0.34,
+                0.128,
+                0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.003",
+              "position": [
+                0.34,
+                0.128,
+                0.46
+              ]
+            }
+          ],
+          "weapon": "Maverick"
+        }
+      ],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle",
+          "position": [
+            -0.79,
+            0.152,
+            -0.224
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle.001",
+          "position": [
+            -0.79,
+            0.152,
+            0.224
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "82b009a58a7f1e2584cee43e2f92dfa0838ea6b24347b2d479dbf87a79a6866c"
+    },
+    "mig.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile",
+              "position": [
+                0.34,
+                0.128,
+                -0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.001",
+              "position": [
+                0.34,
+                0.128,
+                -0.46
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.002",
+              "position": [
+                0.34,
+                0.128,
+                0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.003",
+              "position": [
+                0.34,
+                0.128,
+                0.46
+              ]
+            }
+          ],
+          "weapon": "Maverick"
+        }
+      ],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle",
+          "position": [
+            -0.79,
+            0.152,
+            -0.224
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle.001",
+          "position": [
+            -0.79,
+            0.152,
+            0.224
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "5d092583ceb632b0d93a6c1df96b4045ec0300a9439e97bc88a88ed255370cd3"
+    },
+    "mig.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile",
+              "position": [
+                0.34,
+                0.128,
+                -0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.001",
+              "position": [
+                0.34,
+                0.128,
+                -0.46
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.002",
+              "position": [
+                0.34,
+                0.128,
+                0.36
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "underwing missile.003",
+              "position": [
+                0.34,
+                0.128,
+                0.46
+              ]
+            }
+          ],
+          "weapon": "Maverick"
+        }
+      ],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle",
+          "position": [
+            -0.79,
+            0.152,
+            -0.224
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "exhaust nozzle.001",
+          "position": [
+            -0.79,
+            0.152,
+            0.224
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "98bc6bdbcc272b24cbc8b8873639af44896aeb2aa08b0b31ae175fc7562423e6"
+    },
+    "msub": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissile"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissileAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "da3593a113537e515606957a83696c3748f0b0d62c57bc457f3efd1d6e3002e2",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 1.0809999775886534
+        },
+        "length": 2.299999952316284,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -1.0809999775886534
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "msub.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissile"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissileAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "412d904678487646b212c5ed8ff6b181bc3801281c5ef660ea218df462b2c289",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 1.0809999775886534
+        },
+        "length": 2.299999952316284,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -1.0809999775886534
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "msub.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissile"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.1775,
+                0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.1775,
+                -0.13
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.1775,
+                0.13
+              ]
+            }
+          ],
+          "weapon": "SubMissileAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "4b04103a6011ef78aac65f909442cc53fb2a25b1837082569758df8c7ab61fb1",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 1.0809999775886534
+        },
+        "length": 2.299999952316284,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -1.0809999775886534
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "msub.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.190501,
+                0.078842
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.190501,
+                0.078842
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.190501,
+                0.078842
+              ]
+            }
+          ],
+          "weapon": "SubMissile"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.190501,
+                0.078842
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.190501,
+                0.078842
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.211279,
+                -0.180327
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.190501,
+                0.078842
+              ]
+            }
+          ],
+          "weapon": "SubMissileAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "0c08cbb16f78d94777c546933e220fe091a4e75f6df80c8101652f796a9305d1",
+      "wake": {
+        "beam": 0.4884328544139862,
+        "bow": {
+          "leftZ": -0.05861194252967834,
+          "rightZ": 0.05861194252967834,
+          "x": 1.0809999775886534
+        },
+        "length": 2.299999952316284,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14652985632419585,
+          "rightZ": 0.14652985632419585,
+          "x": -1.0809999775886534
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "msub.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.200103,
+                0.093657
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.200103,
+                0.093657
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.200103,
+                0.093657
+              ]
+            }
+          ],
+          "weapon": "SubMissile"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              2,
+              4
+            ],
+            [
+              1,
+              3,
+              5
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch",
+              "position": [
+                -0.72,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.001",
+              "position": [
+                -0.72,
+                0.200103,
+                0.093657
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.002",
+              "position": [
+                -0.48,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.003",
+              "position": [
+                -0.48,
+                0.200103,
+                0.093657
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.004",
+              "position": [
+                -0.24,
+                0.240242,
+                -0.163226
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "missile launch hatch.005",
+              "position": [
+                -0.24,
+                0.200103,
+                0.093657
+              ]
+            }
+          ],
+          "weapon": "SubMissileAA"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "02fae43658707b002231c08a1e60c228c73c9a4b8f916514660a7a1a6d01fd8c",
+      "wake": {
+        "beam": 0.48412567377090454,
+        "bow": {
+          "leftZ": -0.05809508085250854,
+          "rightZ": 0.05809508085250854,
+          "x": 1.0809999775886534
+        },
+        "length": 2.299999952316284,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14523770213127135,
+          "rightZ": 0.14523770213127135,
+          "x": -1.0809999775886534
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "pt": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                1.045,
+                0.3,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "2Inch"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.61,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.61,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "fff63952e8e88f8374a8c7115e368a4dc76bec35487484c50d531b28782fcb77",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.0,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "pt.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                1.045,
+                0.3,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "2Inch"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.61,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.61,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "7cd23f8c16e353998c053e7a811fbbe2d505df751d600b0eeeda9d6031e5fce1",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.0,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "pt.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                1.045,
+                0.3,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "2Inch"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.61,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.61,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "62d4eae83eb31dfe28357572acab09355db885f6e397e29570260deb4aebff5e",
+      "wake": {
+        "beam": 0.6000000238418579,
+        "bow": {
+          "leftZ": -0.07200000286102294,
+          "rightZ": 0.07200000286102294,
+          "x": 0.7971199905872345
+        },
+        "length": 1.6319999694824219,
+        "lifetimeS": 2.0,
+        "stern": {
+          "leftZ": -0.18000000715255737,
+          "rightZ": 0.18000000715255737,
+          "x": -0.736959980726242
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "pt.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                1.045,
+                0.3,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "2Inch"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.61,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.61,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "02652bca647ec0d8e0200d0f86d3ec36e58735874fabb454310ed8ea7cc203a6",
+      "wake": {
+        "beam": 0.586249589920044,
+        "bow": {
+          "leftZ": -0.07034995079040528,
+          "rightZ": 0.07034995079040528,
+          "x": 0.7632527482509612
+        },
+        "length": 1.560042679309845,
+        "lifetimeS": 2.0,
+        "stern": {
+          "leftZ": -0.17587487697601317,
+          "rightZ": 0.17587487697601317,
+          "x": -0.7031873703002929
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "pt.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                1.045,
+                0.3,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "2Inch"
+        },
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack -1",
+              "position": [
+                -0.61,
+                0.181,
+                -0.16
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                -1,
+                0
+              ],
+              "part": "presentation depth charge rack 1",
+              "position": [
+                -0.61,
+                0.181,
+                0.16
+              ]
+            }
+          ],
+          "weapon": "DepthCharge"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "94b2e7da73c6bd7398cbd723e19c73f602b5a9e9e69bb29bae4d7e65dd57ca93",
+      "wake": {
+        "beam": 0.5846769511699677,
+        "bow": {
+          "leftZ": -0.07016123414039611,
+          "rightZ": 0.07016123414039611,
+          "x": 0.7379894459247589
+        },
+        "length": 1.5063661932945251,
+        "lifetimeS": 2.0,
+        "stern": {
+          "leftZ": -0.17540308535099028,
+          "rightZ": 0.17540308535099028,
+          "x": -0.6779947757720947
+        },
+        "submarine": false,
+        "waterlineY": 0
+      }
+    },
+    "sam": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                0.743294,
+                0.668965,
+                0.0
+              ],
+              "part": "missile nose",
+              "position": [
+                0.421572,
+                0.596565,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "Nike"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "dde7641c0d0a1d2f5fc6ae9c5d52e5ec54d1dac5c35dc57aadcebe5e3f5e91b0"
+    },
+    "scoutant": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible",
+              "position": [
+                0.588753,
+                0.298064,
+                -0.072538
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible.001",
+              "position": [
+                0.587886,
+                0.297266,
+                0.069811
+              ]
+            }
+          ],
+          "weapon": "mandible"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "f8b5e7993cf6f0257a3dade41e8c0b9ad2cf73d8915e35d935a646c7d66995fb"
+    },
+    "shok": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "PortaTesla"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "rifle barrel",
+              "position": [
+                0.1794,
+                0.2024,
+                -0.0138
+              ]
+            }
+          ],
+          "weapon": "PortaTesla"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5ad8a97799e50ee19c472805e34de5bacb97189f8277f6a1efe161cad7110c24"
+    },
+    "spy": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "SilencedPPK"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "05a36bfcae201089ed79729426b096832d8e8ec9e86dcfa2ad8078aa5cf1f0c4"
+    },
+    "spy.england": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 3,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "SilencedPPK"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "df9d9cf04c94dbd0545f92070d3aa2c3a060e2779b4703f44fe43d87ba11ddf0"
+    },
+    "ss": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube -1",
+              "position": [
+                0.88,
+                -0.075,
+                -0.09
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube 1",
+              "position": [
+                0.88,
+                -0.075,
+                0.09
+              ]
+            }
+          ],
+          "weapon": "TorpTube"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "760aa2d58c2e6f67edf3d7f667f65e860166aa358a80380c45557f6f6fcdf10b",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 0.8929999887943267
+        },
+        "length": 1.899999976158142,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -0.8929999887943267
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "ss.d1": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube -1",
+              "position": [
+                0.88,
+                -0.075,
+                -0.09
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube 1",
+              "position": [
+                0.88,
+                -0.075,
+                0.09
+              ]
+            }
+          ],
+          "weapon": "TorpTube"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "b76e7275e9583f5215a674285a71519dc7da73fc286181a276b5b1df7ffcfba9",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 0.8929999887943267
+        },
+        "length": 1.899999976158142,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -0.8929999887943267
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "ss.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube -1",
+              "position": [
+                0.88,
+                -0.075,
+                -0.09
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube 1",
+              "position": [
+                0.88,
+                -0.075,
+                0.09
+              ]
+            }
+          ],
+          "weapon": "TorpTube"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "cb79b1005fafef9245a29c1fa6b53efa6084de181cf9fa82d008f4981fdda49b",
+      "wake": {
+        "beam": 0.49000000953674316,
+        "bow": {
+          "leftZ": -0.05880000114440918,
+          "rightZ": 0.05880000114440918,
+          "x": 0.8929999887943267
+        },
+        "length": 1.899999976158142,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14700000286102294,
+          "rightZ": 0.14700000286102294,
+          "x": -0.8929999887943267
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "ss.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube -1",
+              "position": [
+                0.88,
+                -0.075,
+                -0.09
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube 1",
+              "position": [
+                0.88,
+                -0.075,
+                0.09
+              ]
+            }
+          ],
+          "weapon": "TorpTube"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "5f2cdbff3c508f5cd4c21cc35c6a42ef56160275b77510eb47ea0ca5d36886ad",
+      "wake": {
+        "beam": 0.4884328544139862,
+        "bow": {
+          "leftZ": -0.05861194252967834,
+          "rightZ": 0.05861194252967834,
+          "x": 0.8929999887943267
+        },
+        "length": 1.899999976158142,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14652985632419585,
+          "rightZ": 0.14652985632419585,
+          "x": -0.8929999887943267
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "ss.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube -1",
+              "position": [
+                0.88,
+                -0.075,
+                -0.09
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation torpedo tube 1",
+              "position": [
+                0.88,
+                -0.075,
+                0.09
+              ]
+            }
+          ],
+          "weapon": "TorpTube"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "3f94712e98f6ebb13f034334523ae2490dbf2cbe33f55a9f035f53373dda8014",
+      "wake": {
+        "beam": 0.48412567377090454,
+        "bow": {
+          "leftZ": -0.05809508085250854,
+          "rightZ": 0.05809508085250854,
+          "x": 0.8929999887943267
+        },
+        "length": 1.899999976158142,
+        "lifetimeS": 2.6,
+        "stern": {
+          "leftZ": -0.14523770213127135,
+          "rightZ": 0.14523770213127135,
+          "x": -0.8929999887943267
+        },
+        "submarine": true,
+        "waterlineY": 0
+      }
+    },
+    "stnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "muzzle brake",
+              "position": [
+                0.29,
+                0.479,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "APTusk.stnk"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "42dd6ee83f659a53eeaeab72c0841f76636a5780fda98d93f331a6df862a547b"
+    },
+    "tecn": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "b578fe5a7b27d7a48ce6e2ea1dee2b31e09a7a5e8dc046a217e637afc92e586d"
+    },
+    "tecn2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        },
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "presentation sidearm",
+              "position": [
+                0.135,
+                0.21,
+                -0.016
+              ]
+            }
+          ],
+          "weapon": "Pistol"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "40bf0498f0689fe16e3b56fdbff43c5b1d35d4660548a7890afae35474fb51e3"
+    },
+    "tran": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.front",
+          "part": "presentation lamp lens down.front",
+          "position": [
+            0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.rear",
+          "part": "presentation lamp lens down.rear",
+          "position": [
+            -0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.97564,
+            0.20795999999999998,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "ab3a8e8d622c8a49213a3c985027b8fbea8f63a5eb247a1f980e17ab8b3a4105"
+    },
+    "tran.d2": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.front",
+          "part": "presentation lamp lens down.front",
+          "position": [
+            0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.rear",
+          "part": "presentation lamp lens down.rear",
+          "position": [
+            -0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.97564,
+            0.20795999999999998,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "947dc1b8e10df6024274390c29374910057e67d70ac21894ce65f993123d7d6a"
+    },
+    "tran.d3": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.front",
+          "part": "presentation lamp lens down.front",
+          "position": [
+            0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.rear",
+          "part": "presentation lamp lens down.rear",
+          "position": [
+            -0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.97564,
+            0.20795999999999998,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "230773aab8092445e616959abdedd2b21776e2e74dbedac81be592f8210d8ec0"
+    },
+    "tran.d4": {
+      "armaments": [],
+      "exhausts": [],
+      "lights": [
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.front",
+          "part": "presentation lamp lens down.front",
+          "position": [
+            0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "name": "down.rear",
+          "part": "presentation lamp lens down.rear",
+          "position": [
+            -0.73,
+            0.164,
+            0.0
+          ]
+        },
+        {
+          "bone": 0,
+          "direction": [
+            0.9403762257505053,
+            -0.3401360816544381,
+            0.0
+          ],
+          "name": "forward",
+          "part": "presentation lamp lens forward",
+          "position": [
+            0.97564,
+            0.20795999999999998,
+            0.0
+          ]
+        }
+      ],
+      "sourceSha256": "24258ae6042860c34fe088de5cb1b279d82094afad7f0257b3e8f5852fbb6331"
+    },
+    "tsla": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                0,
+                1,
+                0
+              ],
+              "part": "terminal ball",
+              "position": [
+                0.0,
+                1.38,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "TeslaZap"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "e8d1d0f7f8a58390e922aeb6cc29820003e5bc46ebe3789e51f5290eb9b69698"
+    },
+    "ttnk": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 1,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "tesla emitter muzzle electrode",
+              "position": [
+                0.174571,
+                0.73511,
+                -0.000255
+              ]
+            }
+          ],
+          "weapon": "TTankZap"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "3febdf9c8f126eefde191748c12d613516934b3023db5ffd0c7082fc7bb7b9ac"
+    },
+    "u2": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -1.065,
+            0.246,
+            0.0
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "6a7837be8777f6385b5fbdbdc712fe41a0f3a4623e9d52225590ecfe6cae6c3b"
+    },
+    "u2.d2": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -1.065,
+            0.246,
+            0.0
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "a72b46947cf9ac9fa073dd2a2e560cadf0914930d43e443a28be9b2e837cc657"
+    },
+    "u2.d3": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -1.065,
+            0.246,
+            0.0
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "98d559baa66b688dc29082c1516bd5d923ac9e1295f2679a97913470c5ba443e"
+    },
+    "u2.d4": {
+      "armaments": [],
+      "exhausts": [
+        {
+          "bone": 0,
+          "direction": [
+            -1,
+            0,
+            0
+          ],
+          "part": "engine exhaust",
+          "position": [
+            -1.065,
+            0.246,
+            0.0
+          ]
+        }
+      ],
+      "lights": [],
+      "sourceSha256": "81853fff9e7b97b177df8fd39c3e5dacca617463f25cc9e9552628c9bcd64fa6"
+    },
+    "v2rl": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 7,
+              "direction": [
+                0.696581,
+                0.717478,
+                0.0
+              ],
+              "part": "missile nose cone",
+              "position": [
+                0.069813,
+                1.301139,
+                -0.0
+              ]
+            }
+          ],
+          "weapon": "SCUD"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "ebb1b834f15ce87ac90e98cab91ca3eda4869f40c7d7f6d508c162cc9f045679"
+    },
+    "warriorant": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible",
+              "position": [
+                0.588753,
+                0.298064,
+                -0.072538
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "mandible.001",
+              "position": [
+                0.587886,
+                0.297266,
+                0.069811
+              ]
+            }
+          ],
+          "weapon": "MandibleHeavy"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "21b5c34c78e75546974cf9c9f71074721f344e4dca9b881eab88b2300836e09f"
+    },
+    "yak": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "motor cannon muzzle",
+              "position": [
+                1.05,
+                0.268,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "ChainGun.Yak"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "c0004b8372314697ec62209fd411dfad067569dd90872fe0d2ff6cd7af7aa82f"
+    },
+    "yak.d2": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "motor cannon muzzle",
+              "position": [
+                1.05,
+                0.268,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "ChainGun.Yak"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "e3fd987dfeedd288ad44b74e66d02dfe94d2b11d2cf5bdace309c95ffddc6fc7"
+    },
+    "yak.d3": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "motor cannon muzzle",
+              "position": [
+                1.05,
+                0.268,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "ChainGun.Yak"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "4b594c30187a5fdbdf235fa33295a18f4d23be56ba54918a35028feeab8a6cc6"
+    },
+    "yak.d4": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0
+            ],
+            [
+              0
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "motor cannon muzzle",
+              "position": [
+                1.05,
+                0.268,
+                0.0
+              ]
+            }
+          ],
+          "weapon": "ChainGun.Yak"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "86c7e543f72ca1235b7feecc33fe20bf88b6a22dfc0356202f1af4da305b1274"
+    },
+    "zombie": {
+      "armaments": [
+        {
+          "barrels": [
+            [
+              0,
+              1
+            ]
+          ],
+          "sockets": [
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "hand",
+              "position": [
+                0.088883,
+                0.1978,
+                -0.0552
+              ]
+            },
+            {
+              "bone": 0,
+              "direction": [
+                1.0,
+                0.0,
+                0.0
+              ],
+              "part": "hand.001",
+              "position": [
+                0.088883,
+                0.1978,
+                0.0368
+              ]
+            }
+          ],
+          "weapon": "claw"
+        }
+      ],
+      "exhausts": [],
+      "lights": [],
+      "sourceSha256": "bb15ede712f56eb3d3d25dfe1bba02614abe0556ab611ea70c729b2f96292572"
+    }
+  },
+  "catalogSha256": "29c6b4f67e24db3c6909e9334d3052056ce268e468d285d8c3bf7f2b08c8a95b",
+  "schema": 1
+}

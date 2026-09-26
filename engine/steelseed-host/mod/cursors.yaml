@@ -1,0 +1,54 @@
+Cursors:
+	assetless:
+		default:
+			Start: 0
+		ability:
+			Start: 0
+		assaultmove:
+			Start: 0
+		assaultmove-blocked:
+			Start: 0
+		attack:
+			Start: 0
+		attackmove:
+			Start: 0
+		attackmove-blocked:
+			Start: 0
+		attackoutsiderange:
+			Start: 0
+		c4:
+			Start: 0
+		capture:
+			Start: 0
+		chrono-select:
+			Start: 0
+		chrono-target:
+			Start: 0
+		deploy:
+			Start: 0
+		deploy-blocked:
+			Start: 0
+		enter:
+			Start: 0
+		enter-blocked:
+			Start: 0
+		generic-blocked:
+			Start: 0
+		goldwrench:
+			Start: 0
+		goldwrench-blocked:
+			Start: 0
+		harvest:
+			Start: 0
+		heal:
+			Start: 0
+		move:
+			Start: 0
+		move-blocked:
+			Start: 0
+		nuke:
+			Start: 0
+		repair:
+			Start: 0
+		sell:
+			Start: 0

@@ -1,0 +1,86 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<AssemblyName>OpenRA.Browser</AssemblyName>
+		<RootNamespace>OpenRA</RootNamespace>
+		<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+		<WasmMainJSPath>wwwroot/main.js</WasmMainJSPath>
+		<OutputPath Condition="'$(SteelseedParityReference)' != 'true'">../../bin-browser</OutputPath>
+		<OutputPath Condition="'$(SteelseedParityReference)' == 'true'">../../bin-browser-reference</OutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<PublishTrimmed>true</PublishTrimmed>
+		<RunAOTCompilation Condition="'$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
+		<WasmEnableThreads>false</WasmEnableThreads>
+		<EmccMaximumHeapSize>2147483648</EmccMaximumHeapSize>
+		<TrimMode>partial</TrimMode>
+		<InvariantGlobalization>false</InvariantGlobalization>
+		<EventSourceSupport>false</EventSourceSupport>
+		<UseSystemResourceKeys>true</UseSystemResourceKeys>
+		<NuGetAudit>false</NuGetAudit>
+		<NoWarn>$(NoWarn);SA0001</NoWarn>
+		<MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+		<DefineConstants Condition="'$(SteelseedParityReference)' == 'true'">$(DefineConstants);STEELSEED_PARITY_REFERENCE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<TrimmerRootAssembly Include="OpenRA.Game" />
+		<TrimmerRootAssembly Include="OpenRA.Mods.Common" />
+		<TrimmerRootAssembly Include="OpenRA.Mods.Cnc" />
+		<TrimmerRootAssembly Include="OpenRA.Mods.Steelseed" />
+		<TrimmerRootAssembly Include="OpenRA.Platforms.Browser" />
+		<TrimmerRootAssembly Include="OpenRA.Browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="../../openra/OpenRA.Game/OpenRA.Game.csproj" />
+		<ProjectReference Include="../../openra/OpenRA.Mods.Common/OpenRA.Mods.Common.csproj" />
+		<ProjectReference Include="../../openra/OpenRA.Mods.Cnc/OpenRA.Mods.Cnc.csproj" />
+		<ProjectReference Include="../OpenRA.Mods.Steelseed/OpenRA.Mods.Steelseed.csproj" />
+		<ProjectReference Include="../../openra/OpenRA.Platforms.Browser/OpenRA.Platforms.Browser.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<WasmExtraFilesToDeploy Include="wwwroot/index.html" />
+		<WasmExtraFilesToDeploy Include="wwwroot/main.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-steelseed-bridge.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-mp-socket.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/sim-worker.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/sim-proxy.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/launch-args.js" />
+		<!-- main.js imports these interop sides; without them the module graph
+		     dies before the bridge exists and the session screen never leaves
+		     "Checking simulation host". -->
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-audio.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-agent-mode.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-fs.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-gl.js" />
+		<WasmExtraFilesToDeploy Include="wwwroot/openra-input.js" />
+	</ItemGroup>
+
+	<!-- Keep the JS interop source generator in Release. -->
+	<Target Name="DisableAnalyzers" />
+
+	<Target Name="GenerateAssetlessRaMod" BeforeTargets="PrepareForBuild">
+		<Exec Command="node &quot;$(MSBuildThisFileDirectory)../tools/build-ra-mod.mjs&quot;" />
+		<Exec Condition="'$(SteelseedParityReference)' == 'true'" Command="node &quot;$(MSBuildThisFileDirectory)../tools/build-ra-reference.mjs&quot;" />
+		<ItemGroup>
+			<_AssetlessRaModFiles Include="$(MSBuildThisFileDirectory)../generated/mods/ra/**/*" />
+			<WasmFilesToIncludeInFileSystem
+				Include="@(_AssetlessRaModFiles)"
+				TargetPath="/openra/engine/mods/ra/%(_AssetlessRaModFiles.RecursiveDir)%(_AssetlessRaModFiles.Filename)%(_AssetlessRaModFiles.Extension)" />
+			<_ReferenceRaModFiles Condition="'$(SteelseedParityReference)' == 'true'" Include="$(MSBuildThisFileDirectory)../generated/mods/ra-reference/**/*" />
+			<WasmFilesToIncludeInFileSystem Condition="'$(SteelseedParityReference)' == 'true'"
+				Include="@(_ReferenceRaModFiles)"
+				TargetPath="/openra/engine/mods/ra-reference/%(_ReferenceRaModFiles.RecursiveDir)%(_ReferenceRaModFiles.Filename)%(_ReferenceRaModFiles.Extension)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="ExportResolvedRaActorCatalog" AfterTargets="Build">
+		<Exec Command="node &quot;$(MSBuildThisFileDirectory)../tools/export-ra-catalog.mjs&quot;" />
+	</Target>
+
+	<ItemGroup>
+		<WasmFilesToIncludeInFileSystem Include="$(MSBuildThisFileDirectory)../../openra/VERSION" TargetPath="/openra/engine/VERSION" />
+		<WasmFilesToIncludeInFileSystem Include="$(MSBuildThisFileDirectory)../../glsl/*" TargetPath="/openra/engine/glsl/%(Filename)%(Extension)" />
+	</ItemGroup>
+</Project>

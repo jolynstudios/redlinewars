@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<IsPublishable>false</IsPublishable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="FontMetrics/**/*.cs" />
+		<ProjectReference Include="..\OpenRA.Game\OpenRA.Game.csproj" />
+		<ProjectReference Include="..\OpenRA.Mods.Common\OpenRA.Mods.Common.csproj">
+			<Private>True</Private>
+		</ProjectReference>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+		<PackageReference Include="NUnit" Version="4.3.2" />
+		<PackageReference Include="NUnit.Console" Version="3.19.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+	</ItemGroup>
+
+	<!-- Source-link the browser host's deterministic decision and state helpers so their
+	     engine-independent boundaries can be unit-tested without referencing the browser-only assembly. -->
+	<ItemGroup>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentDoctrineProgram.cs">
+			<Link>Browser\AgentDoctrineProgram.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentStrategyCatalog.Generated.cs">
+			<Link>Browser\AgentStrategyCatalog.Generated.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentDoctrineExecutor.cs">
+			<Link>Browser\AgentDoctrineExecutor.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentCombatRoster.cs">
+			<Link>Browser\AgentCombatRoster.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentModeContracts.cs">
+			<Link>Browser\AgentModeContracts.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentSpatialSummary.cs">
+			<Link>Browser\AgentSpatialSummary.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentBuildPlanController.cs">
+			<Link>Browser\AgentBuildPlanController.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentDoctrineDecisionController.cs">
+			<Link>Browser\AgentDoctrineDecisionController.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentWarCompiler.cs">
+			<Link>Browser\AgentWarCompiler.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentCadence.cs">
+			<Link>Browser\AgentCadence.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentFuzzyEngagement.cs">
+			<Link>Browser\AgentFuzzyEngagement.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentLockstepBarrier.cs">
+			<Link>Browser\AgentLockstepBarrier.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentAdjudication.cs">
+			<Link>Browser\AgentAdjudication.cs</Link>
+		</Compile>
+		<Compile Include="..\OpenRA.Browser\AgentMode\AgentAdjudicationLedger.cs">
+			<Link>Browser\AgentAdjudicationLedger.cs</Link>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\OpenRA.Browser\tests\benchmark-calibration\golden-adjudication-scenarios.json"
+			Link="Browser\benchmark-calibration\golden-adjudication-scenarios.json" CopyToOutputDirectory="PreserveNewest" />
+		<None Include="..\OpenRA.Browser\tests\benchmark-calibration\golden-score-v1.frozen-test.json"
+			Link="Browser\benchmark-calibration\golden-score-v1.frozen-test.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+</Project>

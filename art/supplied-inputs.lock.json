@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "policy": "The exact inputs that shipped art packs rest on, each with the rights it is used under. A pack may rest only on an input recorded here; web/tools/sourcelicensegate.mjs refuses a release whose shipped packs rest on an input without verified rights.",
+  "inputs": [
+    {
+      "id": "military-game-character",
+      "origin": "user-supplied",
+      "sha256": "bbd5ac84b22df64720ba3ee0349cddb549c4a46f92a269910b63a75d46f323a3",
+      "bytes": 200774377,
+      "licenseStatus": "verified",
+      "authorization": "local-project-remodel-and-in-game-use",
+      "scope": "basis of the civilian role packs (c1-c11, chan, delphi, einstein, tecn, tecn2) and the rifle study",
+      "downloadAllowed": false,
+      "rights": {
+        "basis": "own-work",
+        "creator": "Jolyn Studios",
+        "made": "Blender, on Reallusion Character Creator base parts under the studio's Character Creator licence",
+        "attribution": "THIRD_PARTY_NOTICES.md",
+        "evidence": "the studio's own source file"
+      }
+    },
+    {
+      "id": "swat-female-commando",
+      "origin": "user-supplied",
+      "sha256": "a35fe4a909271c26d0d4f204cf8345914e4f311ee35e8a1986481d6b703012a9",
+      "bytes": 342618440,
+      "licenseStatus": "verified",
+      "authorization": "local-project-remodel-and-in-game-use",
+      "scope": "basis of the soldier role packs (e1, e2, e3, e4, e6, gnrl, mech, medi, shok, spy, thf) and the first Riki",
+      "downloadAllowed": false,
+      "suppliedAs": "SWAT_Blend.blend",
+      "rights": {
+        "basis": "CGTrader-Royalty-Free",
+        "title": "Female S.W.A.T Tactical Soldier",
+        "creator": "pathumtharaka1998",
+        "source": "https://www.cgtrader.com/free-3d-models/military/military-character/female-swat-soldier",
+        "licence": "https://www.cgtrader.com/pages/terms-and-conditions#general-terms-of-licensing",
+        "terms": "Royalty Free License: use in own projects, copying within the team, remixing and commercial use allowed; no redistribution of the file (selling or re-uploading); no use for training or fine-tuning AI models.",
+        "modified": "its body became the shared soldier base and the first Riki: refitted to the game's rig, retextured, heads and kit from military-game-character",
+        "attribution": "THIRD_PARTY_NOTICES.md; the website's credits page (not required by the licence)",
+        "evidence": "the CGTrader listing's licence panel"
+      }
+    },
+    {
+      "id": "dog-sculpt",
+      "origin": "user-supplied",
+      "sha256": "aadcbad9d66062f5a0bd634a5d703706ee9ee13ca63378a238f1409dc8010763",
+      "bytes": 37295188,
+      "licenseStatus": "verified",
+      "authorization": "local-project-remodel-and-in-game-use",
+      "scope": "basis of the attack dog",
+      "downloadAllowed": false,
+      "suppliedAs": "dog.blend",
+      "rights": {
+        "basis": "own-work",
+        "creator": "Jolyn Studios",
+        "made": "Blender sculpt",
+        "attribution": "THIRD_PARTY_NOTICES.md",
+        "evidence": "the studio's own source file"
+      }
+    },
+    {
+      "id": "meshy-riki-commando",
+      "origin": "user-supplied",
+      "sha256": "0f16df0aa325fa263ff66886cc668118e40d9609c77b0e08b2170c274d02eec3",
+      "bytes": 46734912,
+      "licenseStatus": "verified",
+      "authorization": "local-project-remodel-and-in-game-use",
+      "scope": "the current Riki model and its source animations",
+      "downloadAllowed": false,
+      "suppliedAs": "Meshy_AI_riki_biped_Animation_Running_withSkin.glb",
+      "rights": {
+        "basis": "own-work",
+        "creator": "Jolyn Studios",
+        "made": "Meshy, on the studio's Meshy account",
+        "attribution": "THIRD_PARTY_NOTICES.md",
+        "evidence": "the studio's Meshy generations"
+      }
+    }
+  ]
+}

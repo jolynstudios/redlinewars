@@ -1,0 +1,7 @@
+# Enforce LF normalization on every platform. `text=lf` sets the text
+# attribute to the literal value "lf" and does not set an EOL policy, which
+# let JSON baselines acquire CRLF on Windows and broke byte-hash gates.
+* text=auto eol=lf
+
+# Custom for Visual Studio
+*.cs     diff=csharp

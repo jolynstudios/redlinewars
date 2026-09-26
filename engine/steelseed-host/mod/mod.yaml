@@ -1,0 +1,124 @@
+Metadata:
+	Title: Red Alert — STEELSEED presentation
+	Version: 7eabcfe-assetless-v1
+	Hidden: true
+
+FileSystem: DefaultFileSystem
+	Packages:
+		^EngineDir
+		$ra: ra
+
+MapFolders:
+	ra|maps
+
+Rules:
+	ra|rules/misc.yaml
+	ra|rules/ai.yaml
+	ra|rules/player.yaml
+	ra|rules/world.yaml
+	ra|rules/defaults.yaml
+	ra|rules/vehicles.yaml
+	ra|rules/husks.yaml
+	ra|rules/structures.yaml
+	ra|rules/infantry.yaml
+	ra|rules/civilian.yaml
+	ra|rules/decoration.yaml
+	ra|rules/aircraft.yaml
+	ra|rules/ships.yaml
+	ra|rules/fakes.yaml
+	ra|rules/map-generators.yaml
+	ra|rules/assetless-presentation.yaml
+	ra|rules/deployment-rules.yaml
+
+Sequences:
+	ra|sequences/ships.yaml
+	ra|sequences/vehicles.yaml
+	ra|sequences/structures.yaml
+	ra|sequences/infantry.yaml
+	ra|sequences/aircraft.yaml
+	ra|sequences/misc.yaml
+	ra|sequences/decorations.yaml
+
+TileSets:
+	ra|tilesets/snow.yaml
+	ra|tilesets/interior.yaml
+	ra|tilesets/temperat.yaml
+	ra|tilesets/desert.yaml
+
+FluentMessages:
+	ra|fluent/ra.ftl
+	ra|fluent/rules.ftl
+	ra|fluent/host.ftl
+
+Weapons:
+	ra|weapons/explosions.yaml
+	ra|weapons/ballistics.yaml
+	ra|weapons/missiles.yaml
+	ra|weapons/other.yaml
+	ra|weapons/smallcaliber.yaml
+	ra|weapons/superweapons.yaml
+
+Notifications:
+	ra|notifications.yaml
+
+Cursors:
+	ra|cursors.yaml
+
+ChromeMetrics:
+	ra|metrics.yaml
+
+Assemblies: OpenRA.Mods.Common.dll, OpenRA.Mods.Cnc.dll, OpenRA.Mods.Steelseed.dll
+
+LoadScreen: SteelseedLoadScreen
+
+ServerTraits:
+	LobbyCommands
+	SkirmishLogic
+	PlayerPinger
+
+DefaultOrderGenerator: AssetlessOrderGenerator
+
+Fonts:
+
+SoundFormats:
+
+SpriteFormats: AssetlessSprite
+
+VideoFormats:
+
+TerrainFormat: DefaultTerrain
+
+SpriteSequenceFormat: AssetlessSpriteSequence
+
+MapGrid:
+	Type: Rectangular
+
+SupportsMapsFrom: ra
+
+GameSpeeds:
+	DefaultSpeed: default
+	Speeds:
+		slowest:
+			Name: options-game-speed.slowest
+			Timestep: 80
+			OrderLatency: 2
+		slower:
+			Name: options-game-speed.slower
+			Timestep: 50
+			OrderLatency: 3
+		default:
+			Name: options-game-speed.normal
+			Timestep: 40
+			OrderLatency: 3
+		fast:
+			Name: options-game-speed.fast
+			Timestep: 35
+			OrderLatency: 4
+		faster:
+			Name: options-game-speed.faster
+			Timestep: 30
+			OrderLatency: 4
+		fastest:
+			Name: options-game-speed.fastest
+			Timestep: 20
+			OrderLatency: 6

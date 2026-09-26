@@ -1,0 +1,37 @@
+General:
+	Name: tileset-steelworks
+	Id: STEELWORKS
+	TileSize: 24,24
+	SheetSize: 256
+	EditorTemplateOrder: Ground
+
+Terrain:
+	Clear:
+		Type: Clear
+		TargetTypes: Ground
+		Color: 343A40
+	Resource:
+		Type: Resource
+		TargetTypes: Ground
+		Color: D18B2C
+	Water:
+		Type: Water
+		TargetTypes: Water
+		Color: 1B3A4B
+	Blocked:
+		Type: Blocked
+		Color: 171A1D
+
+Templates:
+	0:
+		Id: 0
+		Size: 1,1
+		Categories: Ground
+		Tiles:
+			0: Clear
+	1:
+		Id: 1
+		Size: 1,1
+		Categories: Ground
+		Tiles:
+			0: Blocked

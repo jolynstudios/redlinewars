@@ -1,0 +1,69 @@
+Metadata:
+	Title: mod-title
+	Version: 0.1
+	Hidden: true
+
+FileSystem: DefaultFileSystem
+	Packages:
+		^EngineDir
+		$steelseed: steelseed
+
+# Keep the generated-map catalog active without shipping a source map package. The support
+# directory is created empty by OpenRA and gives MapCache the initialized catalog that the
+# in-memory generator registers into at match start.
+MapFolders:
+	^SupportDir|maps: System
+
+Rules:
+	steelseed|rules/world.yaml
+	steelseed|rules/actors.yaml
+	steelseed|rules/structures.yaml
+
+Weapons:
+	steelseed|weapons/weapons.yaml
+
+TileSets:
+	steelseed|tilesets/steelworks.yaml
+
+FluentMessages:
+	steelseed|fluent/en.ftl
+
+Cursors:
+	steelseed|cursors.yaml
+
+ChromeMetrics:
+	steelseed|metrics.yaml
+
+Assemblies: OpenRA.Mods.Common.dll, OpenRA.Mods.Steelseed.dll
+
+LoadScreen: SteelseedLoadScreen
+
+ServerTraits:
+	LobbyCommands
+	SkirmishLogic
+
+DefaultOrderGenerator: UnitOrderGenerator
+
+Fonts:
+
+SoundFormats:
+
+SpriteFormats:
+
+VideoFormats:
+
+TerrainFormat: DefaultTerrain
+
+SpriteSequenceFormat: DefaultSpriteSequence
+
+MapGrid:
+	Type: Rectangular
+	MaximumTerrainHeight: 1
+
+GameSpeeds:
+	DefaultSpeed: default
+	Speeds:
+		default:
+			Name: options-game-speed-default
+			Timestep: 40
+			OrderLatency: 1

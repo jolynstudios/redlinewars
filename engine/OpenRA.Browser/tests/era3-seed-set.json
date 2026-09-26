@@ -1,0 +1,12 @@
+{
+	"comment": "PR0 metric freeze: rate claims (stalemate rate, contact rate, etc.) require N>=5 seeds. Single-seed runs are smoke only. Seed 31415926 is the era3-validation-2 reference.",
+	"metricsVersion": 1,
+	"minimumSeedsForRateClaims": 5,
+	"seeds": [
+		31415926,
+		27182818,
+		16180339,
+		14142135,
+		17320508
+	]
+}
