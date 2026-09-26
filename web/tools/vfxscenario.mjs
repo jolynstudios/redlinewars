@@ -650,7 +650,11 @@ const scenarios = {
 		for (const [name, count] of [['1tnk', 10], ['2tnk', 10], ['jeep', 10]]) column.push(...await m.produce(name, count).catch(error => { report.push(`${name}: ${error.message}`); return [] }))
 		for (const [k, unit] of column.entries()) await m.moveTo([unit.id], site.x - 2 + (k % 6), site.y - 2 + Math.floor(k / 6))
 		await m.page.waitForTimeout(12000)
-		await m.waitFor(() => globalThis.__live.powers().some(p => /Nuke/.test(p.key) && p.ready), undefined, 'the nuke ready', 120000)
+		await m.waitFor(() => globalThis.__live.powers().some(p => /Nuke/.test(p.key) && p.ready), undefined, 'the nuke ready', 120000).catch(async error => {
+			const state = await m.gate(() => ({ powers: globalThis.__live.powers(), outage: globalThis.steelseed.ctx.supportPowers?.()?.powerOutageTicks, tick: globalThis.steelseed.ctx.snapshot?.tick }))
+			for (const line of [...report, `column: ${column.length} produced`, `state: ${JSON.stringify(state)}`]) console.log(`  ${line}`)
+			throw error
+		})
 		const key = await m.gate(() => globalThis.__live.powers().find(p => /Nuke/.test(p.key)).key)
 		await m.hideHud()
 		await m.view(site.x + .5, site.y + .5)
@@ -693,6 +697,87 @@ const scenarios = {
 		report.push(`deaths: ${after.destroyed - before.destroyed} destroyed events; explosions alive now ${after.explosions}`)
 		report.push(`bounds: particle peak ${frames.peak} (pool dropped ${after.pool.dropped - before.pool.dropped}), clouds refused ${after.strike.refused - before.strike.refused}, lights capped ${after.lightsCapped - before.lightsCapped}, events dropped ${after.dropped - before.dropped}, scorch ${after.scorch}`)
 		report.push(`frames: before p50 ${pct(calm, .5)} p95 ${pct(calm, .95)} ms; strike +3 s p50 ${pct(around, .5)} p95 ${pct(around, .95)} p99 ${pct(around, .99)} worst ${pct(around, 1)} ms (${around.length} frames)`)
+		for (const line of report) console.log(`  ${line}`)
+		return captures
+	},
+	// S13 (vfx.md Epic 9), live: overlapping Atomic and MiniNuke strikes during a fight. Three of
+	// our Demo Trucks stand at ground zero inside a small column. The Atomic kills them, and each
+	// fires its own MiniNuke as it dies (FireWarheadsOnDeath), so four nuclear strikes start within
+	// a second. Recorded live, never frozen:
+	// - three strikes run at once and the fourth is refused and counted (MAX_STRIKES);
+	// - the flash stays one shared, capped light (FLASH_PEAK);
+	// - the particle pool holds;
+	// - each strike keeps its own stages until its own aftermath ends: the MiniNukes' first,
+	//   then the Atomic's.
+	async overlap(m) {
+		await m.devAll()
+		const yard = await m.yard()
+		const report = [], captures = []
+		await m.build('weap').catch(error => report.push(`weap: ${error.message}`))
+		for (let k = 0; k < 2; k++) await m.build('apwr').catch(error => report.push(`apwr: ${error.message}`))
+		await m.build('mslo')
+		const site = await landNear(m, Math.floor(yard.x) + 14, Math.floor(yard.y) + 8, 0) ?? { x: Math.floor(yard.x) + 14, y: Math.floor(yard.y) + 8 }
+		const trucks = await m.produce('dtrk', 3)
+		const column = []
+		for (const [name, count] of [['1tnk', 6], ['jeep', 6]]) column.push(...await m.produce(name, count).catch(error => { report.push(`${name}: ${error.message}`); return [] }))
+		for (const [k, truck] of trucks.entries()) await m.moveTo([truck.id], site.x + [0, 1, 0][k], site.y + [0, 0, 1][k])
+		for (const [k, unit] of column.entries()) await m.moveTo([unit.id], site.x - 3 + (k % 6), k < 6 ? site.y - 2 : site.y + 3)
+		await m.page.waitForTimeout(12000)
+		const placed = await m.gate(({ ids, x, y }) => ids.map(id => globalThis.__live.actor(id)).filter(a => a && Math.hypot(a.x - x - .5, a.y - y - .5) < 2.5).length, { ids: trucks.map(t => t.id), ...site })
+		report.push(`trucks within 2.5 cells of ground zero: ${placed} of ${trucks.length}`)
+		await m.waitFor(() => globalThis.__live.powers().some(p => /Nuke/.test(p.key) && p.ready), undefined, 'the nuke ready', 120000)
+		const key = await m.gate(() => globalThis.__live.powers().find(p => /Nuke/.test(p.key)).key)
+		await m.hideHud()
+		await m.view(site.x + .5, site.y + .5)
+		const stats = () => m.gate(() => {
+			const fx = globalThis.steelseed.ctx.get('fx')
+			return { strike: { ...fx.nuclearStats }, pool: { ...fx.particleStats }, lightsCapped: fx.stats.lightsCapped, dropped: fx.stats.droppedEvents }
+		})
+		const before = await stats()
+		await m.gate(() => {
+			const rec = globalThis.__overlap = { t: [], dt: [], active: [], peak: 0, stop: false, atomic: [], mininuke: [] }
+			let last = performance.now()
+			const loop = now => {
+				const fx = globalThis.steelseed.ctx.get('fx')
+				rec.t.push(now); rec.dt.push(now - last); last = now
+				rec.active.push(fx.nuclearStats.active)
+				rec.peak = Math.max(rec.peak, fx.particleStats.alive)
+				if (!rec.stop) requestAnimationFrame(loop)
+			}
+			requestAnimationFrame(loop)
+			const app = globalThis.steelseed
+			app.events.on('sim:projectile:impact', e => {
+				const view = app.ctx.snapshot?.view
+				if (!view) return
+				const name = app.ctx.actorTypeName(view.getUint16(e.offset + 22, true)).toLowerCase()
+				if (name === 'atomic' || name === 'mininuke') rec[name].push(performance.now())
+			})
+		})
+		const reply = await m.gate(({ key, x, y }) => globalThis.__live.playerOrder(key, { targetCell: { x, y }, extraData: 0xFFFFFFFF }), { key, ...site })
+		report.push(`order: ${reply}`)
+		await m.waitFor(() => globalThis.__overlap.atomic.length > 0, undefined, 'the Atomic', 60000)
+		for (const [wait, stage] of [[1000, '1-second'], [2000, '3-seconds'], [7000, '10-seconds']]) {
+			await m.page.waitForTimeout(wait)
+			await m.shot(`overlap-${stage}`); captures.push(`overlap-${stage}`)
+		}
+		// Stay until every strike is over: each must end on its own schedule.
+		await m.waitFor(() => globalThis.steelseed.ctx.get('fx').nuclearStats.active === 0, undefined, 'every strike over', 70000).catch(() => report.push('strikes still active after 70 s'))
+		const after = await stats()
+		const rec = await m.gate(() => { const r = globalThis.__overlap; r.stop = true; return { t: r.t, dt: r.dt, active: r.active, peak: r.peak, atomic: r.atomic, mininuke: r.mininuke } })
+		const struck = rec.atomic[0]
+		const lastAt = n => { for (let i = rec.t.length - 1; i >= 0; i--) if (rec.active[i] >= n) return +((rec.t[i] - struck) / 1000).toFixed(1); return null }
+		const pct = (a, q) => { const x = [...a].sort((p, r) => p - r); return x.length ? +x[Math.min(x.length - 1, Math.floor(q * x.length))].toFixed(1) : 0 }
+		const around = rec.dt.filter((_, i) => rec.t[i] >= struck - 200 && rec.t[i] <= struck + 3000)
+		const started = after.strike.started - before.strike.started, refused = after.strike.refused - before.strike.refused
+		const detonations = rec.atomic.length + rec.mininuke.length
+		report.push(`detonations: Atomic ${rec.atomic.length}, MiniNuke ${rec.mininuke.length} (the last ${rec.mininuke.length ? ((Math.max(...rec.mininuke) - struck) / 1000).toFixed(2) : '-'} s after the Atomic)`)
+		report.push(`strikes: started ${started}, refused ${refused}, most at once ${Math.max(0, ...rec.active)}; flash light peak ${after.strike.lightPeak.toFixed(2)} (cap 5)`)
+		report.push(`stages: two or more strikes until +${lastAt(2)} s, the last strike until +${lastAt(1)} s after the Atomic (aftermaths: MiniNuke 32 s, Atomic 45 s)`)
+		report.push(`bounds: particle peak ${rec.peak} (pool dropped ${after.pool.dropped - before.pool.dropped}), lights capped ${after.lightsCapped - before.lightsCapped}, events dropped ${after.dropped - before.dropped}`)
+		report.push(`frames: strike +3 s p50 ${pct(around, .5)} p95 ${pct(around, .95)} p99 ${pct(around, .99)} worst ${pct(around, 1)} ms (${around.length} frames)`)
+		const pass = rec.atomic.length === 1 && rec.mininuke.length >= 1 && started === Math.min(3, detonations) && refused === Math.max(0, detonations - 3)
+			&& Math.max(0, ...rec.active) === Math.min(3, detonations) && after.strike.lightPeak <= 5 + 1e-6 && lastAt(1) > lastAt(2)
+		report.push(`overlap: ${pass ? 'PASS' : 'FAIL'}`)
 		for (const line of report) console.log(`  ${line}`)
 		return captures
 	},

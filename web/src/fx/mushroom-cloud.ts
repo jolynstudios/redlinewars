@@ -542,7 +542,9 @@ export class MushroomCloud {
 
 	/**
 	 * A superweapon strike's own cloud. Five times a normal building's driver (times `scale`), no ceiling,
-	 * full burn, and the caller dedupes the five staged Atomic warheads into one strike.
+	 * full burn; the caller drops a replayed record of one detonation. A detonation under the cap
+	 * of a nuclear cloud already burning is drawn by that cloud (a Demo Truck dying in the
+	 * Atomic); one anywhere else gets its own.
 	 * Unlike `start` this needs no snapshot row — the strike may land where nothing stood —
 	 * and `eventY` must already carry the drawn ground (the caller adds heightAt, same as
 	 * the impact path).
@@ -561,7 +563,7 @@ export class MushroomCloud {
 		if (!shroud.isVisible(Math.floor(eventX), Math.floor(eventZ))) return false
 		let slot = -1
 		for (let i = 0; i < MAX_CLOUDS; i++) {
-			if (this.active[i] && this.nukeSlot[i] === 1) return true
+			if (this.active[i] && this.nukeSlot[i] === 1 && Math.hypot(eventX - this.x[i], eventZ - this.z[i]) < this.capR[i]) return true
 			if (!this.active[i] && slot < 0) slot = i
 		}
 		if (slot < 0) { this.stats.refused++; return false }

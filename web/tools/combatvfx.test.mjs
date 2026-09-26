@@ -256,6 +256,48 @@ test('the flash is one capped light, shared by overlapping strikes', () => {
 	assert.ok(strike.stats.lightPeak <= mod.FLASH_PEAK + 1e-6)
 })
 
+test('every nuclear detonation is drawn, even in the same second; only a replayed record is not', () => {
+	// Three Demo Trucks die in an Atomic and each fires its MiniNuke (vfx.md S13). Records are the
+	// emitter's 34-byte impacts: position (1/1024 m), up normal, damage, weapon type.
+	const names = ['', 'Atomic', 'MiniNuke']
+	const records = list => {
+		const view = new DataView(new ArrayBuffer(34 * list.length))
+		list.forEach(([type, x, z], k) => {
+			const off = 34 * k
+			view.setInt32(off, x * 1024, true); view.setInt32(off + 4, z * 1024, true); view.setInt16(off + 16, 32767, true)
+			view.setUint16(off + 20, 15000, true); view.setUint16(off + 22, type, true); view.setUint32(off + 24, 5 + k, true); view.setUint32(off + 30, 9 + k, true)
+		})
+		return view
+	}
+	const events = new mod.EventBus()
+	const shroud = { isVisible: () => true, unmodelled: false }
+	const units = { muzzleLiftOf: () => 0, deathKindOf: () => 0, deathAltitudeOf: () => null, drainRungTransitions() {} }
+	const render = { camera: { position: Float32Array.of(20, 24, 20) }, upload: (mesh, label) => ({ indexCount: mesh.triangleCount * 3, label }),
+		submit() {}, addLight() {}, addParticle() {} }
+	const ctx = { config: { q: { name: 'ultra', decals: 512 } }, snapshot: null, events, time: { tick: 3, alpha: 0 },
+		actorTypeName: i => names[i] ?? '', peek: () => null, get: name => ({ render, terrain: { heightAt: () => 0 }, shroud, units })[name] }
+	const fx = new mod.Fx()
+	fx.init(ctx)
+	const land = (tick, list) => {
+		const view = records(list)
+		ctx.snapshot = { view, byteLength: view.byteLength, tick }
+		ctx.time.tick = tick
+		list.forEach((_, k) => events.emit(mod.SimEvent.projectileImpact, { kind: 2, offset: 34 * k, byteLength: 34 }))
+		fx.update(1 / 60, ctx)
+	}
+	// The Atomic, a truck 2 m out, a truck at ground zero, and the first truck's record again.
+	land(3, [[1, 20, 20], [2, 22, 20], [2, 20, 20], [2, 22, 20]])
+	assert.equal(fx.stats.acceptedImpactEvents, 4)
+	assert.equal(fx.nuclearStats.started, 3, 'the Atomic and both MiniNukes start their strikes')
+	assert.equal(fx.nuclearStats.refused, 0, 'the replayed record is dropped, not refused')
+	assert.equal(fx.mushroom.stats.started, 1, 'the trucks under the Atomic\'s cap are drawn by its cloud')
+	// Half a second later, a truck far away: its own cloud, though three strikes still burn.
+	land(15, [[2, 60, 20]])
+	assert.equal(fx.mushroom.stats.started, 2, 'a detonation elsewhere gets its own cloud')
+	assert.equal(fx.nuclearStats.refused, 1, `only ${mod.MAX_STRIKES} staged strikes at once; the fourth is counted`)
+	fx.dispose()
+})
+
 test('a strike over water gets foam and steam, and leaves no scorch or embers', () => {
 	const strike = new mod.NuclearStrike(), rec = strikeRecorder()
 	strike.strike(20, 0, 20, 0, 77, mod.MINI_NUKE, true, 1, open)

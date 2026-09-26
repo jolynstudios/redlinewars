@@ -15,7 +15,7 @@ release tag here is one such export, with `README.md`, `NOTICE.md`, `THIRD_PARTY
 `licenses/`, `tools/` and `compliance/` added at the root.
 
 A release tag is named `v<commit date>-<short hash>` of the private commit it was exported from, for
-example `v2026.09.26-4c6da14`: the commit date is `YYYY.MM.DD` and the hash its first seven hex digits. The
+example `v2026.09.26-a87bf8d`: the commit date is `YYYY.MM.DD` and the hash its first seven hex digits. The
 official build runs in the private repository, and each package it makes names that tag and the private
 commit in its `RELEASE-MANIFEST.json`, so a download points at its source before the tag exists.
 

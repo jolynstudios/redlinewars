@@ -38,7 +38,7 @@ import { TeslaArc, buildArcMesh } from './tesla-arc'
 import { Projectiles } from './projectiles'
 import { vfxBudgetFor, type VfxBudgetConfig } from './vfx-budget'
 import { ImpactScorch } from './impact-scorch'
-import { ATOMIC, NuclearStrike, nuclearProfileFor } from './nuclear-strike'
+import { ATOMIC, NuclearStrike, nuclearProfileFor, type NuclearProfile } from './nuclear-strike'
 import { VfxGovernor } from './vfx-governor'
 import { surfaceTable } from '../core/surface'
 import {
@@ -85,8 +85,16 @@ const CHRONO_SHIMMER_S = 0.6
 const MAX_FLASHES = 256
 const MAX_TRACERS = 256
 const MAX_IMPACTS = 256
-/** Seconds of simulation time before another cloud may start (effectTime is tick / 25). */
+/**
+ * A nuclear record for the same weapon at the same place within this many seconds of simulation
+ * time (effectTime is tick / 25) is that detonation replayed. A detonation anywhere else, even in
+ * the same second, is its own: Demo Trucks caught in an Atomic each fire their MiniNuke.
+ */
 const NUKE_REARM_S = 1
+/** Metres: a replayed record lands where its detonation did; two vehicles never stand this close. */
+const NUKE_SAME_M = 0.5
+/** Detonations remembered for that check; fixed storage. */
+const RECENT_NUKES = 8
 /** Curtained units that may glow at once; one 3x3 curtain covers nine. */
 const CURTAIN_LIGHTS = 16
 /** MADTankThump and MADTankDetonate (weapons/other.yaml), keyed by name: true for the detonation. */
@@ -586,8 +594,14 @@ export class Fx implements FxApi {
 	get governorStats() { return { scale: this.governor.scale, ...this.governor.stats } }
 	get vfxTier() { return this.budget.tier }
 	private effectTime = 0
-	/** Effect clock of the last superweapon strike, so the five staged warheads land one cloud. */
+	/** Effect clock of the last nuclear detonation drawn (gates read it). */
 	private lastNukeAt = -1e9
+	/** The last RECENT_NUKES detonations drawn: when, where and which weapon, to drop a replay. */
+	private readonly recentNukeAt = new Float64Array(RECENT_NUKES).fill(-1e9)
+	private readonly recentNukeX = new Float32Array(RECENT_NUKES)
+	private readonly recentNukeZ = new Float32Array(RECENT_NUKES)
+	private readonly recentNukeProfile: (NuclearProfile | null)[] = new Array(RECENT_NUKES).fill(null)
+	private recentNukeCursor = 0
 	static id = 'fx'
 	static deps = ['render', 'shroud', 'units']
 
@@ -1034,6 +1048,9 @@ export class Fx implements FxApi {
 		this.mushroom.clear()
 		this.nuclear.clear()
 		this.lastNukeAt = -1e9
+		this.recentNukeAt.fill(-1e9)
+		this.recentNukeProfile.fill(null)
+		this.recentNukeCursor = 0
 		this.supportEffects.length = 0
 		this.dustedDeployments.clear()
 		this.chronoShimmers.length = 0
@@ -1187,6 +1204,20 @@ export class Fx implements FxApi {
 		}
 	}
 
+	/** True when this nuclear record repeats a detonation already drawn; otherwise remembers it. */
+	private replayedNuke(profile: NuclearProfile, x: number, z: number): boolean {
+		for (let i = 0; i < RECENT_NUKES; i++)
+			if (this.recentNukeProfile[i] === profile && Math.abs(this.effectTime - this.recentNukeAt[i]) < NUKE_REARM_S
+				&& Math.hypot(x - this.recentNukeX[i], z - this.recentNukeZ[i]) < NUKE_SAME_M) return true
+		const slot = this.recentNukeCursor
+		this.recentNukeCursor = (slot + 1) % RECENT_NUKES
+		this.recentNukeAt[slot] = this.effectTime
+		this.recentNukeX[slot] = x
+		this.recentNukeZ[slot] = z
+		this.recentNukeProfile[slot] = profile
+		return false
+	}
+
 	private readonly processProjectileImpact = (event: SnapshotEvent,copiedView?:DataView): void => {
 		const snap = this.ctx?.snapshot
 		const view = copiedView ?? snap?.view
@@ -1223,12 +1254,13 @@ export class Fx implements FxApi {
 		// The impact names its weapon: the cloud belongs to the nuclear weapons alone, never to
 		// whatever carries as much damage (120mm, TurretGun and Grenade each carry 6000).
 		// WeaponInfo.Impact reports a detonation once (its staged warheads follow as delayed
-		// impacts), so the short re-arm only absorbs a replayed record. Each weapon has its own
-		// profile (fx/nuclear-strike): the MiniNuke's column is four fifths of the Atomic's on
-		// every preset, and Ultra and Ultra+ add the staged flash, dust front and aftermath.
+		// impacts), so only a replayed record is dropped: the same weapon at the same place. Each
+		// weapon has its own profile (fx/nuclear-strike): the MiniNuke's column is four fifths of
+		// the Atomic's on every preset, and Ultra and Ultra+ add the staged flash, dust front and
+		// aftermath.
 		const nuclear = event.kind === EventKind.projectileImpact && event.byteLength >= 24
 			? nuclearProfileFor(this.ctx?.actorTypeName(view.getUint16(off + 22, true)) ?? '') : null
-		if (nuclear !== null && this.effectTime - this.lastNukeAt >= NUKE_REARM_S) {
+		if (nuclear !== null && !this.replayedNuke(nuclear, x, z)) {
 			this.lastNukeAt = this.effectTime
 			this.mushroom.nuke(x, y, z, this.effectTime, this.ctx!, this.shroud!, nuclear.rings / ATOMIC.rings, this.budget.combatLayers)
 			if (this.budget.combatLayers) this.nuclear.strike(x, y, z, this.effectTime, (snap?.tick ?? 0) * 997 + off, nuclear,

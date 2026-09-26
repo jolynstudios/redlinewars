@@ -27,7 +27,8 @@ artifact with its sha256, its tag and how it was checked against that tag.
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.26-4c6da14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-4c6da14) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.26-a87bf8d`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-a87bf8d) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.26-4c6da14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-4c6da14) | the same, as first released on 26 September 2026; replaced the same day |
 
 The tag's `RELEASE-SOURCE.json` gives:
 - the commit of the private development repository it was exported from;
@@ -60,7 +61,7 @@ You need:
 
 ```sh
 git clone https://github.com/jolynstudios/redlinewars && cd redlinewars
-git checkout v2026.09.26-4c6da14
+git checkout v2026.09.26-a87bf8d
 node tools/build.mjs                       # set DOTNET=/path/to/dotnet if it is not on PATH
 ```
 
@@ -113,7 +114,7 @@ options. `--lan` runs a LAN-only node with no connection to the public Grid.
 ### Checking a download against its source
 
 ```sh
-git checkout v2026.09.26-4c6da14 && node tools/build.mjs
+git checkout v2026.09.26-a87bf8d && node tools/build.mjs
 node tools/verify-release.mjs --source . --sums SHA256SUMS --require-manifest Redline-Wars-macOS-arm64.zip redline-node-linux-x64.zip
 ```
 
