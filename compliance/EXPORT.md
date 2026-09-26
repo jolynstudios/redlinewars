@@ -29,8 +29,9 @@ publish what it was meant to keep.
 - `engine/`: the OpenRA fork and its WebAssembly port, the dedicated server, the node, room host and relay;
 - `web/`: the WebGPU client, its build and its gates;
 - `desktop/`: the Electron shell and its packager;
-- `art/sources.lock.json` and `art/supplied-inputs.lock.json`: the provenance records that the client
-  build reads;
+- `art/sources.lock.json`, `art/supplied-inputs.lock.json` and `art/content-provenance.json`: the provenance
+  records that the client build and its licence gate read; `web/tools/art-fetch.mjs`, which the gate
+  needs (it holds no art);
 - `ARCHITECTURE.md`, `AUTHORS`, `global.json`, `.gitignore`.
 
 **Withheld** (file counts of the current export):
@@ -38,8 +39,8 @@ publish what it was meant to keep.
 | Withheld | Files | Why |
 |---|---|---|
 | `landing/` | 1221 | the marketing website |
-| `art/` (but the two locks) | 915 | the Blender sources and the art pipeline |
-| `web/tools/` art generators | 16 | Blender forges, text-to-speech and sound renders, supplied-mesh promotion: they build the separately licensed art, not the game |
+| `art/` (but the three records) | 915 | the Blender sources and the art pipeline |
+| `web/tools/` art generators | 15 | Blender forges, text-to-speech and sound renders, supplied-mesh promotion: they build the separately licensed art, not the game |
 | `web/.forge/` | 1 | the built art packs; the one tracked file holds muzzle anchors measured from the private models; `tools/fallback-art.mjs` writes stand-ins |
 | `desktop/build/icon.*`, `desktop/build/brandmark.svg`, `desktop/shell/bg-*`, `desktop/shell/hero-*` | 21 | brand artwork and backgrounds; `tools/fallback-art.mjs` writes stand-ins |
 | `brand/` | 22 | brand artwork |
@@ -104,4 +105,4 @@ itself as skipped:
 | `node --test web/tools/*.test.mjs` | 149 pass, 3 skipped: the deploy workflow's cache-key checks need the private CI workflow |
 | `node --test desktop/*.test.mjs` | 42 pass |
 | `node --test --test-force-exit steelseed-host/tools/*.test.mjs` (in `engine/`) | 92 pass |
-| `node --test tools/verify-release.test.mjs` | 7 pass: a good build passes, and each broken build fails for its own reason |
+| `node --test tools/verify-release.test.mjs` | 25 pass: good builds pass, each broken build fails for its own reason, and `--strict` fails on every missing required check |

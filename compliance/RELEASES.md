@@ -1,7 +1,8 @@
 # Releases
 
-Every Redline Wars build that is distributed, with the tag that holds its source and how it was checked
-against that tag (`tools/verify-release.mjs`, on a clean checkout of the tag built with `tools/build.mjs`).
+Every Redline Wars build distributed since the first tag, `v2026.09.26-4c6da14`, with the tag that holds its
+source and how it was checked against that tag (`tools/verify-release.mjs`, on a clean checkout of the tag
+built with `tools/build.mjs`). The builds distributed from 20 September 2026 until then have no tag.
 
 ## v2026.09.26-a87bf8d
 
@@ -32,6 +33,10 @@ Source: [`v2026.09.26-a87bf8d`](https://github.com/jolynstudios/redlinewars/tree
 - the GPL text, OpenRA's AUTHORS and the licences of the bundled libraries equal the tag's, and the
   third-party notices credit the engine and those libraries;
 - a node zip carries no WebGPU client; a desktop app carries the AppBundle.
+
+**Strict verification** (`--strict`, added after this release) also compares the desktop apps' shell. The
+Windows installer's nine shell scripts equal the tag's except for their CRLF line endings, which the
+Windows build machine's checkout added; later builds check out with LF endings.
 
 ### The browser game: play.redlinewars.online
 

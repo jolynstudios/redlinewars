@@ -30,7 +30,9 @@ MP3Sharp and TagLib# are NuGet package references of `OpenRA.Mods.Common`
 (`engine/openra/OpenRA.Mods.Common/OpenRA.Mods.Common.csproj` and
 `engine/OpenRA.Mods.Common/OpenRA.Mods.Common.csproj`). To use a modified version:
 1. build it as a NuGet package in a local feed (`dotnet pack`, then `dotnet nuget add source <folder>`),
-   or build the assembly and replace the `<PackageReference>` with a `<Reference>` to it;
+   or build the assembly and replace the `<PackageReference>` with a `<Reference>` to it. Give the package
+   a new version number and reference that version: a package already in the NuGet cache under the old
+   version is used without a warning;
 2. run `node tools/build.mjs`: it rebuilds the WebAssembly engine (ahead of time), the dedicated server,
    the replay verifier and the client with the modified library, and `desktop/package.mjs` and the node
    packers package the result.
@@ -45,7 +47,8 @@ with builds that carry the same one.
   - Its package metadata declares no licence.
   - It points to `https://github.com/OpenRA/fuzzynet`, which no longer exists.
   - Its author, teinarss, keeps https://github.com/teinarss/fuzzynet. That is a fork of
-    https://github.com/kaluzhny/fuzzynet, whose only commit is "copy from http://sourceforge.net/projects/fuzzynet/".
+    https://github.com/kaluzhny/fuzzynet, whose two commits are "Initial commit" and "copy from
+    http://sourceforge.net/projects/fuzzynet/".
 - Both repositories carry the text of the **GNU GPL version 2** as `LICENSE`.
 - The source files carry only "Copyright (C) 2008 Dmitry Kaluzhny". They state no version, and no "or any
   later version".
@@ -68,7 +71,9 @@ with builds that carry the same one.
    (`AttackOrFleeFuzzy`). That changes the bots' simulation, so it needs a new engine release with a new
    `simBuild`.
 
-**Status: OPEN.** The library's source and licence text are published here either way.
+**Status:** the legal question stays open as described. The project follows OpenRA upstream (option 2,
+decided 26 September 2026); the question to the author was not sent. The library's source and licence
+text are published here either way.
 
 ## The packages' licence fields
 

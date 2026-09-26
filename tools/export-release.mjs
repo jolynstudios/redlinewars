@@ -47,6 +47,7 @@ const PUBLISH = [
 	['desktop/', 'the Electron shell and its packager'],
 	['art/sources.lock.json', 'provenance record of external art sources, read by the client build'],
 	['art/supplied-inputs.lock.json', 'provenance record of supplied art inputs, read by the client build'],
+	['art/content-provenance.json', 'provenance record of every shipped creative file, read by web/tools/sourcelicensegate.mjs'],
 	['global.json', '.NET SDK pin'],
 	['AUTHORS', "OpenRA's contributors"],
 	['ARCHITECTURE.md', 'architecture and the snapshot ABI (§4) the code refers to'],
@@ -61,7 +62,9 @@ const PRIVATE = [
 	['web/.tmp-*', 'scratch scripts'],
 	// The art pipeline: generators that build separately licensed art (Blender forges, paid TTS and
 	// SFX renders, promotion of supplied .blend files). They build no part of the game's code.
-	...['art-fetch.mjs', 'blender-forge.mjs', 'environment-forge.mjs', 'material-forge.mjs', 'tree-forge.mjs', 'forge.mjs',
+	// art-fetch.mjs is published: the published web/tools/sourcelicensegate.mjs imports it, and it
+	// only fetches and checks the recorded CC0/CC-BY sources; it holds no art.
+	...['blender-forge.mjs', 'environment-forge.mjs', 'material-forge.mjs', 'tree-forge.mjs', 'forge.mjs',
 		'rosterbake.mjs', 'promoterifle.mjs', 'rifleassetgate.mjs', 'gen-death-voices.mjs', 'gen-shout-voices.mjs',
 		'render-jackson-elevenlabs.mjs', 'render-riki-elevenlabs.mjs', 'render-sfx-elevenlabs.mjs', 'render-spy-elevenlabs.mjs',
 		'render-voices-cartesia.mjs'].map(name => [`web/tools/${name}`, 'art pipeline (builds separately licensed art)']),

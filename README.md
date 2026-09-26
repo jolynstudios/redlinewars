@@ -22,8 +22,9 @@ It is free software under the GNU General Public License, version 3 or later: se
 
 ## The source of each version we distribute
 
-Every distributed version has an immutable tag. [compliance/RELEASES.md](compliance/RELEASES.md) lists each
-artifact with its sha256, its tag and how it was checked against that tag.
+The versions we distribute have a tag, starting with `v2026.09.26-4c6da14`. The builds we distributed from
+20 September 2026 until then have none here. [compliance/RELEASES.md](compliance/RELEASES.md) lists each
+tagged artifact with its sha256, its tag and how it was checked against that tag.
 
 | Tag | Source of |
 |---|---|
@@ -35,7 +36,7 @@ The tag's `RELEASE-SOURCE.json` gives:
 - what was withheld, and why ([compliance/EXPORT.md](compliance/EXPORT.md)).
 
 Each desktop package, node zip and npm node package carries a `RELEASE-MANIFEST.json` naming the tag and the
-source commit it was built from. The artifact's sha256 sits beside it in `<artifact>.release.json`.
+source commit it was built from. Each download's sha256 is in the `SHA256SUMS` file beside it.
 
 ## What is not in this repository
 

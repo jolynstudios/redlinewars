@@ -21,7 +21,7 @@
 // Existing files are never overwritten, so official art placed there first wins.
 
 import { createHash } from 'node:crypto'
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -29,13 +29,14 @@ import { crc32, deflateSync, gzipSync } from 'node:zlib'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const WEB = join(ROOT, 'web')
-const written = []
+const written = [], generated = []
 function write(path, bytes) {
 	const file = join(ROOT, path)
 	if (existsSync(file)) { written.push(`kept   ${path}`); return false }
 	mkdirSync(dirname(file), { recursive: true })
 	writeFileSync(file, bytes)
 	written.push(`wrote  ${path} (${bytes.length} bytes)`)
+	generated.push({ path, sha256: createHash('sha256').update(bytes).digest('hex') })
 	return true
 }
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex')
@@ -187,4 +188,12 @@ write('desktop/build/icon.png', mark(512))
 const WEBP_1X1 = Buffer.from('UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==', 'base64')
 for (const name of ['bg-day-grass', 'bg-night-1', 'bg-night-2', 'hero-night']) write(`desktop/shell/${name}.webp`, WEBP_1X1)
 
+// The stand-ins this run wrote, by content: `web/tools/sourcelicensegate.mjs --target=public-sample`
+// accepts exactly these as the sample build's own (procedural) art, and nothing else.
+if (generated.length) {
+	const marker = join(WEB, '.forge/fallback-art.json')
+	const previous = existsSync(marker) ? JSON.parse(readFileSync(marker, 'utf8')).files : []
+	const files = [...previous.filter(f => !generated.some(g => g.path === f.path)), ...generated].sort((a, b) => a.path.localeCompare(b.path))
+	writeFileSync(marker, `${JSON.stringify({ schema: 1, tool: 'tools/fallback-art.mjs', files }, null, '\t')}\n`)
+}
 for (const line of written) console.log(`fallback-art: ${line}`)
