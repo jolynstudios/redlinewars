@@ -75,7 +75,7 @@ export function unitVoicePersona(actorName: string): 'tanya' | 'spy' | 'jackson'
 /**
  * Pre-rendered voice banks (AAC): one per faction (england/france/germany/russia/
  * ukraine — each speaking the faction's own language) plus the legacy allied/soviet
- * Cartesia renders and the older macOS `say` british render kept as fallback. Runtime
+ * Cartesia renders; allied is the fallback. Runtime
  * speech synthesis is deliberately forbidden: a missing or rejected recording must
  * never turn into the operating system's robotic voice.
  */
@@ -85,9 +85,13 @@ export function unitVoicePersona(actorName: string): 'tanya' | 'spy' | 'jackson'
 let voiceManifests: Record<string, { bank: string; lines: Record<string, string> }> = {}
 let voiceFiles: Record<string, string> = {}
 try {
+	// Folders starting with `_` hold working material (voices/_compare: accent comparisons), not a
+	// bank: they have no manifest and must not ship. The british bank is a macOS `say` render, and
+	// Apple's licence does not allow publishing its system voices: it stays out until it is
+	// re-rendered with ElevenLabs like the other voices.
 	voiceManifests = import.meta.glob<{ bank: string; lines: Record<string, string> }>(
-		'../../.forge/voices/*/manifest.json', { eager: true, import: 'default' })
-	voiceFiles = import.meta.glob<string>('../../.forge/voices/*/*.{m4a,mp3}', { eager: true, query: '?url', import: 'default' })
+		['../../.forge/voices/*/manifest.json', '!../../.forge/voices/british/*'], { eager: true, import: 'default' })
+	voiceFiles = import.meta.glob<string>(['../../.forge/voices/*/*.{m4a,mp3}', '!../../.forge/voices/_*/*', '!../../.forge/voices/british/*'], { eager: true, query: '?url', import: 'default' })
 } catch { /* Node harness: Vite glob unavailable */ }
 
 function slugify(text: string): string {
@@ -107,7 +111,7 @@ for (const [mkey, manifest] of Object.entries(voiceManifests)) {
 export class Eva implements EvaApi {
 	private unlocked = false
 	private lastTickSpoken = -1
-	private bank: Record<string, string> | null = VOICE_BANKS.british ?? null
+	private bank: Record<string, string> | null = VOICE_BANKS.allied ?? null
 
 	/** Select the pre-rendered bank (per-side voices land here as banks ship). */
 	setVoiceBank(name: string): void {
@@ -128,8 +132,7 @@ export class Eva implements EvaApi {
 	 * Announcer and unit acks follow the player's own faction: every faction id has
 	 * its own pre-rendered bank (england/france/germany/russia/ukraine — same line
 	 * concepts, each spoken in the faction's language). Unknown factions (e.g.
-	 * Random) fall back to the allied bank, then the older british render. The
-	 * a missing line stays silent. Called when a match is claimed or started; every start
+	 * Random) fall back to the allied bank, and a missing line stays silent. Called when a match is claimed or started; every start
 	 * re-decides it, so returning to the lobby needs no reset.
 	 */
 	setFactionFamily(factionId: string): void {
@@ -139,7 +142,7 @@ export class Eva implements EvaApi {
 		// English, and the owner wants the Soviet side to speak Russian — route
 		// the alliance to the russia bank, the render documented as actually
 		// Russian (LISTEN.md). Ukraine keeps its own Ukrainian render.
-		this.bank = VOICE_BANKS[id === 'soviet' ? 'russia' : id] ?? VOICE_BANKS.allied ?? VOICE_BANKS.british ?? null
+		this.bank = VOICE_BANKS[id === 'soviet' ? 'russia' : id] ?? VOICE_BANKS.allied ?? null
 	}
 
 	/** One line per tick per kind: production bursts must not machine-gun the announcer. */

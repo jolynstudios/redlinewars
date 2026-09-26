@@ -29,6 +29,11 @@
 // Usage (from web/, after `vite build`):
 //   node tools/vfxbaselinegate.mjs [--quality=ultra|ultra-max] [--windows=3] [--seconds=60]
 //                                  [--fog=off|on] [--out=../docs/vfx/baseline] [--profile=1,3] [--gputime=0]
+//                                  [--headed=1 --css=960x540 --dpr=2]
+//
+// --headed=1 measures presentation on the machine's own display: a real, frontmost window, so rAF
+// follows the display's refresh. On a Retina display --css=960x540 --dpr=2 is the same 1920×1080
+// drawing buffer as the headless default (--css=1920x1080 --dpr=1).
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -50,7 +55,11 @@ const OUT = resolve(import.meta.dirname, arg('out', '../../docs/vfx/baseline'))
 const PROFILE_WINDOWS = arg('profile', '').split(',').filter(Boolean).map(Number)
 const ARMY_TIMEOUT_MS = 20 * 60_000
 const WARMUP_SECONDS = 10
-const VIEWPORT = { width: 1920, height: 1080 }
+const HEADED = arg('headed', '0') === '1'
+const [CSS_W, CSS_H] = arg('css', '1920x1080').split('x').map(Number)
+const DPR = Number(arg('dpr', 1))
+const VIEWPORT = { width: CSS_W, height: CSS_H }
+assert.ok(CSS_W > 0 && CSS_H > 0 && DPR > 0, `--css takes WIDTHxHEIGHT and --dpr a ratio, got ${CSS_W}x${CSS_H} at ${DPR}`)
 assert.ok(['ultra', 'ultra-max'].includes(QUALITY), `--quality must be ultra or ultra-max, got ${QUALITY}`)
 // --gputime=0 measures the CPU path as it ships: the timestamp queries wrap every pass and cost
 // main-thread time of their own, so a CPU critical-path number is taken without them.
@@ -120,15 +129,18 @@ const environment = {
 	os: `${sh('sw_vers', ['-productName'])} ${sh('sw_vers', ['-productVersion'])} (${sh('uname', ['-m'])})`,
 	power: sh('pmset', ['-g', 'batt']).split('\n')[0],
 	loadavgAtStart: loadavg().map(v => +v.toFixed(2)),
-	quality: QUALITY, fog: FOG, armies: ARMIES, viewportCss: VIEWPORT, windows: WINDOWS, windowSeconds: WINDOW_SECONDS,
+	quality: QUALITY, fog: FOG, armies: ARMIES, viewportCss: VIEWPORT, dpr: DPR, headed: HEADED, windows: WINDOWS, windowSeconds: WINDOW_SECONDS,
 }
 
 let preview, browser
 try {
 	preview = await startPrivateComposed(8493)
-	;({ browser } = await launchGpuBrowser(await loadChromium('vfxbaselinegate'), 'vfxbaselinegate', ['--enable-webgpu-developer-features']))
+	if (HEADED) process.env.STEELSEED_HEADED = '1'
+	// A headed window must stay visible and unthrottled; it is sized to hold the viewport.
+	const windowArgs = HEADED ? ['--window-position=0,0', `--window-size=${CSS_W},${CSS_H + 120}`, '--disable-backgrounding-occluded-windows', '--disable-renderer-backgrounding'] : []
+	;({ browser } = await launchGpuBrowser(await loadChromium('vfxbaselinegate'), 'vfxbaselinegate', ['--enable-webgpu-developer-features', ...windowArgs]))
 	environment.browser = `${browser.browserType().name()} ${browser.version()}`
-	const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 1 })
+	const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: DPR })
 	const page = await context.newPage()
 	// Failed loads are recorded by URL instead of failing the run: a loopback server has
 	// no room directory. The bundle names the production account origin, whose CORS refuses
@@ -328,7 +340,7 @@ try {
 
 	environment.loadavgAtEnd = loadavg().map(v => +v.toFixed(2))
 	const stamp = environment.measuredAt.replace(/[-:]/g, '').replace(/\..+$/, '').replace('T', '-')
-	const name = `${stamp}-${QUALITY}-fog${FOG}${ARMIES === 'none' ? '-starting-forces' : ''}${GPU_TIMING ? '' : '-no-gpu-timer'}${PROFILE_WINDOWS.length > 0 ? '-profiled' : ''}`
+	const name = `${stamp}-${QUALITY}-fog${FOG}${ARMIES === 'none' ? '-starting-forces' : ''}${GPU_TIMING ? '' : '-no-gpu-timer'}${HEADED ? '-display' : ''}${PROFILE_WINDOWS.length > 0 ? '-profiled' : ''}`
 	const profileSummaries = {}
 	for (const [window, profile] of [...profiles].sort((a, b) => a[0] - b[0])) {
 		const raw = join(tmpdir(), `vfxbaselinegate-${name}-w${window}.cpuprofile`)
@@ -353,7 +365,7 @@ try {
 		`# VFX ${PROFILE_WINDOWS.length > 0 ? 'diagnosis (profiled, not a baseline)' : 'baseline'} — ${QUALITY}, fog ${FOG} (${environment.measuredAt})`, '',
 		`- Build: \`${environment.git.head}\` on \`${environment.git.branch}\`${environment.git.dirty ? ' (tracked changes present)' : ''}, simBuild \`${environment.simBuild}\``,
 		`- Machine: ${environment.machine.model}, ${environment.machine.cpu}; ${environment.os}; ${environment.power}; load1 ${environment.loadavgAtStart[0]} → ${environment.loadavgAtEnd[0]}`,
-		`- Browser: ${environment.browser} (headless; rAF paced by the compositor, not a display); adapter: ${environment.adapter ?? 'n/a'}`,
+		`- Browser: ${environment.browser} (${HEADED ? 'headed, a frontmost window on the built-in display; rAF paced by the display' : 'headless; rAF paced by the compositor, not a display'}); adapter: ${environment.adapter ?? 'n/a'}`,
 		`- Canvas: CSS ${measured.canvas.cssWidth}×${measured.canvas.cssHeight}, drawing buffer ${measured.canvas.width}×${measured.canvas.height}, DPR ${measured.canvas.dpr}`,
 		`- Scenario: ${environment.map.title} (${environment.map.gamespeed}), seed ${environment.map.seed}; armies ${JSON.stringify(armies.counts)} after ${Math.round(armies.waitedMs / 1000)} s`,
 		'', '| Window | rAF p50/p95/p99/worst ms | missed 60 Hz | CPU frame p50/p95/p99 ms | fx CPU p50/p95 ms | GPU frame p50/p95/p99 ms | GPU-timed / drawn frames | ticks/s | actors | fire events / firing actors | impact events |',

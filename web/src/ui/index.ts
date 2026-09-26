@@ -3492,9 +3492,15 @@ export class Ui implements UiApi {
 		this.menuRestart = document.getElementById('menu-restart') as HTMLButtonElement | null
 		this.menuRestart?.addEventListener('click', () => this.onMenuRestart())
 		document.getElementById('menu-exit')?.addEventListener('click', () => {
+			// In a browser, Exit leaves for the website (play.redlinewars.online → redlinewars.online);
+			// the desktop app closes its window.
+			if (typeof (globalThis as Record<string, unknown>).redline !== 'object') {
+				location.assign(location.hostname.startsWith('play.') ? `${location.protocol}//${location.hostname.slice('play.'.length)}/` : 'https://redlinewars.online/')
+				return
+			}
 			window.close()
 			const kicker = this.gameMenuRoot?.querySelector('.screen-kicker')
-			if (kicker) kicker.textContent = 'Close the browser tab to exit the game.'
+			if (kicker) kicker.textContent = 'Close the window to exit the game.'
 		})
 		document.getElementById('menu-copyright')?.addEventListener('click', () => {
 			if (this.copyrightModal) this.copyrightModal.hidden = false

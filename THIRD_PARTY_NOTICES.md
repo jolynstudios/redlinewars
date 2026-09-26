@@ -95,7 +95,8 @@ Supplied inputs (`art/supplied-inputs.lock.json`, which records each input's rig
   the model file itself is not redistributed, and it is not used to train or fine-tune AI models.
   Modified for this game: its body became the shared soldier base and the first Riki, refitted to the
   game's rig and retextured, with heads and kit from the civilians' base model.
-- The civilians build on Jolyn Studios' own character model (`military-game-character`), made in
+- The civilians, and the soldiers' heads and kit, build on "military game character" from CGTrader
+  (`military-game-character`), used under CGTrader's Royalty Free License and remodelled in
   Blender. Riki was modelled by Jolyn Studios with Meshy; the dog is Jolyn Studios' own sculpt.
 - None of these models is in this repository; the art packs that carry them are separately licensed.
 

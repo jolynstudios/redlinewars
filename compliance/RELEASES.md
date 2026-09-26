@@ -4,7 +4,52 @@ Every Redline Wars build distributed since the first tag, `v2026.09.26-4c6da14`,
 source and how it was checked against that tag (`tools/verify-release.mjs`, on a clean checkout of the tag
 built with `tools/build.mjs`). The builds distributed from 20 September 2026 until then have no tag.
 
-## v2026.09.26-a87bf8d
+## v2026.09.26-39d2824
+
+Source: [`v2026.09.26-39d2824`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-39d2824), exported from private commit
+`39d28248300d`; `simBuild fd9882019bca` (unchanged).
+
+### Downloads: www.redlinewars.online/downloads
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 451463850 | `0b885ae556580e61ddf1da38448df9dcf5d176a033c35726f3d3001f2bf1e9e2` |
+| `Redline-Wars-macOS-arm64.zip` | 481678990 | `7dd37f47fa281396e0bd841368f1853189ebc3e71d657c2950354877b62b75cd` |
+| `Redline-Wars-macOS-x64.zip` | 490456821 | `e23435acc7070f8b0b316fc20cf411ed248b4335f0977743b82cf03c54ddd3b4` |
+| `Redline-Wars-Linux-x64.AppImage` | 447278885 | `d4c72f6485e020768eb3967ff89d1b7e6a844cd47f811a9dfa28d1922d9fdef3` |
+| `Redline-Wars-Linux-arm64.AppImage` | 447355118 | `42b9d720d80247b9173770dad4b5a9b8432afcbaeb4c0e3c2b0d5b78409c3ac4` |
+| `redline-node-linux-x64.zip` | 72353225 | `7f0757c03967385242b13bbf469fa057c79ffbef580e25afb96bb00edd8df0fd` |
+| `redline-node-linux-arm64.zip` | 69608730 | `dd28654892d1d2b0581710bb68ba9ac4f415dbccd84ad2262616149d3719d676` |
+| `redline-node-win-x64.zip` | 108842868 | `6f610a383c22183dd8289144335756d7d53636051f898e74b2067d662910b804` |
+| `redline-node-osx-arm64.zip` | 68175481 | `1a24d3e643675260dabf628190ae8eef06fd0f7f2e733c1c122a7f5704afafa1` |
+| `redline-node-osx-x64.zip` | 71366466 | `33f339a9c5884e14b30d3698301d3bd2116ff0ca5fe3972e94c58709a732d9a3` |
+| `SHA256SUMS` | 950 | `fdce36c6c53c3eaa1646da97dcdc373feb65f7893dbb95e318e6f621c2a2fbfb` |
+
+**Verification: PASS** in strict mode (`--strict --sums SHA256SUMS --appbundle <deploy run AppBundle>`), 11 artifacts against
+`39d28248300d`. For each artifact:
+- its sha256 equals the `SHA256SUMS` line;
+- its `RELEASE-MANIFEST.json` names this tag and source commit, and the build's `simBuild`;
+- every node source file equals the tag's;
+- every `web/src` file embedded in the desktop apps' source maps equals the tag's;
+- a desktop app's shell scripts and pages (`app.asar`) equal the tag's; the Windows installer's now do
+  byte for byte, the line endings included;
+- its AppBundle equals the deploy run's, file by file, and the WebAssembly runtime beside it too;
+- the GPL text, OpenRA's AUTHORS and the licences of the bundled libraries equal the tag's; the
+  .NET runtime's own notices now ship as `licenses/DOTNET-THIRD-PARTY-NOTICES.txt`;
+- a node zip carries no WebGPU client; a desktop app carries the AppBundle.
+
+**Platform:** the macOS arm64 app started with `--selftest` on macOS 15.6.1 (Apple M3 Pro): booted in
+32.9 s, WebGPU available, a rendered frame, no external host contacted. The other platforms were not run.
+**Rebuild:** this tag builds with `tools/build.mjs`; the build is not compared byte for byte (not run).
+
+### The browser game: play.redlinewars.online
+
+The build is identified by `https://play.redlinewars.online/steelseed/composition.json`, which lists every
+file with its sha256. Its sha256 is `d929220649aac0ee15122462206ce9ba6322b917a0d981c5872e0ba743e77ce5`, and it lists
+1124 files. It equals the deploy run's AppBundle; its 16 source maps match it, and the 173 `web/src` files
+they embed equal the tag's. The 282 WebAssembly runtime files it serves equal the build's.
+
+## v2026.09.26-a87bf8d (replaced the same day by v2026.09.26-39d2824)
 
 Source: [`v2026.09.26-a87bf8d`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-a87bf8d), exported from private commit
 `a87bf8d2b1a2`; `simBuild fd9882019bca`.

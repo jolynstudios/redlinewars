@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "policy": "The exact inputs that shipped art packs rest on, each with the rights it is used under. A pack may rest only on an input recorded here; web/tools/sourcelicensegate.mjs refuses a release whose shipped packs rest on an input without verified rights.",
+  "policy": "The exact inputs that shipped art packs rest on, each with the rights it is used under. A pack may rest only on an input recorded here; web/tools/sourcelicensegate.mjs refuses a release whose shipped packs rest on an input without recorded rights. licenseStatus records the owner's declaration; rights.components keeps every part's own origin, including parts taken from another input; rights.review records whether a person has evidenced and reviewed that declaration (NOT_REQUIRED only for the studio's own work with its evidence). Evidence is named by reference; the documents stay private.",
   "inputs": [
     {
       "id": "military-game-character",
@@ -12,12 +12,37 @@
       "scope": "basis of the civilian role packs (c1-c11, chan, delphi, einstein, tecn, tecn2) and the rifle study",
       "downloadAllowed": false,
       "rights": {
-        "basis": "own-work",
-        "creator": "Jolyn Studios",
-        "made": "Blender, on Reallusion Character Creator base parts under the studio's Character Creator licence",
+        "basis": "mixed",
+        "title": "military game character",
+        "creator": "its CGTrader author",
+        "source": "cgtrader.com, downloaded 2026-09-08 (CGTrader file 4945005); the listing's licence and author are in the owner's CGTrader download history",
+        "made": "the CGTrader model, built by its author on Reallusion Character Creator base parts (its CC_Base_* names show it); the studio remodelled it in Blender",
         "attribution": "THIRD_PARTY_NOTICES.md",
-        "evidence": "the studio's own source file"
-      }
+        "evidence": "EV-DL-20260908-CGT-4945005: the download record of the supplied file (source URL and date) on the owner's machine; its sha256 is the one above",
+        "class": "mixed",
+        "components": [
+          {
+            "part": "the CGTrader model (body, heads, clothing and kit)",
+            "basis": "CGTrader-Royalty-Free",
+            "creator": "its CGTrader author",
+            "source": "https://www.cgtrader.com/ (file 4945005, downloaded 2026-09-08)"
+          },
+          {
+            "part": "the studio's remodel",
+            "basis": "own-work",
+            "creator": "Jolyn Studios"
+          }
+        ],
+        "review": {
+          "status": "REVIEWED",
+          "owner": "Jolyn Studios",
+          "by": "the owner",
+          "date": "2026-09-26",
+          "note": "the owner confirmed on 2026-09-26 that the CGTrader download history lists this model under the Royalty Free licence; the game ships it only inside its own .ssmesh/.sspbr packs"
+        },
+        "terms": "CGTrader Royalty Free License: use in own projects and commercial use allowed; a game may carry it inside a proprietary format (21A.2), with reasonable measures against end users extracting it (21A.3); no redistribution of the file as downloaded."
+      },
+      "suppliedAs": "military+game+character+.blend"
     },
     {
       "id": "swat-female-commando",
@@ -38,7 +63,33 @@
         "terms": "Royalty Free License: use in own projects, copying within the team, remixing and commercial use allowed; no redistribution of the file (selling or re-uploading); no use for training or fine-tuning AI models.",
         "modified": "its body became the shared soldier base and the first Riki: refitted to the game's rig, retextured, heads and kit from military-game-character",
         "attribution": "THIRD_PARTY_NOTICES.md; the website's credits page (not required by the licence)",
-        "evidence": "the CGTrader listing's licence panel"
+        "evidence": "the CGTrader listing's licence panel",
+        "class": "mixed",
+        "components": [
+          {
+            "part": "Female S.W.A.T Tactical Soldier (the body)",
+            "basis": "CGTrader-Royalty-Free",
+            "creator": "pathumtharaka1998",
+            "source": "https://www.cgtrader.com/free-3d-models/military/military-character/female-swat-soldier"
+          },
+          {
+            "part": "heads and kit",
+            "basis": "mixed",
+            "input": "military-game-character"
+          },
+          {
+            "part": "refit to the game's rig, retexture and remodel",
+            "basis": "own-work",
+            "creator": "Jolyn Studios"
+          }
+        ],
+        "review": {
+          "status": "REVIEWED",
+          "owner": "Jolyn Studios",
+          "by": "the owner",
+          "date": "2026-09-26",
+          "note": "the owner's decision of 2026-09-26: the Royalty Free licence allows this use. Its section 21A.2 allows game assets contained inside a proprietary format, which the game's .ssmesh/.sspbr packs are; 21A.3 asks for reasonable measures against end users extracting the model"
+        }
       }
     },
     {
@@ -56,7 +107,14 @@
         "creator": "Jolyn Studios",
         "made": "Blender sculpt",
         "attribution": "THIRD_PARTY_NOTICES.md",
-        "evidence": "the studio's own source file"
+        "evidence": "the studio's own source file",
+        "class": "original",
+        "review": {
+          "status": "NOT_REQUIRED",
+          "owner": "Jolyn Studios",
+          "by": null,
+          "date": null
+        }
       }
     },
     {
@@ -70,11 +128,19 @@
       "downloadAllowed": false,
       "suppliedAs": "Meshy_AI_riki_biped_Animation_Running_withSkin.glb",
       "rights": {
-        "basis": "own-work",
+        "basis": "generated-with-service",
         "creator": "Jolyn Studios",
         "made": "Meshy, on the studio's Meshy account",
         "attribution": "THIRD_PARTY_NOTICES.md",
-        "evidence": "the studio's Meshy generations"
+        "evidence": "EV-OWNER-20260926-RIKI: the owner's declaration of 2026-09-26: generated about 2026-09-12 on a paid Meshy plan, from a photograph of a person who consented",
+        "class": "generated-with-service",
+        "service": "meshy",
+        "review": {
+          "status": "REVIEWED",
+          "owner": "Jolyn Studios",
+          "by": "the owner",
+          "date": "2026-09-26"
+        }
       }
     }
   ]

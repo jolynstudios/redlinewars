@@ -4,7 +4,7 @@ import test from 'node:test';
 import path from 'node:path';
 import os from 'node:os';
 
-import { appBundleAudioAssets, PUBLIC_ARTIFACTS, targetConfig } from './package.mjs';
+import { appBundleAudioAssets, PUBLIC_ARTIFACTS, SHELL_FILES, shellSourceProblems, targetConfig } from './package.mjs';
 import { LEGAL_DOCS } from './shell-options.mjs';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
@@ -24,6 +24,29 @@ test('desktop package carries every imported shell module', () => {
 		for (const [, rel] of source.matchAll(/^import[^'"]*['"](\.\/[^'"]+)['"]/gm)) walk(path.normalize(rel));
 	};
 	walk('main.mjs');
+});
+
+test('the package preflight parses every shipped shell script, and refuses a broken one', () => {
+	assert.deepEqual(shellSourceProblems(), [], 'the shell scripts of this checkout parse');
+	// The failure mode an external review reported (and this checkout does not have): a
+	// single-quoted credit string broken by a raw newline.
+	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'redline-preflight-'));
+	try {
+		fs.mkdirSync(path.join(dir, 'shell'));
+		for (const file of SHELL_FILES.filter(file => /\.(mjs|cjs|js)$/.test(file))) fs.copyFileSync(path.join(import.meta.dirname, file), path.join(dir, file));
+		for (const file of fs.readdirSync(path.join(import.meta.dirname, 'shell')).filter(file => file.endsWith('.js')))
+			fs.copyFileSync(path.join(import.meta.dirname, 'shell', file), path.join(dir, 'shell', file));
+		assert.deepEqual(shellSourceProblems(dir), [], 'the copy parses before it is broken');
+		const options = path.join(dir, 'shell-options.mjs');
+		const source = fs.readFileSync(options, 'utf8');
+		assert.ok(source.includes('Typefaces: Archivo'));
+		fs.writeFileSync(options, source.replace('Typefaces: Archivo', 'Typefaces:\nArchivo'));
+		assert.deepEqual(shellSourceProblems(dir).map(problem => problem.split(':')[0]), ['shell-options.mjs']);
+		fs.rmSync(path.join(dir, 'preload.cjs'));
+		assert.ok(shellSourceProblems(dir).some(problem => problem === 'preload.cjs: missing, but the package ships it'));
+	} finally {
+		fs.rmSync(dir, { recursive: true, force: true });
+	}
 });
 
 test('every installer ships the licence texts under resources/legal', () => {

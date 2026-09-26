@@ -5,6 +5,7 @@
 
 import { createHash } from 'node:crypto'
 import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { join, relative, resolve } from 'node:path'
 
@@ -72,6 +73,19 @@ for (const [from, to] of [
 	requireFile(join(GAME_ROOT, from), `compose: ${from} must ship with the AppBundle`)
 	cpSync(join(GAME_ROOT, from), join(licences, to))
 }
+// The .NET runtime's own notices (zlib, Brotli, ICU, the Emscripten runtime, …) for exactly the
+// runtime the AppBundle carries: the copy CI keeps with its publish, else the browser runtime pack
+// of the version runtimeconfig names.
+const runtimeConfig = JSON.parse(readFileSync(join(TARGET, '..', 'OpenRA.Browser.runtimeconfig.json'), 'utf8'))
+const runtimeVersion = runtimeConfig.runtimeOptions?.includedFrameworks?.find(framework => framework.name === 'Microsoft.NETCore.App')?.version ?? 'unknown'
+const dotnetNotices = [
+	join(APP_BUNDLE, '..', 'DOTNET-THIRD-PARTY-NOTICES.txt'),
+	...[process.env.DOTNET_ROOT, join(homedir(), '.dotnet'), '/usr/share/dotnet', '/usr/local/share/dotnet'].filter(Boolean)
+		.map(root => join(root, 'packs/Microsoft.NETCore.App.Runtime.Mono.browser-wasm', runtimeVersion, 'THIRD-PARTY-NOTICES.TXT')),
+	join(homedir(), '.nuget/packages/microsoft.netcore.app.runtime.mono.browser-wasm', runtimeVersion, 'THIRD-PARTY-NOTICES.TXT'),
+].find(file => existsSync(file))
+if (!dotnetNotices) throw new Error(`compose: the .NET ${runtimeVersion} browser runtime's THIRD-PARTY-NOTICES.TXT must ship with the AppBundle; set DOTNET_ROOT`)
+cpSync(dotnetNotices, join(licences, 'DOTNET-THIRD-PARTY-NOTICES.txt'))
 
 const indexPath = join(TARGET, 'index.html')
 const index = readFileSync(join(DIST, 'index.html'), 'utf8')

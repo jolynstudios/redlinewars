@@ -90,9 +90,34 @@ export function legalResources() {
   }));
 }
 
+// The shell's own files inside the Electron package (electron-builder `files`).
+export const SHELL_FILES = Object.freeze(['main.mjs', 'settings.mjs', 'update-gate.mjs', 'preload.cjs', 'account-broker.mjs', 'donate-hosting.mjs', 'shell-options.mjs', 'build/icon.png', 'shell/**']);
+
+// Every script among SHELL_FILES must parse: `node --check` on each, without importing it (main.mjs
+// needs Electron) or packaging anything. Returns one problem per missing or unparsable script.
+export function shellSourceProblems(dir = here) {
+  const scripts = [];
+  for (const entry of SHELL_FILES) {
+    if (entry.endsWith('/**')) {
+      const root = path.join(dir, entry.slice(0, -3));
+      if (!fs.existsSync(root)) { scripts.push(entry.slice(0, -3)); continue; }
+      for (const file of fs.readdirSync(root, { recursive: true }))
+        if (/\.(mjs|cjs|js)$/.test(file)) scripts.push(path.join(entry.slice(0, -3), file));
+    } else if (/\.(mjs|cjs|js)$/.test(entry)) scripts.push(entry);
+  }
+  const problems = [];
+  for (const file of scripts) {
+    const full = path.join(dir, file);
+    if (!fs.existsSync(full)) { problems.push(`${file}: missing, but the package ships it`); continue; }
+    const check = spawnSync(process.execPath, ['--check', full], { encoding: 'utf8' });
+    if (check.status !== 0) problems.push(`${file}: does not parse — ${(check.stderr.split('\n').find(line => /Error/.test(line)) ?? check.stderr).trim()}`);
+  }
+  return problems;
+}
+
 // Returns the list of preflight failures for a target (empty = good to build).
 export function validateTarget(target) {
-  const failures = [];
+  const failures = [...shellSourceProblems()];
   for (const { from, to } of legalResources()) {
     if (!fs.existsSync(from)) failures.push(`licence text missing: ${from} — every installer ships it as resources/${to}`);
   }
@@ -199,7 +224,7 @@ export function targetConfig(target, nodeStaging, archName = 'x64', manifestDir 
     productName: 'Redline Wars',
     // Installer / Info.plist / exe metadata: the app is ours (GPLv3 or later), the engine OpenRA's.
     copyright: '© 2026 Jolyn Studios · Engine: OpenRA (GPLv3)',
-    files: ['main.mjs', 'settings.mjs', 'update-gate.mjs', 'preload.cjs', 'account-broker.mjs', 'donate-hosting.mjs', 'shell-options.mjs', 'build/icon.png', 'shell/**'],
+    files: [...SHELL_FILES],
     directories: { output: 'dist' },
     extraResources: [
       { from: appBundle, to: 'AppBundle' },

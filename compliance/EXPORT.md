@@ -102,7 +102,7 @@ itself as skipped:
 
 | Suite | Result |
 |---|---|
-| `node --test web/tools/*.test.mjs` | 149 pass, 3 skipped: the deploy workflow's cache-key checks need the private CI workflow |
-| `node --test desktop/*.test.mjs` | 42 pass |
+| `node --test web/tools/*.test.mjs` | 149 pass, 3 skipped: the deploy workflow's cache-key checks need the private CI workflow. 1 fails at `v2026.09.26-39d2824` only: a check of the .NET notices reads that private workflow too (it skips it from the next release on) |
+| `node --test desktop/*.test.mjs` | 42 pass, 1 skipped |
 | `node --test --test-force-exit steelseed-host/tools/*.test.mjs` (in `engine/`) | 92 pass |
 | `node --test tools/verify-release.test.mjs` | 25 pass: good builds pass, each broken build fails for its own reason, and `--strict` fails on every missing required check |

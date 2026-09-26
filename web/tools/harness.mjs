@@ -50,7 +50,9 @@ export async function loadChromium(tool) {
 
 export async function launchGpuBrowser(chromium, tool, extraArgs = []) {
 	const options = {
-		headless: true,
+		// STEELSEED_HEADED=1 opens a real window, so a display paces rAF instead of the headless
+		// compositor (vfxbaselinegate --headed=1).
+		headless: process.env.STEELSEED_HEADED !== '1',
 		args: [
 			'--use-angle=metal',
 			'--enable-unsafe-webgpu',

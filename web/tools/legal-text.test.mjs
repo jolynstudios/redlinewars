@@ -140,6 +140,9 @@ test('the licence split is written down where the tools look for it', () => {
 		assert.ok(read('engine/steelseed-host/tools/pack-npm.mjs').includes(`'${name}'`), `pack-npm ships ${name}`)
 		if (existsSync(join(root, 'desktop/shell-options.mjs'))) assert.ok(read('desktop/shell-options.mjs').includes(`'engine/licenses/${name}'`), `the desktop app ships ${name}`)
 	}
+	// The .NET runtime's own notices travel with the AppBundle too, kept with CI's publish.
+	assert.match(read('web/tools/compose.mjs'), /cpSync\(dotnetNotices, join\(licences, 'DOTNET-THIRD-PARTY-NOTICES\.txt'\)\)/)
+	assert.match(read('.github/workflows/deploy.yml'), /cp "\$notices" bin-browser\/DOTNET-THIRD-PARTY-NOTICES\.txt/)
 })
 
 test('the in-game credits open in a new tab and never navigate away from a match', () => {
