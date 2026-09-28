@@ -70,7 +70,21 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-333da6c (the current release)
+## v2026.09.28-88c5ea1 (the current release)
+
+Exported from private commit `88c5ea1b`, superseding `v2026.09.28-333da6c` the same evening. Playing that
+release surfaced two defects in the stand-in interface, both repaired here. A centre-of-screen click on the
+focused own unit missed: the strategic camera's tilt offsets the screen-centre ground pick about 1.6 cells
+from the focus target, and the click's hit radius was 1.5 cells — it is now 3 cells, which covers the
+offset without claiming a neighbour's unit. And a browser whose WebGPU adapter request falls back to WebGL2
+left the renderer node disabled before its bone palette existed, while the units and animation nodes kept
+calling `reserveBones` every frame, throwing ~95 `TypeError`s per second; `reserveBones` now answers null
+on that path exactly as it already does on palette overflow, and every caller already treats null as
+"unskinned, keep going". The renderer itself is unchanged for every WebGPU browser.
+
+Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-333da6c (superseded by v2026.09.28-88c5ea1)
 
 Exported from private commit `333da6c8`, superseding `v2026.09.28-aa02032` the same evening at the owner's
 direction. The public pages lose the Redline Wars logo and every brand-red indicator turns white; the
