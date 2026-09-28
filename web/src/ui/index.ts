@@ -30,8 +30,11 @@ interface OwnActorHit {
 	distanceSq: number
 }
 
-/** A click claims the nearest actor within this many cells of the picked cell. */
-const HIT_RADIUS_CELLS = 1.5
+/** A click claims the nearest actor within this many cells of the picked cell. The strategic
+ *  camera's tilt offsets the screen centre from the focus target by ~1.6 cells at the default
+ *  height, so 1.5 made centre-of-screen clicks on the (focused) own unit miss; 3 covers the
+ *  offset plus hand imprecision without swallowing a neighbour's unit. */
+const HIT_RADIUS_CELLS = 3
 
 const STYLE = `
 .rwp-root { position: fixed; inset: 0; pointer-events: none; font: 13px/1.45 system-ui, sans-serif; color: #e8e6e1; }

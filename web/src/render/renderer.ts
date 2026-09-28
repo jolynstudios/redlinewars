@@ -1509,7 +1509,9 @@ export class Renderer implements RenderApi {
 	 * only that it reaches the GPU.
 	 */
 	reserveBones(count: number): { base: number, matrices: Float32Array } | null {
-		if (count <= 0 || this.boneCount + count > MAX_PALETTE_MATRICES) return null
+		// The WebGL2 fallback disables this node before the palette exists; callers already
+		// treat null as "unskinned, keep going", so the same answer serves that path.
+		if (this.boneData === undefined || count <= 0 || this.boneCount + count > MAX_PALETTE_MATRICES) return null
 		const base = this.boneCount
 		this.boneCount += count
 		return { base, matrices: this.boneData.subarray(base * 16, (base + count) * 16) }
