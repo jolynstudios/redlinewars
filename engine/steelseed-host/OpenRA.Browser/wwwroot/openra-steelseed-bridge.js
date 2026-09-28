@@ -328,6 +328,10 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 			return P.LobbyCloseSlotsDownTo(Number(seats));
 		},
 
+		async lobbyKick(clientIndex) {
+			return P.LobbyKick(Number(clientIndex));
+		},
+
 		async lobbyStartGame() {
 			P.LobbyStartGame();
 		},

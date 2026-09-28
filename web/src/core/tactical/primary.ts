@@ -10,6 +10,24 @@ import './style.css'
 import { joaMark } from './logo'
 import { tauntById, type Taunt } from './taunts'
 import { requestById, type Ask } from './requests'
+import type { CompanionConfig } from '../net-config'
+
+/** Base URL the pairing page link and QR resolve against. The page a phone
+ *  opens must be the PUBLIC companion page: inside the desktop shell this
+ *  page's own origin is loopback (127.0.0.1), which no other device can
+ *  reach — and the pairing WebSocket both sides dial already runs on the
+ *  public companionOrigin, so the page must come from there too. The
+ *  deployed net-config names that directory (companionPageOrigin); without
+ *  it, mirror this page's own path onto the public origin, and only fall
+ *  back to the local page when no public origin is known at all. The clean
+ *  path (no .html) is served beside the file; both stay valid. */
+function pairingPageBase(config: CompanionConfig, loc: { pathname: string; href: string }): string {
+	if (config.companionPageOrigin) return config.companionPageOrigin
+	if (config.companionOrigin) {
+		try { return new URL(loc.pathname.replace(/[^/]*$/, ''), config.companionOrigin).href } catch { /* fall through */ }
+	}
+	return loc.href
+}
 
 /** One opt-in connection for the primary game. All simulation commands remain on Ctx. */
 export class PrimaryCompanion {
@@ -124,7 +142,7 @@ export class PrimaryCompanion {
 		this.status.textContent = 'Connecting to JOA…'; const ws = new WebSocket(endpoint); this.ws = ws
 		ws.onopen = () => this.send({ type: 'create', kind: this.network() ? 'hosted' : 'skirmish', ...admission })
 		ws.onmessage = event => { let m; try { m = JSON.parse(event.data) } catch { return }
-			if (m.type === 'created') { this.session = m.id; this.code.textContent = m.code; this.qr.hidden = false; const page = new URL('companion.html', config.companionPageOrigin ?? location.href); page.hash = `p=${m.secret}`; this.shareUrl = page.href; this.share.hidden = false; try { drawQr(this.qr, page.href) } catch { this.qr.hidden = true }; this.status.textContent = 'Scan the QR code, send the link, or enter this code on the companion page. Code expires in five minutes.'; this.timer = window.setInterval(() => this.publish(), 200) }
+			if (m.type === 'created') { this.session = m.id; this.code.textContent = m.code; this.qr.hidden = false; const page = new URL('companion', pairingPageBase(config, location)); page.search = `p=${m.secret}`; this.shareUrl = page.href; this.share.hidden = false; try { drawQr(this.qr, page.href) } catch { this.qr.hidden = true }; this.status.textContent = 'Scan the QR code, send the link, or enter this code on the companion page. Code expires in five minutes.'; this.timer = window.setInterval(() => this.publish(), 200) }
 			else if (m.type === 'approval') { this.pending = true; this.status.textContent = `${m.label} wants to connect. Choose a permission, then approve.`; this.approve.hidden = false; this.approve.dataset.attention = ''; this.panel.querySelector<HTMLElement>('[data-decline]')!.hidden = false; this.syncTrigger(); if (!this.panel.open) this.panel.showModal() }
 			else if (m.type === 'connected') { this.linked = true; this.qr.hidden = true; this.code.textContent = ''; this.share.hidden = true; this.shareUrl = ''; this.status.textContent = 'Companion connected. You remain in command.'; this.syncTrigger(); this.syncBar(); if (this.panel.open) this.panel.close() }
 			else if (m.type === 'need-baseline') this.previous=null

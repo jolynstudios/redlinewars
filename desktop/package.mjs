@@ -115,6 +115,22 @@ export function shellSourceProblems(dir = here) {
   return problems;
 }
 
+// electron-builder's npm collector runs `npm list` without flags. A parent
+// workspace (~/projects/proofofworks/package.json) registers two packages both
+// named proof-of-works-games, which makes npm exit "prior to config file
+// resolving" — only the CLI --workspaces=false flag bypasses that (env vars and
+// .npmrc do not). npm ci restores the stock collector every time, so the flag
+// is re-applied here before every build.
+export function ensureNpmCollectorWorkspacesFlag(file = path.join(here, 'node_modules', 'app-builder-lib', 'out', 'node-module-collector', 'npmNodeModulesCollector.js')) {
+  if (!fs.existsSync(file)) throw new Error(`electron-builder not installed: ${file} — run: npm ci --prefix desktop --workspaces=false`);
+  const stock = fs.readFileSync(file, 'utf8');
+  if (stock.includes('"--workspaces=false"')) return 'already-flagged';
+  const anchor = '"--loglevel=error"]';
+  if (!stock.includes(anchor)) throw new Error(`unexpected collector shape: ${path.basename(file)} lacks ${anchor} — re-check the electron-builder patch`);
+  fs.writeFileSync(file, stock.replace(anchor, '"--loglevel=error", "--workspaces=false"]'));
+  return 'flagged';
+}
+
 // Returns the list of preflight failures for a target (empty = good to build).
 export function validateTarget(target) {
   const failures = [...shellSourceProblems()];
@@ -428,6 +444,8 @@ async function main() {
     console.error(`package: preflight failed for ${target}\n  - ${failures.join('\n  - ')}`);
     process.exit(1);
   }
+  if (ensureNpmCollectorWorkspacesFlag() === 'flagged')
+    console.log('package: re-applied --workspaces=false to electron-builder\'s npm collector (a fresh npm ci wipes it)');
   await TARGET_BUILDERS[target]();
   fs.rmSync(path.join(here, 'dist', 'node-staging'), { recursive: true, force: true });
   fs.rmSync(path.join(here, 'dist', 'manifest-staging'), { recursive: true, force: true });

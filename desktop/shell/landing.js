@@ -71,6 +71,10 @@
 	const introPct = $('intro-pct')
 	const introStageText = $('intro-stage')
 	const startCaption = $('start-caption')
+	// Both hero actions (skirmish and online) wait for the engine: while it
+	// loads they stay disabled, dimmed, and carry the boot progress as a red
+	// strip on their own outline (--load drives the scaleX in the stylesheet).
+	const heroButtons = [$('start-skirmish'), $('start-multiplayer')]
 	const boot = { state: 'laden', pct: 0, stage: '' }
 	const clampPct = pct => Math.max(0, Math.min(100, Math.round(Number(pct) || 0)))
 	const renderBoot = () => {
@@ -80,6 +84,12 @@
 		loaderPct.textContent = `${p}%`
 		introPct.textContent = `${p}%`
 		loaderEl.dataset.state = boot.state
+		const ready = boot.state === 'klaar'
+		for (const b of heroButtons) {
+			b.disabled = !ready
+			b.dataset.engine = ready ? 'ready' : boot.state === 'fout' ? 'error' : 'loading'
+			b.style.setProperty('--load', String(p / 100))
+		}
 		let text
 		if (boot.state === 'klaar') text = 'Engine ready'
 		else if (boot.state === 'wachten') text = 'Starting as soon as the engine is ready…'
@@ -87,8 +97,8 @@
 		else text = boot.stage || 'Loading the engine in the background…'
 		loaderText.textContent = text
 		introStageText.textContent = boot.state === 'klaar' ? 'Engine ready' : (boot.stage || 'Booting the engine')
-		startCaption.textContent = boot.state === 'klaar' ? 'Engine ready' : boot.state === 'fout' ? 'Engine unavailable' : 'Starts the moment the engine is ready'
-		startCaption.dataset.ready = String(boot.state === 'klaar')
+		startCaption.textContent = ready ? 'Engine ready' : boot.state === 'fout' ? 'Engine unavailable' : 'Starts the moment the engine is ready'
+		startCaption.dataset.ready = String(ready)
 	}
 	window.setLoaderProgress = (pct, stage) => {
 		boot.pct = Math.max(boot.pct, clampPct(pct))
@@ -131,6 +141,9 @@
 		}
 		$('mp-on-body').inert = !mpOn
 		$('rooms-row').hidden = !mpOn
+		// Play online moved into the hero: with the server off there is no
+		// online destination, so the hero shows skirmish alone.
+		$('start-multiplayer').hidden = !mpOn
 	}
 	window.__redlineMultiplayer = s => { mpOn = !(s && s.on === false); renderMp() }
 	const setMp = async on => {

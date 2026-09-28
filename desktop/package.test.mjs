@@ -4,7 +4,7 @@ import test from 'node:test';
 import path from 'node:path';
 import os from 'node:os';
 
-import { appBundleAudioAssets, PUBLIC_ARTIFACTS, SHELL_FILES, shellSourceProblems, targetConfig } from './package.mjs';
+import { appBundleAudioAssets, ensureNpmCollectorWorkspacesFlag, PUBLIC_ARTIFACTS, SHELL_FILES, shellSourceProblems, targetConfig } from './package.mjs';
 import { LEGAL_DOCS } from './shell-options.mjs';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
@@ -44,6 +44,26 @@ test('the package preflight parses every shipped shell script, and refuses a bro
 		assert.deepEqual(shellSourceProblems(dir).map(problem => problem.split(':')[0]), ['shell-options.mjs']);
 		fs.rmSync(path.join(dir, 'preload.cjs'));
 		assert.ok(shellSourceProblems(dir).some(problem => problem === 'preload.cjs: missing, but the package ships it'));
+	} finally {
+		fs.rmSync(dir, { recursive: true, force: true });
+	}
+});
+
+test('the electron-builder npm collector keeps its --workspaces=false flag across a fresh npm ci', () => {
+	// npm ci restores the stock collector; the parent workspace name conflict
+	// (two packages named proof-of-works-games) then kills its `npm list` before
+	// any JSON. The preflight must re-apply the flag, idempotently, and refuse
+	// an unrecognized collector shape instead of silently building without it.
+	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'redline-collector-'));
+	try {
+		const file = path.join(dir, 'npmNodeModulesCollector.js');
+		fs.writeFileSync(file, 'class C { getArgs() { return ["list", "-a", "--include", "prod", "--json", "--loglevel=error"]; } }\n');
+		assert.equal(ensureNpmCollectorWorkspacesFlag(file), 'flagged');
+		assert.ok(fs.readFileSync(file, 'utf8').includes('"--loglevel=error", "--workspaces=false"]'), 'the flag was appended to npm list');
+		assert.equal(ensureNpmCollectorWorkspacesFlag(file), 'already-flagged');
+		fs.writeFileSync(file, 'class C { getArgs() { return ["list"]; } }\n');
+		assert.throws(() => ensureNpmCollectorWorkspacesFlag(file), /unexpected collector shape/);
+		assert.throws(() => ensureNpmCollectorWorkspacesFlag(path.join(dir, 'absent.js')), /electron-builder not installed/);
 	} finally {
 		fs.rmSync(dir, { recursive: true, force: true });
 	}

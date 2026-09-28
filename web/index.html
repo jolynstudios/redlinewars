@@ -9,7 +9,7 @@
 		     ?device=any skips it for testing. -->
 		<script id="phone-gate">(function(){try{var q=location.search;if(/[?&]device=any(?:&|$)/.test(q))return;var touchOnly=matchMedia('(pointer: coarse)').matches&&!matchMedia('(any-pointer: fine)').matches;var shortSide=Math.min(screen.width,screen.height);var ua=navigator.userAgentData;var mobile=ua&&typeof ua.mobile==='boolean'?ua.mobile:/iPhone|iPod|Android.+Mobile|Windows Phone|Mobile Safari/i.test(navigator.userAgent);if(touchOnly&&shortSide<600&&mobile)location.replace('phone.html')}catch(e){}})()</script>
 		<title>REDLINE WARS: FRACTURED ORDER</title>
-		<meta name="description" content="REDLINE WARS: FRACTURED ORDER — real-time strategy skirmish with Blender-built 3D on the OpenRA engine, playable in the browser. A Jolyn Studios production." />
+		<meta name="description" content="REDLINE WARS: FRACTURED ORDER — real-time strategy skirmish with Blender-built 3D, playable in the browser. A Jolyn Studios production." />
 		<link rel="icon" href="./favicon.svg" type="image/svg+xml" />
 		<!-- Rule 4/13: no external font, stylesheet, image or script. The two OFL brand faces
 		     (Archivo, Martian Mono) are built into the bundle from dev dependencies and served
@@ -1809,6 +1809,7 @@
 			#session-ui .mp-network-link { color: var(--active); text-decoration: none; border-bottom: 1px solid rgba(125, 185, 200, .4); }
 			#session-ui .mp-network-link:hover { color: var(--ink); border-bottom-color: var(--ink); }
 			#session-ui #session-mp-join-col > .session-note { margin: 0; color: var(--ink-2); font: 400 13px/1.45 var(--font-display); letter-spacing: 0; }
+			#session-ui .mp-ranked-legend strong { color: var(--ink); font-weight: 600; }
 			#session-ui #session-mp-lan[hidden], #session-ui #session-mp-lan-lookup[hidden] { display: none; }
 			#session-ui #session-mp-address-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-top: 8px; }
 			#session-ui #session-mp-address-form[hidden] { display: none; }
@@ -1852,6 +1853,16 @@
 			#session-ui .mp-act--add { background: rgba(236, 231, 222, .1); color: var(--ink); }
 			#session-ui .mp-act--leave { margin-right: auto; order: -1; background: none; color: var(--ink-2); clip-path: none; box-shadow: inset 0 0 0 1px var(--line-2); }
 			#session-ui .mp-act--leave:hover { color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-3); }
+			/* the lobby roster: one row per seat, live ready state, admin kick */
+			#session-ui .mp-lobby-roster { display: grid; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
+			#session-ui .mp-roster-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 9px 12px; background: rgba(236, 231, 222, .05); box-shadow: inset 0 0 0 1px var(--line); clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px); }
+			#session-ui .mp-roster-row[data-self="true"] { box-shadow: inset 0 0 0 1px rgba(125, 185, 200, .5); }
+			#session-ui .mp-roster-name { color: var(--ink); font: 500 13.5px/1.2 var(--font-display); }
+			#session-ui .mp-roster-state { margin-left: auto; color: var(--ink-2); font: 600 10.5px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+			#session-ui .mp-roster-row[data-ready="true"] .mp-roster-state { color: var(--healthy); }
+			#session-ui .mp-roster-ping { color: var(--ink-2); font: 400 11px/1 var(--font-mono); }
+			#session-ui .mp-act--kick { flex: 0 0 auto; min-height: 30px; padding: 0 12px; border: 0; cursor: pointer; background: none; color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line-2); clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px); font: 600 10.5px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; }
+			#session-ui .mp-act--kick:hover { color: var(--critical); box-shadow: inset 0 0 0 1px var(--critical); }
 			/* dialogs: the desktop host dialog and the locked-room password */
 			/* the landing's "Host a game" lands here: one ring pulse around the host card */
 			#session-ui #session-mp-host-col[data-flash]::after { content: ''; position: absolute; inset: -5px; border: 2px solid var(--active); pointer-events: none; animation: host-flash 1.4s var(--ease-out) both; }
@@ -1977,8 +1988,8 @@
 							<div class="native-store" hidden><label class="session-field"><span>Game speed</span><select id="session-speed"></select></label></div>
 						</div>
 						<div class="briefing">
-							<p class="screen-copy" id="session-copy-skirmish">A script-free skirmish on OpenRA rules. The simulation stays authoritative for rules, economy, fog and bots; the units, buildings and projectiles are 3D, built in Blender for Redline Wars.</p>
-							<p class="screen-copy" id="session-copy-mp" hidden>Join a live network room, or host your own. The room browser refreshes automatically; rooms are matched by the OpenRA dedicated server.</p>
+							<p class="screen-copy" id="session-copy-skirmish">A script-free skirmish. The simulation stays authoritative for rules, economy, fog and bots; the units, buildings and projectiles are 3D, built in Blender for Redline Wars.</p>
+							<p class="screen-copy" id="session-copy-mp" hidden>Join a live network room, or host your own. The room browser refreshes automatically; matches run on dedicated game servers.</p>
 							<p class="legal-notice">A Jolyn Studios production · EA has not endorsed and does not support this product.</p>
 						</div>
 						<div id="session-mp-panel" role="tabpanel" aria-label="Multiplayer" hidden>
@@ -2011,6 +2022,7 @@
 								<tbody id="session-mp-rooms-body"><tr><td colspan="5" class="room-empty">Checking for network rooms…</td></tr></tbody>
 							</table>
 						</div>
+						<p class="session-note mp-ranked-legend"><strong>Ranked</strong> — the server settles the result and your rating moves. <strong>Unranked</strong> — practice only, nothing moves; every room hosted from this app is unranked. Battles against AI count toward the casual skirmish leaderboard when you are signed in.</p>
 						<div id="session-mp-lan" hidden>
 							<p class="session-section-label">Local network — hosts on your LAN</p>
 							<div class="session-mp-rooms-wrap">
@@ -2227,7 +2239,7 @@
 					<p id="outcome-mode" class="result__mode">Skirmish · rating eligible</p>
 				</header>
 				<h2 id="outcome-title" class="result__title">Battle concluded</h2>
-				<p id="outcome-copy" class="result__copy">The result was reported by the OpenRA simulation.</p>
+				<p id="outcome-copy" class="result__copy">The result was reported by the game's authoritative simulation.</p>
 				<dl class="result__facts">
 					<div><dt>Map</dt><dd id="outcome-map">—</dd></div>
 					<div><dt>Duration</dt><dd id="outcome-duration">—</dd></div>
@@ -2248,8 +2260,8 @@
 
 		<div id="game-ui" hidden aria-label="Game interface">
 			<div id="hud-economy" class="hud-panel" aria-label="Economy">
-				<div class="hud-stat" title="Credits. OpenRA spends stored ore before cash."><span class="hud-label" id="hud-cash-label">Credits</span><span id="hud-cash" class="hud-value">0</span></div>
-				<div class="hud-stat" title="Already included in Credits. OpenRA spends stored ore before cash."><span class="hud-label">Ore included</span><span id="hud-resources" class="hud-value">0</span></div>
+				<div class="hud-stat" title="Credits. Stored ore is spent before cash."><span class="hud-label" id="hud-cash-label">Credits</span><span id="hud-cash" class="hud-value">0</span></div>
+				<div class="hud-stat" title="Already included in Credits. Stored ore is spent before cash."><span class="hud-label">Ore included</span><span id="hud-resources" class="hud-value">0</span></div>
 				<div class="hud-stat hud-power-stat" title="Power: drawn / supplied. Low power slows production."><span class="hud-label">Power</span><span id="hud-power" class="hud-value">0 / 0</span><div class="power-bar" aria-hidden="true"><i id="hud-power-fill"></i></div></div>
 				<div class="hud-stat" title="AI opponents still in the match, of the number the skirmish started with. They keep playing under fog of war, where you cannot see them."><span class="hud-label" id="hud-opponents-label">AI Enemies</span><span id="hud-opponents" class="hud-value">0</span></div>
 				<div class="hud-stat" title="Harvesters still standing. Idle harvesters are shown in the alert line."><span class="hud-label">Harvesters</span><span id="hud-harvesters" class="hud-value">0</span></div>

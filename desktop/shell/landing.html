@@ -24,7 +24,7 @@
 		color-scheme: dark;
 		--void: #090D11; --panel-solid: #10161B; --char: #151D24; --char-2: #1A2229;
 		--line: rgba(236, 231, 222, .13); --line-2: rgba(236, 231, 222, .26); --line-3: rgba(236, 231, 222, .5);
-		--ink: #E9E5DB; --ink-2: #A8B2BA; --brand: #C93630; --brand-hover: #AE2E29; --brand-ink: #FFF5E8;
+		--ink: #E9E5DB; --ink-2: #A8B2BA; --brand: #C93630; --brand-hover: #AE2E29; --brand-ink: #FFF5E8; --brand-glow: rgba(201, 54, 48, 0.16);
 		--active: #7DB9C8; --warning: #D9AE61; --critical: #FF6B63; --healthy: #87BC91; --ice-tint: rgba(125, 185, 200, .14);
 		--spark-a: #FFD27A; --spark-b: #E57A2B;
 		--font-display: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -96,8 +96,23 @@
 	.btn--primary:hover:not(:disabled) { --button-face: var(--brand-hover); }
 	.btn__arrow { transition: transform .25s var(--ease-out); }
 	.btn--primary:hover:not(:disabled) .btn__arrow { transform: translateX(4px); }
-	.btn--launch { --h: 60px; min-width: 300px; padding: 0 32px; font-size: 13px; letter-spacing: .2em; }
-	.btn--launch:hover:not(:disabled) { filter: drop-shadow(0 0 18px rgba(201, 54, 48, .38)); }
+	.btn--sm { --h: 38px; padding: 0 16px; font-size: 11px; }
+	/* The phone header's "Play free" (nav.html, 720px layout): the brand-red
+	   outline — no filled face, Menu's shape in brand red, a glow tint on hover. */
+	.btn--outline { border-color: var(--brand); color: var(--brand); font-weight: 700; letter-spacing: .1em; }
+	.btn--outline::before, .btn--outline::after { content: none; }
+	.btn--outline:hover:not(:disabled) { background-color: var(--brand-glow); }
+	.btn--outline:hover:not(:disabled) .btn__arrow { transform: translateX(4px); }
+
+	/* Two equal hero actions. While the engine loads the outline itself fills
+	   with the boot progress — a red strip rides the bottom border and grows
+	   with the loader percentage until the button unlocks. */
+	.hero__cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+	.btn__label { transition: opacity var(--t-ui); }
+	.btn[data-engine="loading"] .btn__label { opacity: .6; }
+	.btn__load { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: rgba(201, 54, 48, .18); pointer-events: none; }
+	.btn__load::before { content: ''; position: absolute; inset: 0; transform-origin: left center; transform: scaleX(var(--load, 0)); background: var(--brand); transition: transform .45s var(--ease-out); }
+	.btn[data-engine="ready"] .btn__load { display: none; }
 
 	/* modules: chamfered plates with an index and a title */
 	.console { display: grid; gap: 16px; align-content: center; }
@@ -310,7 +325,7 @@
 
 	<div id="app" class="app">
 		<header class="cmdbar" data-enter style="--i: 0">
-			<svg class="cmdbar__mark" viewBox="44 58 312 284" role="img" aria-label="Redline Wars"><use href="#rw-mark"></use></svg>
+			<svg class="cmdbar__mark" viewBox="28 42 344 316" role="img" aria-label="Redline Wars"><rect x="28" y="42" width="344" height="316" rx="40" fill="#fff"/><use href="#rw-mark"></use></svg>
 			<span class="cmdbar__sub">Fractured Order · Desktop</span>
 			<div class="cmdbar__tools">
 				<button id="sound-btn" class="tool" type="button" aria-pressed="true" title="Music"><span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound__label">Music on</span></button>
@@ -327,7 +342,10 @@
 				<p class="hero__sub" data-enter style="--i: 2">Fractured Order</p>
 				<p class="hero__lead" data-enter style="--i: 3"><strong>The pact is broken.</strong> <em>The red line is crossed.</em> Build your base, secure your resources and command the battlefield.</p>
 				<div class="hero__cta" data-enter style="--i: 4">
-					<button id="start-skirmish" class="btn btn--primary btn--launch" type="button">Start skirmish<span class="btn__arrow" aria-hidden="true">→</span></button>
+					<div class="hero__cta-row">
+						<button id="start-skirmish" class="btn btn--sm btn--outline" type="button" disabled data-engine="loading"><span class="btn__label">Start skirmish</span><span class="btn__arrow" aria-hidden="true">→</span><i class="btn__load" aria-hidden="true"></i></button>
+						<button id="start-multiplayer" class="btn btn--sm btn--outline" type="button" disabled data-engine="loading"><span class="btn__label">Play online</span><span class="btn__arrow" aria-hidden="true">→</span><i class="btn__load" aria-hidden="true"></i></button>
+					</div>
 					<span id="start-caption" data-ready="false">Starts the moment the engine is ready</span>
 				</div>
 			</section>
@@ -347,13 +365,12 @@
 
 				<section id="mp-module" class="module" data-mp="on" data-enter style="--i: 4" aria-labelledby="mp-title">
 					<header class="module__head">
-						<span class="module__index">02</span><h2 id="mp-title" class="module__title">Multiplayer</h2>
-						<div id="mp-switch" class="seg module__aside" role="radiogroup" aria-label="Multiplayer">
+						<span class="module__index">02</span><h2 id="mp-title" class="module__title">Server</h2>
+						<div id="mp-switch" class="seg module__aside" role="radiogroup" aria-label="Server">
 							<button type="button" role="radio" data-mp="off">Off</button><button type="button" role="radio" data-mp="on">On</button>
 						</div>
 					</header>
 					<div id="mp-on-body" class="module__body">
-						<button id="start-multiplayer" class="action" type="button"><span class="action__text"><span class="action__title">Play online</span><span class="action__desc">Join a room or the ranked queue.</span></span><span class="action__arrow" aria-hidden="true">→</span></button>
 						<button id="host-game" class="action" type="button"><span class="action__text"><span class="action__title">Host a game</span><span class="action__desc">On this computer — your network only, or anyone online.</span></span><span class="action__arrow" aria-hidden="true">→</span></button>
 						<p class="divider">Host for others</p>
 						<div class="donate">
@@ -363,8 +380,8 @@
 							</div>
 							<p id="donate-desc" class="donate__desc">While this app is open, it runs other players' matches on spare power. You can stop any time; running matches finish first.</p>
 							<div class="donate__row">
-								<span class="donate__label">Match limit</span>
-								<div id="donate-max-seg" class="seg" role="radiogroup" aria-label="Match limit"><button type="button" role="radio" data-max="1">1 match</button><button type="button" role="radio" data-max="2">2 matches</button></div>
+								<span class="donate__label">Their matches at once</span>
+								<div id="donate-max-seg" class="seg" role="radiogroup" aria-label="Their matches at once"><button type="button" role="radio" data-max="1">1</button><button type="button" role="radio" data-max="2">2</button></div>
 								<select id="donate-max" class="visually-hidden" tabindex="-1" aria-hidden="true"><option value="1">1 match</option><option value="2">2 matches</option></select>
 							</div>
 							<p id="donate-status" data-tone="off">Off — your computer hosts only your own games.</p>
@@ -372,7 +389,7 @@
 						</div>
 					</div>
 					<div id="mp-off-body" class="module__body">
-						<p>Multiplayer is off. Skirmish against the AI works offline — turn it on to play online, host a game or host for others.</p>
+						<p>The server is off. Skirmish against the AI works offline — turn it on to play online, host a game or host for others.</p>
 						<p id="mp-drain-note" hidden></p>
 					</div>
 				</section>

@@ -214,6 +214,68 @@ try {
 	}
 	await allMatch(/clientstate=(NotReady|Ready)/, 30_000, 'both slotted');
 
+	// Admin kick (LobbyCommands `kick` through the bridge): whoever holds
+	// admin this run removes the other human, the victim's transport must
+	// drop to NotConnected, and a non-banned kick may rejoin — proving both
+	// the order path and that the room itself survives the removal. Admin is
+	// NOT deterministic (first completed handshake takes it), so read it from
+	// the probe instead of assuming clients[0].
+	{
+		const lobbyRaw = await clients[0].page.evaluate(() => globalThis.ora.GetLobbyPlayersProbe());
+		const lobbyEntries = (/clients=\[(.*)\]/.exec(lobbyRaw)?.[1] ?? '').split(';;').filter(Boolean);
+		const entryFor = name => lobbyEntries.find(entry => entry.split('|')[0] === name);
+		const adminEntry = lobbyEntries.find(entry => /(?:^|\|)admin:True(?:$|\|)/.test(entry));
+		const adminName = adminEntry?.split('|')[0] ?? '';
+		const adminClient = clients.find(c => c.name === adminName);
+		const victim = clients.find(c => c.name !== adminName);
+		const victimIdx = Number(/(?:^|\|)idx:(\d+)/.exec(entryFor(victim?.name ?? '') ?? '')?.[1] ?? NaN);
+		if (!adminClient || !victim || !Number.isInteger(victimIdx))
+			throw new Error(`lobby probe has no admin/victim pair: ${lobbyRaw}`);
+		const kicked = await adminClient.page.evaluate(idx => globalThis.ora.LobbyKick(idx), victimIdx);
+		console.log(`Kick by ${adminName}: ${kicked}`);
+		if (kicked !== `kick ${victimIdx} sent`) throw new Error(`LobbyKick regressed: ${kicked}`);
+		{
+			const deadline = Date.now() + 20_000;
+			for (;;) {
+				const probeV = await victim.page.evaluate(() => globalThis.ora.GetConnectionProbe());
+				if (/state=NotConnected/.test(probeV)) { console.log('OK kicked client disconnected'); break; }
+				if (Date.now() > deadline) throw new Error(`TIMEOUT kicked client still connected: ${probeV}`);
+				await new Promise(r => setTimeout(r, 1000));
+			}
+		}
+		// A kicked player returns the way the UI does: the S16 banner's leave
+		// tears the dead connection down first, then a fresh Join from the
+		// room list. Redialling the torn connection directly races the
+		// server's kick cleanup, so leave first and retry the dial.
+		await victim.page.evaluate(() => globalThis.ora.LeaveMultiplayer());
+		let rejoined = false;
+		for (let attempt = 1; attempt <= 3 && !rejoined; attempt++) {
+			const dial = await victim.page.evaluate(({ h, p }) => globalThis.ora.JoinMultiplayer(h, p), { h: '127.0.0.1', p: Number(new URL(wsUrl.replace(/^ws/, 'http')).port) });
+			console.log(`[${victim.name}] rejoin attempt ${attempt} -> ${dial}`);
+			if (!dial.startsWith('joining ')) throw new Error(`kicked client could not rejoin: ${dial}`);
+			// `joining` returns before the handshake completes: poll the probe
+			// instead of reading it once — an instant read is always Connecting,
+			// and tearing a still-negotiating dial down early is exactly the
+			// wedge this retry loop exists to avoid.
+			rejoined = await poll(
+				async () => /state=Connected/.test(await victim.page.evaluate(() => globalThis.ora.GetConnectionProbe())),
+				15_000, 500) ?? false;
+			if (!rejoined && attempt < 3) {
+				const err = await victim.page.evaluate(() => globalThis.ora.GetServerErrorProbe());
+				console.log(`[${victim.name}] rejoin attempt ${attempt} failed (serverError: ${err}) — leaving and retrying`);
+				await victim.page.evaluate(() => globalThis.ora.LeaveMultiplayer());
+				await new Promise(r => setTimeout(r, 2000));
+			}
+		}
+		if (!rejoined)
+			throw new Error(`kicked client never reconnected: ${await victim.page.evaluate(() => globalThis.ora.GetConnectionProbe())}`);
+		await victim.page.evaluate(() => globalThis.ora.LobbyClaimPlayerSlot());
+		// A fresh client sits at `Invalid` until its first state command: send
+		// NotReady explicitly, exactly what the UI's Not-ready button does.
+		await victim.page.evaluate(() => globalThis.ora.LobbySetNotReady());
+		await allMatch(/clientstate=(NotReady|Ready)/, 30_000, 'kicked client rejoined');
+	}
+
 	const addBots = await clients[0].page.evaluate(() => globalThis.ora.LobbyAddBots());
 	console.log('AddBots:', addBots);
 	if (!/^added [1-9]\d* bots$/.test(addBots))
@@ -272,7 +334,12 @@ try {
 			try { process.kill(-roomhost.pid, 'SIGKILL'); } catch { try { roomhost.kill('SIGKILL'); } catch { /* gone */ } }
 		}
 	}
-	fs.rmSync(dataDir, { recursive: true, force: true });
+	// The room's SupportDir holds the dedicated's own Logs/ — the only place a
+	// handshake rejection (Accepted/Rejected/Kicking, with timestamps) is
+	// visible; stdout stays silent about them. Keep it for diagnosis on
+	// failure, delete it on pass to keep /tmp clean.
+	if (result === 'MILESTONE PASS') fs.rmSync(dataDir, { recursive: true, force: true });
+	else console.error(`dataDir kept for diagnosis: ${dataDir}`);
 }
 console.log(result);
 process.exitCode = result === 'MILESTONE PASS' ? 0 : 1;

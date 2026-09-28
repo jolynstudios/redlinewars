@@ -70,6 +70,27 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
+## v2026.09.28-96886bd (the current release)
+
+Exported from private commit `96886bd4`, published the same day as `v2026.09.28-ab47013` and superseding
+it. It repairs that release's two strict findings in the packaging itself: `assemble-node` now fails
+unless the resolved-RA catalog exports its own node manifest names are present (CI exports them), and the
+macOS node zips are ad-hoc re-signed on a macOS runner — every Mach-O, verified — so the Apple Silicon
+node can host a room as shipped. The deploy's publish step now refuses to ship downloadables until this
+tag exists on this repository, so a release can no longer go out with dead corresponding-source links.
+The desktop selftest proves the live match frame presents, so the multiplayer-then-walk sequence that
+failed on `ab47013` cannot pass silently dark again.
+
+Player-facing changes: the JOA companion pairs through the public page (the pairing secret rides as `?p=`,
+which survives QR camera apps that drop fragments; the QR and link no longer name the host's address),
+`/steelseed` and `/steelseed/companion` serve without `.html` (the old paths keep answering), a public
+room's share link is a page deep link (`?room=`), the desktop landing folds Play online into the hero
+beside Start skirmish with the engine boot gating both actions, the lobby gains an admin kick and a live
+roster, abandoned lobbies are reaped after 30 s, and `AUTHORS` credits the game's author.
+
+Verification: the strict check against the deployed artifacts and the live site is the runbook's manual
+post-deploy step; its outcome is recorded here once it has run.
+
 ## v2026.09.28-ab47013 (the downloads of 28 September 2026)
 
 The downloads below replaced the previous set on 28 September 2026, published by the deploy of the

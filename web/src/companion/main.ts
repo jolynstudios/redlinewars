@@ -1231,7 +1231,9 @@ new ResizeObserver(() => { measureInsets(); clampView(); requestFrame() }).obser
 window.setInterval(() => { if (state) render() }, 1000)
 document.body.dataset.screen = 'connect'
 document.body.classList.add('joa-app')
-const secret = new URLSearchParams(location.hash.slice(1)).get('p')
-history.replaceState(null, '', location.pathname + location.search)
+// The pairing link carries the secret as ?p= (query survives QR-camera apps that
+// strip fragments; #p= is still accepted for links made before the switch).
+const secret = new URLSearchParams(location.search).get('p') ?? new URLSearchParams(location.hash.slice(1)).get('p')
+history.replaceState(null, '', location.pathname)
 if (secret) void connect({ secret })
 else if ((resume = storedResume())) void connect({}, true)

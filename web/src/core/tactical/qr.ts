@@ -1,4 +1,4 @@
-/** Fixed QR version 5/L, byte mode, mask 0. One RS block; URLs up to 106 UTF-8 bytes. */
+/** Fixed QR version 5/L, byte mode, mask 0. One RS block; URLs up to 106 UTF-8 bytes. Query param, not a fragment: camera apps commonly drop fragments when opening a scanned URL. */
 export function qrMatrix(text: string): boolean[][] {
 	const bytes = new TextEncoder().encode(text); if (bytes.length > 106) throw new Error('Pairing URL is too long for this QR code')
 	const bits: number[] = [], append = (value: number, length: number): void => { for (let i = length - 1; i >= 0; i--) bits.push((value >>> i) & 1) }

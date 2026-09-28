@@ -461,6 +461,7 @@ interface MpBridge {
 	lobbyAddBots(): Promise<string>
 	lobbyCloseEmptySlots(): Promise<string>
 	lobbyCloseSlotsDownTo(seats: number): Promise<string>
+	lobbyKick(clientIndex: number): Promise<string>
 	setPlayerName(name: string): Promise<string>
 	probeConnection(): Promise<string>
 	probeLobby(): Promise<string>
@@ -809,8 +810,13 @@ export class Ui implements UiApi {
 	private mpOwnBuildLoad: Promise<void> | null = null
 	private mpJoinLinkStarted = false
 	private mpBannerShown = false
+	// Until this timestamp the session setup stays up against straggler
+	// netframes of a world the shell just left (they arrive buffered from the
+	// dying socket and would re-hide the screen the user just asked for).
+	private sessionHoldUntil = 0
 	// Lobby panel controls, built once on first use.
 	private mpLobbyNote: HTMLElement | null = null
+	private mpRoster: HTMLUListElement | null = null
 	private mpReadyButton: HTMLButtonElement | null = null
 	private mpStartButton: HTMLButtonElement | null = null
 	private mpAddAiButton: HTMLButtonElement | null = null
@@ -1839,11 +1845,31 @@ export class Ui implements UiApi {
 		// never calls these; the LAN section stays hidden unless fed.
 		const shell = globalThis as Record<string, unknown>
 		shell.__steelseedSelectSession = (tab: 'skirmish' | 'mp') => {
-			this.showSessionSetup()
+			// A network session (live, dropping or ended-but-not-left) owns the
+			// screen until it is left: its match world keeps hiding the setup
+			// (the in-match snapshot rule) and the end banner re-shows the mp
+			// room list. Leave it first — the same Leave the end banner runs,
+			// landing on this tab — then show the setup; the pinning below is
+			// immediate. The hold keeps straggler netframes of the dying world
+			// from stealing the screen back before the teardown lands.
+			this.sessionHoldUntil = performance.now() + 2000
+			if (this.mpMatch || this.mpPhase !== 'idle')
+				void this.mpLeaveToSession(tab).then(() => this.showSessionSetup()).catch(() => { /* the shell still pinned the tab */ })
+			else void this.showSessionSetup()
+			// The shell's later, explicit choice supersedes the load-time
+			// ?session= pin: drop the URL param so the next showSessionSetup
+			// cannot resurrect it over this choice. mp=1 and friends stay —
+			// the mp tab's visibility check still reads them.
+			const url = new URL(location.href)
+			if (url.searchParams.has('session')) {
+				url.searchParams.delete('session')
+				history.replaceState(null, '', `${url.pathname}${url.searchParams.toString() ? `?${url.searchParams}` : ''}${url.hash}`)
+			}
 			// The desktop entry point pins the chosen mode, like ?session= does:
 			// entering via Skirmish hides the Multiplayer tab and vice versa —
 			// the landing button already made that choice.
 			this.pinnedSession = tab
+			if (this.sessionRoot) this.sessionRoot.hidden = false
 			this.sessionTabSkirmish?.toggleAttribute('hidden', tab === 'mp')
 			this.sessionTabMp?.toggleAttribute('hidden', tab === 'skirmish')
 			this.selectSessionTab(tab)
@@ -2392,7 +2418,11 @@ export class Ui implements UiApi {
 			const matchStarting = this.waitingForStart || (this.mpMatch && (this.mpPhase === 'lobby' || this.mpPhase === 'starting'))
 			if (matchStarting) this.maybeStartTutorial(snap)
 			this.waitingForStart = false
-			if (this.sessionRoot) this.sessionRoot.hidden = true
+			// The shell's just-made session choice holds against straggler
+			// netframes of the world it left; a genuinely starting match
+			// (its own Start press) always takes the screen back.
+			const shellHold = this.sessionHoldUntil > performance.now() && !matchStarting
+			if (this.sessionRoot && !shellHold) this.sessionRoot.hidden = true
 			// A live match world: the soundtrack may rotate past the theme from here on.
 			this.music?.setInMatch?.(true)
 			// §5.10 row "starting → playing": the first world snapshot switches
@@ -4331,6 +4361,12 @@ export class Ui implements UiApi {
 			this.sessionTabMp?.toggleAttribute('hidden', pinnedSession === 'skirmish')
 			this.selectSessionTab(pinnedSession)
 		}
+		// A share link's ?room=<id> deep link: open the multiplayer view so the
+		// room poll starts, and let the room list resolver join it on sight.
+		if (/^[0-9a-f]{6,64}$/i.test(new URLSearchParams(location.search).get('room') ?? '') &&
+			this.effectiveMpMode() !== 'off' && !this.pinnedSession) {
+			this.selectSessionTab('mp')
+		}
 		this.updateSessionNav()
 		// Re-entry (the desktop's in-page session switch) keeps the map and speed already chosen.
 		if (this.sessionMap) {
@@ -5464,7 +5500,14 @@ export class Ui implements UiApi {
 	/** Tear a half-open session down and land back on the room browser. */
 	private async mpAbandonJoin(): Promise<void> {
 		const mp = this.mpBridge()
-		try { if (mp) await mp.leaveMultiplayer() } catch { /* the session may already be gone */ }
+		// Same race as mpLeaveToSession: a transport that died mid-join never
+		// acks the leave, and an unbounded await here kept the phase on
+		// `connecting` forever — Join stayed "Connecting…" and the desktop's
+		// Main menu button stayed disabled with it.
+		if (mp) await Promise.race([
+			mp.leaveMultiplayer().catch(() => { /* already gone */ }),
+			new Promise(resolve => { setTimeout(resolve, 750) }),
+		])
 		this.mpSetPhase('idle')
 		if (this.sessionMpPanel && !this.sessionMpPanel.hidden) this.selectSessionTab('mp')
 	}
@@ -5804,11 +5847,17 @@ export class Ui implements UiApi {
 
 		if (this.mpLobbyNote) {
 			const otherUnready = humans.filter(entry => !new RegExp(`(?:^|\\|)idx:${localIndex}(?:\\||$)`).test(entry) && !/\|Ready\|/.test(entry)).length
+			// The ranked fact rides along on every lobby tick: it is the one
+			// thing players ask about at match start ("does this count?").
+			const rankedClause = this.mpRoom?.ranked === true
+				? ' Ranked match — the server settles the result on the leaderboard.'
+				: ' Unranked — no rating change.'
 			this.mpLobbyNote.textContent = this.mpStartRequested && otherUnready > 0
-				? mpS12b(otherUnready)
-				: mpS12a(humans.length, slots)
+				? mpS12b(otherUnready) + rankedClause
+				: mpS12a(humans.length, slots) + rankedClause
 		}
 		if (this.mpReadyButton) this.mpReadyButton.textContent = /clientstate=Ready/.test(probe) ? 'Not ready' : 'Ready'
+		this.renderMpRoster(entries, localIndex, iAmAdmin)
 		const admin = iAmAdmin
 		if (this.mpStartButton) {
 			this.mpStartButton.hidden = !admin
@@ -5817,6 +5866,75 @@ export class Ui implements UiApi {
 			this.mpStartButton.title = humans.length < 2 ? 'Waiting for at least one more player' : ''
 		}
 		if (this.mpAddAiButton) this.mpAddAiButton.hidden = !admin
+	}
+
+	/** The lobby roster: every seat with its live ready state, straight from
+	 *  the server's lobby probe. The admin may kick a human (the server
+	 *  re-validates; the kicked player lands on the ordinary leave path).
+	 *  Player names are remote input — textContent only, never markup. */
+	private renderMpRoster(entries: string[], localIndex: string, iAmAdmin: boolean): void {
+		const roster = this.mpRoster
+		if (!roster) return
+		const rows: HTMLLIElement[] = []
+		for (const entry of entries) {
+			const idx = Number(/(?:^|\|)idx:(\d+)/.exec(entry)?.[1] ?? NaN)
+			if (!Number.isInteger(idx)) continue
+			const name = entry.split('|')[0] ?? ''
+			const isBot = /(?:^|\|)bot:True(?:$|\|)/.test(entry)
+			const isAdmin = /(?:^|\|)admin:True(?:$|\|)/.test(entry)
+			const ready = /\|Ready\|/.test(entry)
+			const pingMs = Number(/(?:^|\|)ms:(\d+)/.exec(entry)?.[1] ?? NaN)
+			const mine = String(idx) === localIndex
+
+			const row = document.createElement('li')
+			row.className = 'mp-roster-row'
+			row.dataset.ready = String(ready)
+			row.dataset.self = String(mine)
+			const label = document.createElement('span')
+			label.className = 'mp-roster-name'
+			label.textContent = name !== '' ? name : `Player ${idx + 1}`
+			row.append(label)
+			for (const [tagText, ice] of [[mine ? 'You' : '', true], [isAdmin ? 'Host' : '', false], [isBot ? 'AI' : '', false]] as [string, boolean][]) {
+				if (tagText === '') continue
+				const tag = document.createElement('span')
+				tag.className = ice ? 'tag tag--ice' : 'tag'
+				tag.textContent = tagText
+				row.append(tag)
+			}
+			const state = document.createElement('span')
+			state.className = 'mp-roster-state'
+			state.textContent = ready ? 'Ready' : 'Not ready'
+			row.append(state)
+			if (!isBot && Number.isFinite(pingMs) && pingMs >= 0) {
+				const ping = document.createElement('span')
+				ping.className = 'mp-roster-ping'
+				ping.textContent = `${pingMs} ms`
+				row.append(ping)
+			}
+			if (iAmAdmin && !mine && !isBot) {
+				const kick = document.createElement('button')
+				kick.type = 'button'
+				kick.className = 'screen-action mp-act mp-act--kick'
+				kick.textContent = 'Kick'
+				kick.addEventListener('click', () => void this.onMpKick(idx, name !== '' ? name : `Player ${idx + 1}`))
+				row.append(kick)
+			}
+			rows.push(row)
+		}
+		roster.replaceChildren(...rows)
+	}
+
+	/** Admin kick: the order goes to the server, which owns every rule (admin
+	 *  only, no self, no active player mid-match). The roster reflects the
+	 *  result on the next tick; a refusal names its cause in the status line. */
+	private async onMpKick(clientIndex: number, name: string): Promise<void> {
+		const mp = this.mpBridge()
+		if (!mp) return
+		const result = await mp.lobbyKick(clientIndex).catch(error =>
+			`kick failed: ${error instanceof Error ? error.message : String(error)}`)
+		this.mpStatus(result === `kick ${clientIndex} sent`
+			? `Kick requested — the server removes ${name}.`
+			: `Kick not sent (${result}).`)
 	}
 
 	/** S15/S16 end-of-match banner. Both buttons leave WITHOUT a reload:
@@ -5876,10 +5994,16 @@ export class Ui implements UiApi {
 
 	/** §5.10 row "Leave" (every phase): leaveMultiplayer, then the session
 	 *  screen comes back without a reload. */
-	private async mpLeaveToSession(): Promise<void> {
+	private async mpLeaveToSession(tab: 'skirmish' | 'mp' = 'mp'): Promise<void> {
 		const mp = this.mpBridge()
 		const rankedRoom = this.mpRoom?.ranked && this.mpRoom.matchId && this.mpRoom.settlement === 'pending' ? this.mpRoom : null
-		try { if (mp) await mp.leaveMultiplayer() } catch { /* already gone */ }
+		// A transport dying mid-close can leave leaveMultiplayer pending
+		// forever (server gone before the ack). The teardown below — and the
+		// session screen waiting behind it — must not depend on that ack.
+		if (mp) await Promise.race([
+			mp.leaveMultiplayer().catch(() => { /* already gone */ }),
+			new Promise(resolve => { setTimeout(resolve, 750) }),
+		])
 		this.mpSetPhase('idle')
 		if (rankedRoom) {
 			this.mpRoom = rankedRoom
@@ -5889,7 +6013,7 @@ export class Ui implements UiApi {
 		if (this.sessionRoot) this.sessionRoot.hidden = false
 		this.music?.setInMatch?.(false)
 		this.mpStatus('')
-		this.selectSessionTab('mp')
+		this.selectSessionTab(tab)
 	}
 
 	/** The room plays the ambience chosen at creation time (host) or inherited
@@ -5931,8 +6055,14 @@ export class Ui implements UiApi {
 		const leave = flatButton('Leave game', 'leave')
 		leave.addEventListener('click', () => void this.mpLeaveToSession())
 		bar.append(ready, start, addAi, leave)
-		this.mpSetup.append(note, bar)
+		// The roster between the note and the controls: seats, ready state, and
+		// (for the admin) a kick per human — filled per tick by renderMpRoster.
+		const roster = document.createElement('ul')
+		roster.className = 'mp-lobby-roster'
+		roster.setAttribute('aria-label', 'Players in this room')
+		this.mpSetup.append(note, roster, bar)
 		this.mpLobbyNote = note
+		this.mpRoster = roster
 		this.mpReadyButton = ready
 		this.mpStartButton = start
 		this.mpAddAiButton = addAi
@@ -5998,6 +6128,20 @@ export class Ui implements UiApi {
 	private getMpDir(): string {
 		if (this.mpDirOverride !== null) return this.mpDirOverride
 		return new URLSearchParams(location.search).get('mpdir') ?? ''
+	}
+
+	/** What "share this link" shows the host. A public room shares a page
+	 *  deep link — any browser opens the game and auto-joins the room
+	 *  (?room=), and the host's own address never appears. LAN rooms keep
+	 *  the raw game endpoint: their page link does not exist on the relay. */
+	private mpShareLink(roomId: string | undefined, dir: string, endpoint: string): string {
+		try {
+			const dirUrl = new URL(dir, location.origin)
+			if (dirUrl.protocol === 'https:' && !mpIsLocalHostname(dirUrl.hostname) &&
+				typeof roomId === 'string' && /^[0-9a-f]{6,64}$/i.test(roomId))
+				return `${dirUrl.origin}/steelseed?room=${roomId}`
+		} catch { /* fall back to the endpoint */ }
+		return endpoint
 	}
 
 	/** Bottom-left roster: poll once a second while a network session lives. */
@@ -6316,6 +6460,33 @@ export class Ui implements UiApi {
 
 	/** Reconcile the room browser: LAN feed first, then relay rooms not already
 	 *  covered by the LAN feed; per-key in-place updates, vanished keys removed. */
+	/** The share link's ?room=<id> deep link, pending until the room appears
+	 *  in the directory (booting rooms are not listed yet) or 45 s pass. */
+	private mpDeepLink: { id: string; deadline: number } | null = null
+	private mpDeepLinkChecked = false
+	private resolveMpDeepLink(merged: { room: MpRoomSummary; lan: boolean }[]): void {
+		if (!this.mpDeepLinkChecked) {
+			this.mpDeepLinkChecked = true
+			const id = new URLSearchParams(location.search).get('room') ?? ''
+			if (/^[0-9a-f]{6,64}$/i.test(id)) this.mpDeepLink = { id, deadline: Date.now() + 45_000 }
+		}
+		const link = this.mpDeepLink
+		if (!link) return
+		const hit = merged.find(({ room, lan }) => !lan && room.roomId === link.id)
+		if (hit) {
+			this.mpDeepLink = null
+			this.fireLaunchShot()
+			void this.joinMpRoom(hit.room)
+			return
+		}
+		if (Date.now() > link.deadline) {
+			this.mpDeepLink = null
+			if (this.sessionMpStatus) this.sessionMpStatus.textContent = 'The shared room is no longer available.'
+			return
+		}
+		if (this.sessionMpStatus) this.sessionMpStatus.textContent = 'Joining the shared room…'
+	}
+
 	private renderMpRoomList(): void {
 		const body = this.sessionMpRoomsBody
 		const status = this.sessionMpStatus
@@ -6337,9 +6508,11 @@ export class Ui implements UiApi {
 			status.textContent = this.mpRoomsFetchFailed
 				? 'Local skirmish still works — switch to the Skirmish tab.'
 				: ''
+			this.resolveMpDeepLink(merged)
 			return
 		}
 		status.textContent = `${merged.length} network room${merged.length === 1 ? '' : 's'} found.`
+		this.resolveMpDeepLink(merged)
 		// The static "Checking for network rooms…" row (and any empty-state row) is not a room:
 		// reconciling only touched rows with an id, so it stayed on top of the list.
 		for (const stale of body.querySelectorAll('tr:not([data-room-id])')) stale.remove()
@@ -6639,7 +6812,7 @@ export class Ui implements UiApi {
 			created.wsUrl = reserved.wsUrl
 			const endpoint = this.resolveRoomUrl(created, dir)
 			if (!endpoint) return
-			this.mpStatus(`Room "${roomName}" is live — share this link: ${endpoint}`)
+			this.mpStatus(`Room "${roomName}" is live — share this link: ${this.mpShareLink(created.roomId, dir, endpoint)}`)
 			this.mpRoom = created
 			if (this.sessionMpMode) this.sessionMpMode.textContent = created.ranked === true
 				? 'Ranked multiplayer · admission and settlement handled by the server'
@@ -6899,7 +7072,7 @@ export class Ui implements UiApi {
 		}
 		this.music?.setInMatch?.(false)
 		if (this.sessionStart) this.sessionStart.disabled = true
-		if (this.sessionStatus) this.sessionStatus.textContent = 'Validating setup and starting the local OpenRA server…'
+		if (this.sessionStatus) this.sessionStatus.textContent = 'Validating setup and starting the local game server…'
 
 		// Yield one task so the explicit loading state paints before synchronous map generation.
 		setTimeout(async () => {

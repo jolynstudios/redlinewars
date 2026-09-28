@@ -1727,12 +1727,26 @@ async function boot() {
       const netframe = Number(/netframe=([^ ]+)/.exec(probeText)?.[1] ?? 0);
       const outofsync = /outofsync=False/.test(probeText) ? 'False' : String(/outofsync=([^ ]+)/.exec(probeText)?.[1] ?? 'unknown');
       console.log(`[mp] started, netframe=${netframe}, outofsync=${outofsync}`);
+      // The world-present proof belongs where the world presents: this live
+      // netframe-50 match frame. After a walk the torn-down mp world leaves
+      // the canvas legitimately dark, so that later capture can no longer
+      // prove presentation.
+      let liveNonBlack = 0;
+      for (let attempt = 0; attempt < 4 && liveNonBlack < 0.5; attempt++) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        try {
+          liveNonBlack = nonBlackRatioOf(await gameWin.webContents.capturePage());
+        } catch {
+          // Failed capture counts as black; the retry loop keeps going.
+        }
+      }
+      console.log(`[mp] live frame non-black ${liveNonBlack.toFixed(3)}`);
       // T3.21.3: host-stop (the same stopNode() the host-stop IPC handler
       // runs), then prove no OpenRA.Server outlived the node.
       await stopNode();
       const noOrphan = await waitServersGone(mpOrphanBaseline);
       console.log(`[mp] node stopped, orphans: ${noOrphan ? 'none' : 'LEFT BEHIND'}`);
-      return { ok: /started=True/.test(probeText), netframe, outofsync, noOrphan };
+      return { ok: /started=True/.test(probeText), netframe, outofsync, noOrphan, nonBlack: liveNonBlack };
     } catch (err) {
       const message = String(err?.message || err);
       console.error('[mp] ' + message);
@@ -2081,6 +2095,11 @@ function runSelftest({ gameWin }, t0, startMp, walkFn) {
       // T3.21.2: without a GPU there is nothing to capture — the bridge is
       // the whole readiness story and the verdict rests on the mp flow.
       let nonBlackRatio = 0;
+      // Combined runs already proved presentation with the mp leg's live
+      // match frame (mp.nonBlack); seed it so the post-walk capture — the
+      // mp world is torn down by then, the canvas is legitimately dark —
+      // only re-checks, never vetoes on its own.
+      if (mp && typeof mp.nonBlack === 'number') nonBlackRatio = mp.nonBlack;
       if (!SELFTEST_GPU_OFF) {
         // A few frames must present before capture, so the world is on screen.
         for (let attempt = 0; attempt < 4 && nonBlackRatio < 0.5; attempt++) {

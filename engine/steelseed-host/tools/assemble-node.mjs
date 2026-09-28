@@ -125,6 +125,13 @@ export async function assembleNode({ rid, out }) {
   const hasStandalone = fs.existsSync(standaloneSrc);
   if (missing.length > 0)
     throw new Error(`assemble-node: node-manifest.json lists paths that do not exist:\n  ${missing.join('\n  ')}`);
+  // The whole-dir "generated" copy cannot prove per-file completeness: the
+  // resolved-RA catalog exports (what verify-release's node coverage checks)
+  // must exist, or the assembly fails loudly instead of shipping a node that
+  // silently lacks them.
+  for (const exportName of ['ra-visual-manifest.json', 'ra-trait-audit.json'])
+    if (!fs.existsSync(path.join(hostRoot, 'generated', exportName)))
+      throw new Error(`assemble-node: steelseed-host/generated/${exportName} is missing — run "node steelseed-host/tools/export-ra-catalog.mjs" first`);
   if (hasStandalone) assertStandaloneNativeRuntime(standaloneSrc, resolvedRid);
 
   fs.mkdirSync(outRoot, { recursive: true });

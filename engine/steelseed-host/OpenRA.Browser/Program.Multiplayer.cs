@@ -487,6 +487,27 @@ namespace OpenRA
 		}
 
 		/// <summary>
+		/// Admin removes a player from the room through the server's own `kick`
+		/// lobby command (LobbyCommands), so every rule stays server-side:
+		/// admin only, never self, never an active player mid-match, with the
+		/// victim getting the standard ServerError notice and disconnect — they
+		/// land on the ordinary S16 leave path, not a crash.
+		/// </summary>
+		[JSExport]
+		internal static string LobbyKick(int clientIndex)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			orderManager.IssueOrder(Order.Command($"kick {clientIndex} False"));
+			return $"kick {clientIndex} sent";
+		}
+
+		/// <summary>
 		/// Per-player list for the bottom-left session HUD: name, connection
 		/// quality (Good/Moderate/Poor — the server pings every 5s and broadcasts
 		/// SyncConnectionQuality), lobby state (Disconnected marks a dropped

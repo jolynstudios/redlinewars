@@ -407,6 +407,10 @@ for (const level of ['log', 'error']) {
 function attachPlayer(room) {
 	if (!room) return;
 	room.players += 1;
+	// A room that ever held a player can no longer be a still-booting create
+	// nobody joined: once it empties again it is an abandoned lobby, and the
+	// reaper may hold it to the short window below.
+	room.hadPlayer = true;
 	room.lastActiveAt = Date.now();
 }
 function detachPlayer(room) {
@@ -1452,8 +1456,13 @@ const reaperTimer = setInterval(() => {
 		// connected host may spend longer than the idle window configuring the
 		// lobby; that is active ownership, not an abandoned server.
 		if (room.players !== 0) continue;
-		if (now - room.lastActiveAt < idleKillMs) continue;
-		console.log(`[roomhost] room ${room.id} idle > ${idleKillMs / 1000}s with 0 players — stopping dedicated (port ${room.port})`);
+		// A room that already held a player and then emptied is an abandoned
+		// lobby (the creator left before any match): the directory shows a
+		// ghost room nobody can reasonably want back. Hold it only briefly —
+		// never longer than the boot budget a fresh create still deserves.
+		const grace = room.hadPlayer ? Math.min(idleKillMs, 30_000) : idleKillMs;
+		if (now - room.lastActiveAt < grace) continue;
+		console.log(`[roomhost] room ${room.id} idle > ${grace / 1000}s with 0 players — stopping dedicated (port ${room.port})`);
 		killTree(room.child);
 	}
 }, 15_000);
