@@ -43,6 +43,9 @@ if (process.platform === 'linux') {
   app.commandLine.appendSwitch('enable-gpu-rasterization');
 }
 
+// Dev mode reports "Electron" and that name leaked into the Apple menu and
+// the About panel. Set it before anything reads app.name.
+app.setName('Redline Wars');
 
 const SELFTEST = process.argv.includes('--selftest');
 const HEADLESS = process.argv.includes('--headless');
@@ -1321,7 +1324,23 @@ async function boot() {
   });
 
   const menu = Menu.buildFromTemplate([
-    ...(process.platform === 'darwin' ? [{ role: 'appMenu' }] : []),
+    // Explicit app menu instead of role 'appMenu': the role labels itself
+    // with app.name, which dev mode still reported as "Electron". Exit sits
+    // at the bottom; role 'quit' routes through the before-quit guard.
+    ...(process.platform === 'darwin' ? [{
+      label: 'Redline Wars',
+      submenu: [
+        { label: 'Over Redline Wars', role: 'about' },
+        { type: 'separator' },
+        { role: 'services', submenu: [] },
+        { type: 'separator' },
+        { label: 'Verberg Redline Wars', role: 'hide' },
+        { label: 'Verberg andere', role: 'hideOthers' },
+        { label: 'Toon alles', role: 'unhide' },
+        { type: 'separator' },
+        { label: 'Spel afsluiten', role: 'quit' },
+      ],
+    }] : []),
     { role: 'fileMenu' },
     { role: 'editMenu' },
     {

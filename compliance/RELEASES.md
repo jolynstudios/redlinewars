@@ -70,7 +70,28 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-a7bcd14 (the current release)
+## v2026.09.28-2df2ad8 (the current release)
+
+Exported from private commit `2df2ad82`, superseding `v2026.09.28-a7bcd14` the same night; none of the
+28 September tags have deployed yet (the Actions budget was topped up after `88c5ea1`'s blocker). Four
+owner-asked changes ride in this tag. The logo: the R is optically centred in its red slab (translated
+by 12.4/10.9) and the wordmark rebalanced so both gaps beside the plate measure the same 97.4 px —
+presentation transforms only, on every published sprite (game header, landing brand and favicons,
+desktop build icons); the `brand/` originals are untouched. The desktop app icons are regenerated from
+that fixed mark — every iconset size, `icon.png`, `icon.icns` and `icon.ico` rebuilt and round-trip
+checked, pixel-measured at 1024: the R sits at margins 132/133 (left/right) and 124/124 (top/bottom)
+inside the slab, where the previous binaries read 22 px left and 19 px high of centre. The desktop app
+menu: dev mode reported "Electron" into the Apple menu and the About panel; `app.setName` plus an
+explicitly built app menu (Dutch labels) fix the name, and "Spel afsluiten" sits at the bottom of that
+menu, routed through the before-quit guard. The landing's "Why this exists" background: the CC BY 2.0
+Suriname aerial photo is replaced by Jolyn Studios' own generated artwork — a deterministic seeded
+cold-dusk landscape (snowy far range, layered forested ridges, dark fir foreground), 1600×1071 webp at
+36 KB — and every credit for the old photo is gone from the caption, footer, credits page and
+`THIRD_PARTY_NOTICES.md`; grep finds no remaining reference.
+
+Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-a7bcd14 (superseded by v2026.09.28-2df2ad8; not deployed)
 
 Exported from private commit `a7bcd14e`, superseding `v2026.09.28-88c5ea1` the same night; like it, not
 yet deployed (see below). The desktop landing's header mark now reads the way the owner asked: white

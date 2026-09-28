@@ -28,7 +28,8 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.28-a7bcd14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-a7bcd14) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.28-2df2ad8`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-2df2ad8) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.28-a7bcd14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-a7bcd14) | the same, briefly, on 28 September 2026; superseded by `v2026.09.28-2df2ad8` before either deployed |
 | [`v2026.09.28-88c5ea1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-88c5ea1) | the same, briefly, on 28 September 2026; superseded by `v2026.09.28-a7bcd14` before either deployed |
 | [`v2026.09.28-333da6c`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-333da6c) | the same, briefly, on 28 September 2026; superseded by `v2026.09.28-88c5ea1` |
 | [`v2026.09.28-aa02032`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-aa02032) | the same, briefly, on 28 September 2026; first tag whose export withholds the game interface (see below); superseded by `v2026.09.28-333da6c` |
