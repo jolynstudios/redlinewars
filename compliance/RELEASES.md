@@ -70,7 +70,19 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-88c5ea1 (the current release)
+## v2026.09.28-a7bcd14 (the current release)
+
+Exported from private commit `a7bcd14e`, superseding `v2026.09.28-88c5ea1` the same night; like it, not
+yet deployed (see below). The desktop landing's header mark now reads the way the owner asked: white
+letters with no white plate. The plate `96886bd4` placed behind the mark made its knockout R read white
+but showed as a white background; removing it alone also removed the white, because the landing's
+`rw-mark` merged the letterform into a single red path. The symbol now carries the game page's own
+decomposition — red slab, white R, red counter — pixel-verified: the white sits strictly inside the red,
+with no margin around it.
+
+Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-88c5ea1 (superseded by v2026.09.28-a7bcd14; not deployed)
 
 Exported from private commit `88c5ea1b`, superseding `v2026.09.28-333da6c` the same evening. Playing that
 release surfaced two defects in the stand-in interface, both repaired here. A centre-of-screen click on the
@@ -85,8 +97,8 @@ on that path exactly as it already does on palette overflow, and every caller al
 The deploy of this release (run `36475009668`, dispatched from `88c5ea1b`) did not complete: GitHub
 Actions refused to start the packaging jobs — "an Actions budget is preventing further use" — so no
 artifacts were built and nothing was published; the live site and downloads remain the `aa02032` set
-the previous deploy published. The deploy will be re-dispatched when the Actions budget allows, and
-the downloads and verification record will be added then.
+the previous deploy published. The re-dispatch, when the Actions budget allows, will run from the
+release after this one, which carries the desktop header fix below.
 
 ## v2026.09.28-333da6c (superseded by v2026.09.28-88c5ea1)
 
