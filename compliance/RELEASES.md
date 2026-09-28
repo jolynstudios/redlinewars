@@ -96,7 +96,42 @@ verifier holds every file outside `steelseed/` to the reference AppBundle byte f
 desktop packages of the previous tag failed on exactly those two files. The filter now names the
 presentation bundle only; the runtime ships whole again.
 
-Downloads and the verification record will be added when the release is deployed.
+Published by deploy run `36490732257` (dispatched 00:09 CEST on 29 September 2026, `components=all`,
+landing included). The packaged mac app proves the desktop work: the bundle identity reads
+`Redline Wars` (CFBundleName, CFBundleDisplayName, CFBundleExecutable — the Apple menu and About
+panel no longer say Electron), the app menu in the shipped `app.asar` ends in "Spel afsluiten" after
+the Dutch hide/unhide entries, the shipped `icon.icns` is byte-equal to the regenerated centred mark,
+and the shipped AppBundle carries `_framework/dotnet.js.map` and `dotnet.runtime.js.map` again.
+
+### Downloads: www.redlinewars.online/downloads
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 458227869 | `e16a6d5d5b1a33a7b84a938a77c193623a4a31e18b8f54dcd034af0969740106` |
+| `Redline-Wars-macOS-arm64.zip` | 488538817 | `b726a2bac3b3bb9a1b3798525071e44fc405cf8af5cc44278fb7692da3ae88fc` |
+| `Redline-Wars-macOS-x64.zip` | 497316661 | `7231b66003fe08dc37860e03157a3dd3b824b520711fbbe1fa3b58849db18aa4` |
+| `Redline-Wars-Linux-x64.AppImage` | 454184333 | `65a9f358a3eee4bbfe8b38819df9074dff6afb1cd8c30ab8d949669ec3c3de2d` |
+| `Redline-Wars-Linux-arm64.AppImage` | 454261335 | `d04fcd808fd2801fdaa1728f5236a0e77d98cbcea5595368344fb135b53fa057` |
+| `redline-node-linux-x64.zip` | 72759330 | `9aa0a3b4b5fde53c4401f993e796112fb9f20d5e615369c859de63c984f5d97c` |
+| `redline-node-linux-arm64.zip` | 70014861 | `347c7ee74a55cd95073aeeaea80da6617d67ab538f78b994771723477c8f1782` |
+| `redline-node-win-x64.zip` | 109248945 | `52cb63adcc26e3f64b0499abfa81ecc746484d2936a05cc0eaabc91b776aabe1` |
+| `redline-node-osx-arm64.zip` | 68390791 | `c0baef3db2dca7b32aa7c1bc6a1a3802f906f0ce0cee3e8d8bc6d8cd1105cd2b` |
+| `redline-node-osx-x64.zip` | 71614718 | `bb947c4e9821788da659270c1185182f39c426ac4d3e0768c478803aa3dfc57d` |
+
+**Verification: PASS** in strict mode (`--strict --sums SHA256SUMS --appbundle <the deploy's own
+AppBundle>`, 11 artifacts and the live site against a clean `tools/build.mjs` build of this tag,
+`simBuild 7e45c0e93135`): every artifact's sha256 equals its `SHA256SUMS` line; each
+`RELEASE-MANIFEST.json` names this tag and source commit `a2b7ac683d19`; the five node zips pass
+their full inventory (218/218 node files byte-equal, licences, notices, no WebGPU client); the five
+desktop packages pass payload end to end — composition equal to the reference, 1234 presentation
+files present and equal, the 18 client source maps intentionally absent, and the runtime beside
+`steelseed/` byte-equal to the reference (the two restored `_framework` maps included); the shell and
+`app.asar` pages equal the tag's; 163 `web/src` files embedded in the reference's 18 source maps equal
+the tag's; the licence set and notices are complete on every artifact. The live site passes fully:
+the served composition is the deploy's, its scripts match, the 284 served `_framework` files equal
+the build's, and the licences are served. Not run: a rebuild comparison (`--rebuild`) and platform
+execution reports; the deploy's own macOS gates (signing, gpu gates, the packaged selftest) ran green
+inside run `36490732257`.
 
 ## v2026.09.28-2df2ad8 (superseded by v2026.09.29-a2b7ac6; its downloads were live for about forty minutes)
 
