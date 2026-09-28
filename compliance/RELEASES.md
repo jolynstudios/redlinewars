@@ -82,7 +82,11 @@ calling `reserveBones` every frame, throwing ~95 `TypeError`s per second; `reser
 on that path exactly as it already does on palette overflow, and every caller already treats null as
 "unskinned, keep going". The renderer itself is unchanged for every WebGPU browser.
 
-Downloads and the verification record will be added when the release is deployed.
+The deploy of this release (run `36475009668`, dispatched from `88c5ea1b`) did not complete: GitHub
+Actions refused to start the packaging jobs — "an Actions budget is preventing further use" — so no
+artifacts were built and nothing was published; the live site and downloads remain the `aa02032` set
+the previous deploy published. The deploy will be re-dispatched when the Actions budget allows, and
+the downloads and verification record will be added then.
 
 ## v2026.09.28-333da6c (superseded by v2026.09.28-88c5ea1)
 
