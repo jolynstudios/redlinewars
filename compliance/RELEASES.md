@@ -70,26 +70,70 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-2df2ad8 (the current release)
+## v2026.09.29-a2b7ac6 (the current release)
 
-Exported from private commit `2df2ad82`, superseding `v2026.09.28-a7bcd14` the same night; none of the
-28 September tags have deployed yet (the Actions budget was topped up after `88c5ea1`'s blocker). Four
-owner-asked changes ride in this tag. The logo: the R is optically centred in its red slab (translated
-by 12.4/10.9) and the wordmark rebalanced so both gaps beside the plate measure the same 97.4 px —
-presentation transforms only, on every published sprite (game header, landing brand and favicons,
-desktop build icons); the `brand/` originals are untouched. The desktop app icons are regenerated from
-that fixed mark — every iconset size, `icon.png`, `icon.icns` and `icon.ico` rebuilt and round-trip
-checked, pixel-measured at 1024: the R sits at margins 132/133 (left/right) and 124/124 (top/bottom)
-inside the slab, where the previous binaries read 22 px left and 19 px high of centre. The desktop app
-menu: dev mode reported "Electron" into the Apple menu and the About panel; `app.setName` plus an
-explicitly built app menu (Dutch labels) fix the name, and "Spel afsluiten" sits at the bottom of that
-menu, routed through the before-quit guard. The landing's "Why this exists" background: the CC BY 2.0
+Exported from private commit `a2b7ac68`, one commit past `v2026.09.28-2df2ad8` after its strict check
+failed; every owner-asked change of that tag rides here unchanged, and the one repair is in the
+packaging itself. The logo: the R is optically centred in its red slab (translated by 12.4/10.9) and
+the wordmark rebalanced so both gaps beside the plate measure the same 97.4 px — presentation
+transforms only, on every published sprite (game header, landing brand and favicons, desktop build
+icons); the `brand/` originals are untouched. The desktop app icons are regenerated from that fixed
+mark — every iconset size, `icon.png`, `icon.icns` and `icon.ico` rebuilt and round-trip checked,
+pixel-measured at 1024: the R sits at margins 132/133 (left/right) and 124/124 (top/bottom) inside
+the slab, where the previous binaries read 22 px left and 19 px high of centre. The desktop app menu:
+dev mode reported "Electron" into the Apple menu and the About panel; `app.setName` plus an explicitly
+built app menu (Dutch labels) fix the name, and "Spel afsluiten" sits at the bottom of that menu,
+routed through the before-quit guard. The landing's "Why this exists" background: the CC BY 2.0
 Suriname aerial photo is replaced by Jolyn Studios' own generated artwork — a deterministic seeded
-cold-dusk landscape (snowy far range, layered forested ridges, dark fir foreground), 1600×1071 webp at
-36 KB — and every credit for the old photo is gone from the caption, footer, credits page and
+cold-dusk landscape (snowy far range, layered forested ridges, dark fir foreground), 1600×1071 webp
+at 36 KB — and every credit for the old photo is gone from the caption, footer, credits page and
 `THIRD_PARTY_NOTICES.md`; grep finds no remaining reference.
 
+The repair: `desktop/package.mjs`'s bundle filter, which `a8bf17ae` had widened to `!**/*.map` to keep
+the client's sourcesContent out of the installers, also stripped `_framework/dotnet.js.map` and
+`dotnet.runtime.js.map` — the .NET runtime's own maps, which carry no withheld source. The strict
+verifier holds every file outside `steelseed/` to the reference AppBundle byte for byte, so all five
+desktop packages of the previous tag failed on exactly those two files. The filter now names the
+presentation bundle only; the runtime ships whole again.
+
 Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-2df2ad8 (superseded by v2026.09.29-a2b7ac6; its downloads were live for about forty minutes)
+
+Exported from private commit `2df2ad82`, superseding `v2026.09.28-a7bcd14` the same night. Deployed by
+run `36487582363` (dispatched 23:39 CEST on 28 September 2026, `components=all`); its downloads replaced
+the `aa02032` set at about 00:00 CEST on 29 September and were themselves replaced by
+`v2026.09.29-a2b7ac6` at about 01:00. The owner-asked changes it carried are described under the tag
+that supersedes it, unchanged. The packaged mac app proves the desktop work end to end: the bundle
+identity reads `Redline Wars` (CFBundleName, CFBundleDisplayName, CFBundleExecutable — the Apple menu
+and About panel no longer say Electron), the app menu in the shipped `app.asar` ends in
+"Spel afsluiten" after the Dutch hide/unhide entries, and the shipped `icon.icns` is byte-equal to the
+regenerated centred mark.
+
+**Verification** (`--strict --sums SHA256SUMS --appbundle <the deploy's own AppBundle>`, 11 artifacts
+and the live site against a clean build of this tag): all eleven hashes match `SHA256SUMS`; the five
+node zips pass everything (218/218 inventoried node files byte-equal, notices, manifests, boundaries);
+the live site passes fully (composition, served scripts, 163 embedded `web/src` files, 284 `_framework`
+files). The five desktop packages fail strict in one way each: the payload check finds
+`_framework/dotnet.js.map` and `_framework/dotnet.runtime.js.map` missing from the shipped AppBundle —
+the packaging filter defect that `v2026.09.29-a2b7ac6` repairs. Integrity, notices, manifests, shell,
+client-source correspondence (163 files through the reference maps) and the composition all pass on
+every artifact.
+
+### Downloads: www.redlinewars.online/downloads (published 29 September 2026, ~00:00–01:00 CEST)
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 458122712 | `9e54352fbde68a19e39d11be236af60fa24780b911b0cbff30fa356955fea547` |
+| `Redline-Wars-macOS-arm64.zip` | 488419097 | `9b12a39c42d280bd99a0e1a35499be31a8604b0f68e11842a45dcd62970026a6` |
+| `Redline-Wars-macOS-x64.zip` | 497196945 | `d5920a719a7961e92eae9928370b94ca9fb2f3654d702cd0f7415a3c8beaa26c` |
+| `Redline-Wars-Linux-x64.AppImage` | 454065468 | `ed7938e56ad2c134cef4e57be7df38384efabfc4c6fbcb87d2b148c90b19c20a` |
+| `Redline-Wars-Linux-arm64.AppImage` | 454142380 | `0958f12278b6a9392e22977275e35ddb06b0b3da354ec7ff59168783a094bc46` |
+| `redline-node-linux-x64.zip` | 72759328 | `bf5d6dd40ab20bbe0081766e5015cc8755dd75904f7dfb360504807901cb4dbb` |
+| `redline-node-linux-arm64.zip` | 70014859 | `0f77d69249773a65aa6ec9a67f1084ded096795924b8e92729f526942e7135be` |
+| `redline-node-win-x64.zip` | 109248944 | `46ce83ba659430edcf54cf773c70fd14dfff7c765269f881b782d356e73db597` |
+| `redline-node-osx-arm64.zip` | 68390793 | `6b45672d7ccb0df8660126021de3987dc3f13197fb73dd213a461db6d6fdc9e6` |
+| `redline-node-osx-x64.zip` | 71614723 | `941d25587d24bcc8cc4301aa6e237e248b34f3c9e6041838eb7a13ba6d456d74` |
 
 ## v2026.09.28-a7bcd14 (superseded by v2026.09.28-2df2ad8; not deployed)
 
