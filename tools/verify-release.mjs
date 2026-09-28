@@ -155,7 +155,14 @@ function unpack(file, into) {
 	const name = basename(file)
 	if (/^redline-node-.+\.zip$/.test(name)) {
 		execFileSync('unzip', ['-q', '-o', file, '-d', into])
-		const root = join(into, readdirSync(into).find(entry => entry.startsWith('redline-node-')))
+		// A re-packaging step (e.g. the ad-hoc signing of the osx zips) may nest the package one
+		// wrapper directory deeper; step into a single wrapper to find it.
+		let base = into
+		if (!readdirSync(base).some(entry => entry.startsWith('redline-node-')) && readdirSync(base).length === 1)
+			base = join(base, readdirSync(base)[0])
+		const packageEntry = readdirSync(base).find(entry => entry.startsWith('redline-node-'))
+		if (!packageEntry) throw new Error(`${name}: no redline-node-* package directory at the archive root`)
+		const root = join(base, packageEntry)
 		return { kind: 'node-zip', nodeRoot: root, appBundle: null, scanRoot: root,
 			legal: [['GPL text', 'COPYING-GPLv3.txt'], ['OpenRA AUTHORS', 'AUTHORS-OpenRA.txt'], ['third-party notices', 'THIRD-PARTY-NOTICES.txt'], ['GPL v2 text', 'GPL-2.0.txt'], ['LGPL v2.1 text', 'LGPL-2.1.txt'], ['LGPL v3 text', 'LGPL-3.0.txt']]
 				.map(([label, rel]) => ({ label, file: join(root, rel) })),

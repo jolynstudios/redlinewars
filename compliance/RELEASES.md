@@ -88,8 +88,19 @@ room's share link is a page deep link (`?room=`), the desktop landing folds Play
 beside Start skirmish with the engine boot gating both actions, the lobby gains an admin kick and a live
 roster, abandoned lobbies are reaped after 30 s, and `AUTHORS` credits the game's author.
 
-Verification: the strict check against the deployed artifacts and the live site is the runbook's manual
-post-deploy step; its outcome is recorded here once it has run.
+Verification: the strict check against the deployed artifacts and the live site ran on 28 September, against
+deploy run `36446328179`'s own artifacts and the live `SHA256SUMS`. Nine of the ten downloads and the live
+site pass everything strict asks: hashes, source correspondence, notices, manifests, boundaries, and — for
+the macOS arm64 package — a multiplayer selftest the deploy ran from the exact shipped archive. The live
+site serves the reference build's composition (284 `_framework` files equal). The two signed macOS node
+zips fail it in one way: ad-hoc signing rewrites the server binary and the Lua dylibs after
+`node-assembly.json` was stamped, so three of their sha256 entries are stale, and the re-zip embedded an
+extra `unzipped/` directory at the archive root. Both are packaging defects of the signed zips only — the
+unsigned zips pass, the contents are correctly signed, and a locally restamped and re-rooted copy of the
+shipped zip passes every source-correspondence check. The signing step now re-stamps the inventory and
+re-zips from the package directory (private commits `b1e973b1`, `9d10e155`), so the next release's signed
+zips verify strictly; `verify-release` additionally tolerates a single wrapper directory so these two
+remain checkable.
 
 ## v2026.09.28-ab47013 (the downloads of 28 September 2026)
 
