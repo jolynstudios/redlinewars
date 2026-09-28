@@ -93,7 +93,9 @@ renderer's selection rings (the same `camera.selectActors` surface the productio
 short order-issued/order-refused note in the strip. The desktop landing's header mark loses the rounded
 white plate that had appeared behind it, so the header reads dark again.
 
-Downloads and the verification record will be added when the release is deployed.
+Its downloads never shipped: no deploy ran from `333da6c8`. Playing this release surfaced the two defects
+the tag after it repairs, and the next deploy (run `36475009668`) was dispatched from `88c5ea1b` once they
+were fixed.
 
 ## v2026.09.28-aa02032 (superseded by v2026.09.28-333da6c)
 
@@ -113,7 +115,27 @@ GPLv3, as published at the time; no tag was moved or rewritten.
 The live game and the desktop apps we distribute are unchanged in behaviour: they are built from the
 private tree, which keeps the production interface (`web/src/hud/`).
 
-Downloads and the verification record will be added when the release is deployed.
+### Downloads: www.redlinewars.online/downloads
+
+Published by deploy run `36469939151` (source `aa020326`, dispatched 19:06 UTC on 28 September 2026) and
+live until the deploy of `v2026.09.28-88c5ea1` mirrored over them the same evening. Hashes from the
+`SHA256SUMS` that run published.
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 458181289 | `e992d223578c198ce2d7918065a471afe6dd2e888957380da9aa7b9e61768470` |
+| `Redline-Wars-macOS-arm64.zip` | 488461537 | `0811aeec7b00f7ddb2f4e4efe775b00bbdd884ec33a360047f42ff2787db085b` |
+| `Redline-Wars-macOS-x64.zip` | 497239381 | `add351e67bbca21c8abcb9782db91459145e1f09f123422d4b9afa1c85ed0c25` |
+| `Redline-Wars-Linux-x64.AppImage` | 454094185 | `263d1b8433857c465e565a5ce2c5c2e1f7ed3fdfc9f8a078327ca3f4ed662e6c` |
+| `Redline-Wars-Linux-arm64.AppImage` | 454171174 | `0ede92d466dc5fb8b15b4cd845f95788dc982582429b3ffe6b3999a30ee9880b` |
+| `redline-node-linux-x64.zip` | 72759434 | `31ba0ca1a100c96840dfdf1894c76337b69a77639745233fd427d1744d3828e4` |
+| `redline-node-linux-arm64.zip` | 70014964 | `2f896a01bf1ba49f3873c533950098f19e0754997d29ecdf858b5da86e0304b2` |
+| `redline-node-win-x64.zip` | 109249048 | `1022c6a2dd94a99e4dcac8dd863a32add3b7793c7f4931aa806f02680cc7c64f` |
+| `redline-node-osx-arm64.zip` | 68390895 | `3fdd871359761fd8a05e70418205285a6dd49e489973806c63973916384d12df` |
+| `redline-node-osx-x64.zip` | 71614826 | `2fb6d8e0129c537e9613d6c053d6c17644d83fc6cefb0a35815dbd17c6aff1a8` |
+
+They were not strict-verified as a set before the release after them replaced them; the release after
+them carries the full verification record.
 
 ## v2026.09.28-96886bd (superseded by v2026.09.28-aa02032)
 
