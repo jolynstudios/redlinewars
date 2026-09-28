@@ -1,4 +1,5 @@
-import { defineConfig, type Connect } from 'vite'
+import { realpathSync } from 'node:fs'
+import { defineConfig, searchForWorkspaceRoot, type Connect } from 'vite'
 
 // No account service runs beside `vite dev` or `vite preview`, and the game asks /api/me at
 // boot now that accounts are public. Answer the way the production account service answers
@@ -17,7 +18,7 @@ const signedOutAccount: Connect.NextHandleFunction = (req, res, next) => {
 const localNetConfig: Connect.NextHandleFunction = (req, res, next) => {
 	if (req.url !== '/' && !req.url?.startsWith('/?')) return next()
 	res.setHeader('content-type', 'application/json')
-	res.end('{"schema":1,"browserMultiplayer":"off"}')
+	res.end(JSON.stringify({ schema: 1, browserMultiplayer: 'off', companionEnabled: !!process.env.JOA_ORIGIN, companionOrigin: process.env.JOA_ORIGIN }))
 }
 
 // STEELSEED — web build.
@@ -46,12 +47,13 @@ export default defineConfig({
 		// requires WebGPU or WebGL2 and every browser meeting that bar supports modulepreload.
 		modulePreload: { polyfill: false },
 		rollupOptions: {
+			input: { game: 'index.html', companion: 'companion.html' },
 			output: {
 				// One chunk per subsystem keeps a node's cost attributable in the bundle
 				// report — a node that suddenly adds 400 KB should be obvious.
 				manualChunks(id, { getModuleInfo }) {
 					const m = /\/src\/([^/]+)\//.exec(id)
-					if (!m) return undefined
+					if (!m || m[1] === 'core' || m[1] === 'companion') return undefined
 					// A module imported from MORE THAN ONE subsystem directory cannot ride a
 					// named subsystem chunk: forcing it creates a chunk cycle, and whichever
 					// chunk executes second reads the other's bindings before their module
@@ -81,6 +83,9 @@ export default defineConfig({
 	},
 
 	server: {
+		// A worktree may link node_modules from another checkout: serve its real path too, or the
+		// brand fonts (read from node_modules) are refused in dev.
+		fs: { allow: [searchForWorkspaceRoot(process.cwd()), realpathSync('node_modules')] },
 		headers: {
 			// The .NET WASM host is built with WasmEnableThreads=false so these are not
 			// strictly required today, but keeping the isolated context matches how the

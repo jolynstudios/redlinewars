@@ -20,7 +20,7 @@ what that licence asks of us. The notices themselves are in [THIRD_PARTY_NOTICES
 | Redline Wars' own code | GPL-3.0-or-later | as above | as above |
 | MP3Sharp 1.0.5 | LGPL-3.0 | the LGPL and GPL texts; the library's source; the ability to relink with a modified library | `LGPL-3.0.txt` and the GPL text ship in every artifact (`engine/licenses/`); source at https://github.com/Nihlus/MP3Sharp and inside the NuGet package (`src/`); relinking: the whole program's source is here and `tools/build.mjs` rebuilds it with a replaced library |
 | TagLib# (TagLibSharp 2.3.0) | LGPL-2.1-only | the LGPL text; the library's source; the ability to relink | `LGPL-2.1.txt` ships in every artifact (`engine/licenses/`); source at https://github.com/mono/taglib-sharp/tree/TaglibSharp-2.3.0.0; relinking as above |
-| FuzzyLogicLibrary (OpenRA-FuzzyLogicLibrary 1.0.1) | GPL, version open (below) | the GPL text; source | source at https://github.com/teinarss/fuzzynet; the GPL v2 text ships in every artifact (`engine/licenses/GPL-2.0.txt`); **version open** |
+| FuzzyLogicLibrary (OpenRA-FuzzyLogicLibrary 1.0.1) | GPL (author's repo ships the v2 text; below) | the GPL text; source | source at https://github.com/teinarss/fuzzynet; the GPL v2 text ships in every artifact (`engine/licenses/GPL-2.0.txt`); **closed — follow upstream (below)** |
 | Fonts: Archivo, Martian Mono | OFL-1.1 | the OFL text next to the fonts | shipped (`licenses/` in the AppBundle, `legal/fonts/` in the desktop apps, and on the website) |
 | Electron, Chromium, Node.js, ws, .NET, Lua and the MIT libraries | MIT, BSD-style, Unicode | the licence and copyright notices | Electron's and Chromium's ship inside every desktop app; Node.js's inside the Windows node zip; the others in the third-party notices, which ship in every artifact |
 
@@ -71,9 +71,11 @@ with builds that carry the same one.
    (`AttackOrFleeFuzzy`). That changes the bots' simulation, so it needs a new engine release with a new
    `simBuild`.
 
-**Status:** the legal question stays open as described. The project follows OpenRA upstream (option 2,
-decided 26 September 2026); the question to the author was not sent. The library's source and licence
-text are published here either way.
+**Status:** closed. The owner decided — 26 September 2026, re-confirmed 28 September 2026 ("OpenRA has
+shipped this library for 15 years; we follow the same rule") — to follow OpenRA upstream (option 2).
+The question to the author will not be sent. The "What is known" facts above stay as the record of what
+the sources state; they no longer track an open decision. The library's source and licence text are
+published here either way.
 
 ## The packages' licence fields
 

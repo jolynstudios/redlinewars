@@ -761,6 +761,7 @@ export class App {
 	}
 
 	private sendOrder(o: OrderRequest): Promise<string> {
+		if (o.origin !== 'companion') this.ctx.events.emit('presentation:primary-order', {})
 		if (!this.bridge) return Promise.resolve('ignored: no bridge')
 		const pending = o.contextual && this.bridge.issueContextOrder
 			? this.bridge.issueContextOrder({

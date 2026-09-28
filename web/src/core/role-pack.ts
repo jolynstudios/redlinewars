@@ -3,6 +3,7 @@
 // values -- no GPU, no fetch, no node -- so both may import them (rule 3 forbids materials
 // from importing units, which is where these used to live for the rifle alone).
 import SUPPLIED from '../../../art/supplied-inputs.lock.json'
+import { sha256Hex } from './sha256'
 
 /**
  * The one pack that predates the registry. Its identity, its saved study and its veteran actor
@@ -69,8 +70,7 @@ export function canonicalRoleValue(value: unknown): string {
 }
 
 export async function roleDigest(bytes: Uint8Array): Promise<string> {
-	const hash = await crypto.subtle.digest('SHA-256', bytes as Uint8Array<ArrayBuffer>)
-	return Array.from(new Uint8Array(hash), n => n.toString(16).padStart(2, '0')).join('')
+	return sha256Hex(bytes)
 }
 
 const INPUT_KEYS = ['id', 'origin', 'sha256', 'bytes', 'licenseStatus', 'authorization']

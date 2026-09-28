@@ -106,6 +106,7 @@ export function buildArgs(room, paths) {
 		'Server.EnableMapGeneration=False',
 		`Server.RecordReplays=${room.ranked ? 'True' : 'False'}`,
 		`Server.Ranked=${room.ranked ? 'True' : 'False'}`,
+		`Server.JoaCompanion=${!room.ranked && room.settings?.joaCompanion !== 'False' ? 'True' : 'False'}`,
 		'Server.EnableVoteKick=False',
 		'Server.RequireAuthentication=False',
 		`Server.EnableSyncReports=${room.debugSync ? 'True' : 'False'}`,

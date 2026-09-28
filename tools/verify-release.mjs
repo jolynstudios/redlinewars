@@ -15,12 +15,19 @@
 // taken from the AppBundle, each checked against the composition's hash.
 //
 // Checks, each FAIL making the exit code 1:
-//   integrity   the artifact's sha256 against its SHA256SUMS line (--sums)
-//   identity    node-assembly.json's commit against RELEASE-SOURCE.json's sourceCommit, and every
-//               shipped build.json's simBuild and modHash against the checkout's built mod
-//   node        every node source file (steelseed-host/tools) byte-equal to the checkout; the
-//               generated mod and ws compared with the checkout's build; the compiled standalone
-//               server listed (a .NET build is not byte-reproducible across machines)
+//   integrity         the artifact's sha256 against its SHA256SUMS line (--sums)
+//   source-identity   node-assembly.json's commit against RELEASE-SOURCE.json's sourceCommit (or
+//                     this checkout's own commit)
+//   sim-build-identity every shipped build.json (node, AppBundle, live) as its own subject: present,
+//                     well-formed (simBuild and modHash), and equal to the checkout's built mod
+//   node        node-assembly.json's inventory is a non-empty array of {path, sha256}; every
+//               inventoried file is shipped with its checksum; every first-party file the
+//               checkout's packaging definition (engine/steelseed-host/tools/node-manifest.json,
+//               read by assemble-node.mjs) ships is inventoried — node sources byte-equal to the
+//               checkout, the generated mod compared with the checkout's build, the compiled
+//               standalone server listed (a .NET build is not byte-reproducible across machines);
+//               every file beyond the inventory is the packaging's own metadata (pack-node.mjs /
+//               pack-npm.mjs) or it is an unlisted payload
 //   client      every file of web/src embedded in the shipped source maps byte-equal to the
 //               checkout (the art packs under .forge/ are separately licensed and skipped); a
 //               build with no map, or a map without its sources' content, fails
@@ -48,7 +55,9 @@
 // --strict is the check an official release decision uses. It adds, per artifact kind, the checks
 // that must PASS (see REQUIRED): a file needs its independent SHA256SUMS line; a desktop package,
 // an AppBundle and the live site need --appbundle; every package needs its RELEASE-MANIFEST.json.
-// A required check that did not run fails; INFO, GAP and NOT_RUN never count as a pass. Without
+// A required check fails when it did not run, when none of its subjects passed, or when any subject
+// stayed GAP or NOT_RUN — one passing subject never speaks for another. INFO never counts as a pass.
+// Without
 // --strict the tool audits (older artifacts included) and says what it could not establish.
 //
 // The summary groups the checks into five separate claims: artifact integrity (bytes against an
@@ -188,30 +197,82 @@ function unpack(file, into) {
 
 // ---------------------------------------------------------------------------------------------
 
-function checkIdentity(r, commit, builds) {
-	if (!releaseSource) r.add('identity', 'FAIL', 'the checkout has no RELEASE-SOURCE.json (check out a release tag)')
+/** Source and simulation-build identity, kept as distinct checks: a matching source commit says
+ * nothing about what was built from it, and a matching build says nothing about whose source it was.
+ * Each shipped build.json (node, AppBundle, live) is its own subject of sim-build-identity, so one
+ * passing subject can no longer satisfy the check for another that never ran. */
+function checkIdentity(r, commit, builds, kind) {
+	const kindHasNode = kind === 'desktop' || kind === 'node-zip' || kind === 'npm-node'
+	if (!releaseSource) r.add('source-identity', 'FAIL', 'the checkout has no RELEASE-SOURCE.json (check out a release tag)')
 	else if (commit != null) {
-		const official = commit.length >= 7 && releaseSource.sourceCommit.startsWith(commit)
-		const public_ = commit.length >= 7 && checkoutCommit?.startsWith(commit)
-		r.add('identity', official || public_ ? 'PASS' : 'FAIL', official ? `node-assembly commit ${commit} = release source ${releaseSource.sourceCommit.slice(0, 12)}`
-			: public_ ? `node-assembly commit ${commit} = this checkout (${checkoutCommit.slice(0, 12)})`
-			: `node-assembly commit ${commit} is neither the release source ${releaseSource.sourceCommit.slice(0, 12)} nor this checkout ${checkoutCommit?.slice(0, 12) ?? '(not a git checkout)'}`)
-	}
+		if (typeof commit !== 'string' || !/^[0-9a-f]{7,40}$/i.test(commit))
+			r.add('source-identity', 'FAIL', `the node-assembly commit is malformed: ${JSON.stringify(commit)}`)
+		else {
+			const official = commit.length >= 7 && releaseSource.sourceCommit.startsWith(commit)
+			const public_ = commit.length >= 7 && checkoutCommit?.startsWith(commit)
+			r.add('source-identity', official || public_ ? 'PASS' : 'FAIL', official ? `node-assembly commit ${commit} = release source ${releaseSource.sourceCommit.slice(0, 12)}`
+				: public_ ? `node-assembly commit ${commit} = this checkout (${checkoutCommit.slice(0, 12)})`
+				: `node-assembly commit ${commit} is neither the release source ${releaseSource.sourceCommit.slice(0, 12)} nor this checkout ${checkoutCommit?.slice(0, 12) ?? '(not a git checkout)'}`)
+		}
+	} else if (kindHasNode) r.add('source-identity', 'FAIL', 'the node-assembly.json carries no commit to verify')
 	for (const [label, build] of builds) {
-		if (!build) { r.add('identity', 'FAIL', `${label}: build.json missing`); continue }
-		if (!builtMod) { r.add('identity', 'INFO', `${label}: simBuild ${build.simBuild} (checkout not built; run tools/build.mjs to compare)`); continue }
+		if (build == null || typeof build !== 'object') { r.add('sim-build-identity', 'FAIL', `${label}: build.json missing`); continue }
+		if (typeof build.simBuild !== 'string' || !build.simBuild || typeof build.modHash !== 'string' || !/^[0-9a-f]{64}$/i.test(build.modHash)) {
+			r.add('sim-build-identity', 'FAIL', `${label}: build.json is malformed (simBuild and a 64-hex modHash are required)`); continue }
+		if (!builtMod) { r.add('sim-build-identity', 'GAP', `${label}: simBuild ${build.simBuild} (checkout not built; run tools/build.mjs to compare)`); continue }
+		if (typeof builtMod.simBuild !== 'string' || typeof builtMod.modHash !== 'string') {
+			r.add('sim-build-identity', 'GAP', `${label}: the checkout's build.json lacks a usable simBuild/modHash (stale or partial build)`); continue }
 		const ok = build.simBuild === builtMod.simBuild && build.modHash === builtMod.modHash
-		r.add('identity', ok ? 'PASS' : 'FAIL', `${label}: simBuild ${build.simBuild} modHash ${build.modHash?.slice(0, 12)} ${ok ? '=' : '≠'} checkout build ${builtMod.simBuild} ${builtMod.modHash.slice(0, 12)}`)
+		r.add('sim-build-identity', ok ? 'PASS' : 'FAIL', `${label}: simBuild ${build.simBuild} modHash ${build.modHash.slice(0, 12)} ${ok ? '=' : '≠'} checkout build ${builtMod.simBuild} ${builtMod.modHash.slice(0, 12)}`)
 	}
 }
+
+/** Files the packaging definition itself places beside the node's inventory: assemble-node.mjs
+ * writes node-assembly.json; pack-node.mjs adds the volunteer launcher set (rooms template, start
+ * wrapper, systemd unit, README, the bundled win runtime/) and the licence set; pack-npm.mjs adds
+ * the npm package's own files. Anything else walking the package is an unlisted payload. */
+const NODE_PACKAGE_METADATA = {
+	'node-zip': ['node-assembly.json', 'RELEASE-MANIFEST.json', 'README-NODE.md', 'rooms.example.json',
+		'start-node.sh', 'start-node.cmd', 'steelthorn-node.service',
+		'COPYING-GPLv3.txt', 'AUTHORS-OpenRA.txt', 'THIRD-PARTY-NOTICES.txt', 'GPL-2.0.txt', 'LGPL-2.1.txt', 'LGPL-3.0.txt'],
+	'npm-node': ['node-assembly.json', 'RELEASE-MANIFEST.json', 'package.json', 'README-NODE.md', 'rooms.example.json',
+		'systemd/steelthorn-node.service', 'systemd/steelthorn-spine.service',
+		'COPYING', 'AUTHORS', 'THIRD-PARTY-NOTICES.txt', 'GPL-2.0.txt', 'LGPL-2.1.txt', 'LGPL-3.0.txt'],
+	desktop: ['node-assembly.json'],
+}
+const isNodePackageMetadata = (kind, rel) =>
+	(kind === 'node-zip' && rel.startsWith('runtime/')) // the bundled Node.js runtime, checksum-verified at pack time
+	|| (NODE_PACKAGE_METADATA[kind] ?? []).includes(rel)
 
 function checkNode(r, nodeRoot, kind) {
 	const assemblyFile = join(nodeRoot, 'node-assembly.json')
 	if (!existsSync(assemblyFile)) { r.add('node', 'FAIL', 'node-assembly.json missing'); return null }
-	const assembly = readJson(assemblyFile)
+	let assembly
+	try { assembly = readJson(assemblyFile) }
+	catch (error) { r.add('node', 'FAIL', `node-assembly.json is not valid JSON (${error.message})`); return null }
+	if (assembly == null || typeof assembly !== 'object' || Array.isArray(assembly)) {
+		r.add('node', 'FAIL', `node-assembly.json is not an object: ${JSON.stringify(assembly)?.slice(0, 60)}`); return null }
+
+	// The inventory itself: a non-empty array of {path, sha256}, or nothing about the node is claimed.
+	const schemaProblems = []
+	if (!Array.isArray(assembly.files)) schemaProblems.push('"files" is not an array')
+	else if (!assembly.files.length) schemaProblems.push('"files" is empty: no first-party file is inventoried at all')
+	else for (const entry of assembly.files) {
+		if (entry == null || typeof entry !== 'object') { schemaProblems.push('an entry is not an object'); continue }
+		if (typeof entry.path !== 'string' || !entry.path) schemaProblems.push('an entry has no path')
+		else if (entry.path.startsWith('/') || entry.path.split('/').includes('..')) schemaProblems.push(`${entry.path}: a path that escapes the package`)
+		if (typeof entry.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(entry.sha256)) schemaProblems.push(`${entry.path || '(no path)'}: sha256 is missing or not a 64-hex digest`)
+	}
+	if (schemaProblems.length) {
+		r.add('node', 'FAIL', `node-assembly.json: ${schemaProblems.slice(0, 4).join('; ')}${schemaProblems.length > 4 ? ` (+${schemaProblems.length - 4} more)` : ''}`)
+		return assembly
+	}
+	const inventoried = new Set(assembly.files.map(f => f.path))
+
 	const tally = {}
 	const count = (group, outcome) => { tally[group] ??= {}; tally[group][outcome] = (tally[group][outcome] ?? 0) + 1 }
 	const sourceMismatch = [], shippedMismatch = []
+	const checkoutEquals = new Map() // rel -> byte-equal to the checkout's file, when the checkout has it
 	// npm strips node_modules/ from a package tarball: ws is installed as its declared dependency.
 	const installed = kind === 'npm-node' ? assembly.files.filter(f => f.path.startsWith('node_modules/')).length : 0
 	if (installed) r.add('node', 'INFO', `${installed} node_modules files are installed by npm from the package's dependencies, not shipped`)
@@ -224,6 +285,7 @@ function checkNode(r, nodeRoot, kind) {
 		const checkout = join(SOURCE, 'engine', path)
 		if (!existsSync(checkout)) { count(group, 'not in checkout'); if (group === 'source') sourceMismatch.push(`${path} (missing)`); continue }
 		const same = sha256File(checkout) === listed
+		checkoutEquals.set(path, same)
 		count(group, same ? 'equal' : 'different')
 		if (group === 'source' && !same) sourceMismatch.push(path)
 	}
@@ -235,6 +297,70 @@ function checkNode(r, nodeRoot, kind) {
 		: `${tally.source?.equal ?? 0} node source files byte-equal to the checkout`)
 	for (const group of ['generated mod', 'npm modules', 'standalone server'])
 		if (tally[group]) r.add('node', 'INFO', `${group}: ${Object.entries(tally[group]).map(([k, v]) => `${v} ${k}`).join(', ')}`)
+
+	// Coverage: node-manifest.json — the packaging definition every node is assembled from — says
+	// which first-party files a node carries. Every one of them must be inventoried and shipped.
+	const manifestFile = join(SOURCE, 'engine/steelseed-host/tools/node-manifest.json')
+	if (!existsSync(manifestFile))
+		r.add('node', 'FAIL', 'the checkout has no engine/steelseed-host/tools/node-manifest.json to derive the node\'s required files from')
+	else {
+		let manifest = null
+		try { manifest = readJson(manifestFile) }
+		catch (error) { r.add('node', 'FAIL', `node-manifest.json is not valid JSON (${error.message})`) }
+		const badKeys = manifest && ['runtime', 'modules', 'data'].filter(key => !Array.isArray(manifest[key]))
+		if (badKeys?.length) r.add('node', 'FAIL', `node-manifest.json: ${badKeys.map(key => `"${key}" is not an array`).join(', ')}`)
+		else if (manifest) {
+			const missingInCheckout = [], required = [] // { rel, group }
+			const add = (absBase, name, relBase, group) => {
+				const abs = join(absBase, name)
+				if (!existsSync(abs)) { missingInCheckout.push(`${group} "${name}" (${abs})`); return }
+				const paths = statSync(abs).isFile() ? [''] : walk(abs)
+				for (const rel of paths) required.push({ rel: relBase + (rel ? `/${rel}` : ''), group })
+			}
+			for (const name of manifest.runtime) add(join(SOURCE, 'engine/steelseed-host/tools'), name, `steelseed-host/tools/${name}`, 'source')
+			if (existsSync(join(SOURCE, 'engine/steelseed-host/generated'))) for (const name of manifest.data) add(join(SOURCE, 'engine/steelseed-host'), name, `steelseed-host/${name}`, 'generated mod')
+			else if (manifest.data.length) r.add('node', 'GAP', `the checkout is not built: ${manifest.data.join(', ')} cannot be derived to check the shipped generated mod (run tools/build.mjs)`)
+			if (kind !== 'npm-node') {
+				// node_modules is build output, not tracked source: an unbuilt checkout (a fresh export)
+				// cannot derive the module list, the same as it cannot derive the generated mod.
+				if (existsSync(join(SOURCE, 'engine/node_modules'))) for (const name of manifest.modules) add(join(SOURCE, 'engine/node_modules'), name, `node_modules/${name}`, 'npm modules')
+				else if (manifest.modules.length) r.add('node', 'GAP', `the checkout has no engine/node_modules: ${manifest.modules.join(', ')} cannot be derived (npm modules are build output; run tools/build.mjs)`)
+			}
+			const rid = typeof assembly.rid === 'string' && assembly.rid ? assembly.rid : null
+			if (rid) {
+				const standalone = join(SOURCE, 'engine/bin-standalone', rid)
+				if (existsSync(standalone)) for (const rel of walk(standalone)) required.push({ rel: `bin-standalone/${rid}/${rel}`, group: 'standalone server' })
+				else r.add('node', 'INFO', `the checkout has no bin-standalone/${rid}: the standalone server is held to its shipped checksum only`)
+			}
+			if (missingInCheckout.length)
+				r.add('node', 'FAIL', `node-manifest.json lists files the checkout does not have: ${missingInCheckout.slice(0, 4).join(', ')}`)
+			const shippedBad = new Set(shippedMismatch)
+			const absent = [], sourceDiffer = []
+			let covered = 0
+			for (const { rel, group } of required) {
+				if (!inventoried.has(rel) || shippedBad.has(rel)) { absent.push(rel); continue }
+				covered++
+				if (group === 'source' && checkoutEquals.get(rel) !== true) sourceDiffer.push(rel)
+			}
+			if (!required.length) r.add('node', 'FAIL', 'node-manifest.json derives no first-party files for this node: the coverage expectation is empty')
+			else r.add('node', absent.length || sourceDiffer.length ? 'FAIL' : 'PASS', absent.length || sourceDiffer.length
+				? `${absent.length} of ${required.length} required first-party node files (from node-manifest.json) are not inventoried and shipped: ${absent.slice(0, 6).join(', ')}${sourceDiffer.length ? `; ${sourceDiffer.length} differ from the checkout (${sourceDiffer.slice(0, 4).join(', ')})` : ''}`
+				: `${covered}/${required.length} required first-party node files inventoried and shipped, node sources byte-equal to the checkout`)
+		}
+	}
+
+	// Everything the package carries beyond its inventory must be the packaging's own metadata;
+	// anything else is an unlisted payload the node's build never places.
+	const noise = [], unlisted = []
+	for (const rel of walk(nodeRoot)) {
+		if (inventoried.has(rel) || isNodePackageMetadata(kind, rel)) continue
+		if (/(^|\/)\.[^/]+$/.test(rel)) { noise.push(rel); continue }
+		unlisted.push(rel)
+	}
+	if (noise.length) r.add('node', 'INFO', `${noise.length} hidden OS files (${noise.slice(0, 3).join(', ')}), not payloads`)
+	r.add('node', unlisted.length ? 'FAIL' : 'PASS', unlisted.length
+		? `unlisted payloads the node's packaging never places: ${unlisted.slice(0, 6).join(', ')}`
+		: `no unlisted payloads: every shipped file is inventoried or declared packaging metadata (${NODE_PACKAGE_METADATA[kind]?.length ?? 0} metadata entries for ${kind})`)
 	return assembly
 }
 
@@ -439,16 +565,16 @@ function checkPlatform(r, name) {
 
 /** The checks an official release decision needs, per artifact kind (--strict). */
 export const REQUIRED = {
-	live: ['identity', 'client', 'payload', 'framework', 'notices'],
-	appbundle: ['identity', 'client', 'payload', 'notices'],
-	desktop: ['integrity', 'identity', 'node', 'client', 'payload', 'shell', 'notices', 'manifest', 'boundary'],
-	'node-zip': ['integrity', 'identity', 'node', 'notices', 'manifest', 'boundary'],
-	'npm-node': ['integrity', 'identity', 'node', 'notices', 'manifest', 'boundary'],
+	live: ['sim-build-identity', 'client', 'payload', 'framework', 'notices'],
+	appbundle: ['sim-build-identity', 'client', 'payload', 'notices'],
+	desktop: ['integrity', 'source-identity', 'sim-build-identity', 'node', 'client', 'payload', 'shell', 'notices', 'manifest', 'boundary'],
+	'node-zip': ['integrity', 'source-identity', 'sim-build-identity', 'node', 'notices', 'manifest', 'boundary'],
+	'npm-node': ['integrity', 'source-identity', 'sim-build-identity', 'node', 'notices', 'manifest', 'boundary'],
 }
 /** The five claims the checks support, kept apart. */
 const CLAIMS = {
 	'artifact integrity': ['integrity'],
-	'source correspondence': ['identity', 'node', 'client', 'payload', 'framework', 'shell', 'manifest', 'boundary'],
+	'source correspondence': ['source-identity', 'sim-build-identity', 'node', 'client', 'payload', 'framework', 'shell', 'manifest', 'boundary'],
 	'rebuild evidence': ['rebuild'],
 	'notices': ['notices'],
 	'platform execution': ['platform'],
@@ -458,7 +584,11 @@ function enforce(r, kind) {
 	if (!STRICT) return
 	for (const check of REQUIRED[kind] ?? []) {
 		const statuses = r.checks.filter(c => c.check === check).map(c => c.status)
-		if (!statuses.includes('PASS') && !statuses.includes('FAIL')) r.add(check, 'FAIL', `required check not executed (${statuses.join(', ') || 'no result'})`)
+		if (!statuses.length) r.add(check, 'FAIL', `required check not executed (no result)`)
+		else if (!statuses.includes('PASS') && !statuses.includes('FAIL'))
+			r.add(check, 'FAIL', `required check produced no PASS (${statuses.join(', ')})`)
+		else if (statuses.some(s => s === 'GAP' || s === 'NOT_RUN'))
+			r.add(check, 'FAIL', `required check incomplete (${statuses.join(', ')})`)
 	}
 	for (const c of r.checks) if (c.status === 'GAP') { c.status = 'FAIL'; c.detail += ' (a gap fails --strict)' }
 }
@@ -476,7 +606,7 @@ async function verifyUrl(url) {
 	const r = report(base)
 	const get = async path => { const res = await fetch(new URL(path, base)); if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`); return res }
 	const build = await (await get('build.json')).json()
-	checkIdentity(r, null, [['live build.json', build]])
+	checkIdentity(r, null, [['live build.json', build]], 'live')
 	const compositionBytes = Buffer.from(await (await get('composition.json')).arrayBuffer())
 	const composition = JSON.parse(compositionBytes.toString('utf8'))
 	const listed = new Map(composition.files.map(f => [f.path, f.sha256]))
@@ -540,7 +670,7 @@ async function verifyUrl(url) {
 function verifyAppBundle(dir) {
 	const r = report(dir)
 	const steelseed = join(dir, 'steelseed')
-	checkIdentity(r, null, [['AppBundle build.json', existsSync(join(steelseed, 'build.json')) ? readJson(join(steelseed, 'build.json')) : null]])
+	checkIdentity(r, null, [['AppBundle build.json', existsSync(join(steelseed, 'build.json')) ? readJson(join(steelseed, 'build.json')) : null]], 'appbundle')
 	const composition = readJson(join(steelseed, 'composition.json'))
 	const bad = composition.files.filter(({ path, sha256: want }) => !existsSync(join(steelseed, path)) || sha256File(join(steelseed, path)) !== want)
 	r.add('client', bad.length ? 'FAIL' : 'PASS', bad.length ? `${bad.length} files differ from composition.json: ${bad.slice(0, 4).map(f => f.path).join(', ')}`
@@ -572,7 +702,7 @@ function verifyFile(file) {
 			? readJson(join(unpacked.nodeRoot, 'steelseed-host/generated/build.json')) : null]]
 		if (unpacked.appBundle) builds.push(['AppBundle build.json', existsSync(join(unpacked.appBundle, 'steelseed/build.json'))
 			? readJson(join(unpacked.appBundle, 'steelseed/build.json')) : null])
-		checkIdentity(r, assembly?.commit ?? null, builds)
+		checkIdentity(r, assembly?.commit ?? null, builds, unpacked.kind)
 		if (unpacked.appBundle) {
 			const assets = join(unpacked.appBundle, 'steelseed/assets')
 			checkMaps(r, readdirSync(assets).filter(f => f.endsWith('.js.map')).map(f => ({ name: f, json: readJson(join(assets, f)) })))

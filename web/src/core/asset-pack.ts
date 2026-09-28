@@ -1,3 +1,5 @@
+import { sha256Hex } from './sha256'
+
 /** Integrity-checked offline art pack; supports hosts with or without Content-Encoding. */
 export async function fetchAssetPack(url: string, manifest: { bytes: number; storedBytes: number; sha256: string }): Promise<Uint8Array> {
 	if (!Number.isSafeInteger(manifest.bytes) || manifest.bytes < 1 || manifest.bytes > 256 * 1048576 ||
@@ -12,8 +14,7 @@ export async function fetchAssetPack(url: string, manifest: { bytes: number; sto
 		buffer = await new Response(new Blob([buffer]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer()
 	}
 	if (buffer.byteLength !== manifest.bytes) throw new Error('Art pack size mismatch')
-	const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', buffer))
-	if (Array.from(digest, b => b.toString(16).padStart(2, '0')).join('') !== manifest.sha256)
+	if (await sha256Hex(buffer) !== manifest.sha256)
 		throw new Error('Art pack SHA-256 mismatch')
 	return new Uint8Array(buffer)
 }

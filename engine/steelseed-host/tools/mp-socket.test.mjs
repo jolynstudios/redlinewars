@@ -23,7 +23,11 @@ class FakeWebSocket {
 	static instances = [];
 	static throwOn = new Set();
 	constructor(url) {
-		if (FakeWebSocket.throwOn.has(url))
+		// The adapter constructs with `new URL(url).href` and appends a
+		// per-connection `joa` admission query param, so a test never sees the
+		// bare registered URL here: match on the URL with its query stripped
+		// ('ws://bad-url' parses as 'ws://bad-url/').
+		if (FakeWebSocket.throwOn.has(url.replace(/[?#].*$/, '')))
 			throw new SyntaxError(`Failed to construct 'WebSocket': ${url} is not a valid WebSocket URL.`);
 		this.url = url;
 		this.readyState = FakeWebSocket.CONNECTING;
@@ -149,7 +153,9 @@ function fixture({ recvCapacity = RECV_CAPACITY, sendCapacity = SEND_CAPACITY } 
 
 test('create-throws advances the queue, notifies close, and the next join works', () => {
 	const f = fixture();
-	FakeWebSocket.throwOn.add('ws://bad-url');
+	// The fake matches with the joa admission query stripped, so the registered
+	// form is the parsed/normalized one ('ws://bad-url' -> 'ws://bad-url/').
+	FakeWebSocket.throwOn.add('ws://bad-url/');
 	f.connect(1, 'ws://bad-url');
 	f.connect(2); // queued behind the failing create
 	f.serveMpWork();

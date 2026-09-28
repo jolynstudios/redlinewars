@@ -78,6 +78,9 @@ test('steps, completion and the live status line', () => {
 		'build-0', 'build-1', 'build-2', 'build-3', 'build-4', 'build-5', 'power', 'later', 'army', 'minimap', 'controls'])
 	assert.equal(steps.find(step => step.id === 'build-0').target, '#hud-queues .hud-item[data-actor-name="powr"]')
 	assert.match(t.tutorialSteps(order, { multiplayer: true }).find(step => step.id === 'deploy').body, /Click your Mobile Construction Vehicle/)
+	// The companion step exists only where the service answers, and lands just before the close.
+	assert.equal(t.tutorialSteps(order, { multiplayer: false, companion: true }).find(step => step.id === 'joa')?.target, '.joa-trigger')
+	assert.deepEqual(t.tutorialSteps(order, { multiplayer: false, companion: true }).slice(-2).map(step => step.id), ['joa', 'controls'])
 
 	const world = (owned = {}, queue = {}, power = [0, 0]) => ({
 		owned: new Map(Object.entries(owned)), queue: new Map(Object.entries(queue)), powerDrawn: power[0], powerSupplied: power[1],

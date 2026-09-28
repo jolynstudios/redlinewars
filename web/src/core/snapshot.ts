@@ -49,6 +49,7 @@ export const HeaderFlag = {
 	paused: 1 << 1,
 	replay: 1 << 2,
 	gameOver: 1 << 3,
+	companionAllowed: 1 << 4,
 } as const
 
 /** Semantic engine posture in the existing u16 animState slot, never a render clip index.

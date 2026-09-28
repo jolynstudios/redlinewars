@@ -252,6 +252,7 @@ export interface PlacementApi {
 }
 
 export interface OrderRequest {
+	origin?: 'companion'
 	orderString: string
 	/**
 	 * Selected actors. **Empty means a PLAYER-level order**, not an empty one — production
@@ -354,9 +355,14 @@ export interface SupportLaunchStatus {
 	readonly targetY: number
 	/** Allies: the beacon's ticks (NukePower FlightDelay - BeaconRemoveAdvance). */
 	readonly beaconTicks: number
+	/** The rules' flight length in ticks (NukePower FlightDelay), published to everyone. */
+	readonly flightTicks?: number
+	/** An enemy launch whose target is within ten cells of your own buildings: the alarm's gate. */
+	readonly imminent?: boolean
 }
 
 export interface SupportPowersStatus {
+	readonly inventory?: { infantry: number; vehicles: number; aircraft: number; harvesters: number }
 	readonly schemaVersion: number
 	/** Milliseconds per simulation tick at the match's game speed. */
 	readonly timestepMs?: number

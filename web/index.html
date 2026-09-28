@@ -311,6 +311,16 @@
 				animation: hud-ready-breathe 1.6s ease-in-out infinite;
 			}
 			.hud-item.ready .hud-item-status { color: var(--warning); font-weight: 800; }
+			/* LOCKED reads as dimmed but reachable: a corner badge says the tile answers a click
+			   with its requirements, so a locked tile never looks dead (owner request). */
+			.hud-item.locked { opacity: .5; cursor: help; }
+			.hud-item.locked:hover { opacity: .8; }
+			.hud-item.locked:not(.ready)::after {
+				content: "?"; position: absolute; right: 2px; bottom: 1px; pointer-events: none;
+				width: 13px; height: 13px; display: grid; place-items: center;
+				border: 1px solid rgba(217,174,97,.75); color: var(--warning);
+				font: 700 9px/1 var(--font-mono, monospace); background: rgba(9,13,17,.72);
+			}
 			@keyframes hud-ready-breathe { 50% { opacity: .38; } }
 			/* First-match tutorial: a coach card in the HUD's dress and an ice ring on what it explains.
 			   Both are placed by transform (ui/tutorial.ts); only the card takes pointer events. */
@@ -414,6 +424,13 @@
 			#hud-support { margin-top: 10px; pointer-events: auto; }
 			#hud-support[hidden] { display: none; }
 			#hud-support-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+			/* A support power's button: the weapon's own glyph leads its label (a nuke reads as a
+			   nuke), the charge sweep colours the plate behind both. */
+			#hud-support-list .hud-action { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; }
+			.hud-power__icon { display: grid; place-items: center; width: 26px; height: 26px; flex: none; background: rgba(8,10,12,.55); border: 1px solid rgba(255,255,255,.14); }
+			.hud-power__icon svg { width: 16px; height: 16px; color: var(--ink); }
+			.hud-action:not(:disabled) .hud-power__icon svg { color: #FFD75E; }
+			.hud-power__label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 			#hud-deploy, #hud-repair { margin: 0; }
 			#hud-deploy[hidden], #hud-repair[hidden] { display: none; }
 			#hud-repair[aria-pressed="true"] { background: var(--brand-hover); }
@@ -425,6 +442,15 @@
 			#hud-placement[hidden] { display: none; }
 			#hud-alert { position: absolute; top: 62px; left: 50%; transform: translateX(-50%); color: var(--critical); text-transform: uppercase; text-shadow: 0 2px 10px #000; }
 			#hud-alert:empty { display: none; }
+			/* An enemy nuke in flight, counted down to impact from the rules' own flight length.
+			   Dead centre, but airy and pointer-transparent: it informs, it never blocks a click
+			   and never owns the frame. The label breathes; the digits stay steady to read. */
+			#hud-nuke { position: absolute; inset: 0; z-index: 4; display: grid; place-content: center; justify-items: center; gap: 8px; pointer-events: none; }
+			#hud-nuke[hidden] { display: none; }
+			#hud-nuke p { margin: 0; color: var(--critical); font: 700 12px/1 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .34em; text-transform: uppercase; text-shadow: 0 0 18px rgba(255,107,99,.6); animation: nuke-blink 1.1s steps(2) infinite; }
+			#hud-nuke strong { font: 700 clamp(38px, 7vw, 62px)/1 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; color: #FF6B63; font-variant-numeric: tabular-nums; letter-spacing: .05em; text-shadow: 0 0 26px rgba(255,107,99,.45), 0 2px 12px #000; }
+			@keyframes nuke-blink { 50% { opacity: .35; } }
+			@media (prefers-reduced-motion: reduce) { #hud-nuke p { animation: none; } }
 			/* The simulation-halted alarm. Deliberately outside #hud so it survives a HUD that
 			   never updates again, and deliberately loud: a frozen world under a live camera
 			   is otherwise indistinguishable from a quiet moment in the match. */
@@ -1263,6 +1289,20 @@
 			}
 			#session-ui .gfx-chip:hover, #session-ui .sound-toggle:hover, #session-ui .account-chip:hover, #session-ui .icon-btn:hover { border-color: var(--line-3); color: var(--ink); background: rgba(236, 231, 222, .04); }
 			#session-ui .gfx-chip__value { color: var(--ink); }
+			#session-ui .joa-bar {
+				position: relative; display: inline-flex; align-items: center; gap: 9px; height: 36px; padding: 0 12px 0 9px;
+				border: 1px solid rgba(201, 54, 48, .45); border-radius: 2px; background: linear-gradient(180deg, rgba(201, 54, 48, .16), rgba(201, 54, 48, .07));
+				color: var(--ink); cursor: pointer;
+				font: 600 11px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
+				transition: border-color var(--t-ui), background-color var(--t-ui), filter var(--t-ui);
+			}
+			#session-ui .joa-bar:hover { border-color: rgba(225, 90, 79, .8); filter: drop-shadow(0 0 12px rgba(201, 54, 48, .25)); }
+			#session-ui .joa-bar__mark { display: grid; place-items: center; width: 22px; height: 22px; }
+			#session-ui .joa-bar__mark svg, #session-ui .joa-bar__mark .joa-mark { display: block; width: 20px; height: 20px; }
+			#session-ui .joa-bar__state { font: 500 9px/1 var(--font-mono); letter-spacing: .1em; color: var(--ink-2); }
+			#session-ui .joa-bar[data-linked] .joa-bar__state { color: #87BC91; }
+			#session-ui .joa-bar[data-linked] .joa-bar__state::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: #87BC91; box-shadow: 0 0 8px rgba(135, 188, 145, .8); vertical-align: 1px; }
+			@media (max-width: 860px) { #session-ui .joa-bar__label { display: none; } }
 			#session-ui .icon-btn { width: 36px; padding: 0; justify-content: center; font-size: 18px; }
 			#session-ui .icon-btn svg { width: 18px; height: 18px; }
 			#session-ui .sound-toggle__bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
@@ -1577,6 +1617,32 @@
 			#session-ui .sheet__hint { color: rgba(168, 178, 186, .8); font-size: 12.5px; }
 			#session-ui .select-row select { height: 44px; font-size: 13.5px; }
 			#session-ui .sheet .rule:first-of-type { border-top: 0; }
+			#session-ui .sheet__switch { position: relative; display: inline-flex; align-items: center; width: 46px; height: 24px; padding: 0; border: 1px solid var(--line-2); border-radius: 12px; background: rgba(9, 13, 17, .6); cursor: pointer; transition: border-color var(--t-ui), background-color var(--t-ui); }
+			#session-ui .sheet__switch i { display: block; width: 16px; height: 16px; margin: 0 3px; border-radius: 50%; background: var(--ink-2); box-shadow: 0 1px 3px rgba(0, 0, 0, .5); transform: translateX(0); transition: transform var(--t-ui), background-color var(--t-ui), box-shadow var(--t-ui); }
+			#session-ui .sheet__switch[aria-checked="true"] { border-color: rgba(135, 188, 145, .55); background: rgba(135, 188, 145, .12); }
+			#session-ui .sheet__switch[aria-checked="true"] i { transform: translateX(22px); background: #87BC91; box-shadow: 0 0 8px rgba(135, 188, 145, .55); }
+			#session-ui .sheet__switch:focus-visible { outline: 2px solid var(--active); outline-offset: 2px; }
+
+			/* --- JOA companion feature card: the first thing in the sheet --- */
+			#session-ui .joa-card { position: relative; isolation: isolate; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 18px 16px 16px; background: linear-gradient(165deg, rgba(26, 34, 41, .98), rgba(13, 18, 23, .98)); border: 1px solid rgba(236, 231, 222, .16); clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px); }
+			#session-ui .joa-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(90deg, transparent, rgba(201, 54, 48, .85) 12%, #E15A4F 42%, rgba(201, 54, 48, .3) 72%, transparent); }
+			#session-ui .joa-card__mark { display: grid; place-items: center; width: 46px; height: 46px; }
+			#session-ui .joa-card__mark svg, #session-ui .joa-card__mark .joa-mark { display: block; width: 44px; height: 44px; }
+			#session-ui .joa-card__kicker { margin: 0; color: var(--active); font: 600 10px/1 var(--font-mono); letter-spacing: .22em; text-transform: uppercase; }
+			#session-ui .joa-card__title { margin: 5px 0 0; color: var(--ink); font: 600 17px/1.15 var(--font-display); font-stretch: 112%; letter-spacing: .01em; text-transform: none; }
+			#session-ui .joa-card__desc { margin: 7px 0 0; color: var(--ink-2); font: 400 12.5px/1.45 var(--font-display); letter-spacing: 0; text-transform: none; }
+			#session-ui .joa-card__side { display: grid; justify-items: end; gap: 7px; }
+			#session-ui .joa-card__btn { min-height: 44px; padding: 0 20px; border: 0; background: var(--brand); color: var(--brand-ink); font: 600 12px/1 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); cursor: pointer; white-space: nowrap; }
+			#session-ui .joa-card__btn:hover { background: var(--brand-hover); filter: drop-shadow(0 0 14px rgba(201, 54, 48, .35)); }
+			#session-ui .joa-card__state { display: inline-flex; align-items: center; gap: 7px; margin: 0; color: var(--ink-2); font: 500 10.5px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+			#session-ui .joa-card__state::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: rgba(168, 178, 186, .55); }
+			#session-ui .joa-card[data-linked] .joa-card__state { color: #9CCDA8; }
+			#session-ui .joa-card[data-linked] .joa-card__state::before { background: #87BC91; box-shadow: 0 0 8px rgba(135, 188, 145, .8); }
+			@media (max-width: 699px) {
+				#session-ui .joa-card { grid-template-columns: auto minmax(0, 1fr); }
+				#session-ui .joa-card__side { grid-column: 1 / -1; justify-items: stretch; }
+				#session-ui .joa-card__btn { width: 100%; }
+			}
 
 			/* --- one-time reveal after the loader --- */
 			#session-ui[data-intro] .module, #session-ui[data-intro] .cmdbar { animation: module-in 520ms var(--ease-out) both; }
@@ -1862,6 +1928,7 @@
 					<button id="session-tab-mp" role="tab" aria-selected="false" aria-controls="session-mp-panel" type="button" tabindex="-1">Multiplayer</button>
 				</nav>
 				<div class="cmdbar__tools">
+					<button id="session-joa-open" class="joa-bar" type="button" aria-haspopup="dialog"><span class="joa-bar__mark" id="session-joa-mark" aria-hidden="true"></span><span class="joa-bar__label">JOA</span><span class="joa-bar__state" id="session-joa-state"></span></button>
 					<button id="session-gfx-chip" class="gfx-chip" type="button" aria-haspopup="dialog" aria-controls="session-settings"><span class="gfx-chip__label">GFX</span><span id="session-gfx-value" class="gfx-chip__value">Classic</span></button>
 					<button id="session-sound" class="sound-toggle" type="button" aria-pressed="false" title="Music and interface sound (M)"><span class="sound-toggle__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-toggle__label">Sound</span></button>
 					<button id="session-settings-open" class="icon-btn" type="button" aria-haspopup="dialog" aria-controls="session-settings" aria-label="Settings">
@@ -2005,6 +2072,20 @@
 				<div class="sheet__panel">
 					<header class="sheet__head"><span class="module__index">⚙</span><h2 id="settings-title" class="module__title">Settings</h2><button id="session-settings-close" class="icon-btn" type="button" aria-label="Close settings">×</button></header>
 					<div class="sheet__body">
+						<section class="sheet__group" aria-labelledby="settings-companion">
+							<div class="joa-card" id="session-companion-card">
+								<span class="joa-card__mark" id="session-companion-mark"></span>
+								<div class="joa-card__text">
+									<p class="joa-card__kicker">Second screen</p>
+									<h3 class="joa-card__title" id="settings-companion">JOA companion</h3>
+									<p class="joa-card__desc">Pair a phone or tablet before you deploy. One link follows every battle: live map, base alerts and the result, and stands by between matches.</p>
+								</div>
+								<div class="joa-card__side">
+									<button id="session-companion-open" class="joa-card__btn" type="button">Pair a device</button>
+									<p class="joa-card__state" id="session-companion-state">No device linked</p>
+								</div>
+							</div>
+						</section>
 						<section class="sheet__group" aria-labelledby="settings-gfx">
 							<h3 id="settings-gfx" class="sheet__label">Graphics</h3>
 							<label class="select-row"><span class="visually-hidden">Graphics preset</span><select id="session-quality"></select></label>
@@ -2027,6 +2108,14 @@
 							<h3 id="settings-motion" class="sheet__label">Motion</h3>
 							<div id="session-motion-control"></div>
 							<p class="sheet__desc">Reduced turns slides and sweeps into simple fades.</p>
+						</section>
+						<section class="sheet__group" aria-labelledby="settings-session">
+							<h3 id="settings-session" class="sheet__label">Session</h3>
+							<div class="rule">
+								<span class="rule__label" id="settings-fullscreen-label">Start battles in fullscreen</span>
+								<button id="session-fullscreen" class="sheet__switch" type="button" role="switch" aria-checked="false" aria-labelledby="settings-fullscreen-label"><i aria-hidden="true"></i></button>
+							</div>
+							<p class="sheet__desc">The next battle you start takes the whole screen. Press Esc to leave it.</p>
 						</section>
 					</div>
 				</div>
@@ -2166,6 +2255,7 @@
 				<div class="hud-stat" title="Harvesters still standing. Idle harvesters are shown in the alert line."><span class="hud-label">Harvesters</span><span id="hud-harvesters" class="hud-value">0</span></div>
 			</div>
 			<div id="hud-alert" role="status" aria-live="polite"></div>
+			<div id="hud-nuke" role="alert" hidden><p>Nuclear bomb detected</p><strong id="hud-nuke-clock">00:00</strong></div>
 			<div id="hud-notice" class="hud-panel" hidden role="status" aria-live="polite"></div>
 		<div id="game-menu" class="rw-console" hidden role="dialog" aria-modal="true" aria-labelledby="menu-title">
 			<div class="console-dialog">
@@ -2210,7 +2300,7 @@
 					<h3>Engine: OpenRA</h3>
 					<p><a href="https://www.openra.net" target="_blank" rel="noopener">OpenRA</a> © The OpenRA Developers and Contributors, GNU GPL v3 or later. Not affiliated with or endorsed by the OpenRA project.</p>
 					<h3>Credits</h3>
-					<p>Maps from the OpenRA project, by their authors. Made with Suno (music), Cartesia (announcer voices), ElevenLabs (character voices, sound effects), Higgsfield (cinematics) and Meshy (Riki); all voices are text-to-speech. Typefaces: Archivo and Martian Mono (SIL OFL 1.1). Third-party licences and credits: see the notices. Full credits: <a href="https://www.redlinewars.online/credits" target="_blank" rel="noopener">redlinewars.online/credits</a>.</p>
+					<p>Maps from the OpenRA project, by their authors. Made with Suno (music), Cartesia (announcer voices), ElevenLabs (character voices, sound effects), Higgsfield (cinematics) and Meshy (Riki); all voices are made with ElevenLabs, with text-to-speech as the fallback. Typefaces: Archivo and Martian Mono (SIL OFL 1.1). Third-party licences and credits: see the notices. Full credits: <a href="https://www.redlinewars.online/credits" target="_blank" rel="noopener">redlinewars.online/credits</a>.</p>
 					<h3>Command &amp; Conquer: Red Alert</h3>
 					<p>Command &amp; Conquer: Red Alert © 1996 Westwood Studios, Inc. Command &amp; Conquer and Red Alert are trademarks of Electronic Arts Inc. Redline Wars is a non-commercial, fan-made reinterpretation. It is not endorsed by, affiliated with, sponsored by, or officially connected to Electronic Arts or Westwood Studios in any way. EA has not endorsed and does not support this product.</p>
 				</div>

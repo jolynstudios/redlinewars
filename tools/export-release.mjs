@@ -5,7 +5,7 @@
 // Order from the private monorepo, reading it only through `git ls-tree` and `git archive` of a
 // fixed commit. Nothing is ever written to the monorepo.
 //
-//   node tools/export-release.mjs --source <monorepo> --commit <sha> --out <dir>
+//   node tools/export-release.mjs --source <monorepo> --commit <sha> --out <dir> [--historical]
 //
 // What is published and what stays private is decided per path below. Every tracked path must
 // match one of the two lists, so a new top-level directory can never leave (or be dropped)
@@ -30,8 +30,11 @@ const TOOL = 'export-release'
 const args = process.argv.slice(2)
 const option = name => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : null }
 const SOURCE = option('source'), COMMIT = option('commit'), OUT = option('out')
+// --historical exports a tree older than the decisions above: a private path that did not exist
+// yet is recorded as absent instead of failing the export. It never publishes anything more.
+const HISTORICAL = args.includes('--historical')
 if (!SOURCE || !COMMIT || !OUT) {
-	console.error(`usage: node tools/export-release.mjs --source <monorepo> --commit <sha> --out <dir>`)
+	console.error(`usage: node tools/export-release.mjs --source <monorepo> --commit <sha> --out <dir> [--historical]`)
 	process.exit(2)
 }
 const out = resolve(OUT)
@@ -86,10 +89,11 @@ const PRIVATE = [
 	['Blender-Review/', 'art review notes'],
 	['scripts/', 'internal tooling'],
 	...['.env.example', 'AGENTS.md', 'BLOG-HOW-WE-DID-IT.md', 'CLAUDE.md', 'DEPLOY.md', 'INFRASTRUCTURE.md',
+		'JOA-COMPANION-PLAN.md', 'JOA-IMPLEMENTATION.md', 'JOA-POLISH-REPORT.md',
 		'LICENSE', 'MULTIPLAYER-BOUNDARY.md', 'MULTIPLAYER-SERVICE.md', 'PLANX-PRIORITEITEN.md', 'PLANX-REPORT.md',
 		'PROMPT.md', 'README.md', 'REMODEL.md', 'SECRETS.md', 'SPELEN.md', 'STEELSEED-STORY.md', 'THIRD_PARTY_NOTICES.md',
 		'WORKSPACE-RESTORE.md', 'agentvsgentport.md', 'codex-air-naval.md', 'codex-riki-repair.md', 'command.md',
-		'improvements-by-grok.md', 'ordergate.mjs']
+		'improvements-by-grok.md', 'joa-companion.md', 'ordergate.mjs']
 		.map(name => [name, name === 'LICENSE' || name === 'README.md' || name === 'THIRD_PARTY_NOTICES.md'
 			? 'replaced by the public edition at the repository root' : 'internal document']),
 ]
@@ -173,12 +177,14 @@ if (unclassified.length) {
 	process.exit(1)
 }
 // A private entry that decides nothing is a mistyped rule, and a mistyped rule publishes what it
-// was meant to keep.
+// was meant to keep. A --historical export of a tree that predates the path expects its absence:
+// the entry is named in the output and recorded in RELEASE-SOURCE.json, never silently dropped.
 const unused = PRIVATE.map(([entry]) => entry).filter(entry => !used.has(entry))
-if (unused.length) {
+if (unused.length && !HISTORICAL) {
 	console.error(`${TOOL}: private entries that match no tracked path at ${commit.slice(0, 12)}:\n  ${unused.join('\n  ')}`)
 	process.exit(1)
 }
+if (unused.length) console.log(`  absent at this commit (recorded, not withheld): ${unused.join(', ')}`)
 if (existsSync(out) && readdirSync(out).some(name => name !== '.git' && name !== 'LICENSE'))
 	throw new Error(`${TOOL}: ${out} must be empty but for .git and LICENSE`)
 mkdirSync(out, { recursive: true })
@@ -246,6 +252,7 @@ writeFileSync(join(out, 'RELEASE-SOURCE.json'), `${JSON.stringify({
 	exportedWith: 'tools/export-release.mjs',
 	published: publish.length,
 	withheld: Object.fromEntries([...keep.entries()].sort((x, y) => y[1] - x[1])),
+	absentPrivate: unused,
 	rewritten,
 }, null, 2)}\n`)
 console.log(`${TOOL}: PASS`)

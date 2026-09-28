@@ -4,7 +4,7 @@
 // unstripped actor rule graph and swaps only the minimum headless presentation hooks required
 // to run without EA media or OpenRA chrome. The production mod is built by build-ra-mod.mjs.
 
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
+import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
 const TOOL = 'ra-reference'
@@ -150,6 +150,8 @@ const referencePresentation = readFileSync(resolve(hostRoot, 'mod/assetless-pres
 	.join('\n')
 writeExact(resolve(outputRoot, 'rules/assetless-presentation.yaml'), referencePresentation)
 copyExact(resolve(hostRoot, 'mod/deployment-rules.yaml'), resolve(outputRoot, 'rules/deployment-rules.yaml'))
+copyExact(resolve(hostRoot, 'mod/joa-rules.yaml'), resolve(outputRoot, 'rules/joa-rules.yaml'))
+copyExact(resolve(hostRoot, 'mod/joa-weapons.yaml'), resolve(outputRoot, 'weapons/joa-weapons.yaml'))
 copyExact(resolve(sourceRoot, 'fluent/ra.ftl'), resolve(outputRoot, 'fluent/ra.ftl'))
 copyExact(resolve(sourceRoot, 'fluent/rules.ftl'), resolve(outputRoot, 'fluent/rules.ftl'))
 copyExact(resolve(hostRoot, 'mod/host.ftl'), resolve(outputRoot, 'fluent/host.ftl'))
@@ -165,3 +167,7 @@ writeExact(resolve(hostRoot, 'generated/reference-report.json'), `${JSON.stringi
 }, null, '\t')}\n`)
 
 console.log(`${TOOL}: PASS — pinned unstripped RA rule source, ${policy.rules.length} rule files, ${readdirSync(resolve(outputRoot, 'maps')).length} maps; only palette adapter and ${[...removedHeadlessTraits].join('/')} headless traits differ`)
+
+appendFileSync(resolve(outputRoot, 'fluent/rules.ftl'), '\nactor-jackson = Jackson\n    .name = Jackson\n    .description = Allied rifle and rocket specialist. Strong against infantry, armour and aircraft. No health regeneration.\n')
+
+appendFileSync(resolve(outputRoot, 'fluent/rules.ftl'), '\ncheckbox-joa-companion = JOA companion\n    .label = Allow JOA support commanders\n    .description = Allow approved companion devices. This setting is fixed when the match starts.\n')

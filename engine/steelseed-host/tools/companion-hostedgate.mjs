@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+import {spawn} from 'node:child_process';
+import {WebSocket} from 'ws';
+import assert from 'node:assert/strict';
+const child=spawn(process.execPath,[new URL('./spine.mjs',import.meta.url).pathname,'--http','13780','--ws','13781'],{env:{...process.env,JOA_ENABLED:'1'},stdio:'pipe'});let logs='';child.stdout.on('data',b=>logs+=b);child.stderr.on('data',b=>logs+=b);const sockets=[];
+async function open(path){const ws=new WebSocket(`ws://127.0.0.1:13781${path}`,{origin:path==='/node'?undefined:'http://127.0.0.1:5319'});sockets.push(ws);const queue=[],waiters=[];ws.on('message',(b,binary)=>{if(binary)return;const m=JSON.parse(b),waiter=waiters.shift();if(waiter)waiter(m);else queue.push(m)});await new Promise((r,j)=>{ws.once('open',r);ws.once('error',j)});return {ws,send:m=>ws.send(JSON.stringify(m)),next:()=>queue.length?Promise.resolve(queue.shift()):new Promise((r,j)=>{const timer=setTimeout(()=>j(Error('Timeout '+logs)),2000);waiters.push(m=>{clearTimeout(timer);r(m)})})}}
+try{
+ for(let i=0;i<100;i++){try{if((await fetch('http://127.0.0.1:13780/v2/config')).ok)break}catch{};await new Promise(r=>setTimeout(r,50));if(i===99)throw Error(logs)}
+ const node=await open('/node');node.send({t:'register',proto:2,nodeKey:'a'.repeat(43),build:'test',mode:'donated',slots:{maxMatches:1},health:{healthy:true}});assert.equal((await node.next()).t,'registered');const roomId='1234567890abcdef',nonce='b'.repeat(64);const report=(allowed,ranked=false)=>node.send({t:'rooms',rooms:[{roomId,state:'playing',slots:2,players:1,ranked,companionAllowed:allowed}]});report(true);await new Promise(r=>setTimeout(r,50));
+ const live=await open(`/g/${roomId}?joa=${nonce}`);assert.equal((await node.next()).t,'open');
+ const forged=await open('/v2/companion/ws');forged.send({type:'create',kind:'hosted',roomId,nonce:'c'.repeat(64)});assert.equal((await forged.next()).type,'error');
+ const primary=await open('/v2/companion/ws');primary.send({type:'create',kind:'hosted',roomId,nonce});const created=await primary.next();assert.equal(created.type,'created');const phone=await open('/v2/companion/ws');phone.send({type:'attach',code:created.code});assert.equal((await phone.next()).type,'pending');assert.equal((await primary.next()).type,'approval');primary.send({type:'approve',accept:true,tier:'command'});await phone.next();await primary.next();phone.send({type:'intent',intent:{id:'a',action:'move'}});assert.equal((await primary.next()).type,'intent');
+ live.ws.close();await new Promise(r=>live.ws.once('close',r));phone.send({type:'intent',intent:{id:'b',action:'move'}});assert.equal((await phone.next()).type,'ended');assert.equal((await primary.next()).type,'ended');
+ const live2=await open(`/g/${roomId}?joa=${nonce}`);await node.next();report(false);await new Promise(r=>setTimeout(r,50));const denied=await open('/v2/companion/ws');denied.send({type:'create',kind:'hosted',roomId,nonce});assert.equal((await denied.next()).type,'error');
+ report(true,true);await new Promise(r=>setTimeout(r,50));const ranked=await open('/v2/companion/ws');ranked.send({type:'create',kind:'hosted',roomId,nonce});assert.equal((await ranked.next()).type,'error');
+ console.log('Hosted companion: PASS real relay connection binding, forged credential rejection, command forwarding, game-connection revocation and host-policy denial');
+}finally{for(const ws of sockets)ws.terminate();child.kill();}

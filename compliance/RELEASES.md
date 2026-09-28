@@ -2,7 +2,132 @@
 
 Every Redline Wars build distributed since the first tag, `v2026.09.26-4c6da14`, with the tag that holds its
 source and how it was checked against that tag (`tools/verify-release.mjs`, on a clean checkout of the tag
-built with `tools/build.mjs`). The builds distributed from 20 September 2026 until then have no tag.
+built with `tools/build.mjs`). The builds distributed from 20 September 2026 until then have no tag; they are
+recorded below, in [Before the first tag](#before-the-first-tag). The 28 September 2026 downloads went out
+before their tag existed; the gap is recorded in
+[v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
+with the release after it.
+
+## Before the first tag
+
+The release discipline — tags, `RELEASE-MANIFEST.json`, `SHA256SUMS`, the downloads page — began with
+`v2026.09.26-4c6da14`. This section records what was distributed in the week before it, from which source,
+and what can still be checked. No tag was moved and no newer source was relabelled as an older one to write
+it; the sources are named by the commits the deployment record itself carries.
+
+### The browser game: play.redlinewars.online (public channel)
+
+Every successful deploy of the private monorepo replaced the live build. 59 deploys succeeded between the
+first — 20 September 2026, 12:25 UTC, source `b30e4a6` — and `64fae7ae` on 26 September 09:02 UTC; the next
+deploy, 26 September 10:09 UTC, was the first tag. The runs published the site's components (the browser
+game, the marketing site, the relay); the record does not say which components each run carried, so a run
+marks a distribution of the site, not of every component. A replaced build's bytes were not kept unless the
+run's artifacts survive (†): the server overwrote each `composition.json`, so no checksum of a pre-tag
+browser build can be stated today. Times UTC; `×2` is the same source deployed twice; † the run's build
+artifacts are retained in the private repository (internal evidence, never a public download).
+
+| Day | Deploys |
+|---|---|
+| 20 Sep | 12:25 `b30e4a6` · 13:23 `22c012e` · 14:35 `219cd0a` · 15:33 `1f0d8a8` · 16:07 `8c0b329` · 18:45 `2abb975` · 20:15 `d3c85c4` · 20:45 `a196e45` · 21:07 `16f062f` · 23:05 `63f770c` · 23:25 `cdd4f07` |
+| 21 Sep | 00:43 `57179c7` · 01:12 `86560ff` · 06:33 `ee3105b` · 09:55 `90d5032` · 10:09 `61b01d8` · 10:26 `ff82382` · 10:51 `410e748` · 11:41 `16261bb` · 12:19 `4e0d598` · 16:07 `fcdf8be` · 17:06 `36f19cb` |
+| 22 Sep | 01:55 `4c29f02` · 16:42 `4d48517` · 17:37 `ee74ab7` · 17:56+18:02 `9026235` ×2 · 18:40 `1772d37` · 19:19 `3f33748`† · 20:37 `e40ce3d`† |
+| 23 Sep | 19:15 `0aef897` · 21:52 `51b46b2` · 22:46 `5f60a32` · 22:54 `5220216` · 23:27 `b15f518` · 23:38 `3d2643f` |
+| 24 Sep | 07:15 `1ad32e5` · 07:20 `d26ede1` · 11:51 `5f60f3d` · 16:08 `4e00f0d` · 16:28 `5164e2d` · 21:40 `aa9ab69` |
+| 25 Sep | 00:42 `2c1c6fa` · 09:02 `34edb36` · 10:21 `c178ce9`† · 10:32 `bff8595`† ×2 · 12:24 `2d8cfbf`† · 13:13 `5a110ab`† · 13:55 `556a129`† · 15:38 `9a76917`† · 16:59 `9dbf8a5`† · 19:12 `6966328`† · 19:52 `00aee48`† |
+| 26 Sep | 00:07 `d43b7fa`† · 00:47 `a1f6f0e`† · 07:34 `666edbe`† · 09:02 `64fae7a`† ×2 |
+
+### The community node package (limited channel)
+
+One pre-tag artifact is retained: `redline-node-win-x64.zip`, 109036851 bytes, sha256
+`8239017e8c8c50df5b55af47ad15a995048d8b2b2c6026b593f3b7238348fa9c`, built 24 September 2026 18:07 CEST —
+one minute before the commit that bundled the Node.js runtime into this packaging (`4e00f0d0`, 18:08 CEST,
+deployed 16:08 UTC). Its `node-assembly.json` names source `5f60f3d` and inventories 637 files. Audited
+against a read-only export of `5f60f3db93ce` (below; the export is not built):
+
+- 637 shipped files match their inventory; the 14 node source files are byte-equal to the export; nothing
+  the packaging does not place is in the zip; the node-assembly's commit is the export's source commit;
+- the export is unbuilt, so the generated mod, the bundled `ws` and the `simBuild` comparison are gaps, not
+  verdicts;
+- the zip predates the licence set and the release manifest: it carries no GPL text, no OpenRA AUTHORS, no
+  library licences and no `RELEASE-MANIFEST.json`. The tagged releases ship all of these.
+
+How far this zip travelled is not in the repository: it is recorded as a limited distribution (community
+node operators) with the hand-off unevidenced — the retained artifact proves the build, not its delivery.
+
+### Not distributed before the tag
+
+- **The desktop apps:** the downloads page began with `v2026.09.26-4c6da14`; no pre-tag desktop
+  distribution is evidenced. The full desktop sets built by the 22 September runs (`3f33748`, `e40ce3d`)
+  and from 25 September on are retained CI artifacts — internal builds, never published.
+- **`@steelthorn/node` (the npm node package):** never published, before the tag or since.
+
+### Source exports
+
+Read-only exports of the pre-tag sources named above were prepared with `tools/export-release.mjs` (it
+reads the monorepo only through `git ls-tree` and `git archive` of the fixed commit): `5f60f3db93ce` and
+`4e00f0d00fea` — both `--historical`, because `brand/` did not exist at those commits and the export records
+its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, the last source the pre-tag
+site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
+entry that matches no tracked path still fails the export.
+
+## v2026.09.28-ab47013 (the downloads of 28 September 2026)
+
+The downloads below replaced the previous set on 28 September 2026, published by the deploy of the
+batch after `v2026.09.26-39d2824` (the deploy workflow's publish step, not a separate release cut).
+Every artifact's `RELEASE-MANIFEST.json` and GPL notice names tag `v2026.09.28-ab47013`, exported
+from private commit `ab470138d8e6`. That tag was not on this repository while these downloads were the
+live ones, so the corresponding-source URL every artifact prints did not answer; the export of
+`ab470138d8e6` is published under that tag by the release after it, closing the gap. The verification below ran
+against a read-only export of `ab470138d8e6` built with `tools/build.mjs`: the build reproduces
+`simBuild 7e45c0e93135` and `modHash f924d02e2402…`.
+
+### Downloads: www.redlinewars.online/downloads
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 459452471 | `1a67807f1871ea6c0d19d8ffc82e558e4ac0a8ef1af3e5360a7fe63c6b227144` |
+| `Redline-Wars-macOS-arm64.zip` | 489723178 | `47805a497f2f71fd2dd37e30e58d2c3a91897addbcb920199be3c23cff16dc15` |
+| `Redline-Wars-macOS-x64.zip` | 498501033 | `f7c80213f4bf373239ae5aefc38829db8cf944199ac51eea625c2a31123f005c` |
+| `Redline-Wars-Linux-x64.AppImage` | 455283614 | `8aada7ad97f3514c2528e6dbaf332e6bfb273f863de9652a4b4a54f27851ef41` |
+| `Redline-Wars-Linux-arm64.AppImage` | 455360383 | `14b9262830cbd0d83cfe4f55dce57a129a6ec7040a91ac21a9cca29cd74daa73` |
+| `redline-node-linux-x64.zip` | 72357222 | `3cfccbf6e85381d54c976d67b2ce13a8bab1d53ce3b9508ab9f88033aef19a32` |
+| `redline-node-linux-arm64.zip` | 69612766 | `559fea6e42741c0b468391284df82643cd1a9a9481aa895c0c94fb5abfd1217f` |
+| `redline-node-win-x64.zip` | 108846870 | `34940f40def2131bf7a3347f484039a3c5e1e9556850cdde6abbac302d2382a3` |
+| `redline-node-osx-arm64.zip` | 68179485 | `73e1ef73486b928b8528ac1174f0793b2f59de06b35636425956a3538e36f854` |
+| `redline-node-osx-x64.zip` | 71370467 | `61169d58209722b1adf5030ca7351e5feea45277bf63095ee448b82f0a57a66b` |
+| `SHA256SUMS` | 950 | `d86b5d0ddb65d16abc30b0e5735b8166c40261491feb1d2ffb16eec08d2a31ca` |
+
+**Verification** (`--strict --sums SHA256SUMS --appbundle <the deploy's own AppBundle>`, 11 artifacts
+and the live site against the built export): every artifact's sha256 equals its `SHA256SUMS` line;
+the node-assembly commit is the release source; the shipped `build.json`s equal the export's build;
+the node sources, the generated mod, the `web/src` files embedded in the source maps, the desktop
+shell and the desktop payload equal the export's; the licence set and notices are complete. Two
+findings fail the strict decision, both reproduced:
+
+- **The node inventory is incomplete against its own packaging definition.** `node-manifest.json`
+  lists `steelseed-host/generated/ra-trait-audit.json` and
+  `steelseed-host/generated/ra-visual-manifest.json`; none of the five node zips — nor the desktop
+  packages' internal node — carries them. This is the only strict FAIL common to all ten packages.
+- **`redline-node-osx-arm64.zip` cannot host a room on Apple Silicon as shipped.** Its dedicated
+  server (`bin-standalone/osx-arm64/OpenRA.Server`) is cross-built on the Linux CI runner and carries
+  no code signature, so macOS kills it at exec (SIGKILL before any code runs) and every room dies at
+  `dedicated exited`. With one local ad-hoc signature the packaged node passes the full two-client
+  gate: room reserved, both clients connected, a hosted match to netframe 202, no desync, clean
+  shutdown. The macOS desktop packages are built on the mac runner, are signed, and work; the osx-x64
+  node's server runs under Rosetta (unsigned x86_64 is not killed), and its full path needs an Intel
+  Mac, which was not available.
+
+**Platform:** the macOS arm64 desktop app was run on macOS 15.6.1 (Apple M3 Pro): installed, launched
+and torn down cleanly, WebGPU available, a rendered frame, no external host contacted. The menu/walk
+flow passes on its own and the multiplayer flow passes on its own (a hosted match, no desync, no
+orphan process); the combined run — multiplayer first, then the walk — fails: the walk screen never
+shows after a hosted match, reproduced twice. The other platforms were not run.
+
+### The browser game: play.redlinewars.online
+
+**Verification: PASS** in strict mode, against the deploy's own AppBundle and the built export: the
+live `composition.json` is the deploy's, every served script matches it, the 187 `web/src` files the
+maps embed equal the export's, and every served `_framework` file equals the build's.
 
 ## v2026.09.26-39d2824
 

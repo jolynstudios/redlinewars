@@ -59,7 +59,6 @@ import { Family, type RosterSlot } from './archetype/params'
  */
 const RIFLE_INFANTRY = RIFLE_FAMILY_ACTORS
 const E2_SOVIET_MATERIAL = 'planx-troop-e2.soviet-v1'
-const SOVIET_FACTIONS = new Set(['soviet', 'russia', 'ukraine'])
 import {
 	DEFAULT_HALF_EXTENT,
 	type HeightProbe,
@@ -421,11 +420,6 @@ function applyOwnerFlag(rig: SlotRig, faction: string): boolean {
 		s[o + 2] = vis
 	}
 	return true
-}
-
-function sovietOwner(ctx: Ctx, owner: number): boolean {
-	const player = ctx.snapshot?.players[owner]
-	return player !== undefined && SOVIET_FACTIONS.has(ctx.actorTypeName(player.factionId).toLowerCase())
 }
 
 function toSlotRig(builtRig: UnitRig | null): SlotRig | null {
@@ -1313,6 +1307,18 @@ export class Units {
 	}
 
 	/** Resolved OpenRA Tooltip/Fluent name exported from the pinned ActorInfo graph. */
+	tacticalDisplayType(actorName: string, enemy: boolean, revealed: boolean): string {
+		const visual = RA_ACTOR_VISUALS[actorName]
+		if (!enemy || revealed || !hasRaTrait(visual, 'InfiltrateForDecoration')) return actorName
+		const image = visual?.traits.find(t => t.Name === 'RenderSprites')?.Fields.Image?.toLowerCase()
+		return image && RA_ACTOR_VISUALS[image] ? image : actorName
+	}
+
+	tacticalFootprint(actorName: string): { w: number; h: number } | undefined {
+		const rows = RA_ACTOR_VISUALS[actorName.toLowerCase()]?.slot?.footprint
+		return rows?.length ? { w: Math.max(...rows.map(row => row.length)), h: rows.length } : undefined
+	}
+
 	displayName(actorName: string): string {
 		return RA_ACTOR_VISUALS[actorName.toLowerCase()]?.displayName ?? actorName.replaceAll('.', ' ').replaceAll('_', ' ')
 	}
@@ -1720,7 +1726,7 @@ export class Units {
 			const deploymentProgress = this.deploymentStates.progressOf(actors.id[i],alpha)
 			const deploying = slotName === 'fact' && deploymentProgress < 1 && this.deploymentRigs.has(this.slotBuckets.get('fact')?.rig as SlotRig)
 			let drawnSlot = deploying ? slotName : displaySlotName != null ? this.damage.opaqueSlot(actors.id[i], displaySlotName, actors.health[i],ambientCondition) ?? displaySlotName : null
-			if (displaySlotName === 'e2' && sovietOwner(ctx, actors.owner[i]) && drawnSlot !== null)
+			if (displaySlotName === 'e2' && drawnSlot !== null)
 				drawnSlot = drawnSlot === 'e2' ? 'e2.soviet' : drawnSlot.replace(/^e2(?=\.)/, 'e2.soviet')
 			const b = (drawnSlot != null ? this.slotBuckets.get(drawnSlot) : undefined)
 				?? this.buckets[cls + (vehicle ? UNIT_CLASS_COUNT : 0)]

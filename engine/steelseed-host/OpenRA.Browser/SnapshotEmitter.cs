@@ -243,6 +243,9 @@ namespace OpenRA.Steelseed
 			if (world.IsGameOver)
 				flags |= SnapshotContract.HeaderFlag.GameOver;
 
+			if (world.WorldActor.TraitOrDefault<OpenRA.Mods.Steelseed.SteelseedCompanionPolicy>()?.Enabled == true)
+				flags |= SnapshotContract.HeaderFlag.CompanionAllowed;
+
 			var writer = new BufferWriter(buffer);
 			writer.U32(SnapshotContract.Magic);
 			writer.U16(SnapshotContract.Version);

@@ -10,6 +10,7 @@
 // byte, so the seam this module has to hide is silhouette only.
 
 import type { BlenderAsset } from './blender-mesh'
+import { sha256Hex } from '../core/sha256'
 import type { DrawItem, GpuMesh, RenderApi } from './types'
 
 /** `<actor>.d1`..`.d5`, plus the intact parent at index 0. */
@@ -573,8 +574,7 @@ export async function loadDamageStates(rosterSource: (actor: string) => string |
 			buffer = await new Response(stream).arrayBuffer()
 		}
 		if (buffer.byteLength !== manifest.bytes) throw new Error(`Damage pack ${actor} byte count mismatch`)
-		const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', buffer))].map(b => b.toString(16).padStart(2, '0')).join('')
-		if (hash !== manifest.sha256) throw new Error(`Damage pack ${actor} SHA-256 mismatch`)
+		if (await sha256Hex(buffer) !== manifest.sha256) throw new Error(`Damage pack ${actor} SHA-256 mismatch`)
 		out.set(actor, { manifest, bytes: new Uint8Array(buffer) })
 	}
 	// Decoys share the real building's ladder. Authoring them twice would double the

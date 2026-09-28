@@ -1,5 +1,6 @@
 // Hash-pinned offline PBR output. Nothing here fetches the external source websites.
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import { ForgedSurfaceSet } from './forge'
 import PALETTE from '../core/blender-palette.json'
 
@@ -46,8 +47,7 @@ export async function verifySurfacePack(manifest:SurfaceManifest,url:string,id:s
     const key=`${r.offset}:${r.bytes}:${r.sha256}`
     if(checked.has(key))continue
     const data=bytes.subarray(r.offset,r.offset+r.bytes)
-    const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data as Uint8Array<ArrayBuffer>)),v=>v.toString(16).padStart(2,'0')).join('')
-    if(hash!==r.sha256)throw new Error('Source material channel checksum mismatch')
+    if(await sha256Hex(data)!==r.sha256)throw new Error('Source material channel checksum mismatch')
     checked.add(key)
    }
   }

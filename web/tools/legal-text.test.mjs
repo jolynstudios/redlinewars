@@ -142,7 +142,8 @@ test('the licence split is written down where the tools look for it', () => {
 	}
 	// The .NET runtime's own notices travel with the AppBundle too, kept with CI's publish.
 	assert.match(read('web/tools/compose.mjs'), /cpSync\(dotnetNotices, join\(licences, 'DOTNET-THIRD-PARTY-NOTICES\.txt'\)\)/)
-	assert.match(read('.github/workflows/deploy.yml'), /cp "\$notices" bin-browser\/DOTNET-THIRD-PARTY-NOTICES\.txt/)
+	// The CI workflow is private: the public export has no .github/.
+	if (existsSync(join(root, '.github/workflows/deploy.yml'))) assert.match(read('.github/workflows/deploy.yml'), /cp "\$notices" bin-browser\/DOTNET-THIRD-PARTY-NOTICES\.txt/)
 })
 
 test('the in-game credits open in a new tab and never navigate away from a match', () => {

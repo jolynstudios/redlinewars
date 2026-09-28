@@ -1,4 +1,5 @@
 import type { BlenderAsset } from './blender-mesh'
+import { sha256Hex } from '../core/sha256'
 export { decodeBlenderAsset } from './blender-mesh'
 interface BlenderManifest {
 	readonly schema: number
@@ -32,7 +33,6 @@ export async function loadBlenderAssets(): Promise<{ manifest: BlenderManifest; 
 		buffer = await new Response(stream).arrayBuffer()
 	}
 	if (buffer.byteLength !== manifest.bytes) throw new Error('Blender pack byte count mismatch')
-	const hash = [...new Uint8Array(await crypto.subtle.digest('SHA-256', buffer))].map(b => b.toString(16).padStart(2, '0')).join('')
-	if (hash !== manifest.sha256) throw new Error('Blender pack SHA-256 mismatch')
+	if (await sha256Hex(buffer) !== manifest.sha256) throw new Error('Blender pack SHA-256 mismatch')
 	return { manifest, bytes: new Uint8Array(buffer) }
 }

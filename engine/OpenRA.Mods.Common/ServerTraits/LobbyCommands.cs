@@ -218,6 +218,13 @@ namespace OpenRA.Mods.Common.Server
 				cheats.IsLocked = true;
 			}
 
+			if (server.LobbyInfo.GlobalSettings.LobbyOptions.TryGetValue("joa-companion", out var companion))
+			{
+				companion.Value = false.ToString();
+				companion.PreferredValue = false.ToString();
+				companion.IsLocked = true;
+			}
+
 			foreach (var option in server.LobbyInfo.GlobalSettings.LobbyOptions.Values)
 				option.IsLocked = true;
 			foreach (var client in server.LobbyInfo.Clients)
@@ -332,6 +339,7 @@ namespace OpenRA.Mods.Common.Server
 
 				ApplyRankedSettings(server);
 				server.SyncLobbyInfo();
+				Console.WriteLine("STEELSEED_JOA_POLICY " + (!server.Settings.Ranked && server.LobbyInfo.GlobalSettings.OptionOrDefault("joa-companion", false) ? "enabled" : "disabled"));
 				server.StartGame();
 			}
 		}
@@ -393,6 +401,7 @@ namespace OpenRA.Mods.Common.Server
 
 				ApplyRankedSettings(server);
 				server.SyncLobbyInfo();
+				Console.WriteLine("STEELSEED_JOA_POLICY " + (!server.Settings.Ranked && server.LobbyInfo.GlobalSettings.OptionOrDefault("joa-companion", false) ? "enabled" : "disabled"));
 				server.StartGame();
 
 				return true;
@@ -1406,8 +1415,8 @@ namespace OpenRA.Mods.Common.Server
 
 				foreach (var o in options)
 				{
-					var value = o.DefaultValue;
-					var preferredValue = o.DefaultValue;
+					var value = o.Id == "joa-companion" ? server.Settings.JoaCompanion.ToString() : o.DefaultValue;
+					var preferredValue = value;
 					if (gs.LobbyOptions.TryGetValue(o.Id, out var state))
 					{
 						// Propagate old state on map change

@@ -91,3 +91,21 @@ export function loadNetConfig(overrides?: {
 		() => OFF,
 	)
 }
+
+export interface CompanionConfig { companionEnabled: boolean; companionOrigin?: string; companionPageOrigin?: string }
+export function parseCompanionConfig(payload: unknown, pageHost: string): CompanionConfig {
+ if (!payload || typeof payload !== 'object') return { companionEnabled: false }
+ const raw = payload as Record<string, unknown>
+ let origin = validAccountOrigin(raw['companionOrigin'], pageHost)
+ // Explicit temporary LAN preview: same-host HTTP only on a private IPv4 address.
+ if(!origin && raw['companionLocalPreview']===true && typeof raw['companionOrigin']==='string') {
+  try {const url=new URL(raw['companionOrigin']);if(url.protocol==='http:' && url.host===pageHost && /^(?:192\.168\.|10\.|172\.(?:1[6-9]|2\d|3[01])\.)/.test(url.hostname))origin=url.origin} catch {}
+ }
+ return { companionEnabled: raw['schema'] === 1 && raw['companionEnabled'] === true && !!origin,
+  companionOrigin: origin, companionPageOrigin: typeof raw['companionPageOrigin'] === 'string' && validRelay(raw['companionPageOrigin'], pageHost) ? raw['companionPageOrigin'] : undefined }
+}
+/** Companion availability is independent of the browser multiplayer switch and shell. */
+export async function loadCompanionConfig(): Promise<CompanionConfig> {
+ try { return parseCompanionConfig(await defaultFetchJson('net-config.json'), location.host) }
+ catch { return { companionEnabled: false } }
+}

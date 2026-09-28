@@ -15,10 +15,13 @@ const code=await build({stdin:{contents:"export {DeploymentRig} from './src/unit
 let preview,browser
 try{
  preview=process.env.DEPLOY_URL?{baseUrl:process.env.DEPLOY_URL,async close(){}}:await startPrivateComposed(8494);({browser}=await launchGpuBrowser(await loadChromium('deploymentintegrationgate'),'deploymentintegrationgate'))
- const page=await browser.newPage({viewport:{width:1200,height:900}}),errors=[],roomMisses=[]
+ const page=await browser.newPage({viewport:{width:1200,height:900}}),errors=[],roomMisses=[],accountRefusals=[]
  page.on('response',r=>{if(r.status()===404&&r.url().endsWith('/rooms'))roomMisses.push(r.url())})
  // The lobby polls the room directory at the page origin; a bare test server has none.
- page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('favicon')){if(m.text().startsWith('Failed to load resource')&&roomMisses.length>0){roomMisses.pop();return}errors.push(m.text())}})
+ // The composed bundle's net-config points the account origin at the public API, and a
+ // localhost preview is rightly refused CORS (a1f6f0e1 made that first check eager);
+ // the app takes it as "account offline", so the pair of console lines is expected noise.
+ page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error'&&!m.text().includes('favicon')){const t=m.text();if(/blocked by CORS policy/.test(t)&&/\/api\//.test(t)){accountRefusals.push(t);return}if(t.startsWith('Failed to load resource')&&(roomMisses.length>0||accountRefusals.length>0)){if(roomMisses.length>0)roomMisses.pop();else accountRefusals.pop();return}errors.push(t)}})
  await page.goto(`${preview.baseUrl}&quality=${quality}&weather=clear&daylight=day`)
  await page.waitForFunction(()=>globalThis.steelseed?.ctx.session.available,undefined,{timeout:180000,polling:100})
  const catalog=await page.evaluate(()=>steelseed.ctx.session.getCatalog()),map=catalog.maps.find(m=>m.title==='Doubles')??catalog.maps[0],config=configFor(catalog,map,{withBot:false,randomSeed:104729})

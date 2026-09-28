@@ -153,6 +153,9 @@ namespace OpenRA
 		[Desc("For dedicated servers only, enforce immutable canonical Ranked lobby settings.")]
 		public bool Ranked = false;
 
+		[Desc("Default JOA companion permission for a dedicated lobby; the host can change it before start.")]
+		public bool JoaCompanion = true;
+
 		[Desc("For dedicated servers only, treat maps that fail the lint checks as invalid.")]
 		public bool EnableLintChecks = true;
 

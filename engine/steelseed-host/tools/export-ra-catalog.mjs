@@ -253,7 +253,7 @@ if (!existsSync(sourcePath)) fail(`missing ${sourcePath}; run build-ra-mod.mjs f
 const source = JSON.parse(readFileSync(sourcePath, 'utf8'))
 const roster = exportResolvedRoster()
 const referenceActors = JSON.parse(readFileSync(resolve(hostRoot, 'ra-reference-actor-ids.json'), 'utf8'))
-const expectedActors = [...referenceActors.actors, 'ssherobridge'].sort()
+const expectedActors = [...referenceActors.actors, 'ssherobridge', 'jackson'].sort()
 const actualActors = (roster.actors ?? []).map(actor => actor.name).sort()
 if (referenceActors.actors.length !== 309 || new Set(referenceActors.actors).size !== 309 ||
     referenceActors.sourceCommit !== source.sourceCommit || roster.schemaVersion !== 2 ||

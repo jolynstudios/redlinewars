@@ -106,6 +106,7 @@ namespace OpenRA.Steelseed
 			public const uint Paused = 1 << 1;
 			public const uint Replay = 1 << 2;
 			public const uint GameOver = 1 << 3;
+			public const uint CompanionAllowed = 1 << 4;
 		}
 
 		// Semantic values in the existing Actors.animState u16; never authored clip indices.

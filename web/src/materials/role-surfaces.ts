@@ -1,6 +1,7 @@
 // Role-pack unique-UV atlases. Four ordinary PBR channels, one array layer each, one set per
 // pack. Discovered at build time from web/.forge/*-surfaces/ by schema; the rifle's is one of them.
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import { RIFLE_PACK, ROLE_PACK_DIR, ROLE_PACK_ID, ROLE_SURFACE_SIZE, roleHashValid, roleStudyFamily, validateRoleInput, type RolePackInput } from '../core/role-pack'
 import type { ForgedSurfaceSet } from './forge'
 import { uploadSourceSurfaces, type SourceSurfaces, type SurfaceManifest } from './source-surfaces'
@@ -126,8 +127,7 @@ export async function verifyRoleSurfacePack(manifest: RoleSurfaceManifest, dir: 
 		const key = `${range.offset}:${range.bytes}:${range.sha256}`
 		if (checked.has(key)) continue
 		const data = bytes.subarray(range.offset, range.offset + range.bytes)
-		const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', data as Uint8Array<ArrayBuffer>))
-		if (Array.from(digest, b => b.toString(16).padStart(2, '0')).join('') !== range.sha256) throw new Error(`Role atlas ${dir}: channel checksum mismatch`)
+		if (await sha256Hex(data) !== range.sha256) throw new Error(`Role atlas ${dir}: channel checksum mismatch`)
 		checked.add(key)
 	}
 	return { manifest, bytes }

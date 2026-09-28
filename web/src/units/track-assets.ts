@@ -1,4 +1,5 @@
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import { decodeBlenderAsset, type BlenderAsset } from './blender-mesh'
 import { bindTrackTags } from '../core/track-metadata'
 import type { TrackLoop } from '../core/track-loop'
@@ -19,7 +20,7 @@ const manifests=import.meta.glob<TrackManifest>('../../.forge/track-lods/manifes
 const packs=import.meta.glob<string>('../../.forge/track-lods/tracks.ssmesh.gz',{eager:true,query:'?url',import:'default'})
 const bad=(s:string):never=>{throw new Error('Track assets: '+s)}
 const hash=(s:unknown)=>typeof s==='string'&&/^[a-f0-9]{64}$/.test(s)
-const sha=async(b:Uint8Array)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b as Uint8Array<ArrayBuffer>)),v=>v.toString(16).padStart(2,'0')).join('')
+const sha=sha256Hex
 /** Base rig is fully populated; reduced levels may intentionally omit small wind-owned flags. */
 export async function verifyTrackAssets(manifest:TrackManifest,url:string,descriptor=DESCRIPTOR):Promise<{manifest:TrackManifest;levels:readonly ReturnType<typeof decodeBlenderAsset>[]}> {
  const m=manifest

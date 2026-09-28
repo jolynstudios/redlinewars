@@ -1,5 +1,6 @@
 // Offline unique-UV human atlas. Four ordinary PBR channels, one array layer only.
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import { uploadSourceSurfaces, type SourceSurfaces, type SurfaceManifest } from './source-surfaces'
 
 export type HumanSurfaceManifest = SurfaceManifest & {
@@ -82,9 +83,7 @@ export async function verifyHumanSurfacePack(manifest: HumanSurfaceManifest, url
 		const key = `${range.offset}:${range.bytes}:${range.sha256}`
 		if (checked.has(key)) continue
 		const data = bytes.subarray(range.offset, range.offset + range.bytes)
-		const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', data as Uint8Array<ArrayBuffer>))
-		const hash = Array.from(digest, b => b.toString(16).padStart(2, '0')).join('')
-		if (hash !== range.sha256) throw new Error('Human surface channel checksum mismatch')
+		if (await sha256Hex(data) !== range.sha256) throw new Error('Human surface channel checksum mismatch')
 		checked.add(key)
 	}
 	return { manifest, bytes }

@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 2,
 	"sourceCommit": "7eabcfe1c9fc3ad5f510227496cfc2766c07f5fb",
-	"actorCount": 310,
-	"renderableCount": 283,
+	"actorCount": 311,
+	"renderableCount": 284,
 	"actors": {
 		"1tnk": {
 			"displayName": "Light Tank",
@@ -63677,6 +63677,1075 @@
 				"techDepth": 3
 			},
 			"descriptorHash": "5e37821ee32aafa63bc5b191324dba736d2d422133b41a18118f4fb7ee2b61ef"
+		},
+		"jackson": {
+			"displayName": "Jackson",
+			"renderable": true,
+			"role": "unit",
+			"visualFamily": "infantry",
+			"semanticRole": "soldier",
+			"dimensions": null,
+			"hitShape": {
+				"Type": "Circle",
+				"Radius": 128,
+				"VerticalTopOffset": 0,
+				"VerticalBottomOffset": 0
+			},
+			"footprint": null,
+			"terrainTypes": [],
+			"locomotor": "foot",
+			"speed": 54,
+			"factionRequirements": [],
+			"health": {
+				"HP": 5000
+			},
+			"armor": {
+				"Type": "None"
+			},
+			"production": {
+				"count": 0,
+				"types": [],
+				"prerequisites": [
+					"~infantry.allies",
+					"~techlevel.infonly",
+					"~tent"
+				]
+			},
+			"power": null,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"aircraft": null,
+			"turrets": [
+				{
+					"Name": "primary",
+					"Instance": "",
+					"TurnSpeed": 512,
+					"InitialFacing": 0,
+					"RealignDelay": 40,
+					"Offset": [
+						0,
+						0,
+						0
+					]
+				}
+			],
+			"armaments": [
+				{
+					"Name": "air",
+					"Instance": "AIR",
+					"Turret": "primary",
+					"Weapon": "RedEye",
+					"LocalOffset": [
+						[
+							0,
+							0,
+							555
+						]
+					],
+					"Recoil": 0,
+					"Burst": 1
+				},
+				{
+					"Name": "garrisoned",
+					"Instance": "GARRISONED",
+					"Turret": "primary",
+					"Weapon": "JacksonRifle",
+					"LocalOffset": [],
+					"Recoil": 0,
+					"Burst": 1
+				},
+				{
+					"Name": "garrisoned",
+					"Instance": "GARRISONEDSECONDARY",
+					"Turret": "primary",
+					"Weapon": "JacksonRocket",
+					"LocalOffset": [],
+					"Recoil": 0,
+					"Burst": 1
+				},
+				{
+					"Name": "primary",
+					"Instance": "PRIMARY",
+					"Turret": "primary",
+					"Weapon": "JacksonRifle",
+					"LocalOffset": [
+						[
+							0,
+							0,
+							555
+						]
+					],
+					"Recoil": 0,
+					"Burst": 1
+				},
+				{
+					"Name": "secondary",
+					"Instance": "SECONDARY",
+					"Turret": "primary",
+					"Weapon": "JacksonRocket",
+					"LocalOffset": [
+						[
+							0,
+							0,
+							555
+						]
+					],
+					"Recoil": 0,
+					"Burst": 1
+				}
+			],
+			"traits": [
+				{
+					"Name": "ActorLostNotification",
+					"Instance": "",
+					"Fields": {
+						"Notification": "UnitLost",
+						"NotifyAll": "False",
+						"RequiresCondition": "",
+						"TextNotification": "notification-unit-lost"
+					}
+				},
+				{
+					"Name": "Armament",
+					"Instance": "AIR",
+					"Fields": {
+						"AmmoUsage": "1",
+						"Cursor": "attack",
+						"FireDelay": "0",
+						"ForceTargetRelationships": "Enemy, Neutral, Ally",
+						"LocalOffset": "0,0,555",
+						"LocalYaw": "",
+						"MuzzlePalette": "effect",
+						"MuzzleSequence": "",
+						"Name": "air",
+						"OutsideRangeCursor": "attackoutsiderange",
+						"PauseOnCondition": "",
+						"Recoil": "0c0",
+						"RecoilRecovery": "0c9",
+						"ReloadingCondition": "",
+						"RequiresCondition": "",
+						"TargetRelationships": "Enemy",
+						"Turret": "primary",
+						"Weapon": "RedEye"
+					}
+				},
+				{
+					"Name": "Armament",
+					"Instance": "GARRISONED",
+					"Fields": {
+						"AmmoUsage": "1",
+						"Cursor": "attack",
+						"FireDelay": "0",
+						"ForceTargetRelationships": "Enemy, Neutral, Ally",
+						"LocalOffset": "",
+						"LocalYaw": "",
+						"MuzzlePalette": "effect",
+						"MuzzleSequence": "",
+						"Name": "garrisoned",
+						"OutsideRangeCursor": "attackoutsiderange",
+						"PauseOnCondition": "",
+						"Recoil": "0c0",
+						"RecoilRecovery": "0c9",
+						"ReloadingCondition": "",
+						"RequiresCondition": "",
+						"TargetRelationships": "Enemy",
+						"Turret": "primary",
+						"Weapon": "JacksonRifle"
+					}
+				},
+				{
+					"Name": "Armament",
+					"Instance": "GARRISONEDSECONDARY",
+					"Fields": {
+						"AmmoUsage": "1",
+						"Cursor": "attack",
+						"FireDelay": "0",
+						"ForceTargetRelationships": "Enemy, Neutral, Ally",
+						"LocalOffset": "",
+						"LocalYaw": "",
+						"MuzzlePalette": "effect",
+						"MuzzleSequence": "",
+						"Name": "garrisoned",
+						"OutsideRangeCursor": "attackoutsiderange",
+						"PauseOnCondition": "",
+						"Recoil": "0c0",
+						"RecoilRecovery": "0c9",
+						"ReloadingCondition": "",
+						"RequiresCondition": "",
+						"TargetRelationships": "Enemy",
+						"Turret": "primary",
+						"Weapon": "JacksonRocket"
+					}
+				},
+				{
+					"Name": "Armament",
+					"Instance": "PRIMARY",
+					"Fields": {
+						"AmmoUsage": "1",
+						"Cursor": "attack",
+						"FireDelay": "0",
+						"ForceTargetRelationships": "Enemy, Neutral, Ally",
+						"LocalOffset": "0,0,555",
+						"LocalYaw": "",
+						"MuzzlePalette": "effect",
+						"MuzzleSequence": "",
+						"Name": "primary",
+						"OutsideRangeCursor": "attackoutsiderange",
+						"PauseOnCondition": "",
+						"Recoil": "0c0",
+						"RecoilRecovery": "0c9",
+						"ReloadingCondition": "",
+						"RequiresCondition": "",
+						"TargetRelationships": "Enemy",
+						"Turret": "primary",
+						"Weapon": "JacksonRifle"
+					}
+				},
+				{
+					"Name": "Armament",
+					"Instance": "SECONDARY",
+					"Fields": {
+						"AmmoUsage": "1",
+						"Cursor": "attack",
+						"FireDelay": "0",
+						"ForceTargetRelationships": "Enemy, Neutral, Ally",
+						"LocalOffset": "0,0,555",
+						"LocalYaw": "",
+						"MuzzlePalette": "effect",
+						"MuzzleSequence": "",
+						"Name": "secondary",
+						"OutsideRangeCursor": "attackoutsiderange",
+						"PauseOnCondition": "",
+						"Recoil": "0c0",
+						"RecoilRecovery": "0c9",
+						"ReloadingCondition": "",
+						"RequiresCondition": "",
+						"TargetRelationships": "Enemy",
+						"Turret": "primary",
+						"Weapon": "JacksonRocket"
+					}
+				},
+				{
+					"Name": "Armor",
+					"Instance": "",
+					"Fields": {
+						"RequiresCondition": "",
+						"Type": "None"
+					}
+				},
+				{
+					"Name": "AttackFrontal",
+					"Instance": "",
+					"Fields": {
+						"Armaments": "primary, secondary, air",
+						"AttackRequiresEnteringCell": "False",
+						"Cursor": "",
+						"FacingTolerance": "0",
+						"ForceFireIgnoresActors": "False",
+						"OutsideRangeCursor": "",
+						"OutsideRangeRequiresForceFire": "False",
+						"PauseOnCondition": "",
+						"RequiresCondition": "",
+						"TargetFrozenActors": "False",
+						"TargetLineColor": "DC143C",
+						"TargetTerrainWithoutForceFire": "False",
+						"Voice": "Action"
+					}
+				},
+				{
+					"Name": "AttackMove",
+					"Instance": "",
+					"Fields": {
+						"AssaultMoveBlockedCursor": "assaultmove-blocked",
+						"AssaultMoveCondition": "assault-move",
+						"AssaultMoveCursor": "assaultmove",
+						"AttackMoveBlockedCursor": "attackmove-blocked",
+						"AttackMoveCondition": "",
+						"AttackMoveCursor": "attackmove",
+						"MoveIntoShroud": "True",
+						"TargetLineColor": "FF4500",
+						"Voice": "Action"
+					}
+				},
+				{
+					"Name": "AutoTarget",
+					"Instance": "",
+					"Fields": {
+						"AllowMovement": "True",
+						"AllowTurning": "True",
+						"AttackAnythingCondition": "stance-attackanything",
+						"DefendCondition": "",
+						"EditorStanceDisplayOrder": "1",
+						"EnableStances": "True",
+						"HoldFireCondition": "",
+						"InitialStance": "Defend",
+						"InitialStanceAI": "AttackAnything",
+						"MaximumScanTimeInterval": "8",
+						"MinimumScanTimeInterval": "3",
+						"RequiresCondition": "",
+						"ReturnFireCondition": "",
+						"ScanOnIdle": "True",
+						"ScanRadius": "5"
+					}
+				},
+				{
+					"Name": "AutoTargetPriority",
+					"Instance": "ATTACKANYTHING",
+					"Fields": {
+						"InvalidTargets": "NoAutoTarget",
+						"Priority": "1",
+						"RequiresCondition": "stance-attackanything || assault-move",
+						"ValidRelationships": "Enemy, Neutral, Ally",
+						"ValidTargets": "Mine, Structure, AirborneActor, Defense, Vehicle, Infantry, Ship, Underwater"
+					}
+				},
+				{
+					"Name": "AutoTargetPriority",
+					"Instance": "DEFAULT",
+					"Fields": {
+						"InvalidTargets": "NoAutoTarget",
+						"Priority": "1",
+						"RequiresCondition": "!stance-attackanything && !assault-move",
+						"ValidRelationships": "Enemy, Neutral, Ally",
+						"ValidTargets": "Mine, AirborneActor, Defense, Vehicle, Infantry, Ship, Underwater"
+					}
+				},
+				{
+					"Name": "BodyOrientation",
+					"Instance": "",
+					"Fields": {
+						"CameraPitch": "113",
+						"QuantizedFacings": "-1",
+						"UseClassicPerspectiveFudge": "True"
+					}
+				},
+				{
+					"Name": "Buildable",
+					"Instance": "",
+					"Fields": {
+						"BuildAtProductionType": "Soldier",
+						"BuildDuration": "1050",
+						"BuildDurationModifier": "60",
+						"BuildLimit": "1",
+						"BuildPaletteOrder": "35",
+						"Description": "actor-jackson.description",
+						"ForceFaction": "",
+						"Icon": "icon",
+						"IconPalette": "chrome",
+						"IconPaletteIsPlayerPalette": "False",
+						"Prerequisites": "~tent, ~infantry.allies, ~techlevel.infonly",
+						"Queue": "Infantry"
+					}
+				},
+				{
+					"Name": "Cloneable",
+					"Instance": "",
+					"Fields": {
+						"Types": "Infantry"
+					}
+				},
+				{
+					"Name": "Crushable",
+					"Instance": "",
+					"Fields": {
+						"CrushClasses": "infantry",
+						"CrushSound": "squishy2.aud",
+						"CrushedByFriendlies": "False",
+						"RequiresCondition": "",
+						"WarnProbability": "75"
+					}
+				},
+				{
+					"Name": "DamageMultiplier",
+					"Instance": "RANK-1",
+					"Fields": {
+						"Modifier": "95",
+						"RequiresCondition": "rank-veteran == 1"
+					}
+				},
+				{
+					"Name": "DamageMultiplier",
+					"Instance": "RANK-2",
+					"Fields": {
+						"Modifier": "90",
+						"RequiresCondition": "rank-veteran == 2"
+					}
+				},
+				{
+					"Name": "DamageMultiplier",
+					"Instance": "RANK-3",
+					"Fields": {
+						"Modifier": "85",
+						"RequiresCondition": "rank-veteran == 3"
+					}
+				},
+				{
+					"Name": "DamageMultiplier",
+					"Instance": "RANK-ELITE",
+					"Fields": {
+						"Modifier": "75",
+						"RequiresCondition": "rank-elite"
+					}
+				},
+				{
+					"Name": "DetectCloaked",
+					"Instance": "",
+					"Fields": {
+						"DetectionTypes": "Cloak",
+						"Range": "1c512",
+						"RequiresCondition": ""
+					}
+				},
+				{
+					"Name": "EdibleByLeap",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "FirepowerMultiplier",
+					"Instance": "RANK-1",
+					"Fields": {
+						"Modifier": "105",
+						"RequiresCondition": "rank-veteran == 1"
+					}
+				},
+				{
+					"Name": "FirepowerMultiplier",
+					"Instance": "RANK-2",
+					"Fields": {
+						"Modifier": "110",
+						"RequiresCondition": "rank-veteran == 2"
+					}
+				},
+				{
+					"Name": "FirepowerMultiplier",
+					"Instance": "RANK-3",
+					"Fields": {
+						"Modifier": "120",
+						"RequiresCondition": "rank-veteran == 3"
+					}
+				},
+				{
+					"Name": "FirepowerMultiplier",
+					"Instance": "RANK-ELITE",
+					"Fields": {
+						"Modifier": "130",
+						"RequiresCondition": "rank-elite"
+					}
+				},
+				{
+					"Name": "GainsExperience",
+					"Instance": "",
+					"Fields": {
+						"Conditions": "200: rank-veteran\n400: rank-veteran\n800: rank-veteran\n1600: rank-veteran\n",
+						"ExperienceModifier": "-1",
+						"LevelUpImage": "crate-effects",
+						"LevelUpNotification": "LevelUp",
+						"LevelUpPalette": "effect",
+						"LevelUpSequence": "levelup",
+						"LevelUpTextNotification": "notification-unit-promoted",
+						"SuppressLevelupAnimation": "True"
+					}
+				},
+				{
+					"Name": "GainsExperienceMultiplier",
+					"Instance": "",
+					"Fields": {
+						"Modifier": "0",
+						"RequiresCondition": "disable-experience"
+					}
+				},
+				{
+					"Name": "GivesBounty",
+					"Instance": "",
+					"Fields": {
+						"DeathTypes": "",
+						"Percentage": "10",
+						"RequiresCondition": "global-bounty",
+						"ShowBounty": "True",
+						"ValidRelationships": "Enemy, Neutral"
+					}
+				},
+				{
+					"Name": "GivesExperience",
+					"Instance": "",
+					"Fields": {
+						"ActorExperienceModifier": "10000",
+						"Experience": "-1",
+						"PlayerExperienceModifier": "1",
+						"ValidRelationships": "Enemy, Neutral"
+					}
+				},
+				{
+					"Name": "GrantCondition",
+					"Instance": "HOSPITAL",
+					"Fields": {
+						"Condition": "hospitalheal",
+						"GrantPermanently": "False",
+						"RequiresCondition": "hospital && damaged"
+					}
+				},
+				{
+					"Name": "GrantCondition",
+					"Instance": "RANK-ELITE",
+					"Fields": {
+						"Condition": "rank-elite",
+						"GrantPermanently": "False",
+						"RequiresCondition": "rank-veteran >= 4"
+					}
+				},
+				{
+					"Name": "GrantConditionOnDamageState",
+					"Instance": "DAMAGED",
+					"Fields": {
+						"Condition": "damaged",
+						"DisabledSounds": "",
+						"EnabledSounds": "",
+						"GrantPermanently": "False",
+						"ValidDamageStates": "Light, Medium, Heavy, Critical"
+					}
+				},
+				{
+					"Name": "GrantConditionOnDamageState",
+					"Instance": "HOSPITAL",
+					"Fields": {
+						"Condition": "damaged",
+						"DisabledSounds": "",
+						"EnabledSounds": "",
+						"GrantPermanently": "False",
+						"ValidDamageStates": "Light, Medium, Heavy, Critical"
+					}
+				},
+				{
+					"Name": "GrantConditionOnPrerequisite",
+					"Instance": "GLOBALBOUNTY",
+					"Fields": {
+						"Condition": "global-bounty",
+						"Prerequisites": "global-bounty"
+					}
+				},
+				{
+					"Name": "GrantConditionOnPrerequisite",
+					"Instance": "HOSPITAL",
+					"Fields": {
+						"Condition": "hospital",
+						"Prerequisites": "hosp"
+					}
+				},
+				{
+					"Name": "Guard",
+					"Instance": "",
+					"Fields": {
+						"TargetLineColor": "FF4500",
+						"Voice": "Action"
+					}
+				},
+				{
+					"Name": "Guardable",
+					"Instance": "",
+					"Fields": {
+						"Range": "2c0"
+					}
+				},
+				{
+					"Name": "HandicapDamageMultiplier",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "HandicapFirepowerMultiplier",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "HandicapProductionTimeMultiplier",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "Health",
+					"Instance": "",
+					"Fields": {
+						"EditorHealthDisplayOrder": "2",
+						"HP": "5000",
+						"NotifyAppliedDamage": "True"
+					}
+				},
+				{
+					"Name": "HiddenUnderFog",
+					"Instance": "",
+					"Fields": {
+						"AlwaysVisibleRelationships": "Ally",
+						"Type": "Footprint"
+					}
+				},
+				{
+					"Name": "HitShape",
+					"Instance": "",
+					"Fields": {
+						"ArmorTypes": "",
+						"RequiresCondition": "",
+						"TargetableOffsets": "0,0,0",
+						"Turret": "",
+						"Type": "OpenRA.Mods.Common.HitShapes.CircleShape",
+						"UseTargetableCellsOffsets": "False"
+					}
+				},
+				{
+					"Name": "Huntable",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "Mobile",
+					"Instance": "",
+					"Fields": {
+						"AlwaysTurnInPlace": "True",
+						"BackwardDuration": "40",
+						"BlockedCursor": "move-blocked",
+						"CanMoveBackward": "False",
+						"Cursor": "move",
+						"EditorFacingDisplayOrder": "3",
+						"ImmovableCondition": "",
+						"InitialFacing": "0",
+						"Locomotor": "foot",
+						"MaxBackwardCells": "15",
+						"PauseOnCondition": "",
+						"PreviewFacing": "384",
+						"RequireForceMoveCondition": "",
+						"RequiresCondition": "",
+						"Speed": "54",
+						"TargetLineColor": "008000",
+						"TerrainCursors": "",
+						"TerrainOrientationAdjustmentMargin": "-0c1",
+						"TurnSpeed": "512",
+						"TurnsWhileMoving": "False",
+						"Voice": "Action"
+					}
+				},
+				{
+					"Name": "MustBeDestroyed",
+					"Instance": "",
+					"Fields": {
+						"RequiredForShortGame": "False"
+					}
+				},
+				{
+					"Name": "OwnerLostAction",
+					"Instance": "",
+					"Fields": {
+						"Action": "Kill",
+						"DeathTypes": "DefaultDeath",
+						"Owner": "Neutral",
+						"RequiresCondition": ""
+					}
+				},
+				{
+					"Name": "Parachutable",
+					"Instance": "",
+					"Fields": {
+						"DamageTypes": "",
+						"FallRate": "26",
+						"GroundCorpsePalette": "effect",
+						"GroundCorpseSequence": "corpse",
+						"GroundImpactSound": "squishy2.aud",
+						"Image": "explosion",
+						"KilledOnImpassableTerrain": "True",
+						"ParachutingCondition": "parachute",
+						"WaterCorpsePalette": "effect",
+						"WaterCorpseSequence": "small_splash",
+						"WaterImpactSound": "splash9.aud",
+						"WaterTerrainTypes": "Water"
+					}
+				},
+				{
+					"Name": "Passenger",
+					"Instance": "",
+					"Fields": {
+						"CargoCondition": "disable-experience",
+						"CargoConditions": "",
+						"CargoType": "Infantry",
+						"CustomPipType": "",
+						"EnterBlockedCursor": "enter-blocked",
+						"EnterCursor": "enter",
+						"RequireForceMoveCondition": "",
+						"TargetLineColor": "008000",
+						"Voice": "Action",
+						"Weight": "1"
+					}
+				},
+				{
+					"Name": "ProducibleWithLevel",
+					"Instance": "",
+					"Fields": {
+						"InitialLevels": "1",
+						"Prerequisites": "barracks.upgraded",
+						"SuppressLevelupAnimation": "True"
+					}
+				},
+				{
+					"Name": "ProximityCaptor",
+					"Instance": "",
+					"Fields": {
+						"Types": "Infantry"
+					}
+				},
+				{
+					"Name": "QuantizeFacingsFromSequence",
+					"Instance": "",
+					"Fields": {
+						"RequiresCondition": "",
+						"Sequence": "stand"
+					}
+				},
+				{
+					"Name": "ReloadDelayMultiplier",
+					"Instance": "RANK-1",
+					"Fields": {
+						"Modifier": "95",
+						"RequiresCondition": "rank-veteran == 1"
+					}
+				},
+				{
+					"Name": "ReloadDelayMultiplier",
+					"Instance": "RANK-2",
+					"Fields": {
+						"Modifier": "90",
+						"RequiresCondition": "rank-veteran == 2"
+					}
+				},
+				{
+					"Name": "ReloadDelayMultiplier",
+					"Instance": "RANK-3",
+					"Fields": {
+						"Modifier": "85",
+						"RequiresCondition": "rank-veteran == 3"
+					}
+				},
+				{
+					"Name": "ReloadDelayMultiplier",
+					"Instance": "RANK-ELITE",
+					"Fields": {
+						"Modifier": "75",
+						"RequiresCondition": "rank-elite"
+					}
+				},
+				{
+					"Name": "RenderSprites",
+					"Instance": "",
+					"Fields": {
+						"FactionImages": "",
+						"Image": "e3",
+						"Palette": "",
+						"PlayerPalette": "player"
+					}
+				},
+				{
+					"Name": "RevealsShroud",
+					"Instance": "",
+					"Fields": {
+						"MaxHeightDelta": "-1",
+						"MinRange": "0c0",
+						"MoveRecalculationThreshold": "0c256",
+						"Range": "4c0",
+						"RequiresCondition": "",
+						"RevealGeneratedShroud": "True",
+						"Type": "Footprint",
+						"ValidRelationships": "Ally"
+					}
+				},
+				{
+					"Name": "ScriptTriggers",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "Selectable",
+					"Instance": "",
+					"Fields": {
+						"Bounds": "0c768, 0c853, 0c0, -0c256",
+						"Class": "JACKSON",
+						"DecorationBounds": "0c512, 0c768, 0c0, -0c341",
+						"Polygon": "",
+						"Priority": "10",
+						"PriorityModifiers": "Ctrl",
+						"Voice": "Select"
+					}
+				},
+				{
+					"Name": "SpeedMultiplier",
+					"Instance": "RANK-1",
+					"Fields": {
+						"Modifier": "105",
+						"RequiresCondition": "rank-veteran == 1"
+					}
+				},
+				{
+					"Name": "SpeedMultiplier",
+					"Instance": "RANK-2",
+					"Fields": {
+						"Modifier": "110",
+						"RequiresCondition": "rank-veteran == 2"
+					}
+				},
+				{
+					"Name": "SpeedMultiplier",
+					"Instance": "RANK-3",
+					"Fields": {
+						"Modifier": "120",
+						"RequiresCondition": "rank-veteran == 3"
+					}
+				},
+				{
+					"Name": "SpeedMultiplier",
+					"Instance": "RANK-ELITE",
+					"Fields": {
+						"Modifier": "140",
+						"RequiresCondition": "rank-elite"
+					}
+				},
+				{
+					"Name": "SteelseedEventObserver",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
+					"Name": "TakeCover",
+					"Instance": "",
+					"Fields": {
+						"DamageModifiers": "Prone50Percent: 50\n",
+						"DamageTriggers": "TriggerProne",
+						"Duration": "50",
+						"EditorTurretFacingDisplayOrder": "4",
+						"InitialFacing": "0",
+						"Offset": "0,0,0",
+						"PauseOnCondition": "",
+						"ProneOffset": "384,0,-395",
+						"ProneSequencePrefix": "prone-",
+						"RealignDelay": "40",
+						"RequiresCondition": "",
+						"SpeedModifier": "50",
+						"TurnSpeed": "512",
+						"Turret": "primary"
+					}
+				},
+				{
+					"Name": "Targetable",
+					"Instance": "",
+					"Fields": {
+						"RequiresCondition": "!parachute",
+						"RequiresForceFire": "False",
+						"TargetTypes": "GroundActor, Infantry, Disguise"
+					}
+				},
+				{
+					"Name": "Targetable",
+					"Instance": "HEAL",
+					"Fields": {
+						"RequiresCondition": "!parachute && damaged",
+						"RequiresForceFire": "False",
+						"TargetTypes": "Heal"
+					}
+				},
+				{
+					"Name": "Tooltip",
+					"Instance": "",
+					"Fields": {
+						"AllyPrefix": "label-tooltip-prefix.ally",
+						"EnemyPrefix": "label-tooltip-prefix.enemy",
+						"GenericName": "meta-infantry-generic-name",
+						"GenericStancePrefix": "True",
+						"GenericVisibility": "None",
+						"Name": "actor-jackson.name",
+						"NeutralPrefix": "",
+						"RequiresCondition": "",
+						"ShowOwnerRow": "True"
+					}
+				},
+				{
+					"Name": "UpdatesPlayerStatistics",
+					"Instance": "",
+					"Fields": {
+						"AddToArmyValue": "True",
+						"AddToAssetsValue": "True",
+						"OverrideActor": ""
+					}
+				},
+				{
+					"Name": "Valued",
+					"Instance": "",
+					"Fields": {
+						"Cost": "700"
+					}
+				},
+				{
+					"Name": "WithInfantryBody",
+					"Instance": "",
+					"Fields": {
+						"AttackSequences": "",
+						"DefaultAttackSequence": "shoot",
+						"IdleSequences": "idle1, idle2",
+						"IsPlayerPalette": "False",
+						"MaxIdleDelay": "110",
+						"MinIdleDelay": "30",
+						"MoveSequence": "run",
+						"Palette": "",
+						"RequiresCondition": "!parachute",
+						"StandSequences": "stand, stand2"
+					}
+				},
+				{
+					"Name": "WithInfantryBody",
+					"Instance": "PARACHUTE",
+					"Fields": {
+						"AttackSequences": "",
+						"DefaultAttackSequence": "",
+						"IdleSequences": "",
+						"IsPlayerPalette": "True",
+						"MaxIdleDelay": "110",
+						"MinIdleDelay": "30",
+						"MoveSequence": "run",
+						"Palette": "player-noshadow",
+						"RequiresCondition": "parachute",
+						"StandSequences": "parachute"
+					}
+				}
+			],
+			"meshSeed": "eb7fa5dee467b596",
+			"slot": {
+				"name": "jackson",
+				"faction": 2,
+				"family": 2,
+				"archetype": "soldier",
+				"lengthM": 0.75,
+				"widthM": 0.8330078125,
+				"hp": 5000,
+				"armourIndex": 0,
+				"cost": 700,
+				"buildTicks": 1050,
+				"speed": 54,
+				"locomotor": "foot",
+				"visionM": 4,
+				"targetsAir": false,
+				"vtol": null,
+				"turret": {
+					"turnSpeed": 512,
+					"offsetM": [
+						0,
+						0,
+						0
+					]
+				},
+				"turrets": [
+					{
+						"name": "primary",
+						"turnSpeed": 512,
+						"realignDelay": 40,
+						"offsetM": [
+							0,
+							0,
+							0
+						]
+					}
+				],
+				"armaments": [
+					{
+						"name": "air",
+						"turret": "primary",
+						"weapon": "RedEye",
+						"muzzleM": [
+							0,
+							0.5419921875,
+							0
+						],
+						"recoilM": 0,
+						"rangeM": 7.5,
+						"reloadTicks": 50,
+						"damage": 2400,
+						"armourBias": 0,
+						"burst": 1,
+						"projectile": "rocket"
+					},
+					{
+						"name": "garrisoned",
+						"turret": "primary",
+						"weapon": "JacksonRifle",
+						"muzzleM": [
+							0,
+							0,
+							0
+						],
+						"recoilM": 0,
+						"rangeM": 7,
+						"reloadTicks": 10,
+						"damage": 5000,
+						"armourBias": 0,
+						"burst": 1,
+						"projectile": "directFire"
+					},
+					{
+						"name": "garrisoned",
+						"turret": "primary",
+						"weapon": "JacksonRocket",
+						"muzzleM": [
+							0,
+							0,
+							0
+						],
+						"recoilM": 0,
+						"rangeM": 5,
+						"reloadTicks": 50,
+						"damage": 5000,
+						"armourBias": 0.4925373134328358,
+						"burst": 1,
+						"projectile": "rocket"
+					},
+					{
+						"name": "primary",
+						"turret": "primary",
+						"weapon": "JacksonRifle",
+						"muzzleM": [
+							0,
+							0.5419921875,
+							0
+						],
+						"recoilM": 0,
+						"rangeM": 7,
+						"reloadTicks": 10,
+						"damage": 5000,
+						"armourBias": 0,
+						"burst": 1,
+						"projectile": "directFire"
+					},
+					{
+						"name": "secondary",
+						"turret": "primary",
+						"weapon": "JacksonRocket",
+						"muzzleM": [
+							0,
+							0.5419921875,
+							0
+						],
+						"recoilM": 0,
+						"rangeM": 5,
+						"reloadTicks": 50,
+						"damage": 5000,
+						"armourBias": 0.4925373134328358,
+						"burst": 1,
+						"projectile": "rocket"
+					}
+				],
+				"powerAmount": 0,
+				"produces": 0,
+				"storageCapacity": 0,
+				"refinery": false,
+				"cargo": 0,
+				"footprint": null,
+				"plan": null,
+				"techDepth": 3
+			},
+			"descriptorHash": "78d88af06d563070a5596e9a7b796d4422e01c25f810b62291ab6c3ce1066b11"
 		},
 		"jeep": {
 			"displayName": "Ranger",
@@ -136431,6 +137500,11 @@
 					}
 				},
 				{
+					"Name": "SteelseedCompanionPolicy",
+					"Instance": "",
+					"Fields": {}
+				},
+				{
 					"Name": "SteelseedEventSink",
 					"Instance": "",
 					"Fields": {}
@@ -136462,7 +137536,7 @@
 			],
 			"meshSeed": "5c68bef3738e495c",
 			"slot": null,
-			"descriptorHash": "287907f526fd8b15bf193d6f59dd5be8645b6460c4ba74aa76fe0a0c0f60b07e"
+			"descriptorHash": "ebf447d9f1b94fd057aab1c06947a5821bd59a482a83f950ca7a788088221ddf"
 		},
 		"yak": {
 			"displayName": "Yak Attack Plane",

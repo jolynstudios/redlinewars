@@ -1,0 +1,72 @@
+/* JOA in the main game: the HUD's Companion control and the pairing console, in the game's own
+   console style (notched plates, Archivo display, Martian Mono data). Also the base of the
+   companion's confirm dialog. */
+.joa-trigger {
+	position: relative; display: inline-grid; place-items: center; width: 38px; min-width: 38px; height: 38px; min-height: 38px; padding: 0;
+	margin-right: 6px; vertical-align: top; background: rgba(16, 22, 27, .86); border: 1px solid rgba(236, 231, 222, .22);
+	clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); cursor: pointer;
+}
+.joa-trigger .joa-mark { width: 22px; height: 22px; }
+.joa-trigger:hover, .joa-trigger:focus-visible { background: rgba(201, 54, 48, .18); border-color: rgba(201, 54, 48, .7); }
+.joa-trigger[data-linked]::after { content: ''; position: absolute; right: 4px; bottom: 4px; width: 6px; height: 6px; background: #87BC91; box-shadow: 0 0 8px #87BC91; }
+.joa-trigger__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* The link's status pill. With a device in play the trigger widens, names the tier it carries,
+   and glows with the link's state; its cut severs the link in one tap. */
+.joa-trigger__dot { display: none; width: 6px; height: 6px; background: #D9AE61; box-shadow: 0 0 8px #D9AE61; }
+.joa-trigger[data-state] { width: auto; min-width: 44px; padding: 0 30px 0 9px; display: inline-flex; align-items: center; gap: 7px; }
+.joa-trigger[data-state] .joa-mark { width: 20px; height: 20px; }
+.joa-trigger[data-state] .joa-trigger__dot { display: block; }
+.joa-trigger[data-state] .joa-trigger__label { position: static; width: auto; height: auto; clip: auto; overflow: visible; font: 600 9px/1 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: #A8B2BA; white-space: nowrap; }
+.joa-trigger[data-state="linked"] { border-color: rgba(135, 188, 145, .55); }
+.joa-trigger[data-state="linked"] .joa-trigger__dot { background: #87BC91; box-shadow: 0 0 8px #87BC91; }
+.joa-trigger[data-state="linked"] .joa-trigger__label { color: #E9E5DB; }
+.joa-trigger[data-state="paused"] { border-color: rgba(217, 174, 97, .55); }
+.joa-trigger[data-state="pending"] { border-color: rgba(201, 54, 48, .7); }
+.joa-trigger[data-state="pending"] .joa-trigger__dot { background: #C93630; box-shadow: 0 0 8px #C93630; animation: joa-attention 1.6s ease-in-out infinite; }
+.joa-trigger__cut {
+	position: absolute; right: 0; top: 0; bottom: 0; width: 26px; display: none; place-items: center;
+	color: #A8B2BA; font: 400 15px/1 system-ui; cursor: pointer;
+}
+.joa-trigger[data-state="linked"] .joa-trigger__cut, .joa-trigger[data-state="paused"] .joa-trigger__cut { display: grid; }
+.joa-trigger__cut:hover { color: #FF6B63; background: rgba(201, 54, 48, .22); }
+@media (prefers-reduced-motion: reduce) { .joa-trigger[data-state="pending"] .joa-trigger__dot { animation: none; } }
+
+.joa-pair {
+	width: min(460px, calc(100vw - 32px)); max-height: 90dvh; overflow: auto; box-sizing: border-box; padding: 26px 26px 22px;
+	background: linear-gradient(160deg, #1A2229, #10161B 70%); color: #E9E5DB; border: 1px solid rgba(236, 231, 222, .2);
+	clip-path: polygon(18px 0, 100% 0, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0 100%, 0 18px);
+	font: 400 15px/1.6 'Archivo', 'Archivo Variable', system-ui, sans-serif; box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
+}
+.joa-pair *, .joa-pair *::before, .joa-pair *::after { box-sizing: border-box; }
+.joa-pair::backdrop { background: rgba(6, 9, 12, .78); backdrop-filter: blur(2px); }
+.joa-pair .joa-kicker, .joa-pair small { display: block; margin: 0; color: #7DB9C8; font: 600 10px/1.2 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .22em; text-transform: uppercase; }
+.joa-pair-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; }
+.joa-pair-head .joa-mark { width: 40px; height: 40px; }
+.joa-pair h2 { margin: 4px 0 0; font: 340 28px/1.05 'Archivo', 'Archivo Variable', system-ui, sans-serif; font-stretch: 118%; letter-spacing: -.005em; color: #E9E5DB; }
+.joa-pair [data-close] { width: 38px; height: 38px; min-height: 38px; padding: 0; display: grid; place-items: center; background: none; border: 1px solid rgba(236, 231, 222, .2); color: #A8B2BA; font: 400 20px/1 system-ui; cursor: pointer; }
+.joa-pair [data-close]:hover { color: #E9E5DB; border-color: rgba(236, 231, 222, .45); }
+.joa-pair [data-status] { margin: 16px 0 0; color: #A8B2BA; font-size: 14px; }
+.joa-pair-scan { display: grid; justify-items: center; margin: 18px 0 6px; }
+.joa-pair canvas { display: block; width: min(220px, 60vw); height: auto; padding: 12px; background: #F4F1EA; clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px); }
+.joa-pair canvas[hidden] { display: none; }
+.joa-pair strong[data-code] { display: block; margin: 14px 0 0; text-align: center; font: 600 30px/1 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .28em; color: #FFF5E8; }
+.joa-pair strong[data-code]:empty { display: none; }
+.joa-pair label { display: grid; gap: 8px; margin-top: 18px; color: #7DB9C8; font: 600 10px/1.2 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .22em; text-transform: uppercase; }
+.joa-pair select { width: 100%; min-height: 46px; padding: 0 14px; background: #10161B; color: #E9E5DB; border: 1px solid rgba(236, 231, 222, .26); font: 500 14px 'Archivo', 'Archivo Variable', system-ui, sans-serif; letter-spacing: 0; text-transform: none; }
+.joa-pair-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.joa-pair-actions button {
+	--face: rgba(236, 231, 222, .08); position: relative; isolation: isolate; flex: 1 1 auto; min-height: 46px; padding: 0 16px; border: 0; background: none; cursor: pointer;
+	color: #E9E5DB; font: 600 10.5px/1 'Martian Mono', 'Martian Mono Variable', ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase;
+}
+.joa-pair-actions button::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--face); border: 1px solid rgba(236, 231, 222, .22); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: background-color .18s; }
+.joa-pair-actions button:hover::before { background: rgba(236, 231, 222, .15); }
+.joa-pair-actions button[data-connect], .joa-pair-actions button[data-approve], .joa-pair-actions .joa-btn--primary { --face: #C93630; color: #FFF5E8; }
+.joa-pair-actions button[data-connect]::before, .joa-pair-actions button[data-approve]::before, .joa-pair-actions .joa-btn--primary::before { border: 0; }
+.joa-pair-actions button[data-connect]:hover::before, .joa-pair-actions button[data-approve]:hover::before, .joa-pair-actions .joa-btn--primary:hover::before { background: #AE2E29; }
+.joa-pair-actions button[hidden] { display: none; }
+/* A device is waiting for a decision: the approve plate breathes red until the commander answers.
+   The halo lives on the button, not the notched ::before plate — clip-path would clip its shadow. */
+@keyframes joa-attention { 0%, 100% { box-shadow: 0 0 0 0 rgba(201, 54, 48, 0); } 50% { box-shadow: 0 0 0 5px rgba(201, 54, 48, .38); } }
+.joa-pair-actions button[data-attention] { animation: joa-attention 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .joa-pair-actions button[data-attention] { animation: none; box-shadow: 0 0 0 3px rgba(201, 54, 48, .45); } }
+.joa-pair :focus-visible { outline: 2px solid #7DB9C8; outline-offset: 2px; }

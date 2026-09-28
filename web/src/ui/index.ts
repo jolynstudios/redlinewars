@@ -1,3 +1,8 @@
+import { PrimaryCompanion } from '../core/tactical/primary'
+import { joaMark } from '../core/tactical/logo'
+import { icon, supportIconFor } from '../core/tactical/icons'
+import { TacticalModel, type TacticalState } from '../core/tactical/model'
+import { drawTactical, defaultView, mapTransform } from '../core/tactical/renderer'
 // STEELSEED — ui
 // Selection: the first thing a player does, and the last thing this project built.
 //
@@ -87,13 +92,52 @@ function deployOrderFor(units: UnitsApi, actorName: string): { order: string; la
 	return null
 }
 
+/** Fullscreen battles: a settings-sheet switch, honoured when a battle starts. The request rides
+ * the start click's own gesture, because browsers refuse fullscreen outside one. */
+const FULLSCREEN_KEY = 'redline-battle-fullscreen'
+const battleFullscreenWanted = (): boolean => { try { return localStorage.getItem(FULLSCREEN_KEY) === '1' } catch { return false } }
+
 /** The manifest's actor table: lower-cased type name to its authoritative trait list. */
 interface RaActorVisual {
-	readonly traits?: readonly { readonly Name?: string }[]
+	readonly traits?: readonly { readonly Name?: string; readonly Fields?: Record<string, unknown> }[]
+	readonly displayName?: string
+	readonly production?: { readonly prerequisites?: readonly string[] }
 }
 // Structural annotation, not a cast: the JSON module's inferred type is the full manifest
 // graph, and this declares (and lets the compiler check) the one slice this node reads.
 const RA_ACTOR_TRAITS: Record<string, RaActorVisual> = RA_VISUAL_MANIFEST.actors
+
+/** Abstract prerequisites each actor provides (ProvidesPrerequisite traits): the tech center
+ * name the ATEK carries, the anypower every power plant answers to. Built once; the rules are
+ * fixed for a build. */
+const PREREQUISITE_PROVIDERS: ReadonlyMap<string, readonly string[]> = (() => {
+	const providers = new Map<string, string[]>()
+	for (const [name, actor] of Object.entries(RA_ACTOR_TRAITS)) {
+		const provided: string[] = []
+		for (const trait of actor.traits ?? []) if (trait.Name === 'ProvidesPrerequisite') {
+			const value = trait.Fields?.Prerequisite
+			if (typeof value === 'string' && value !== '') provided.push(value.toLowerCase())
+		}
+		if (provided.length > 0) providers.set(name, provided)
+	}
+	return providers
+})()
+const prerequisiteLabel = (token: string): string => RA_ACTOR_TRAITS[token]?.displayName ?? token.toUpperCase()
+/** The positive requirements a Buildable still misses against the player's owned prerequisites.
+ * Negated and global gates (~techlevel, ~structures, !…) are lobby and faction policy, not
+ * something to build, so they never appear — the same filter OpenRA's own tooltip applies. */
+function missingPrerequisites(actorName: string, owned: ReadonlySet<string>): string[] {
+	const prerequisites = RA_ACTOR_TRAITS[actorName.toLowerCase()]?.production?.prerequisites ?? []
+	const missing: string[] = []
+	for (const raw of prerequisites) {
+		if (raw.startsWith('~') || raw.startsWith('!')) continue
+		// Dot-separated alternatives: any one of them satisfies the requirement.
+		const alternatives = raw.toLowerCase().split('.').filter(part => part !== '')
+		if (alternatives.length === 0 || alternatives.some(part => owned.has(part))) continue
+		missing.push(alternatives.map(prerequisiteLabel).join(' / '))
+	}
+	return missing
+}
 
 /**
  * Whether OpenRA's Sellable trait covers this actor type — every player-buildable
@@ -149,11 +193,23 @@ const FOOTPRINT_PLUS: readonly (readonly [number, number])[] = [[0, -1], [-1, 0]
  * RenderShroudCircle): the MRJ jams radar out to 18 cells and deflects missiles within 5; the MGG
  * spreads shroud out to 7 and the gap generator building to 6 (CreatesShroud Range). Colours
  * after the rules' 0000FF80 jammer ring.
+ *
+ * The defense buildings' weapon reach (RenderRangeCircle), from the rules' own Armament weapons:
+ * AGUN's ZSU-23 reaches 10 cells, SAM's Nike 7.5, the turret's TurretGun 6.5, the Tesla coil's
+ * zap 7, the flame turret's fireball 5. The pillboxes fire their garrison's M1Carbine at 5
+ * (they ship crewed; the rules' 6c0 fallback is the empty bunker).
  */
 const RANGE_OUTLINES: Readonly<Record<string, readonly (readonly [number, string])[]>> = {
 	mrj: [[18, 'rgba(70,110,255,0.7)'], [5, 'rgba(150,180,255,0.75)']],
 	mgg: [[7, 'rgba(210,214,220,0.7)']],
 	gap: [[6, 'rgba(210,214,220,0.7)']],
+	agun: [[10, 'rgba(255,215,94,0.6)']],
+	sam: [[7.5, 'rgba(255,215,94,0.6)']],
+	gun: [[6.5, 'rgba(255,215,94,0.6)']],
+	tsla: [[7, 'rgba(255,215,94,0.6)']],
+	ftur: [[5, 'rgba(255,215,94,0.6)']],
+	pbox: [[5, 'rgba(255,215,94,0.6)']],
+	hbox: [[5, 'rgba(255,215,94,0.6)']],
 }
 const MAX_RANGE_OUTLINES = 6
 /** Segments in one range outline; each vertex sits on the ground it crosses. */
@@ -279,7 +335,6 @@ const NO_ACTOR_TYPE = 0xffff
 const TROOP_ROLES = new Set(['soldier', 'tracked-vehicle', 'wheeled-vehicle', 'mcv',
 	'rotorcraft', 'fixed-wing', 'ship', 'submarine', 'transport', 'minelayer'])
 /** Enemy movement heat accumulates from mobile actors only: troops plus harvesters. */
-const HEAT_ROLES = new Set([...TROOP_ROLES, 'harvester'])
 /** Static base buildings that get a name label on the tactical map. */
 const TACTICAL_BUILDING_ROLES = new Set(['structure', 'powerplant', 'barracks', 'factory',
 	'airfield', 'refinery', 'silo', 'superweapon', 'naval-yard', 'repair'])
@@ -339,6 +394,24 @@ const POINTER_RAY_INVERSE = new Float32Array(16)
 /** Whether the last projection read the drawn mesh (PICK_TRANSFORM, PICK_VISUAL) or fell back. */
 let PROJECTED_DRAWN = false
 const QUEUE_NAMES = ['Structures / defenses', 'Infantry', 'Vehicles', 'Aircraft', 'Naval'] as const
+/** The announcer's own word for starting production, one per queue domain (QUEUE_NAMES order):
+ * structures build, troops train, vehicles are manufactured, aircraft assembled, ships launched. */
+const PRODUCTION_START_LINES = ['Building', 'Training', 'Manufacturing vehicles', 'Assembling aircraft', 'Shipbuilding'] as const
+/** Each support power its own spoken line the moment OpenRA confirms it fired, matched on the
+ * power key the way the companion's icons are. Unknown powers stay silent, like every line
+ * whose bank row does not exist. */
+function supportPowerVoiceLine(key: string): string | null {
+	const k = key.toLowerCase()
+	if (/nuke|atom|missile/.test(k)) return 'Nuclear missile launched'
+	if (/para/.test(k)) return 'Airborne, coming in'
+	if (/chrono/.test(k)) return 'Chronoshift engaged'
+	if (/iron|curtain|invul/.test(k)) return 'Iron curtain activated'
+	if (/sonar/.test(k)) return 'Sonar pulse active'
+	if (/gps|sat/.test(k)) return 'Satellite launched'
+	if (/spy|recon/.test(k)) return 'Recon plane inbound'
+	if (/strike|bomb/.test(k)) return 'Airstrike inbound'
+	return null
+}
 const NOTICE_TICKS = 100
 /** How long a combat ring stays under an actor after its last combat action. */
 const COMBAT_RING_MS = 5000
@@ -372,6 +445,7 @@ interface MpCloseInfo {
  * the 250 ms status cache for the HUD roster and never gate a transition.
  */
 interface MpBridge {
+	getCompanionIdentity?(): Promise<{roomId:string;nonce:string}|null>
 	setWsEndpoint(url: string): Promise<string>
 	joinMultiplayer(host: string, port: number, password?: string): Promise<string>
 	lobbyClaimPlayerSlot(): Promise<string>
@@ -451,11 +525,9 @@ export class Ui implements UiApi {
 	private tacticalCanvas: HTMLCanvasElement | null = null
 	private tactical2d: CanvasRenderingContext2D | null = null
 	private tacticalOpen = false
-	/** Enemy movement heat: key `cellZ * 65536 + cellX`, value 0..1, 20 s exponential fade.
-	 * Client-side only and fed exclusively from actors the shroud reports visible, so the
-	 * overlay can never disclose an unseen enemy. */
-	private readonly heatGrid = new Map<number, number>()
-	private lastHeatTick = 0
+	private readonly tacticalModel = new TacticalModel()
+	private tacticalState: TacticalState | null = null
+	private tacticalProjectMs = -1000
 	private disguiseRingItem: DrawItem | null = null
 	private item: DrawItem | null = null
 	private ctx: Ctx | null = null
@@ -503,6 +575,9 @@ export class Ui implements UiApi {
 	private selectionStartY = 0
 	private readonly placementPolygons: SVGPolygonElement[] = []
 	private placementPolygonsDrawn = 0
+	/** Placement-time effect radius (the gap generator's shroud): dashed violet, beside the
+	 * red/green cell verdict, never replacing it. */
+	private readonly placementRadiusRings: SVGPathElement[] = []
 	private hudRoot: HTMLElement | null = null
 	private hudCash: HTMLElement | null = null
 	private hudResources: HTMLElement | null = null
@@ -1013,6 +1088,11 @@ export class Ui implements UiApi {
 	/** The status object the timers and launches were last read from (a new one lands 4 times a second). */
 	private timersStatus: SupportPowersStatus | null = null
 	private readonly announcedLaunches = new Set<number>()
+	/** The enemy nuke being counted down on screen: the bridge's launch id, the tick it lands
+	 * on, and the milliseconds per tick it flies through. The alarm voice is owed once. */
+	private nukeLaunch: { id: number; endTick: number; tickMs: number } | null = null
+	private nukeClock: HTMLElement | null = null
+	private readonly nukeAlarmed = new Set<number>()
 	/** The last public timers by `player:key`: a GPS one-shot announces by leaving them. */
 	private readonly timerStates = new Map<string, { ready: boolean; allied: boolean; launchText: string | null; key: string; player: number }>()
 	private readonly seenTimers = new Set<string>()
@@ -1062,6 +1142,53 @@ export class Ui implements UiApi {
 		if (this.selected.length === 0) return
 		this.groupMembers.set(n, [...this.selected])
 		this.showNotice(`Groep ${n} · ${this.selected.length} units`)
+	}
+
+	/** A confirmed paratrooper drop: mark the soldiers already at the zone so only the drop's
+	 * own infantry is gathered, and let trackParatroopers (every frame) collect the rest. */
+	private beginParaDrop(ctx: Ctx, cellX: number, cellY: number): void {
+		const snap = ctx.snapshot, actors = snap?.actors
+		const known = new Set<number>()
+		if (snap && actors) {
+			const units = ctx.get<UnitsApi>('units')
+			for (let i = 0; i < actors.count; i++) {
+				if (actors.owner[i] !== snap.world!.renderPlayer) continue
+				if (units.semanticRole(ctx.actorTypeName(actors.typeId[i])) !== 'soldier') continue
+				if (Math.hypot(actors.posX[i] / 1024 - cellX, actors.posY[i] / 1024 - cellY) > 8) continue
+				known.add(actors.id[i])
+			}
+		}
+		this.paraDrop = { cellX, cellZ: cellY, deadline: performance.now() + 18000, lastAdd: 0, ids: [], known }
+	}
+
+	/** Watch the drop zone for the drop's own infantry: soldiers that appear near it (and were
+	 * not standing there already) join the first free control group once the stream settles. */
+	private trackParatroopers(ctx: Ctx): void {
+		const drop = this.paraDrop
+		if (!drop) return
+		const snap = ctx.snapshot, actors = snap?.actors
+		if (!snap || !actors) return
+		const units = ctx.get<UnitsApi>('units')
+		const now = performance.now()
+		let added = false
+		for (let i = 0; i < actors.count; i++) {
+			const id = actors.id[i]
+			if (drop.known.has(id) || actors.owner[i] !== snap.world!.renderPlayer) continue
+			if (units.semanticRole(ctx.actorTypeName(actors.typeId[i])) !== 'soldier') continue
+			if (Math.hypot(actors.posX[i] / 1024 - drop.cellX, actors.posY[i] / 1024 - drop.cellZ) > 12) continue
+			drop.known.add(id)
+			drop.ids.push(id)
+			added = true
+		}
+		if (added) drop.lastAdd = now
+		if (drop.ids.length > 0 && (now - drop.lastAdd > 3000 || now > drop.deadline)) {
+			const free = [1, 2, 3, 4, 5, 6].find(n => (this.groupMembers.get(n)?.length ?? 0) === 0)
+			if (free !== undefined) {
+				this.groupMembers.set(free, [...drop.ids])
+				this.showNotice(`Paratroopers · groep ${free} · ${drop.ids.length} units`)
+			} else this.showNotice(`Paratroopers landed · every group is taken`)
+			this.paraDrop = null
+		} else if (now > drop.deadline) this.paraDrop = null
 	}
 
 	private recallControlGroup(n: number): void {
@@ -1599,6 +1726,7 @@ export class Ui implements UiApi {
 	/** AI opponents the match started with, so "3 of 5 left" can be said under fog. */
 	private botsAtStart = 0
 	/** True while the current match arrived through the network lobby (mpJoinCommon). */
+	private companion: PrimaryCompanion | null = null
 	private mpMatch = false
 	private hudOpponents: HTMLElement | null = null
 	private menuMusic: HTMLButtonElement | null = null
@@ -1645,6 +1773,9 @@ export class Ui implements UiApi {
 	private orderMarkerReticle: SVGPathElement | null = null
 	/** Control groups: digit 1..6 → remembered selection, pruned on recall. */
 	private readonly groupMembers = new Map<number, number[]>()
+	/** A paratrooper drop in progress: new own infantry near the drop zone becomes a control
+	 * group, so the co-commander can command the drop the moment it lands. */
+	private paraDrop: { cellX: number; cellZ: number; deadline: number; lastAdd: number; ids: number[]; known: Set<number> } | null = null
 	private groupRecallKey = 0
 	private groupRecallMs = 0
 	/** Attack-move aim mode: armed with F, consumed by the next left click or cancelled. */
@@ -1682,6 +1813,9 @@ export class Ui implements UiApi {
 	init(ctx: Ctx): void {
 		readUiPalette()
 		this.ctx = ctx
+		this.companion = new PrimaryCompanion(ctx, () => this.groupMembers, () => this.mpMatch, async () => await this.mpBridge()?.getCompanionIdentity?.() ?? null,
+			taunt => { this.eva?.say(taunt.text, -1, 'taunts'); this.showNotice(`JOA · “${taunt.text}”`) },
+			ask => { this.uiCue('open'); this.showNotice(`JOA asks · ${ask.text}`) })
 		this.render = ctx.get<RenderApi>('render')
 		this.terrain = ctx.get<TerrainApi>('terrain')
 		this.shroud = ctx.get<ShroudApi>('shroud')
@@ -1818,6 +1952,17 @@ export class Ui implements UiApi {
 				polygon.setAttribute('stroke-width', '1.5')
 				overlay.append(polygon)
 				this.placementPolygons.push(polygon)
+			}
+			for (let i = 0; i < 3; i++) {
+				const ring = document.createElementNS(SVG_NAMESPACE, 'path') as SVGPathElement
+				ring.style.display = 'none'
+				ring.setAttribute('fill', 'none')
+				ring.setAttribute('stroke', 'rgba(159,134,232,0.92)')
+				ring.setAttribute('stroke-width', '2')
+				ring.setAttribute('stroke-dasharray', '8 6')
+				ring.setAttribute('vector-effect', 'non-scaling-stroke')
+				overlay.append(ring)
+				this.placementRadiusRings.push(ring)
 			}
 			const markerRing = document.createElementNS(SVG_NAMESPACE, 'circle') as SVGCircleElement
 			markerRing.style.display = 'none'
@@ -3179,7 +3324,41 @@ export class Ui implements UiApi {
 			render.submit(ring)
 		}
 		this.renderPlacementCells(result, ctx, visual?.water ?? false)
+		this.renderPlacementRadius(result, ctx)
 		return false
+	}
+
+	/** While placing a building whose effect covers ground (the gap generator's shroud), the
+	 * whole area it will carve shows as one dashed ring beside the cell verdict: what you are
+	 * about to change, not just where the footprint fits. */
+	private renderPlacementRadius(result: PlacementResult, ctx: Ctx): void {
+		const pending = this.pendingPlacement
+		const overlay = this.placementOverlay, render = this.render, terrain = this.terrain
+		if (!pending || !overlay || !render || !terrain) return
+		const ranges = RANGE_OUTLINES[pending.actorName.toLowerCase()]
+		const viewW = Math.max(1, canvasCssWidth(ctx)), viewH = Math.max(1, canvasCssHeight(ctx))
+		const vp = render.camera.viewProj
+		let used = 0
+		if (ranges) {
+			const cx = result.topLeft.x + result.dimensions.x * 0.5
+			const cz = result.topLeft.y + result.dimensions.y * 0.5
+			for (const [cells] of ranges) {
+				if (used >= this.placementRadiusRings.length) break
+				let d = '', pen = false
+				for (let k = 0; k <= RANGE_OUTLINE_SEGMENTS; k++) {
+					const a = k / RANGE_OUTLINE_SEGMENTS * Math.PI * 2
+					const x = cx + Math.cos(a) * cells, z = cz + Math.sin(a) * cells
+					const p = this.projectToScreen(vp, x, terrain.heightAt(x, z) + 0.06, z, viewW, viewH)
+					if (!p) { pen = false; continue }
+					d += `${pen ? 'L' : 'M'}${p[0].toFixed(1)} ${p[1].toFixed(1)}`
+					pen = true
+				}
+				const ring = this.placementRadiusRings[used++]
+				ring.setAttribute('d', d)
+				ring.style.display = d === '' ? 'none' : ''
+			}
+		}
+		for (let k = used; k < this.placementRadiusRings.length; k++) this.placementRadiusRings[k].style.display = 'none'
 	}
 
 	private renderPlacementCells(result: PlacementResult, ctx: Ctx, water: boolean): void {
@@ -3223,6 +3402,7 @@ export class Ui implements UiApi {
 	private hidePlacementOverlay(): void {
 		for (let i = 0; i < this.placementPolygonsDrawn; i++) this.placementPolygons[i].style.display = 'none'
 		this.placementPolygonsDrawn = 0
+		for (const ring of this.placementRadiusRings) ring.style.display = 'none'
 		if (this.selectionBox?.style.display === 'none' && this.placementOverlay)
 			this.placementOverlay.style.display = 'none'
 	}
@@ -3253,6 +3433,7 @@ export class Ui implements UiApi {
 	}
 
 	dispose(): void {
+		this.companion?.stop(); this.companion = null
 		this.hudQueues?.removeEventListener('click', this.onHudClick)
 		this.hudQueues?.removeEventListener('contextmenu', this.onHudContext)
 		this.hudQueues?.removeEventListener('auxclick', this.onHudAux)
@@ -3311,6 +3492,9 @@ export class Ui implements UiApi {
 		this.timersStatus = null
 		this.timerStates.clear()
 		this.announcedLaunches.clear()
+		this.nukeLaunch = null
+		this.nukeClock = null
+		this.nukeAlarmed.clear()
 		this.supportBeacons.length = 0
 		this.orderTrace = null
 		this.hoverMarkBack = null
@@ -3330,6 +3514,7 @@ export class Ui implements UiApi {
 		this.selectionBox = null
 		this.placementPolygons.length = 0
 		this.placementPolygonsDrawn = 0
+		this.placementRadiusRings.length = 0
 		this.offProduced = null
 		if (this.hudRoot) this.hudRoot.hidden = true
 		this.selected.length = 0
@@ -3524,6 +3709,8 @@ export class Ui implements UiApi {
 		this.hudSupport = document.getElementById('hud-support')
 		this.hudSupportList = document.getElementById('hud-support-list')
 		this.hudTimers = document.getElementById('hud-timers')
+		this.nukeClock = document.getElementById('hud-nuke-clock')
+		document.getElementById('hud-nuke')?.toggleAttribute('hidden', true)
 		this.hudSupportList?.addEventListener('click', this.onHudClick)
 		// The pause-menu music controls: bound here because the menu markup loads with
 		// the HUD, and a lost binding here meant toggling music gave no visible state.
@@ -4236,6 +4423,23 @@ export class Ui implements UiApi {
 		byId('session-settings-open')?.addEventListener('click', event => openSettings(event.currentTarget as HTMLElement))
 		byId('session-gfx-chip')?.addEventListener('click', event => openSettings(event.currentTarget as HTMLElement))
 		byId('session-settings-close')?.addEventListener('click', () => this.settingsOverlay?.close())
+		// Pairing from the menu: the settings sheet opens the same JOA dialog the in-match HUD
+		// button uses, so the link can exist before the first battle ever starts. The feature
+		// card leads the sheet, so the mark it carries comes from the one JOA logo definition.
+		byId('session-companion-open')?.addEventListener('click', () => {
+			this.settingsOverlay?.close()
+			this.companion?.open()
+		})
+		const companionMark = byId('session-companion-mark')
+		if (companionMark && companionMark.childElementCount === 0) companionMark.innerHTML = joaMark(44, '')
+		// Fullscreen battles: the switch only arms the choice; the request itself waits for the
+		// start click, where the browser still accepts it.
+		byId('session-fullscreen')?.addEventListener('click', event => {
+			const on = !battleFullscreenWanted()
+			try { localStorage.setItem(FULLSCREEN_KEY, on ? '1' : '0') } catch { /* not persisted */ }
+			;(event.currentTarget as HTMLElement).setAttribute('aria-checked', String(on))
+			this.uiCue(on ? 'toggleOn' : 'toggleOff')
+		})
 		if (this.sessionMountains) {
 			const mountains = segmented(this.sessionMountains, { label: 'Distant mountains', labels: { off: 'Off', on: 'On' }, order: ['off', 'on'] })
 			// A proxy click is the player's own touch: the reload guard needs to know.
@@ -4335,6 +4539,14 @@ export class Ui implements UiApi {
 		if (desc && quality) desc.textContent = GRAPHICS_COPY[quality.value] ?? ''
 		const chip = document.getElementById('session-gfx-value')
 		if (chip) chip.textContent = labelOf(quality) || 'Graphics'
+		const linked = this.companion?.isLinked() === true
+		const companionOpen = document.getElementById('session-companion-open') as HTMLButtonElement | null
+		if (companionOpen) companionOpen.textContent = linked ? 'Open JOA' : 'Pair a device'
+		document.getElementById('session-companion-card')?.toggleAttribute('data-linked', linked)
+		const companionState = document.getElementById('session-companion-state')
+		if (companionState) companionState.textContent = linked ? 'Device linked' : 'No device linked'
+		const fullscreenSwitch = document.getElementById('session-fullscreen')
+		if (fullscreenSwitch) fullscreenSwitch.setAttribute('aria-checked', String(battleFullscreenWanted()))
 		const switchIn = (containerId: string, label: string, on: boolean, labels: [string, string], apply: (on: boolean) => void): void => {
 			const container = document.getElementById(containerId)
 			if (!container) return
@@ -6309,7 +6521,7 @@ export class Ui implements UiApi {
 					map: this.sessionMap.value,
 					slots: this.mpSlotsFor(this.sessionMpSlots),
 					name: this.sessionMpRoomName?.value.trim() || `${name}'s game`,
-					settings: { gamespeed: this.mpHostOptions.gamespeed ?? this.sessionSpeed?.value, tod: this.mpTod, weather: this.mpWeather },
+					settings: { gamespeed: this.mpHostOptions.gamespeed ?? this.sessionSpeed?.value, tod: this.mpTod, weather: this.mpWeather, joaCompanion: this.mpHostOptions['joa-companion'] ?? 'True' },
 				}),
 				signal: AbortSignal.timeout(20_000),
 			})
@@ -6392,7 +6604,7 @@ export class Ui implements UiApi {
 					slots: choice ? choice.slots : this.mpSlotsFor(this.sessionMpSlots),
 					name: roomName,
 					...(choice?.password ? { password: choice.password } : {}),
-					settings: { gamespeed: this.mpHostOptions.gamespeed ?? this.sessionSpeed?.value, tod: this.mpTod, weather: this.mpWeather },
+					settings: { gamespeed: this.mpHostOptions.gamespeed ?? this.sessionSpeed?.value, tod: this.mpTod, weather: this.mpWeather, joaCompanion: this.mpHostOptions['joa-companion'] ?? 'True' },
 				}),
 				// A hung directory must not hold the Host button hostage (T1.18).
 				signal: AbortSignal.timeout(10_000),
@@ -6655,15 +6867,24 @@ export class Ui implements UiApi {
 		}
 	}
 
+	/** The fullscreen switch cashes in here: still inside the start click's own gesture, so the
+	 * browser accepts the request. A refusal (embed policy, add-on) is noticed, never blocking. */
+	private enterBattleFullscreen(): void {
+		if (!battleFullscreenWanted() || document.fullscreenElement) return
+		const request = document.documentElement.requestFullscreen({ navigationUI: 'hide' }) as unknown as Promise<void> | undefined
+		request?.catch(() => this.showNotice('Volledig scherm geweigerd door de browser; de slag start gewoon'))
+	}
+
 	private startConfiguredSkirmish(): void {
 		const ctx = this.ctx
 		if (!ctx || !ctx.session.available || this.waitingForStart) return
+		this.enterBattleFullscreen()
 		this.waitingForStart = true
 		this.pendingBaseFocus = true
 		// A fresh match starts with a clean heat map: nothing carried over from the
 		// previous fight may warm the new tactical overlay.
-		this.heatGrid.clear()
-		this.lastHeatTick = 0
+		this.tacticalModel.reset()
+		this.tacticalState = null
 		this.stopTutorial()
 		this.outcomeRendered = false
 		this.sessionError = ''
@@ -6723,7 +6944,7 @@ export class Ui implements UiApi {
 				} else {
 					skyApi?.setWeatherPreset(weather === 'on' ? 'auto' : 'clear')
 				}
-				this.eva?.say('Welcome Commander')
+				this.eva?.say('JOA intro')
 				if (this.sessionStatus) this.sessionStatus.textContent = 'Synchronising first authoritative snapshot…'
 			} catch (error) {
 				this.waitingForStart = false
@@ -7314,7 +7535,6 @@ export class Ui implements UiApi {
 		const world = snap.world
 		const actors = snap.actors
 		if (!canvas || !g || !world || !actors) return
-		this.updateEnemyHeat(actors)
 		const width = Math.max(1, world.boundsRight - world.boundsLeft)
 		const height = Math.max(1, world.boundsBottom - world.boundsTop)
 		this.strategicStats.width = width
@@ -7431,87 +7651,23 @@ export class Ui implements UiApi {
 	 * only ever touches cells that are visible at write time and the overlay only
 	 * draws cells visible at draw time, so the heat can never disclose an unseen enemy.
 	 */
-	private updateEnemyHeat(actors: NonNullable<Snapshot['actors']>): void {
-		const ctx = this.ctx
-		const units = ctx ? ctx.get<UnitsApi>('units') : null
-		const now = performance.now()
-		if (this.lastHeatTick > 0) {
-			const decay = Math.exp(-(now - this.lastHeatTick) / 20000)
-			for (const [key, value] of this.heatGrid) {
-				const faded = value * decay
-				if (faded < 0.02) this.heatGrid.delete(key)
-				else this.heatGrid.set(key, faded)
-			}
-		}
-		this.lastHeatTick = now
-		if (!ctx || !units) return
-		for (let i = 0; i < actors.count; i++) {
-			if (actors.owner[i] === this.renderPlayerId) continue
-			if (!HEAT_ROLES.has(units.semanticRole(ctx.actorTypeName(actors.typeId[i])))) continue
-			const cellX = Math.floor(actors.posX[i] * WPOS_TO_M)
-			const cellZ = Math.floor(actors.posY[i] * WPOS_TO_M)
-			if (this.shroud?.stateAt(cellX, cellZ) !== 2) continue
-			const key = cellZ * 65536 + cellX
-			this.heatGrid.set(key, Math.min(1, (this.heatGrid.get(key) ?? 0) + 0.25))
-		}
-	}
 
-	/**
-	 * The tactical map: the strategic overview at five times the size, centred over
-	 * the HUD. The shrouded terrain, remembered blips and the camera viewport come
-	 * across as one nearest-neighbour blowup of the small canvas; heat, clearer dots
-	 * and building names draw directly at the large resolution. Never reveals: the
-	 * dot loop re-checks the shroud per actor and heat only renders on visible cells.
-	 */
-	private renderTacticalMap(snap: Snapshot, world: NonNullable<Snapshot['world']>,
-		width: number, height: number): void {
-		const g = this.tactical2d
-		const big = this.tacticalCanvas
-		const small = this.minimap
-		if (!g || !big || !small) return
-		g.imageSmoothingEnabled = false
-		g.clearRect(0, 0, big.width, big.height)
-		g.drawImage(small, 0, 0, big.width, big.height)
-		const cellW = big.width / width
-		const cellH = big.height / height
-		for (const [key, value] of this.heatGrid) {
-			const cellX = key % 65536
-			const cellZ = (key - cellX) / 65536
-			if (this.shroud?.stateAt(cellX, cellZ) !== 2) continue
-			g.fillStyle = `rgba(242, 60, 40, ${(value * 0.55).toFixed(3)})`
-			g.fillRect((cellX - world.boundsLeft) * cellW, (cellZ - world.boundsTop) * cellH,
-				cellW, cellH)
+	/** Readable tactical terrain, footprints and contacts share the companion's player-filtered projection. */
+	private renderTacticalMap(snap: Snapshot, world: NonNullable<Snapshot['world']>, width: number, height: number): void {
+		if (!this.ctx || !this.tacticalCanvas) return
+		const now = performance.now()
+		if (!this.tacticalState || now - this.tacticalProjectMs >= 200) {
+			this.tacticalState = this.tacticalModel.project(this.ctx, this.groupMembers, 'primary', snap.tick)
+			this.tacticalProjectMs = now
 		}
-		const ctx = this.ctx
-		const units = ctx ? ctx.get<UnitsApi>('units') : null
-		const actors = snap.actors
-		if (!actors) return
-		g.font = '10px ui-monospace, Menlo, Consolas, monospace'
-		g.textAlign = 'center'
-		g.textBaseline = 'top'
-		for (let i = 0; i < actors.count; i++) {
-			const x = actors.posX[i] * WPOS_TO_M
-			const z = actors.posY[i] * WPOS_TO_M
-			if (this.shroud && !this.shroud.isVisible(Math.floor(x), Math.floor(z))) continue
-			const bx = (x - world.boundsLeft) * cellW
-			const by = (z - world.boundsTop) * cellH
-			if (bx < 0 || by < 0 || bx >= big.width || by >= big.height) continue
-			const owner = snap.players[actors.owner[i]]
-			g.fillStyle = owner ? rgbaCss(owner.red, owner.green, owner.blue, owner.alpha) : '#777777'
-			g.fillRect(bx - 3, by - 3, 6, 6)
-			g.strokeStyle = 'rgba(8, 8, 13, .9)'
-			g.strokeRect(bx - 3.5, by - 3.5, 7, 7)
-			const name = ctx ? ctx.actorTypeName(actors.typeId[i]) : ''
-			if (!units || !TACTICAL_BUILDING_ROLES.has(units.semanticRole(name))) continue
-			const label = units.displayName(name)
-			if (TACTICAL_LABEL_SKIP.has(label)) continue
-			g.fillStyle = 'rgba(0, 0, 0, .85)'
-			g.fillText(label, bx + 1, by + 6)
-			g.fillStyle = uiPalette.ink
-			g.fillText(label, bx, by + 5)
-			if (owner) {
-				g.fillStyle = rgbaCss(owner.red, owner.green, owner.blue, Math.round(owner.alpha * .7))
-				g.fillRect(bx - 8, by + 17, 16, 1)
+		if (this.tacticalState) {
+			drawTactical(this.tacticalCanvas, this.tacticalState)
+			const camera = this.ctx.peek<CameraApi>('camera'), g = this.tacticalCanvas.getContext('2d')
+			if (camera && g && camera.viewGroundQuad(this.minimapViewQuad, canvasCssWidth(this.ctx), canvasCssHeight(this.ctx))) {
+				const transform = mapTransform(this.tacticalState,this.tacticalCanvas.clientWidth,this.tacticalCanvas.clientHeight,defaultView()), bounds = this.tacticalState.bounds
+				g.strokeStyle = '#D9AE61'; g.lineWidth = 1.5; g.beginPath()
+				for (let i=0;i<4;i++) { const x=transform.ox+(this.minimapViewQuad[i*2]-bounds.x)*transform.scale, y=transform.oy+(this.minimapViewQuad[i*2+1]-bounds.y)*transform.scale; if (i===0) g.moveTo(x,y); else g.lineTo(x,y) }
+				g.closePath();g.stroke()
 			}
 		}
 	}
@@ -8085,6 +8241,8 @@ export class Ui implements UiApi {
 			rebuild = true
 		if (rebuild) this.rebuildProductionDom(queues, ctx)
 		let d = 0
+		// Locked tiles explain themselves: one owned-prerequisite read covers every tile's reason.
+		const owned = this.ownedPrerequisites()
 		for (let i = 0; i < queues.length; i++) {
 			const queue = queues[i]
 			if (queue.playerId !== this.renderPlayerId) continue
@@ -8107,7 +8265,13 @@ export class Ui implements UiApi {
 				const current = (item.flags & ProductionItemFlag.current) !== 0
 				const ready = (item.flags & ProductionItemFlag.ready) !== 0
 				const building = (item.flags & ProductionItemFlag.building) !== 0
-				itemDom.button.disabled = !enabled || ((item.flags & ProductionItemFlag.buildable) === 0 && !ready && !current)
+				// A locked tile is never inert: it stays clickable and answers with why —
+				// the requirements still missing, or the power line that stalled the queue.
+				const locked = !enabled || ((item.flags & ProductionItemFlag.buildable) === 0 && !ready && !current)
+				itemDom.button.disabled = false
+				itemDom.button.classList.toggle('locked', locked)
+				if (locked) itemDom.button.setAttribute('aria-disabled', 'true')
+				else itemDom.button.removeAttribute('aria-disabled')
 				itemDom.button.classList.toggle('current', current)
 				itemDom.button.classList.toggle('ready', ready)
 				itemDom.button.classList.toggle('paused', current && paused)
@@ -8126,12 +8290,40 @@ export class Ui implements UiApi {
 					: current ? paused ? 'ON HOLD · RESUME' : `BUILDING ${Math.floor(queue.progressPermille / 10)}%`
 						: item.queued > 0 ? 'QUEUED' : ''
 				itemDom.progress.style.width = `${current ? Math.min(100, queue.progressPermille / 10) : 0}%`
-				itemDom.button.title = `${itemDom.name.textContent} — ${ready && building
-					? 'Ready: click, then place on valid ground. The next structure waits until placement.'
-					: current && paused ? 'Click to resume. Right click to cancel.'
-						: 'Click: queue one. Shift click: five. Ctrl click: prioritize after current. Right click: hold / cancel. Middle click: cancel.'}`
+				itemDom.button.title = locked
+					? `${itemDom.name.textContent} — ${this.lockedItemReason(ctx.actorTypeName(item.actorType), queue, owned)} Click for details.`
+					: `${itemDom.name.textContent} — ${ready && building
+						? 'Ready: click, then place on valid ground. The next structure waits until placement.'
+						: current && paused ? 'Click to resume. Right click to cancel.'
+							: 'Click: queue one. Shift click: five. Ctrl click: prioritize after current. Right click: hold / cancel. Middle click: cancel.'}`
 			}
 		}
+	}
+
+	/** Everything the render player's standing actors satisfy right now: their own names plus
+	 * the abstract prerequisites they provide. Rebuilt per sync; the world changes as buildings
+	 * rise and fall. */
+	private ownedPrerequisites(): Set<string> {
+		const ctx = this.ctx, actors = ctx?.snapshot?.actors
+		const owned = new Set<string>()
+		if (!ctx || !actors) return owned
+		for (let i = 0; i < actors.count; i++) {
+			if (actors.owner[i] !== this.renderPlayerId) continue
+			const name = ctx.actorTypeName(actors.typeId[i]).toLowerCase()
+			if (name === '') continue
+			owned.add(name)
+			const provided = PREREQUISITE_PROVIDERS.get(name)
+			if (provided) for (const token of provided) owned.add(token)
+		}
+		return owned
+	}
+
+	/** Why a locked tile cannot start. The engine's buildability stays authoritative; this
+	 * only names what it is waiting for, from the same rules the engine resolves. */
+	private lockedItemReason(actorName: string, queue: ProductionQueueView, owned?: ReadonlySet<string>): string {
+		if ((queue.flags & ProductionQueueFlag.enabled) === 0) return 'Low power: production is stalled until the grid recovers.'
+		const missing = missingPrerequisites(actorName, owned ?? this.ownedPrerequisites())
+		return missing.length > 0 ? `Requires ${missing.join(' · ')}.` : 'Its requirements are not yet met.'
 	}
 
 	private rebuildProductionDom(queues: readonly ProductionQueueView[], ctx: Ctx): void {
@@ -8297,6 +8489,8 @@ export class Ui implements UiApi {
 	private updateSupportPanel(ctx: Ctx): void {
 		const list = this.hudSupportList
 		if (!list || !this.hudSupport) return
+		this.updateNukeCountdown(ctx)
+		this.trackParatroopers(ctx)
 		const now = performance.now()
 		const status = ctx.supportPowers?.() ?? null
 		const powers = status?.powers ?? []
@@ -8310,6 +8504,11 @@ export class Ui implements UiApi {
 				this.supportPowerPending = null
 				this.markOrder(pending.x, pending.z, true, true)
 				this.showNotice(`${pending.title} afgevuurd`)
+				if (/para/i.test(pending.key)) this.beginParaDrop(ctx, pending.cellX, pending.cellY)
+				// The announcer names the weapon as it fires: the paratroopers' drop, the
+				// strike, the curtain. Confirmation-gated, so a refused aim stays quiet.
+				const line = supportPowerVoiceLine(pending.key)
+				if (line) this.eva?.say(line)
 				// OpenRA's beacon, for the powers that post one (DisplayBeacon), on the strike cell.
 				this.postSupportBeacon(ctx, power, pending.cellX + 0.5, pending.cellY + 0.5)
 				// A sonar pulse is drawn where it was sent, for as long as its detector lives.
@@ -8349,10 +8548,12 @@ export class Ui implements UiApi {
 			// (low power, powered down) holds its charge and says so.
 			const left = secondsLeft(p)
 			const clock = left >= 60 ? `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}` : `${left}s`
-			button.textContent = p.ready ? `${p.title} · READY`
+			button.title = p.ready ? `${p.title}: klaar` : `${p.title}: nog ${clock}${p.active ? '' : ' (gepauzeerd: te weinig stroom)'}`
+			// The weapon's own glyph leads the label: a nuke reads as a nuke, the drop as a chute.
+			button.innerHTML = `<span class="hud-power__icon" aria-hidden="true">${icon(supportIconFor(p.key))}</span><span class="hud-power__label"></span>`
+			button.querySelector<HTMLElement>('.hud-power__label')!.textContent = p.ready ? `${p.title} · READY`
 				: !p.active ? `${p.title} · gepauzeerd ${pct}%`
 				: `${p.title} · ${pct}% · ${clock}`
-			button.title = p.ready ? `${p.title}: klaar` : `${p.title}: nog ${clock}${p.active ? '' : ' (gepauzeerd: te weinig stroom)'}`
 			// The charge clock: a conic sweep behind the label, the browser's answer to the
 			// original's clock sprite. Rebuilt only when the signature (and so the sweep) moved.
 			button.style.background =
@@ -8376,7 +8577,20 @@ export class Ui implements UiApi {
 	private readLaunchesAndTimers(ctx: Ctx, status: SupportPowersStatus | null, tickMs: number): void {
 		this.revealedFakes.clear()
 		for (const id of status?.revealed ?? []) this.revealedFakes.add(id)
+		// The enemy missile in flight counts down at the centre of the screen: with more than
+		// one up, the next to land owns the clock. The banner is public knowledge (OpenRA tells
+		// every player an incoming nuke); the alarm voice sounds only for the imminence the host
+		// computes against your own buildings, which never reveals the target.
+		this.nukeLaunch = null
 		for (const launch of status?.launches ?? []) {
+			const endTick = launch.tick + (launch.flightTicks ?? 0)
+			if (!launch.allied && (launch.flightTicks ?? 0) > 0 && (!this.nukeLaunch || endTick < this.nukeLaunch.endTick))
+				this.nukeLaunch = { id: launch.id, endTick, tickMs }
+			if (launch.imminent && !this.nukeAlarmed.has(launch.id)) {
+				this.nukeAlarmed.add(launch.id)
+				this.eva?.say('Nuclear bomb detected')
+				this.uiCue('launch')
+			}
 			if (this.announcedLaunches.has(launch.id)) continue
 			this.announcedLaunches.add(launch.id)
 			if (launch.text) this.showNotice(launch.text, launch.allied ? 'default' : 'warn')
@@ -8430,6 +8644,24 @@ export class Ui implements UiApi {
 			frag.appendChild(row)
 		}
 		list.replaceChildren(frag)
+	}
+
+	/** The centre countdown, redrawn every frame from the world's own clock so the digits glide
+	 * smoothly between the four-times-a-second status reads, and stop with a paused world. */
+	private updateNukeCountdown(ctx: Ctx): void {
+		const banner = this.nukeClock?.parentElement
+		if (!banner) return
+		const nuke = this.nukeLaunch
+		const left = nuke ? nuke.endTick - (ctx.snapshot?.tick ?? 0) : 0
+		if (!nuke || left <= 0) {
+			if (nuke) this.nukeLaunch = null
+			banner.hidden = true
+			return
+		}
+		const seconds = Math.ceil(left * nuke.tickMs / 1000)
+		const text = `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`
+		if (this.nukeClock!.textContent !== text) this.nukeClock!.textContent = text
+		banner.hidden = false
 	}
 
 	/** World position of a visible, living actor of `type` owned by snapshot player `player`. */
@@ -8614,7 +8846,7 @@ export class Ui implements UiApi {
 
 	private tutorialStepsFor(faction: string): ReturnType<typeof tutorialSteps> {
 		const actors = (RA_VISUAL_MANIFEST as unknown as { actors: ManifestActors }).actors
-		return tutorialSteps(beginnerBuildOrder(actors, faction), { multiplayer: this.mpMatch })
+		return tutorialSteps(beginnerBuildOrder(actors, faction), { multiplayer: this.mpMatch, companion: this.companion?.hudAvailable() === true })
 	}
 
 	/**
@@ -8741,15 +8973,21 @@ export class Ui implements UiApi {
 		const item = queue?.items.find(i => i.actorType === actorType)
 		const actorName = ctx.actorTypeName(actorType)
 		if (!queue || !item || !actorName) return
+		// A locked tile answers with its reason instead of an order; the engine would refuse
+		// the StartProduction anyway, and the refusal says nothing about what to build next.
+		if (button.classList.contains('locked')) {
+			this.showNotice(this.lockedItemReason(actorName, queue))
+			return
+		}
 		const action = productionAction(queue, item, mouseButton, event.shiftKey, event.ctrlKey)
 		if (action) {
 			ctx.issueOrder({ ...action, subjectIds: EMPTY_SUBJECTS, targetString: actorName })
-			// "Building" belongs to the moment construction starts in the menu, not to
-			// placement; "Construction complete" arrives with productionComplete at 100%
+			// Each domain speaks its own word as its queue starts: structures build, troops
+			// train, vehicles are manufactured, aircraft assembled, ships launched.
+			// "Construction complete" arrives with productionComplete at 100%
 			// (showProductionComplete). Same-tick dedup keeps shift-queued rows to one line.
-			const visual = (RA_VISUAL_MANIFEST as unknown as { actors: Record<string, { visualFamily?: string }> }).actors[actorName.toLowerCase()]
-			if (action.orderString === 'StartProduction' && visual?.visualFamily === 'structure')
-				this.eva?.say('Building', ctx.snapshot.tick)
+			if (action.orderString === 'StartProduction')
+				this.eva?.say(PRODUCTION_START_LINES[queue.kind] ?? 'Building', ctx.snapshot.tick)
 		}
 	}
 
@@ -8942,7 +9180,7 @@ function actorDisplayName(ctx: Ctx | null, typeId: number, localFactionId = ''):
 		}
 		return 'Unknown asset'
 	}
-	if (actorName === 'e2' && !['russia', 'ukraine'].includes(localFactionId)) return 'Jackson'
+	if (actorName === 'jackson') return 'Jackson'
 	const resolved = ctx.get<UnitsApi>('units').displayName(actorName)
 	return resolved || fallbackName(actorName)
 }

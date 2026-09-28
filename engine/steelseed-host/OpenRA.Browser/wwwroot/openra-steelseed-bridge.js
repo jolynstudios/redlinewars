@@ -356,6 +356,8 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 			return P.LeaveMultiplayer();
 		},
 
+		async getCompanionIdentity() { return mp?.getCompanionIdentity?.() ?? null; },
+
 		async getMpCloseInfo() {
 			return mp && typeof mp.getCloseInfo === 'function' ? mp.getCloseInfo() : null;
 		},

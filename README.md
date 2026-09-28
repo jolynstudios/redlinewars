@@ -28,7 +28,7 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.26-39d2824`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-39d2824) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.28-ab47013`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-ab47013) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
 | [`v2026.09.26-a87bf8d`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-a87bf8d) | the same, as released at 13:38 on 26 September 2026; replaced the same day |
 | [`v2026.09.26-4c6da14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-4c6da14) | the same, as first released on 26 September 2026; replaced the same day |
 

@@ -133,6 +133,9 @@ function compare(relativePath, expected) {
 	compared++
 }
 
+compare('rules/joa-rules.yaml', readFileSync(resolve(hostRoot, 'mod/joa-rules.yaml')))
+compare('weapons/joa-weapons.yaml', readFileSync(resolve(hostRoot, 'mod/joa-weapons.yaml')))
+
 compare('rules/deployment-rules.yaml', readFileSync(resolve(hostRoot, 'mod/deployment-rules.yaml')))
 
 /**

@@ -659,8 +659,10 @@ async function allocateRoom(spec) {
 	for (const stream of ['stdout', 'stderr']) {
 		const tag = stream === 'stdout' ? 'out' : 'err';
 		child[stream].setEncoding('utf8');
+		let partial = '';
 		child[stream].on('data', chunk => {
-			for (const line of chunk.split('\n')) {
+			const lines = (partial + chunk).split('\n'); partial = lines.pop().slice(-65536);
+			for (const line of lines) {
 				if (!line) continue;
 				room.log.push(`${tag} ${line}`);
 				if (room.log.length > 200) room.log.shift();
@@ -690,6 +692,8 @@ function setRoomState(room, state) {
 }
 
 function handleRoomLine(room, line) {
+	const policy = /^STEELSEED_JOA_POLICY (enabled|disabled)$/.exec(line.trim());
+	if (policy && room.state !== 'playing') { room.companionAllowed = !room.ranked && policy[1] === 'enabled'; spineReportRooms(); return; }
 	if (line.includes('notification-joined') && room.state === 'reserved') setRoomState(room, 'lobby');
 	else if (line.includes('notification-game-started') && room.state === 'lobby') setRoomState(room, 'playing');
 	else if (line.includes('No one is playing, shutting down')) {
@@ -782,6 +786,8 @@ function roomSummary(room) {
 		// Host-chosen room ambience (tod/weather/gamespeed/...). Pass-through:
 		// the spine forwards summaries verbatim, so joiners inherit at start.
 		settings: room.settings ?? {},
+		ranked: room.ranked === true,
+		companionAllowed: room.companionAllowed === true,
 	};
 }
 // §5.3 room shape for the /v2 API: the authoritative local endpoint and the
@@ -861,7 +867,7 @@ function validateCreate(body, { keyed }) {
 		password,
 		visibility,
 		solo: solo && keyed,
-		settings: { gamespeed, tod, weather },
+		settings: { gamespeed, tod, weather, joaCompanion: ranked ? 'False' : settings.joaCompanion === 'False' ? 'False' : 'True' },
 		roomId,
 		hostKey,
 		ranked,
@@ -1290,7 +1296,7 @@ function muxPeerKey(req) {
 }
 
 wsServer.on('upgrade', (req, socket, head) => {
-	console.log(`[roomhost] upgrade ${req.url} rooms=${rooms.size} origin=${req.headers.origin ?? '-'}`);
+	console.log(`[roomhost] upgrade ${new URL(req.url, 'http://local.invalid').pathname} rooms=${rooms.size} origin=${req.headers.origin ?? '-'}`);
 	const url = new URL(req.url, 'http://127.0.0.1');
 	// Native clients send no Origin; the Electron/shared AppBundle uses a
 	// loopback Origin. A foreign web page must not drive a LAN/loopback mux as
@@ -1339,6 +1345,11 @@ wsServer.on('upgrade', (req, socket, head) => {
 			else muxPeerSockets.delete(peerKey);
 		});
 		const id = ++connId;
+		const nonce = url.searchParams.get('joa');
+		if (/^[0-9a-f]{64}$/.test(nonce ?? '')) {
+			spineSendJson({ t: 'companion-bind', roomId: room.id, nonce });
+			ws.once('close', () => spineSendJson({ t: 'companion-unbind', roomId: room.id, nonce }));
+		}
 		attachPlayer(room);
 		console.log(`[roomhost] ws #${id} -> room ${room.id} (port ${room.port}, players ${room.players})`);
 		ws.on('close', () => detachPlayer(room));

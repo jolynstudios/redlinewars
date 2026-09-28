@@ -148,6 +148,13 @@ async function main() {
 	const honoured = api.assignRoleSlots(loadable, canWear).actors
 	for (const pack of valid) {
 		const slots = pack.manifest.slots.filter(actor => honoured.get(actor)?.dir === pack.dir)
+		// E2 now always wears the established white presentation atlas; match its portrait.
+		if(pack.dir==='troop-e2' && honoured.get('e2')?.dir===pack.dir) {
+			const white=join(ARTIFACTS,'troops/e2.soviet/portrait.png'), atlas=join(FORGE,'troop-e2.soviet-surfaces/manifest.json')
+			if(existsSync(white) && existsSync(atlas) && !checkPortrait(readFileSync(white)) && readJson(atlas).sourceSha256===pack.manifest.parentSourceSha256) {
+				copyFileSync(white,join(FORGE,pack.dir,'portrait.png')); pack.source=relative(GAME,white)
+			}
+		}
 		const bytes = readFileSync(join(FORGE, pack.dir, 'portrait.png'))
 		if (!slots.length) { rmSync(join(FORGE, pack.dir, 'portrait.json'), { force: true }); console.log(`${TOOL}: ${pack.dir} keeps the roster portrait: none of its claims is honoured`); continue }
 		writeFileSync(join(FORGE, pack.dir, 'portrait.json'), JSON.stringify({ schema: 1, pack: pack.dir, id: pack.manifest.id, slots,

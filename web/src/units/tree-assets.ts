@@ -1,5 +1,6 @@
 // Optional boot-only authored tree chains. CPU validation only; no GPU or simplification.
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import PALETTE from '../core/blender-palette.json'
 import { decodeBlenderAsset, type BlenderAsset } from './blender-mesh'
 
@@ -221,8 +222,7 @@ export async function verifyTreeAssets(manifest: TreeAssetsManifest, url: string
 	const bytes = await fetchAssetPack(url, manifest)
 	for (const asset of Object.values(manifest.assets)) for (const l of asset.levels) {
 		const slice = bytes.subarray(l.offset, l.offset + l.bytes)
-		const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', slice as Uint8Array<ArrayBuffer>))
-		if (Array.from(digest, b => b.toString(16).padStart(2, '0')).join('') !== l.sha256) bad('LOD slice SHA-256 mismatch')
+		if (await sha256Hex(slice) !== l.sha256) bad('LOD slice SHA-256 mismatch')
 		const h = new DataView(slice.buffer, slice.byteOffset, 32)
 		if (h.getUint32(0, true) !== 0x464d5353 || h.getUint16(4, true) !== 1 || h.getUint16(6, true) !== 1 || h.getUint32(8, true) !== l.vertices ||
 			h.getUint32(12, true) !== l.triangles || h.getUint32(16, true) !== l.bytes - 32 || h.getUint32(28, true) !== 32) bad('LOD binary header mismatch')

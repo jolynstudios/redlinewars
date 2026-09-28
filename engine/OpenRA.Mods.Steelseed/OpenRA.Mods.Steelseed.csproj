@@ -37,6 +37,7 @@
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessSpriteLoader.cs" Link="AssetlessSpriteLoader.cs" />
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessSpriteSequence.cs" Link="AssetlessSpriteSequence.cs" />
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\AssetlessTerrainRenderer.cs" Link="AssetlessTerrainRenderer.cs" />
+		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\SteelseedCompanionPolicy.cs" Link="SteelseedCompanionPolicy.cs" />
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\DisconnectDefeat.cs" Link="DisconnectDefeat.cs" />
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\SteelseedDeployment.cs" Link="SteelseedDeployment.cs" />
 		<Compile Include="..\steelseed-host\OpenRA.Mods.Steelseed\SteelseedEventObserver.cs" Link="SteelseedEventObserver.cs" />

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from 'node:crypto'
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
+import { appendFileSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, extname, join, relative, resolve, sep } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { env as processEnv } from 'node:process'
@@ -271,7 +271,7 @@ function buildVisualManifest() {
 	const listField = value => value == null || value === '' ? [] : value
 		.replace(/^\[/, '').replace(/\]$/, '').split(',').map(item => item.trim()).filter(Boolean)
 	const definitions = new Map()
-	for (const name of policy.rules) {
+	for (const name of [...policy.rules, 'joa-rules.yaml']) {
 		const lines = readFileSync(resolve(outputRoot, 'rules', name), 'utf8').split('\n')
 		for (let start = 0; start < lines.length; start++) {
 			const actor = nodeOf(lines[start])
@@ -393,11 +393,17 @@ copyExact(resolve(hostRoot, 'mod/cursors.yaml'), resolve(outputRoot, 'cursors.ya
 copyExact(resolve(hostRoot, 'mod/metrics.yaml'), resolve(outputRoot, 'metrics.yaml'))
 copyExact(resolve(hostRoot, 'mod/assetless-presentation.yaml'), resolve(outputRoot, 'rules/assetless-presentation.yaml'))
 copyExact(resolve(hostRoot, 'mod/deployment-rules.yaml'), resolve(outputRoot, 'rules/deployment-rules.yaml'))
+copyExact(resolve(hostRoot, 'mod/joa-rules.yaml'), resolve(outputRoot, 'rules/joa-rules.yaml'))
+copyExact(resolve(hostRoot, 'mod/joa-weapons.yaml'), resolve(outputRoot, 'weapons/joa-weapons.yaml'))
 copyExact(resolve(hostRoot, 'mod/notifications.yaml'), resolve(outputRoot, 'notifications.yaml'))
 copyExact(resolve(hostRoot, 'mod/assetless'), resolve(outputRoot, 'assetless'))
 copyExact(resolve(sourceRoot, 'fluent/ra.ftl'), resolve(outputRoot, 'fluent/ra.ftl'))
 copyExact(resolve(sourceRoot, 'fluent/rules.ftl'), resolve(outputRoot, 'fluent/rules.ftl'))
 copyExact(resolve(hostRoot, 'mod/host.ftl'), resolve(outputRoot, 'fluent/host.ftl'))
+
+appendFileSync(resolve(outputRoot, 'fluent/rules.ftl'), '\nactor-jackson = Jackson\n    .name = Jackson\n    .description = Allied rifle and rocket specialist. Strong against infantry, armour and aircraft. No health regeneration.\n')
+
+appendFileSync(resolve(outputRoot, 'fluent/rules.ftl'), '\ncheckbox-joa-companion = JOA companion\n    .label = Allow JOA support commanders\n    .description = Allow approved companion devices. This setting is fixed when the match starts.\n')
 
 const missingConfiguredTraits = policy.removeTraits.filter(trait => !removedCounts.has(trait))
 if (missingConfiguredTraits.length)
@@ -447,6 +453,8 @@ const report = {
 	retainedGameplayCoupledPresentationTraits: policy.retainGameplayCoupledPresentationTraits,
 	sequenceTimingSha256: sha256(readFileSync(resolve(hostRoot, 'sequence-timing.json'))),
 	deploymentTimingSha256: sha256(readFileSync(resolve(hostRoot, 'deployment-timing.json'))),
+	joaRulesSha256: sha256(readFileSync(resolve(hostRoot, 'mod/joa-rules.yaml'))),
+	joaWeaponsSha256: sha256(readFileSync(resolve(hostRoot, 'mod/joa-weapons.yaml'))),
 	deploymentRulesSha256: sha256(readFileSync(resolve(hostRoot, 'mod/deployment-rules.yaml'))),
 	steelseedMakeOverrides: deploymentTiming.overrides,
 	protectedMakeSequenceCount: Object.keys(sequenceTiming.makeSequenceLengths).length,

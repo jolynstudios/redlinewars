@@ -29,6 +29,7 @@ Rules:
 	ra|rules/map-generators.yaml
 	ra|rules/assetless-presentation.yaml
 	ra|rules/deployment-rules.yaml
+	ra|rules/joa-rules.yaml
 
 Sequences:
 	ra|sequences/ships.yaml
@@ -57,6 +58,7 @@ Weapons:
 	ra|weapons/other.yaml
 	ra|weapons/smallcaliber.yaml
 	ra|weapons/superweapons.yaml
+	ra|weapons/joa-weapons.yaml
 
 Notifications:
 	ra|notifications.yaml

@@ -888,7 +888,7 @@ export class Audio implements AudioApi {
 			let name = ''
 			if (prev) for (let i = 0; i < prev.count; i++) if (prev.id[i] === actorId) { name = this.ctxRef!.actorTypeName(prev.typeId[i]).toLowerCase(); break }
 			const persona = name === 'e7' ? 'tanya' : name === 'spy' || name === 'spy.england' ? 'spy'
-				: name === 'e2' ? (/russia|ukraine|soviet/.test(this.sfxFaction) ? 'riki' : 'jackson') : ''
+				: name === 'jackson' ? 'jackson' : ''
 			const cls = persona !== '' ? persona : DEATH_VOICE_CLASS[name] ?? ''
 			if (cls !== '') {
 				// Voice budget: screams overlap — WebAudio plays one-shots

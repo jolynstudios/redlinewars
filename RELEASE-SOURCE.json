@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "product": "Redline Wars: Fractured Order",
-  "sourceCommit": "39d28248300def66f43ab481d9198a7a9915c169",
-  "sourceCommitDate": "2026-09-26T21:49:59+02:00",
+  "sourceCommit": "ab470138d8e657417bd4f04dd35cd8746369f129",
+  "sourceCommitDate": "2026-09-28T10:52:02+02:00",
   "exportedWith": "tools/export-release.mjs",
-  "published": 4202,
+  "published": 4237,
   "withheld": {
-    "the marketing site": 1221,
-    "Blender sources and the art pipeline": 915,
+    "the marketing site": 1229,
+    "Blender sources and the art pipeline": 918,
     "tracked compiled binaries of the original host (build output)": 539,
     "local backup tree": 435,
     "internal issue notes": 66,
     "internal measurements and notes": 58,
     "production infrastructure": 32,
-    "internal document": 22,
+    "internal document": 26,
     "brand artwork": 22,
     "brand artwork (© Jolyn Studios); tools/fallback-art.mjs writes stand-ins": 16,
     "art pipeline (builds separately licensed art)": 15,
@@ -31,6 +31,7 @@
     "internal plans": 1,
     "built art packs (separately licensed); tools/fallback-art.mjs writes public stand-ins": 1
   },
+  "absentPrivate": [],
   "rewritten": [
     {
       "path": "engine/OpenRA.Browser/tests/match-results/LEADERBOARD.md",

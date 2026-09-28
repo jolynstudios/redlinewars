@@ -35,6 +35,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { WebSocketServer, WebSocket } from 'ws';
+import { createCompanionService } from './companion-service.mjs';
 import { createWsWriter } from './relay-flow.mjs';
 import { consumeCreateBudget, orderedPlacementCandidates } from './placement-policy.mjs';
 import {
@@ -311,6 +312,7 @@ const MIME = {
 // ---- node registry ----
 const nodes = new Map(); // nodeId -> {id, ws, geo, capacity, rulesHash, rooms:Map<roomId,room>}
 const roomOwner = new Map(); // roomId -> nodeId; the first node to report a room owns it
+const companionBindings = new Map();
 const placedRooms = new Map(); // roomId -> {hostKey, hostKeyHash, ranked, participantClaims, consumedClaims:Set}
 const placedIpRooms = new Map(); // creator ipKey -> roomId, one live placed room per source
 const nodeCooldowns = new Map(); // `${nodeId}|${ipKey}` -> unix millis
@@ -711,6 +713,11 @@ wss.on('connection', (ws, req) => {
 				}
 			} else if (!node.registered) {
 				// rooms/status/create answers before register: not ours to trust.
+			} else if (msg.t === 'companion-bind' || msg.t === 'companion-unbind') {
+				if (/^[0-9a-f]{64}$/.test(msg.nonce ?? '') && node.rooms.has(msg.roomId)) {
+					if (msg.t === 'companion-bind' && companionBindings.size < limits.maxChannels) companionBindings.set(msg.nonce, { node, roomId: msg.roomId });
+					else if (companionBindings.get(msg.nonce)?.node === node) companionBindings.delete(msg.nonce);
+				}
 			} else if (msg.t === 'rooms') {
 				// Authoritative room list from the node (rooms it created AND
 				// rooms the spine asked it to create). At most 4 rooms per
@@ -736,7 +743,7 @@ wss.on('connection', (ws, req) => {
 					// lobby/playing (§5.4) while the routing registry keeps every
 					// dialable room. Missing state = a legacy producer: visible.
 					const state = typeof r.state === 'string' && r.state !== '' ? r.state : 'lobby';
-					node.rooms.set(r.roomId, { nodeId: node.id, summary: publicRoomFields(r), state });
+					node.rooms.set(r.roomId, { nodeId: node.id, summary: publicRoomFields(r), state, ranked: r.ranked === true, companionAllowed: r.companionAllowed === true && r.ranked !== true });
 				}
 				// A room the node no longer reports was dropped by that node.
 					for (const roomId of previous)
@@ -810,6 +817,7 @@ wss.on('connection', (ws, req) => {
 		player.writer.send(data.subarray(2), { binary: true });
 	};
 	ws.on('close', () => {
+		for (const [nonce,binding] of companionBindings) if (binding.node === node) companionBindings.delete(nonce);
 		writer.close();
 		tunnelWriters.delete(ws);
 		clearTimeout(registerTimer);
@@ -1590,6 +1598,7 @@ function routePlayerWs(roomId, req, socket, head) {
 		players.set(chanId, {
 			// `node` is the tunnel this channel rides; a reconnect gives the same
 			// nodeId a new tunnel, so teardown follows the object, not the id.
+			companionNonce: /^[0-9a-f]{64}$/.test(new URL(req.url, 'http://local.invalid').searchParams.get('joa') ?? '') ? new URL(req.url, 'http://local.invalid').searchParams.get('joa') : null,
 			ws: playerWs, writer, nodeId: owner.id, node: owner, roomId, ipKey: peerKey,
 			hostKey: access?.hostKey ?? '', claim,
 			rate: { in: newChannelBucket(), out: newChannelBucket() },
@@ -1620,12 +1629,22 @@ function routePlayerWs(roomId, req, socket, head) {
 httpServer.listen(dirPort, '127.0.0.1', () => {
 	console.log(`[spine] directory http://127.0.0.1:${dirPort}/v2/config  (rooms: /v2/rooms, nodes: /nodes)`);
 });
+const companionService = createCompanionService({ enabled: process.env.JOA_ENABLED === '1', originAllowed: origin => isLoopbackOrigin(origin) || config.siteOrigins.includes(origin), authorizeHosted: async admission => {
+	if (placedRooms.get(admission.roomId)?.ranked === true) return false;
+	if (!/^[0-9a-f]{64}$/.test(admission.nonce ?? '') || !/^[0-9a-f]{16}$/.test(admission.roomId ?? '')) return false;
+	for (const [nonce,binding] of companionBindings) if (binding.node.ws.readyState !== WebSocket.OPEN || !binding.node.rooms.has(binding.roomId)) companionBindings.delete(nonce);
+	const direct = companionBindings.get(admission.nonce);
+	const connection = direct?.roomId === admission.roomId ? direct : [...players.values()].find(p => p.companionNonce === admission.nonce && p.roomId === admission.roomId && p.ws.readyState === WebSocket.OPEN);
+	const owner = connection?.node, room = owner?.rooms.get(admission.roomId);
+	return owner?.ws.readyState === WebSocket.OPEN && room?.state === 'playing' && room?.ranked !== true && room?.companionAllowed === true;
+} });
 const wsListen = http.createServer((req, res) => {
 	res.writeHead(426, { 'content-type': 'text/plain' });
 	res.end('websocket upgrade required');
 });
 wsListen.on('upgrade', (req, socket, head) => {
 	const url = new URL(req.url ?? '/', 'http://spine.invalid');
+	if (url.pathname === '/v2/companion/ws') { companionService.upgrade(req, socket, head); return; }
 	if (url.pathname === '/node') {
 		// Nodes are native/service clients and never send Origin. Refusing every
 		// browser-origin tunnel prevents a hostile page from consuming the open

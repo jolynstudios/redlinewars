@@ -75,7 +75,8 @@ namespace OpenRA
 						power?.PowerOutageRemainingTicks ?? 0, power?.PowerOutageTotalTicks ?? 0, powers,
 						PublicTimers(world, localPlayer),
 						Launches(world, localPlayer),
-						Revealed(world, localPlayer)),
+						Revealed(world, localPlayer),
+						CompanionInventory(world, localPlayer)),
 					SkirmishJsonContext.Default.SupportPowersDto);
 			}
 			catch (Exception e)
@@ -98,6 +99,26 @@ namespace OpenRA
 		/// viewer's side has been inside (InfiltrateForDecoration, rendered for the infiltrator's
 		/// allies). The same test as the trait's own ShouldRender; only visible actors are named.
 		/// </summary>
+		static CompanionInventoryDto CompanionInventory(World world, Player viewer)
+		{
+			var actors = new HashSet<Actor>(world.Actors);
+			var pending = new Queue<Actor>(actors);
+			while (pending.Count > 0)
+				foreach (var cargo in pending.Dequeue().TraitsImplementing<Cargo>())
+					foreach (var passenger in cargo.Passengers)
+						if (actors.Add(passenger)) pending.Enqueue(passenger);
+			var infantry = 0; var vehicles = 0; var aircraft = 0; var harvesters = 0;
+			foreach (var actor in actors)
+			{
+				if (actor.Owner != viewer || actor.IsDead || actor.Disposed || actor.Info.HasTraitInfo<HuskInfo>()) continue;
+				if (actor.Info.HasTraitInfo<HarvesterInfo>()) harvesters++;
+				else if (actor.Info.HasTraitInfo<AircraftInfo>()) aircraft++;
+				else if (actor.Info.HasTraitInfo<OpenRA.Mods.Common.Traits.Render.WithInfantryBodyInfo>()) infantry++;
+				else if (actor.Info.HasTraitInfo<MobileInfo>()) vehicles++;
+			}
+			return new CompanionInventoryDto(infantry, vehicles, aircraft, harvesters);
+		}
+
 		static uint[] Revealed(World world, Player viewer)
 		{
 			var ids = new List<uint>();
@@ -168,10 +189,12 @@ namespace OpenRA
 		static int launchSequence;
 
 		/// <summary>
-		/// Every NukeLaunch the host has seen in the last 250 ticks (about ten seconds), the way
+		/// Every NukeLaunch the host has seen within its flight (and a short tail), the way
 		/// OpenRA announces it (SupportPower.PlayLaunchSounds): allies of the launcher get the rules'
 		/// launch line, everyone else the incoming one. Only an ally may learn the target, as only
-		/// an ally sees OpenRA's beacon (Beacon: owner.IsAlliedWith(RenderPlayer)).
+		/// an ally sees OpenRA's beacon (Beacon: owner.IsAlliedWith(RenderPlayer)). An enemy launch
+		/// aimed within ten cells of the viewer's own buildings is flagged Imminent, so the HUD may
+		/// count it down without ever learning where it lands.
 		/// </summary>
 		// A presentation read of private engine state (.NET 8 UnsafeAccessor, as SnapshotEmitter's).
 		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "firedBy")]
@@ -209,6 +232,8 @@ namespace OpenRA
 				var info = power?.Value.Info;
 				var allied = owner.IsAlliedWith(viewer);
 				var target = flight.FlightTarget;
+				// The target and the flight length are stored for everyone: both are masked per
+				// viewer on the way out, and imminence is decided from them without publishing them.
 				RecentLaunches.Add(new SupportLaunchDto(
 					launchSequence,
 					power?.Key ?? "NukePowerInfoOrder",
@@ -216,15 +241,31 @@ namespace OpenRA
 					allied,
 					world.WorldTick,
 					allied ? Message(info?.LaunchTextNotification) : Message(info?.IncomingTextNotification),
-					allied ? target.X : 0,
-					allied ? target.Y : 0,
-					allied && info != null ? BeaconTicks(info) : 0));
+					target.X,
+					target.Y,
+					allied && info != null ? BeaconTicks(info) : 0,
+					info is NukePowerInfo nukeInfo ? nukeInfo.FlightDelay : 0,
+					false));
 			}
 
 			foreach (var gone in SeenLaunches.Keys.Where(e => !live.Contains(e)).ToArray())
 				SeenLaunches.Remove(gone);
-			RecentLaunches.RemoveAll(l => world.WorldTick - l.Tick > 250);
-			return RecentLaunches.ToArray();
+			// A launch stays reportable for its whole flight, so a viewer that joins late still
+			// learns what is already in the air.
+			RecentLaunches.RemoveAll(l => world.WorldTick - l.Tick > Math.Max(250, l.FlightTicks + 60));
+			// The viewer's own buildings are the imminence test. It is recomputed every read: bases
+			// grow while a missile flies, and the mask (allies see the target, enemies do not) is
+			// applied in the same projection.
+			var imminentRange = 10 * 1024;
+			return RecentLaunches.Select(l => l with
+			{
+				TargetX = l.Allied ? l.TargetX : 0,
+				TargetY = l.Allied ? l.TargetY : 0,
+				Imminent = !l.Allied && world.Actors
+					.Any(a => !a.IsDead && a.Owner != null && a.Owner.IsAlliedWith(viewer) && a.Info.HasTraitInfo<BuildingInfo>()
+						&& Math.Abs(a.CenterPosition.X - l.TargetX) <= imminentRange
+						&& Math.Abs(a.CenterPosition.Y - l.TargetY) <= imminentRange),
+			}).ToArray();
 		}
 
 		/// <summary>

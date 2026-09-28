@@ -1,0 +1,480 @@
+/* JOA Tactical Companion — the phone and tablet surface in the game's own voice: the HUD's
+   palette, Archivo for display, Martian Mono for data, notched plates and quiet instruments.
+   Night turns the instruments phosphor green, as a real sensor's overlay does. */
+:root {
+	--void: #090D11; --bg: #10161B; --surface: #1A2229; --char: #151D24;
+	--ink: #E9E5DB; --dim: #A8B2BA; --mute: #6F7B84;
+	--brand: #C93630; --brand-hover: #AE2E29; --brand-ink: #FFF5E8;
+	--active: #7DB9C8; --warning: #D9AE61; --critical: #FF6B63; --healthy: #87BC91;
+	--line: rgba(236, 231, 222, .13); --line-2: rgba(236, 231, 222, .26);
+	--hud: #E9E5DB; --hud-dim: rgba(233, 229, 219, .62);
+	--display: 'Archivo', 'Archivo Variable', system-ui, sans-serif;
+	--mono: 'Martian Mono', 'Martian Mono Variable', ui-monospace, Menlo, monospace;
+	--ease-out: cubic-bezier(.16, 1, .3, 1);
+	--dock: 64px;
+	--safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+	--safe-left: env(safe-area-inset-left, 0px); --safe-right: env(safe-area-inset-right, 0px);
+	color-scheme: dark;
+}
+body[data-vision="white"] { --hud: #8CFF9E; --hud-dim: rgba(140, 255, 158, .6); }
+body[data-vision="green"] { --hud: #9CFFB0; --hud-dim: rgba(156, 255, 176, .6); }
+
+html, body.joa-app { height: 100%; }
+body.joa-app {
+	margin: 0; overflow: hidden; overscroll-behavior: none; -webkit-tap-highlight-color: transparent;
+	background: var(--void); color: var(--ink); font: 15px/1.5 var(--display);
+	-webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.joa-app *, .joa-app *::before, .joa-app *::after { box-sizing: border-box; }
+.joa-app button { font: inherit; color: inherit; cursor: pointer; }
+.joa-app button:disabled { cursor: default; }
+.joa-app :focus-visible { outline: 2px solid var(--active); outline-offset: 2px; }
+/* Pinching anywhere on the live screen zooms the map, never the page: the chrome takes no
+   browser gestures and the sheets only scroll. */
+.joa-app button { touch-action: manipulation; }
+.joa-top, .joa-rail, .joa-dock, .joa-aim, .joa-toast { touch-action: none; }
+.joa-sheet { touch-action: pan-y; }
+.joa-app svg { display: block; }
+.joa-kicker { margin: 0; color: var(--active); font: 600 10px/1.2 var(--mono); letter-spacing: .22em; text-transform: uppercase; }
+.joa-kicker b { color: var(--ink); font-weight: 600; }
+
+/* ---------- Live screen ---------- */
+.joa-live { position: fixed; inset: 0; }
+body[data-screen="connect"] .joa-live { visibility: hidden; }
+.joa-map { position: absolute; inset: 0 0 calc(var(--dock) + var(--safe-bottom)) 0; overflow: hidden; background: var(--void); }
+.joa-map canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+.joa-map canvas:active { cursor: grabbing; }
+
+.joa-top {
+	position: absolute; left: 0; right: 0; top: 0; z-index: 2; pointer-events: none;
+	display: flex; align-items: center; justify-content: space-between; gap: 12px;
+	padding: calc(var(--safe-top) + 10px) calc(var(--safe-right) + 12px) 26px calc(var(--safe-left) + 14px);
+	background: linear-gradient(180deg, rgba(6, 9, 12, .9) 0%, rgba(6, 9, 12, .55) 55%, rgba(6, 9, 12, 0) 100%);
+}
+.joa-brand { display: flex; align-items: center; gap: 9px; }
+.joa-brand__word { font: 760 17px/1 var(--display); font-stretch: 125%; letter-spacing: .2em; color: var(--brand-ink); }
+.joa-link {
+	pointer-events: auto; display: inline-flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 12px 0 10px;
+	background: rgba(16, 22, 27, .82); border: 1px solid var(--line-2);
+	clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+	font: 600 9.5px/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--ink);
+}
+.joa-link__dot { width: 7px; height: 7px; background: var(--healthy); box-shadow: 0 0 10px var(--healthy); }
+body[data-link="paused"] .joa-link__dot { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
+body[data-link="lost"] .joa-link__dot { background: var(--critical); box-shadow: 0 0 10px var(--critical); animation: joa-blink 1s steps(2) infinite; }
+
+.joa-readout {
+	position: absolute; z-index: 2; pointer-events: none;
+	top: calc(var(--safe-top) + 50px); left: calc(var(--safe-left) + 14px);
+	display: flex; gap: 12px; max-width: calc(100% - 28px); overflow: hidden;
+	font: 500 9px/1.3 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--hud-dim);
+}
+.joa-readout span { white-space: nowrap; }
+.joa-rec { color: var(--hud); display: inline-flex; align-items: center; gap: 6px; }
+.joa-rec::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 8px var(--brand); animation: joa-blink 1.6s steps(2) infinite; }
+
+.joa-forces {
+	position: absolute; z-index: 2; left: calc(var(--safe-left) + 12px); top: calc(var(--safe-top) + 70px);
+	display: flex; gap: 3px; pointer-events: none;
+}
+.joa-force {
+	display: flex; align-items: center; gap: 6px; padding: 5px 9px 5px 7px; background: rgba(9, 13, 17, .74); border: 1px solid var(--line);
+	clip-path: polygon(5px 0, 100% 0, 100% 100%, 0 100%, 0 5px);
+}
+.joa-force svg { width: 14px; height: 14px; color: var(--hud-dim); }
+.joa-force strong { font: 600 12px/1 var(--mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+.joa-force span { display: none; font: 500 7.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+@media (min-width: 560px) and (min-height: 541px) { .joa-force span { display: inline; } }
+
+.joa-rail {
+	position: absolute; z-index: 2; right: calc(var(--safe-right) + 10px); top: 50%; transform: translateY(-46%);
+	display: flex; flex-direction: column; gap: 6px;
+}
+.joa-rail button {
+	position: relative; width: 44px; height: 44px; padding: 0; display: grid; place-items: center;
+	background: rgba(12, 17, 22, .8); border: 1px solid var(--line-2); color: var(--hud);
+	clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+	transition: background-color .18s, color .18s, transform .1s;
+}
+.joa-rail button:active { transform: scale(.94); }
+.joa-rail button svg { width: 20px; height: 20px; }
+.joa-rail button[aria-pressed="true"], .joa-rail button[aria-selected="true"] { background: rgba(201, 54, 48, .26); border-color: rgba(201, 54, 48, .8); color: var(--brand-ink); }
+.joa-rail button span { position: absolute; right: 4px; bottom: 3px; font: 700 8px/1 var(--mono); color: var(--hud-dim); }
+.joa-rail__gap { height: 6px; }
+/* Taunts lives on the rail, a breath above zoom: one column of controls, nothing wrapping. */
+.joa-rail button[data-tab="taunts"] { margin-bottom: 4px; }
+@media (orientation: landscape) and (max-height: 540px) {
+	.joa-rail { gap: 4px; }
+	.joa-rail button { width: 38px; height: 38px; }
+	.joa-rail button svg { width: 17px; height: 17px; }
+	.joa-rail button[data-tab="taunts"] { margin-bottom: 3px; }
+}
+
+.joa-toast {
+	position: absolute; z-index: 3; left: calc(var(--safe-left) + 12px); right: calc(var(--safe-right) + 66px); bottom: calc(var(--dock) + var(--safe-bottom) + 34px);
+	padding: 11px 14px 11px 16px; background: rgba(16, 22, 27, .95); border: 1px solid var(--line-2);
+	clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+	font: 450 13px/1.45 var(--display); color: var(--ink); box-shadow: inset 3px 0 0 var(--active);
+	animation: joa-rise .28s var(--ease-out);
+}
+.joa-toast[data-kind="ok"] { box-shadow: inset 3px 0 0 var(--healthy); }
+.joa-toast[data-kind="warn"] { box-shadow: inset 3px 0 0 var(--brand); }
+.joa-toast[hidden] { display: none; }
+/* With a sheet open the toast moves under the top instruments, where the sheet never covers it. */
+body:not([data-sheet="map"]):not([data-aiming="true"]) .joa-toast { top: calc(var(--safe-top) + 108px); bottom: auto; }
+
+.joa-downlink {
+	position: absolute; z-index: 2; left: 50%; bottom: 18px; transform: translateX(-50%);
+	display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: rgba(9, 13, 17, .82); border: 1px solid var(--line);
+	font: 600 9px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--hud-dim); pointer-events: none;
+}
+.joa-downlink i { width: 72px; height: 3px; background: var(--line); position: relative; overflow: hidden; }
+.joa-downlink b { position: absolute; inset: 0 auto 0 0; width: var(--done, 0%); background: var(--hud); transition: width .3s; }
+.joa-downlink em { font-style: normal; color: var(--hud); min-width: 32px; text-align: right; }
+.joa-downlink[hidden] { display: none; }
+
+/* ---------- Incoming nuke banner and the map legend ---------- */
+.joa-nuke {
+	position: absolute; z-index: 4; top: calc(var(--safe-top) + 96px); left: 50%; transform: translateX(-50%);
+	display: grid; justify-items: center; gap: 3px; padding: 10px 22px;
+	background: rgba(26, 9, 8, .82); border: 1px solid rgba(201, 54, 48, .55);
+	clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+	animation: joa-nuke-blink 1.1s steps(2) infinite;
+}
+.joa-nuke[hidden] { display: none; }
+.joa-nuke span { font: 600 9px/1 "Martian Mono", ui-monospace, monospace; letter-spacing: .3em; color: #FF8A84; }
+.joa-nuke strong { font: 700 clamp(26px, 7vw, 34px)/1 "Martian Mono", ui-monospace, monospace; color: #FF6B63; font-variant-numeric: tabular-nums; }
+.joa-nuke[data-imminent] { border-color: #FF6B63; box-shadow: 0 0 26px rgba(201, 54, 48, .5); }
+@keyframes joa-nuke-blink { 50% { opacity: .55; } }
+@media (prefers-reduced-motion: reduce) { .joa-nuke { animation: none; } }
+/* Docked to the menu bar (owner 2026-09-28): 2px above it, full width clear of the rail,
+ * never floating over the map's bottom ruler. */
+.joa-legend {
+	position: absolute; z-index: 2; left: calc(var(--safe-left) + 12px); right: calc(var(--safe-right) + 66px); bottom: calc(var(--dock) + var(--safe-bottom) + 2px);
+	display: flex; gap: 10px; justify-content: space-between; padding: 5px 11px; pointer-events: none;
+	background: rgba(6, 10, 13, .55); border: 1px solid rgba(236, 231, 222, .12);
+}
+.joa-legend i { display: inline-flex; align-items: center; gap: 4px; font: 500 8.5px/1 "Martian Mono", ui-monospace, monospace; font-style: normal; letter-spacing: .05em; color: rgba(233, 229, 219, .68); }
+.joa-legend svg { width: 11px; height: 11px; color: #7DB9C8; }
+body[data-sheet]:not([data-sheet="map"]) .joa-legend { display: none; }
+@media (max-height: 480px) { .joa-legend { display: none; } }
+
+/* ---------- Sheet ---------- */
+.joa-sheet {
+	position: absolute; z-index: 4; left: 0; right: 0; bottom: calc(var(--dock) + var(--safe-bottom));
+	max-height: min(56dvh, 520px); overflow: auto; overscroll-behavior: contain;
+	padding: 0 calc(var(--safe-right) + 16px) 18px calc(var(--safe-left) + 16px);
+	background: linear-gradient(180deg, rgba(20, 27, 33, .97), rgba(13, 18, 23, .98));
+	border-top: 1px solid var(--line-2);
+	clip-path: polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px);
+	box-shadow: 0 -24px 60px rgba(0, 0, 0, .45);
+	animation: joa-sheet .32s var(--ease-out);
+}
+.joa-sheet[hidden] { display: none; }
+/* The drag home: the head owns its pointer, so pulling it down drags the sheet (and past a
+   thumb's width closes it) instead of scrolling the list under it. */
+.joa-sheet { transition: transform .22s var(--ease-out); }
+.joa-sheet__head { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 4px 12px; padding: 16px 0 14px; background: linear-gradient(180deg, rgba(20, 27, 33, 1) 70%, rgba(20, 27, 33, 0)); touch-action: none; cursor: grab; }
+.joa-sheet__head:active { cursor: grabbing; }
+.joa-sheet__grab { position: absolute; top: 7px; left: 50%; width: 36px; height: 3px; margin-left: -18px; background: var(--line-2); }
+.joa-sheet__head .joa-kicker { grid-column: 1 / -1; }
+.joa-sheet__head h2 { margin: 0; font: 340 26px/1.05 var(--display); font-stretch: 118%; letter-spacing: -.005em; color: var(--ink); }
+.joa-chip { font: 600 8.5px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--dim); padding: 6px 8px; border: 1px solid var(--line-2); }
+.joa-sheet h3 { margin: 22px 0 10px; font: 600 10px/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; color: var(--dim); }
+.joa-note { margin: 12px 0 0; color: var(--dim); font: 400 13px/1.5 var(--display); }
+
+.joa-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.joa-group {
+	position: relative; min-height: 76px; padding: 10px 12px; text-align: left; display: flex; flex-direction: column; justify-content: space-between;
+	background: rgba(26, 34, 41, .88); border: 1px solid var(--line-2);
+	clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+	transition: background-color .18s, border-color .18s;
+}
+.joa-group__id { font: 250 34px/1 var(--display); font-stretch: 125%; color: var(--ink); }
+.joa-group__count { font: 600 8.5px/1.2 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+.joa-group:disabled { opacity: .38; }
+.joa-group[aria-pressed="true"] { background: rgba(201, 54, 48, .18); border-color: var(--brand); }
+.joa-group[aria-pressed="true"]::after { content: ''; position: absolute; right: 0; top: 0; width: 18px; height: 3px; background: var(--brand); }
+.joa-group[aria-pressed="true"] .joa-group__count { color: var(--brand-ink); }
+
+.joa-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.joa-btn {
+	--face: rgba(236, 231, 222, .08);
+	position: relative; isolation: isolate; min-height: 48px; padding: 0 12px; border: 0; background: none;
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+	font: 600 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink);
+}
+.joa-btn::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--face); border: 1px solid var(--line-2); clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); transition: background-color .18s; }
+.joa-btn svg { width: 16px; height: 16px; flex: none; }
+.joa-btn--primary { --face: var(--brand); color: var(--brand-ink); }
+.joa-btn--primary::before { border: 0; }
+.joa-btn--primary:hover::before { background: var(--brand-hover); }
+.joa-btn--ghost:hover::before { background: rgba(236, 231, 222, .14); }
+.joa-btn[aria-pressed="true"] { --face: rgba(201, 54, 48, .32); color: var(--brand-ink); }
+.joa-btn:disabled { opacity: .36; }
+.joa-btn__arrow { font-family: var(--display); transition: transform .25s var(--ease-out); }
+.joa-btn--primary:hover .joa-btn__arrow { transform: translateX(4px); }
+
+.joa-list, .joa-alerts, .joa-powers { display: grid; gap: 6px; }
+.joa-row {
+	display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 50px; padding: 0 14px;
+	background: rgba(26, 34, 41, .7); border: 0; border-top: 1px solid var(--line); text-align: left;
+	font: 450 14px/1.3 var(--display); color: var(--ink);
+}
+.joa-row svg { width: 18px; height: 18px; color: var(--dim); }
+.joa-row em { font: 600 9.5px/1 var(--mono); font-style: normal; letter-spacing: .16em; text-transform: uppercase; color: var(--active); }
+.joa-row[aria-pressed="true"] { background: rgba(201, 54, 48, .2); }
+.joa-row:disabled { opacity: .4; }
+.joa-row--alert svg { color: var(--critical); }
+
+.joa-power {
+	display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 68px; padding: 10px 14px;
+	background: rgba(26, 34, 41, .78); border: 1px solid var(--line); text-align: left;
+	clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+.joa-power { position: relative; }
+.joa-power__ring { position: relative; width: 46px; height: 46px; display: grid; place-items: center; }
+.joa-power__ring::before {
+	content: ''; position: absolute; inset: 0; border-radius: 50%;
+	background: conic-gradient(var(--warning) var(--charge, 0%), rgba(236, 231, 222, .1) 0);
+	-webkit-mask: radial-gradient(circle, transparent 19px, #000 19.5px); mask: radial-gradient(circle, transparent 19px, #000 19.5px);
+}
+.joa-power__ring svg { position: relative; width: 20px; height: 20px; color: var(--ink); }
+.joa-power__text { display: grid; gap: 3px; min-width: 0; }
+.joa-power strong { font: 600 15px/1.2 var(--display); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.joa-power small { font: 500 9px/1.2 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.joa-power em { font: 600 12px/1 var(--mono); font-style: normal; color: var(--warning); font-variant-numeric: tabular-nums; }
+.joa-power[data-ready="true"] em { color: var(--brand-ink); background: var(--brand); padding: 6px 8px; letter-spacing: .16em; text-transform: uppercase; font-size: 9.5px; }
+.joa-power[aria-pressed="true"] { border-color: var(--brand); background: rgba(201, 54, 48, .16); }
+.joa-power:disabled { opacity: .5; }
+.joa-power[data-ready="true"] .joa-power__ring::before { background: var(--brand); animation: joa-pulse 1.8s ease-in-out infinite; }
+
+/* ---------- Dock ---------- */
+.joa-dock {
+	position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: calc(var(--dock) + var(--safe-bottom));
+	padding: 0 calc(var(--safe-right) + 6px) var(--safe-bottom) calc(var(--safe-left) + 6px);
+	display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+	background: #0b1015; border-top: 1px solid var(--line-2);
+}
+.joa-dock button {
+	position: relative; border: 0; background: none; color: var(--mute);
+	display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+	font: 600 8.5px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; transition: color .18s;
+}
+.joa-dock button svg { width: 22px; height: 22px; }
+.joa-dock button[aria-selected="true"] { color: var(--ink); }
+.joa-dock button[aria-selected="true"]::before { content: ''; position: absolute; top: -1px; left: 22%; right: 22%; height: 3px; background: var(--brand); clip-path: polygon(0 0, 100% 0, calc(100% - 3px) 100%, 3px 100%); }
+.joa-dock button i {
+	position: absolute; top: 9px; left: calc(50% + 7px); min-width: 16px; height: 16px; padding: 0 4px; display: grid; place-items: center;
+	background: var(--brand); color: var(--brand-ink); font: 700 9px/1 var(--mono); font-style: normal; letter-spacing: 0;
+}
+.joa-dock button i[hidden] { display: none; }
+
+/* ---------- Taunts and asks ---------- */
+.joa-taunts, .joa-asks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.joa-taunt, .joa-ask {
+	position: relative; min-height: 78px; display: grid; grid-template-rows: auto 1fr; align-content: start; gap: 8px; padding: 12px 14px 14px; text-align: left;
+	border: 1px solid var(--line-2); background: linear-gradient(160deg, rgba(236, 231, 222, .07), rgba(236, 231, 222, .02));
+	clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+	touch-action: manipulation; transition: background-color .15s, transform .1s, border-color .15s;
+}
+.joa-taunt svg, .joa-ask svg { width: 16px; height: 16px; color: var(--brand); }
+.joa-taunt q, .joa-ask q { font: 500 16px/1.2 var(--display); font-stretch: 110%; color: var(--ink); quotes: '“' '”'; }
+.joa-taunt:active:not(:disabled), .joa-ask:active:not(:disabled) { transform: scale(.97); background: rgba(201, 54, 48, .22); border-color: rgba(201, 54, 48, .8); }
+.joa-taunt:disabled, .joa-ask:disabled { opacity: .42; }
+
+/* ---------- Production lines (statistics sheet) ---------- */
+.joa-prod { display: grid; gap: 6px; margin: 8px 0 4px; }
+.joa-prod__row { display: grid; grid-template-columns: 64px 1fr 76px 74px; gap: 8px; align-items: center; padding: 7px 10px; border: 1px solid var(--line-2); background: rgba(236, 231, 222, .04); }
+.joa-prod__kind { font: 600 8px/1 "Martian Mono", ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--brand); }
+.joa-prod__label { font: 500 13px/1.2 var(--display); color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.joa-prod__row i { height: 4px; background: var(--line); overflow: hidden; }
+.joa-prod__row b { display: block; height: 100%; background: var(--hud); }
+.joa-prod__row em { font: 500 10px/1 "Martian Mono", ui-monospace, monospace; font-style: normal; color: var(--dim); text-align: right; font-variant-numeric: tabular-nums; }
+.joa-taunt:disabled::after { content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--brand); transform-origin: left; animation: joa-rest 4s linear forwards; }
+@keyframes joa-rest { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ---------- Connect screen ---------- */
+.joa-connect {
+	position: fixed; inset: 0; z-index: 10; overflow: auto;
+	display: grid; grid-template-rows: minmax(160px, 38%) auto 1fr; justify-items: center;
+	padding: calc(var(--safe-top) + 12px) calc(var(--safe-right) + 22px) calc(var(--safe-bottom) + 18px) calc(var(--safe-left) + 22px);
+	background:
+		radial-gradient(ellipse 80% 55% at 50% 22%, rgba(125, 185, 200, .1), transparent 70%),
+		radial-gradient(ellipse 70% 40% at 50% 100%, rgba(201, 54, 48, .09), transparent 70%),
+		linear-gradient(rgba(236, 231, 222, .025) 1px, transparent 1px) 0 0 / 100% 32px,
+		linear-gradient(90deg, rgba(236, 231, 222, .025) 1px, transparent 1px) 0 0 / 32px 100%,
+		var(--void);
+}
+.joa-connect[hidden] { display: none; }
+.joa-connect__sky { width: min(380px, 92vw); align-self: end; }
+.joa-orbit { width: 100%; height: auto; overflow: visible; }
+.joa-orbit__ring { transform-origin: 200px 200px; }
+.joa-orbit__sat { offset-path: path('M 32.6 254.4 A 176 62 -18 1 1 367.4 145.6 A 176 62 -18 1 1 32.6 254.4'); animation: joa-orbit 14s linear infinite; }
+.joa-orbit__beam { transform-origin: 200px 210px; animation: joa-sweep 5s ease-in-out infinite alternate; }
+.joa-orbit__ping { animation: joa-ping 2.4s ease-out infinite; transform-origin: 226px 236px; }
+.joa-connect__body { width: min(420px, 100%); display: grid; gap: 10px; text-align: left; margin-top: 8px; }
+.joa-connect h1 { margin: 6px 0 0; display: flex; align-items: center; gap: 16px; font: 200 clamp(64px, 20vw, 104px)/.9 var(--display); font-stretch: 125%; letter-spacing: -.01em; color: var(--ink); }
+.joa-connect__mark .joa-mark { width: clamp(44px, 12vw, 64px); height: auto; }
+.joa-connect__sub { margin: 0; font: 400 13px/1.2 var(--mono); letter-spacing: .34em; text-transform: uppercase; color: var(--dim); }
+.joa-connect__lede { margin: 8px 0 6px; font: 400 15px/1.6 var(--display); color: var(--dim); max-width: 36ch; }
+.joa-code { display: grid; gap: 10px; margin-top: 6px; }
+.joa-code__label { font: 600 9.5px/1 var(--mono); letter-spacing: .24em; text-transform: uppercase; color: var(--active); }
+.joa-code__field { position: relative; height: 58px; }
+.joa-code__field input {
+	position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; padding: 0; border: 0; background: transparent;
+	color: transparent; caret-color: transparent; font: 600 24px/1 var(--mono); text-transform: uppercase; opacity: 0.01;
+}
+.joa-code__cells { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; pointer-events: none; }
+.joa-code__cells i {
+	display: grid; place-items: center; font: 600 22px/1 var(--mono); font-style: normal; color: var(--brand-ink);
+	background: rgba(26, 34, 41, .85); border: 1px solid var(--line-2); clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px);
+}
+.joa-code__field:focus-within .joa-code__cells i { border-color: rgba(125, 185, 200, .45); }
+.joa-code__field:focus-within .joa-code__cells i[data-next] { border-color: var(--active); box-shadow: inset 0 -3px 0 var(--active); }
+.joa-code__cells i[data-next]::after { content: ''; width: 2px; height: 24px; background: var(--active); animation: joa-blink 1s steps(2) infinite; }
+.joa-code__field:not(:focus-within) .joa-code__cells i[data-next]::after { display: none; }
+.joa-code .joa-btn { min-height: 54px; font-size: 12px; letter-spacing: .2em; }
+.joa-connect__status { margin: 4px 0 0; min-height: 1.5em; font: 500 10px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.joa-connect__status::after { content: '▍'; margin-left: 4px; color: var(--active); animation: joa-blink 1.1s steps(2) infinite; }
+.joa-connect[data-state="error"] .joa-connect__status { color: var(--critical); }
+.joa-connect[data-state="busy"] .joa-connect__status { color: var(--warning); }
+.joa-connect__foot { align-self: end; margin: 24px 0 0; font: 600 9px/1 var(--mono); letter-spacing: .34em; text-transform: uppercase; color: var(--mute); }
+
+/* ---------- Confirm dialog on the phone ---------- */
+.joa-app .joa-confirm { width: min(420px, calc(100vw - 32px)); }
+.joa-confirm h2 { margin: 10px 0 6px; font: 340 24px/1.15 var(--display); font-stretch: 118%; }
+.joa-confirm__hint { margin: 0; color: var(--dim); font: 400 14px/1.55 var(--display); }
+.joa-confirm .joa-pair-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+
+/* ---------- Motion ---------- */
+@keyframes joa-blink { 50% { opacity: .2; } }
+@keyframes joa-rise { from { opacity: 0; transform: translateY(8px); } }
+@keyframes joa-sheet { from { transform: translateY(24px); opacity: 0; } }
+@keyframes joa-pulse { 50% { filter: drop-shadow(0 0 8px rgba(201, 54, 48, .9)); } }
+@keyframes joa-orbit { to { offset-distance: 100%; } }
+@keyframes joa-sweep { from { transform: rotate(-14deg); } to { transform: rotate(14deg); } }
+@keyframes joa-ping { 0% { opacity: 1; transform: scale(1); } 80%, 100% { opacity: 0; transform: scale(4); } }
+@media (prefers-reduced-motion: reduce) {
+	.joa-app *, .joa-app *::before, .joa-app *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Small phones ---------- */
+@media (max-width: 360px) {
+	.joa-force { padding: 4px 6px; }
+	.joa-groups { gap: 6px; }
+	.joa-group { min-height: 66px; }
+	.joa-group__id { font-size: 28px; }
+	.joa-actions .joa-btn span { font-size: 9px; letter-spacing: .08em; }
+	.joa-connect h1 { gap: 10px; }
+}
+
+/* ---------- Landscape phones: dock on the left, sheet on the right ---------- */
+@media (orientation: landscape) and (max-height: 540px) {
+	:root { --dock: 0px; }
+	.joa-map { inset: 0 0 0 calc(var(--safe-left) + 72px); }
+	.joa-dock { top: 0; bottom: 0; right: auto; width: calc(var(--safe-left) + 72px); height: auto; grid-template-columns: 1fr; grid-template-rows: repeat(5, 1fr); padding: calc(var(--safe-top) + 6px) 0 calc(var(--safe-bottom) + 6px) var(--safe-left); border-top: 0; border-right: 1px solid var(--line-2); }
+	.joa-dock button[aria-selected="true"]::before { top: 22%; bottom: 22%; left: auto; right: -1px; width: 3px; height: auto; clip-path: none; }
+	.joa-sheet { left: auto; top: 0; bottom: 0; width: min(380px, 48vw); max-height: none; border-top: 0; border-left: 1px solid var(--line-2); padding-top: var(--safe-top); clip-path: polygon(18px 0, 100% 0, 100% 100%, 0 100%, 0 18px); }
+	body[data-sheet="groups"] .joa-rail, body[data-sheet="support"] .joa-rail, body[data-sheet="alerts"] .joa-rail, body[data-sheet="taunts"] .joa-rail { right: calc(min(380px, 48vw) + 10px); }
+	body:not([data-sheet="map"]):not([data-aiming="true"]) .joa-toast { top: calc(var(--safe-top) + 96px); right: calc(min(380px, 48vw) + 66px); }
+	.joa-connect { grid-template-rows: auto; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 24px; }
+	.joa-connect__sky { align-self: center; }
+	.joa-connect__foot { display: none; }
+}
+
+/* ---------- Tablets ---------- */
+@media (min-width: 768px) and (min-height: 600px) {
+	.joa-sheet { left: auto; right: 16px; top: calc(var(--safe-top) + 64px); bottom: calc(var(--dock) + var(--safe-bottom) + 30px); width: 400px; max-height: none; border: 1px solid var(--line-2); }
+	body[data-sheet="groups"] .joa-rail, body[data-sheet="support"] .joa-rail, body[data-sheet="alerts"] .joa-rail, body[data-sheet="taunts"] .joa-rail { right: 432px; }
+	body:not([data-sheet="map"]):not([data-aiming="true"]) .joa-toast { top: auto; bottom: calc(var(--dock) + 30px); width: min(520px, calc(100% - 460px)); }
+	.joa-dock { left: 50%; right: auto; width: min(560px, 100%); transform: translateX(-50%); bottom: 14px; height: var(--dock); border: 1px solid var(--line-2); clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px); }
+	.joa-map { inset: 0; }
+	.joa-toast { right: auto; width: min(520px, calc(100% - 120px)); bottom: calc(var(--dock) + 30px); }
+	.joa-downlink { bottom: calc(var(--dock) + 30px); }
+	.joa-brand__word { font-size: 19px; }
+}
+
+/* ---------- Aiming: the order waits for its target ---------- */
+.joa-aim {
+	position: absolute; z-index: 5; left: calc(var(--safe-left) + 10px); right: calc(var(--safe-right) + 10px); bottom: calc(var(--dock) + var(--safe-bottom) + 10px);
+	display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; grid-template-areas: "icon text cancel" "modes modes modes"; align-items: center; gap: 10px 12px; padding: 10px;
+	background: rgba(16, 22, 27, .96); border: 1px solid rgba(201, 54, 48, .7);
+	clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+	box-shadow: 0 16px 40px rgba(0, 0, 0, .5); animation: joa-rise .24s var(--ease-out);
+}
+.joa-aim[hidden] { display: none; }
+.joa-aim__icon { grid-area: icon; width: 40px; height: 40px; display: grid; place-items: center; background: var(--brand); color: var(--brand-ink); clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px); }
+.joa-aim__icon svg { width: 20px; height: 20px; }
+.joa-aim__text { grid-area: text; display: grid; gap: 2px; min-width: 0; }
+.joa-aim__text strong { font: 600 11px/1.2 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--brand-ink); }
+.joa-aim__text small { font: 400 13px/1.35 var(--display); color: var(--dim); }
+.joa-aim__cancel { grid-area: cancel; width: 40px; height: 40px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-2); background: rgba(236, 231, 222, .06); }
+.joa-aim__cancel svg { width: 18px; height: 18px; transform: rotate(45deg); }
+.joa-aim__modes { grid-area: modes; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.joa-aim__modes[hidden] { display: none; }
+.joa-aim__mode {
+	min-height: 42px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--line-2); background: rgba(236, 231, 222, .05);
+	font: 600 10px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink);
+	clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+.joa-aim__mode svg { width: 15px; height: 15px; }
+.joa-aim__mode[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.joa-aim__mode:disabled { opacity: .4; }
+body[data-aiming="true"] .joa-toast { bottom: 150px; }
+@media (min-width: 768px) and (min-height: 600px) {
+	.joa-aim { left: 50%; right: auto; width: min(560px, calc(100% - 32px)); transform: translateX(-50%); bottom: calc(var(--dock) + 26px); }
+}
+@media (orientation: landscape) and (max-height: 540px) {
+	.joa-aim { left: calc(var(--safe-left) + 82px); right: auto; width: min(480px, calc(100% - 170px)); bottom: 10px; }
+}
+
+/* --- Verdict: between battles, and the result of the last one ---------------------------------- */
+.joa-verdict {
+	position: absolute; inset: 0; z-index: 6; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 24px;
+	background: rgba(6, 9, 12, .74); backdrop-filter: blur(2px); text-align: center; pointer-events: none;
+}
+.joa-verdict[hidden] { display: none; }
+.joa-verdict h2 { margin: 0; font: 340 clamp(34px, 9vw, 52px)/1 var(--display); font-stretch: 118%; letter-spacing: .01em; text-transform: uppercase; color: var(--ink); }
+.joa-verdict[data-verdict-mode="defeat"] h2 { color: #FF6B63; }
+.joa-verdict[data-verdict-mode="victory"] h2 { color: #87BC91; }
+.joa-verdict small { max-width: 34ch; color: var(--dim); font: 400 13px/1.5 var(--display); }
+
+/* --- Structure sheet: one tapped building, its hull, and the repair order ---------------------- */
+.joa-building { display: grid; gap: 14px; }
+.joa-building__row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.joa-building__row strong { font: 600 17px/1.2 var(--display); color: var(--ink); }
+.joa-building__row em { font: 600 10px/1.2 var(--mono); letter-spacing: .18em; text-transform: uppercase; font-style: normal; color: var(--dim); }
+.joa-building__row em[data-attack="true"] { color: #FF6B63; animation: joa-building-pulse 1.6s ease-in-out infinite; }
+@keyframes joa-building-pulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .joa-building__row em[data-attack="true"] { animation: none; } }
+.joa-building__hull { height: 8px; background: #10161B; border: 1px solid var(--line-2); clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px); }
+.joa-building__hull i { display: block; height: 100%; }
+.joa-building__actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.joa-building__actions .joa-btn { flex: 1 1 auto; min-height: 44px; }
+
+/* --- Sound toggle: the commander's own choice, off with one tap -------------------------------- */
+.joa-sound {
+	display: grid; place-items: center; width: 30px; height: 30px; padding: 0;
+	background: var(--char); border: 1px solid var(--line); border-radius: 6px; color: var(--dim);
+	cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.joa-sound svg { width: 15px; height: 15px; }
+.joa-sound[data-on="false"] { color: var(--mute); }
+.joa-sound[data-on="false"] svg { opacity: .45; }
+
+/* --- Statistics sheet: the commander's ledger -------------------------------------------------- */
+.joa-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.joa-stat {
+	display: grid; gap: 4px; padding: 12px 12px 10px; background: var(--char);
+	border: 1px solid var(--line); clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+.joa-stat strong { font: 600 17px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+.joa-stat span { font: 600 9.5px/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--active); }
+.joa-stat small { font: 400 10.5px/1.35 var(--display); color: var(--mute); }
+.joa-row--stat { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px;
+	background: var(--char); border: 1px solid var(--line); clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px); }
+.joa-row--stat span { font: 450 13px/1.3 var(--display); color: var(--ink); }
+.joa-row--stat em { font: 600 12px/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--dim); }
+@media (min-width: 768px) { .joa-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.joa-top__right { pointer-events: auto; display: flex; align-items: center; gap: 8px; }

@@ -27,7 +27,7 @@ export interface TutorialWorld {
 	readonly powerSupplied: number
 }
 
-export type StepKind = 'welcome' | 'deploy' | 'economy' | 'production' | 'build' | 'power' | 'later' | 'army' | 'minimap' | 'controls'
+export type StepKind = 'welcome' | 'deploy' | 'economy' | 'production' | 'build' | 'power' | 'later' | 'army' | 'minimap' | 'joa' | 'controls'
 
 export interface TutorialStep {
 	readonly id: string
@@ -76,7 +76,7 @@ export function facts(step: BuildStep): string {
 	return parts.join(' · ')
 }
 
-export function tutorialSteps(order: BuildOrder, options: { readonly multiplayer: boolean }): TutorialStep[] {
+export function tutorialSteps(order: BuildOrder, options: { readonly multiplayer: boolean; readonly companion?: boolean }): TutorialStep[] {
 	const steps: TutorialStep[] = [
 		{
 			id: 'welcome', kind: 'welcome', target: null,
@@ -130,6 +130,11 @@ export function tutorialSteps(order: BuildOrder, options: { readonly multiplayer
 			title: 'The minimap',
 			body: 'Click it to move the camera; right click it to send the selected units there. H flies the camera home to your base.',
 		},
+		...(options.companion ? [{
+			id: 'joa', kind: 'joa' as const, target: '.joa-trigger',
+			title: 'Add a second screen',
+			body: 'JOA pairs a phone or tablet to this battle: it follows the map, and with the commander permission it commands your groups, calls support weapons and shouts your taunts. Open it here; the QR code or the share link does the rest.',
+		}] : []),
 		{
 			id: 'controls', kind: 'controls', target: '#hud-controls',
 			title: 'Menu and Keys',

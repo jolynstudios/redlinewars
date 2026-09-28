@@ -57,27 +57,24 @@ const TANYA_ACK: Record<'select' | 'move' | 'attack' | 'underAttack', readonly s
 	underAttack: ["They've found me", 'Getting hot out here', 'Taking fire'],
 }
 
-/** Identity follows the real actor type, including the British spy variant and the
- * grenadier, the one soldier both families field (soviet owners render the e2.soviet
- * clone). The grenadier's persona resolves per match family inside sayUnit: allied
- * owners hear Jackson, soviet owners keep the generic pool, the same split the HUD
- * display name already draws for 'e2'. */
+/** Character voices follow explicit actor identity, never the owner’s faction. */
 const SPY_ACK = SPY_ACK_RAW as PersonaAcks
 const JACKSON_ACK = JACKSON_ACK_RAW as PersonaAcks
 
 export function unitVoicePersona(actorName: string): 'tanya' | 'spy' | 'jackson' | undefined {
 	if (actorName === 'e7') return 'tanya'
 	if (actorName === 'spy' || actorName === 'spy.england') return 'spy'
-	if (actorName === 'e2') return 'jackson'
+	if (actorName === 'jackson') return 'jackson'
 	return undefined
 }
 
 /**
  * Pre-rendered voice banks (AAC): one per faction (england/france/germany/russia/
- * ukraine — each speaking the faction's own language) plus the legacy allied/soviet
- * Cartesia renders; allied is the fallback. Runtime
- * speech synthesis is deliberately forbidden: a missing or rejected recording must
- * never turn into the operating system's robotic voice.
+ * ukraine — each speaking the faction's own language) plus allied/soviet, every row
+ * rendered with ElevenLabs into the bank's per-country voice, and the older macOS
+ * `say` british render kept as fallback. Runtime speech synthesis is deliberately
+ * forbidden: a missing or rejected recording must never turn into the operating
+ * system's robotic voice.
  */
 // The glob runs under Vite only. Node harnesses bundle this module with esbuild,
 // where `import.meta.glob` is undefined — the catch degrades to silent banks instead
@@ -156,7 +153,7 @@ export class Eva implements EvaApi {
 		// Russian render, ukraine the Ukrainian one, …). A character persona override
 		// outranks it; a bank miss remains silent.
 		const bank = bankOverride ? VOICE_BANKS[bankOverride] ?? null : this.bank
-		const url = bank?.[slugify(text)]
+		const url = text === 'JOA intro' ? bank?.joa_intro ?? bank?.welcome_commander : bank?.[slugify(text)]
 		if (url) {
 			// Shout clips have a strict budget: never more than
 			// two shout clips at once, and a shout never stacks behind a lost fight —
@@ -196,9 +193,7 @@ export class Eva implements EvaApi {
 		let bank: string | undefined
 		const personaLines = persona === 'tanya' ? TANYA_ACK
 			: persona === 'spy' ? SPY_ACK
-			// Jackson speaks for the allied family only; a soviet-owner grenadier falls
-			// through to the generic pools below, so his voice stays as it always was.
-			: persona === 'jackson' && this.family === 'allied' ? JACKSON_ACK
+						: persona === 'jackson' ? JACKSON_ACK
 			: undefined
 		const personaRow = personaLines?.[kind]
 		if (personaLines && personaRow) {

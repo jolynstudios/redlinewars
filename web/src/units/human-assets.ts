@@ -1,6 +1,7 @@
 // Optional, boot-only anatomical LOD bundle. No GPU ownership or runtime decimation.
 import SOURCE_LOCK from '../../../art/sources.lock.json'
 import { fetchAssetPack } from '../core/asset-pack'
+import { sha256Hex } from '../core/sha256'
 import { decodeBlenderAsset, type BlenderAsset } from './blender-mesh'
 import { loadHumanMotion, loadHumanMotionTimedClips, validateHumanMotionPose, type HumanMotionClip, type HumanMotionManifest, type HumanTimedClip } from './human-motion'
 
@@ -148,8 +149,7 @@ export async function verifyHumanAssets(manifest: HumanAssetManifest, url: strin
 	// Verify every slice and header before allowing the decoder to construct typed views.
 	for (const level of manifest.levels) {
 		const slice = bytes.subarray(level.offset, level.offset + level.bytes)
-		const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', slice as Uint8Array<ArrayBuffer>))
-		if (Array.from(digest, b => b.toString(16).padStart(2, '0')).join('') !== level.sha256) bad('LOD slice SHA-256 mismatch')
+		if (await sha256Hex(slice) !== level.sha256) bad('LOD slice SHA-256 mismatch')
 		const header = new DataView(slice.buffer, slice.byteOffset, 32)
 		if (header.getUint32(0, true) !== 0x464d5353 || header.getUint16(4, true) !== 1 || header.getUint16(6, true) !== 1 ||
 			header.getUint32(8, true) !== level.vertices || header.getUint32(12, true) !== level.triangles ||

@@ -122,9 +122,12 @@ namespace OpenRA
 		string Text,
 		int TargetX,
 		int TargetY,
-		int BeaconTicks);
+		int BeaconTicks,
+		int FlightTicks,
+		bool Imminent);
 	sealed record SupportPowersDto(int SchemaVersion, int TimestepMs, int PowerOutageTicks, int PowerOutageTotalTicks,
-		SupportPowerDto[] Powers, SupportPowerTimerDto[] Timers, SupportLaunchDto[] Launches, uint[] Revealed);
+		SupportPowerDto[] Powers, SupportPowerTimerDto[] Timers, SupportLaunchDto[] Launches, uint[] Revealed, CompanionInventoryDto Inventory);
+	sealed record CompanionInventoryDto(int Infantry, int Vehicles, int Aircraft, int Harvesters);
 	[JsonSerializable(typeof(SupportPowersDto))]
 
 	[JsonSourceGenerationOptions(

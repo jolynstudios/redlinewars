@@ -78,7 +78,12 @@ export function installMpSocket(program, heapView) {
 	function wsCreate(id, url, recvPtr, recvCap, sendPtr) {
 		let ws
 		try {
-			ws = new WebSocket(url)
+			const endpoint = new URL(url)
+			const nonce = crypto.getRandomValues(new Uint8Array(32))
+			const admission = Array.from(nonce, b => b.toString(16).padStart(2,'0')).join('')
+			endpoint.searchParams.set('joa', admission)
+			ws = new WebSocket(endpoint.href)
+			ws.joaIdentity = { roomId: /^\/g\/([0-9a-f]{16})$/.exec(endpoint.pathname)?.[1], nonce: admission }
 		} catch (error) {
 			// A throwing constructor (bad URL, mixed content) must still
 			// consume the work item and notify C#, or the same create is
@@ -178,6 +183,10 @@ export function installMpSocket(program, heapView) {
 		// Close information for one connection, or — with no argument — the
 		// most recent entry recorded on this page. The bridge's
 		// getMpCloseInfo() wraps the no-argument form.
+		getCompanionIdentity() {
+			for (const ws of sockets.values()) if (ws.readyState === WebSocket.OPEN && ws.joaIdentity?.roomId) return ws.joaIdentity
+			return null
+		},
 		getCloseInfo(id) {
 			return id === undefined ? (closeInfo.get(lastClosedId) ?? null) : (closeInfo.get(id) ?? null)
 		},
