@@ -70,7 +70,27 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-96886bd (the current release)
+## v2026.09.28-aa02032 (the current release)
+
+Exported from private commit `aa020326`. This is the interface withdrawal: the Jolyn Studios game
+interface — the setup screens, multiplayer lobby, in-battle HUD, tutorial, match report and the JOA
+phone companion with its tactical core — leaves the open-source client from this tag on. It is the
+studio's own work above the OpenRA protocol boundary, like the separately licensed art. The export
+replaces it with a stand-in presentation node (`web/src/ui`) and stand-in pages (`web/public-index.html`
+and `web/public-companion.html`, published under the production names), so the public build still
+starts a game, renders the battlefield, selects and commands units, and reports the local player's
+basics. `RELEASE-SOURCE.json` records the renames and, new in this tag, the full `withheldPaths` list,
+which the verifier uses to accept withheld-proprietary sources in a release build's maps. The desktop
+packager stops embedding the client's source maps in the installers: their bytes stay in the build's
+own AppBundle, where the verifier checks them. Tags before this one still carry the interface under
+GPLv3, as published at the time; no tag was moved or rewritten.
+
+The live game and the desktop apps we distribute are unchanged in behaviour: they are built from the
+private tree, which keeps the production interface (`web/src/hud/`).
+
+Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-96886bd (superseded by v2026.09.28-aa02032)
 
 Exported from private commit `96886bd4`, published the same day as `v2026.09.28-ab47013` and superseding
 it. It repairs that release's two strict findings in the packaging itself: `assemble-node` now fails

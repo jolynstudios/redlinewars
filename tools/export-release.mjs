@@ -23,7 +23,7 @@
 // passing export ends with RELEASE-SOURCE.json: the source commit, and what was withheld and why.
 
 import { execFileSync } from 'node:child_process'
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const TOOL = 'export-release'
@@ -63,6 +63,26 @@ const PRIVATE = [
 	['engine/steelseed-host/tools/vmlab/', 'internal VM lab'],
 	['engine/steelseed-host/COMPLETION-AUDIT.md', 'internal acceptance record'],
 	['web/.tmp-*', 'scratch scripts'],
+	// The Jolyn Studios game interface. The production client page (setup, lobby, HUD markup and
+	// styling), the interface source tree it boots, the JOA companion app and its tactical core,
+	// and the interface's own gates are the studio's own work and are not part of the open-source
+	// client (compliance.md §2, protocol boundary). The export ships stand-ins at the same import
+	// paths: web/src/ui/ (already public) and the RENAMES below for the two pages.
+	['web/index.html', 'the production client page; the stand-in web/public-index.html publishes as web/index.html'],
+	['web/companion.html', 'the production companion page; the stand-in web/public-companion.html publishes as web/companion.html'],
+	['web/src/hud/', "Jolyn Studios' game interface (setup, lobby, HUD, tutorial, match report; © Jolyn Studios)"],
+	['web/src/companion/', "the JOA companion app (© Jolyn Studios)"],
+	['web/src/core/tactical/', "the JOA tactical core (© Jolyn Studios)"],
+	['web/src/audio/taunt-lines.json', 'voice-line text (© Jolyn Studios)'],
+	...['account-ui.test.mjs', 'combatgroundgate.mjs', 'dialogs.test.mjs', 'e2factiongate.mjs', 'exactpick.test.mjs',
+		'guardgate.mjs', 'healthbargate.mjs', 'matchreportgate.mjs', 'net-config.test.mjs', 'pickinggate.mjs',
+		'productionuxgate.mjs', 'ranked-uigate.mjs', 'rolepacksgate.mjs', 'room-join-policy.test.mjs',
+		'selectiongate.mjs', 'session-ui.test.mjs', 'targetfeedbackgate.mjs', 'tutorial.test.mjs', 'uigate.mjs',
+		'voicecoveragegate.mjs'].map(name => [`web/tools/${name}`, "interface gate for the withheld HUD (© Jolyn Studios)"]),
+	...['joa-model.test.mjs', 'joa-companiongate.mjs', 'joa-preview.mjs']
+		.map(name => [`web/tools/${name}`, "companion gate for the withheld JOA app (© Jolyn Studios)"]),
+	['engine/steelseed-host/tools/colorgate.mjs', "interface gate reading the withheld HUD source (© Jolyn Studios)"],
+	['engine/steelseed-host/tools/placementgate.mjs', "interface gate reading the withheld HUD source (© Jolyn Studios)"],
 	// The art pipeline: generators that build separately licensed art (Blender forges, paid TTS and
 	// SFX renders, promotion of supplied .blend files). They build no part of the game's code.
 	// art-fetch.mjs is published: the published web/tools/sourcelicensegate.mjs imports it, and it
@@ -165,12 +185,15 @@ function walk(dir, base = dir, found = []) {
 const git = argv => execFileSync('git', ['-C', resolve(SOURCE), ...argv], { maxBuffer: 1024 * 1024 * 1024 })
 const commit = git(['rev-parse', '--verify', `${COMMIT}^{commit}`]).toString().trim()
 const tracked = git(['ls-tree', '-r', '--name-only', '-z', commit]).toString().split('\0').filter(Boolean)
-const publish = [], keep = new Map(), unclassified = []
+const publish = [], keep = new Map(), keptPaths = [], unclassified = []
 for (const path of tracked) {
 	const decision = decide(path)
 	if (decision === null) unclassified.push(path)
 	else if (decision.publish) publish.push(path)
-	else keep.set(decision.why, (keep.get(decision.why) ?? 0) + 1)
+	else {
+		keep.set(decision.why, (keep.get(decision.why) ?? 0) + 1)
+		keptPaths.push(path)
+	}
 }
 if (unclassified.length) {
 	console.error(`${TOOL}: ${unclassified.length} tracked paths have no decision:\n  ${unclassified.slice(0, 40).join('\n  ')}`)
@@ -192,6 +215,25 @@ mkdirSync(out, { recursive: true })
 for (let i = 0; i < publish.length; i += 500) {
 	const tar = git(['archive', '--format=tar', commit, '--', ...publish.slice(i, i + 500)])
 	execFileSync('tar', ['-x', '-C', out], { input: tar, maxBuffer: 1024 * 1024 * 1024 })
+}
+
+// Stand-in pages published under the production path. The private tree keeps the real
+// web/index.html and web/companion.html (PRIVATE above, never extracted), and carries the
+// public pages as web/public-*.html so the vite inputs (index.html, companion.html) resolve in
+// the exported tree. The rename happens here, on the extracted copy, so the private tree never
+// risks serving the stand-in.
+const RENAMES = [
+	['web/public-index.html', 'web/index.html'],
+	['web/public-companion.html', 'web/companion.html'],
+]
+const renamed = []
+for (const [from, to] of RENAMES) {
+	const source = join(out, from)
+	if (!existsSync(source)) throw new Error(`${TOOL}: rename source ${from} is not in the published set`)
+	const dest = join(out, to)
+	if (existsSync(dest)) throw new Error(`${TOOL}: rename target ${to} already exists — the private page leaked into the export`)
+	renameSync(source, dest)
+	renamed.push({ from, to })
 }
 
 // Documentation-only rewrites: local paths on the author's machine in reports and notes. None
@@ -233,6 +275,7 @@ for (const path of walk(out)) {
 console.log(`${TOOL}: ${commit.slice(0, 12)} → ${out}`)
 console.log(`  published ${publish.length} of ${tracked.length} tracked files`)
 for (const [why, n] of [...keep.entries()].sort((a, b) => b[1] - a[1])) console.log(`  kept private: ${n} — ${why}`)
+for (const { from, to } of renamed) console.log(`  stand-in: ${from} published as ${to}`)
 for (const { path, count, replacement } of rewritten) console.log(`  rewritten: ${path}: ${count} local path(s) → ${replacement}`)
 if (review.size) {
 	console.log('  review (not fatal):')
@@ -252,7 +295,12 @@ writeFileSync(join(out, 'RELEASE-SOURCE.json'), `${JSON.stringify({
 	exportedWith: 'tools/export-release.mjs',
 	published: publish.length,
 	withheld: Object.fromEntries([...keep.entries()].sort((x, y) => y[1] - x[1])),
+	// The withheld paths themselves, so a verifier can tell a withheld-proprietary source in a
+	// build's maps (expected: release binaries are built from the full tree) from a published
+	// source it cannot account for (a defect).
+	withheldPaths: keptPaths.sort(),
 	absentPrivate: unused,
+	renamed,
 	rewritten,
 }, null, 2)}\n`)
 console.log(`${TOOL}: PASS`)

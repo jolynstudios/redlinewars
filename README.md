@@ -28,7 +28,8 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.28-96886bd`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-96886bd) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.28-aa02032`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-aa02032) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads; first tag whose export withholds the game interface (see below) |
+| [`v2026.09.28-96886bd`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-96886bd) | the same, as released on 28 September 2026; superseded by `v2026.09.28-aa02032` |
 | [`v2026.09.28-ab47013`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-ab47013) | the same, as released on 28 September 2026; replaced the same day |
 | [`v2026.09.26-a87bf8d`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-a87bf8d) | the same, as released at 13:38 on 26 September 2026; replaced the same day |
 | [`v2026.09.26-4c6da14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.26-4c6da14) | the same, as first released on 26 September 2026; replaced the same day |
@@ -42,6 +43,15 @@ source commit it was built from. Each download's sha256 is in the `SHA256SUMS` f
 
 ## What is not in this repository
 
+- **The game interface.** The setup screens, multiplayer lobby, in-battle HUD, tutorial, match
+  report and the JOA phone companion are Jolyn Studios' own work, written against the same OpenRA
+  protocol this client speaks — they are not part of the open-source client and are withheld from
+  every export from `v2026.09.28-aa02032` on. What ships instead is a stand-in presentation node
+  (`web/src/ui`) and stand-in pages: the game starts, the battlefield renders, units can be
+  selected and commanded, but there is no Jolyn Studios interface around it. Tags before
+  `v2026.09.28-aa02032` still carry the interface under GPLv3, as published at the time; the
+  withdrawal is forward-only. Gates that drive the full interface through the built page expect
+  the production client and will not pass against the stand-in build.
 - **Separately licensed art**, including:
   - the Blender-built models, textures and landmark packs (`web/.forge/`);
   - the music, voices and sound effects;

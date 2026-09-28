@@ -66,7 +66,14 @@ function bootFailed(err: unknown): void {
  * the boot gate would have failed on its own scaffolding, and a genuine error would
  * have been buried among a dozen expected ones.
  */
-const NODE_MODULES = import.meta.glob<Record<string, unknown>>('./{materials,render,sky,terrain,structures,units,anim,shroud,camera,fx,wrecks,ui,audio}/index.ts')
+const NODE_MODULES = import.meta.glob<Record<string, unknown>>('./{materials,render,sky,terrain,structures,units,anim,shroud,camera,fx,wrecks,ui,hud,audio}/index.ts')
+
+// Two directories can register the 'ui' node: web/src/hud/ is the production interface
+// (Jolyn Studios' own work, withheld from the public source export) and web/src/ui/ is
+// the public stand-in. Exactly one may register — the registry rejects a duplicate id —
+// so the production HUD wins whenever the private tree is present; the stand-in only
+// ever boots in the exported public build, which ships no hud/ at all.
+if ('./hud/index.ts' in NODE_MODULES) delete NODE_MODULES['./ui/index.ts']
 
 async function collectSystems(): Promise<SystemClass[]> {
 	const out: SystemClass[] = []

@@ -74,6 +74,33 @@ test('an AppBundle built from its checkout passes', () => {
 	} finally { rmSync(f.root, { recursive: true, force: true }) }
 })
 
+test('a withheld-proprietary source in the maps is expected, and a published source still must be', () => {
+	// Release binaries are built from the full tree, so their maps embed the withheld interface
+	// too: RELEASE-SOURCE.json names it and the verifier counts it instead of failing on it.
+	const f = fixture(({ steelseed }) => write(join(steelseed, 'assets/index.js.map'),
+		JSON.stringify({ version: 3, sources: ['../../src/answer.ts', '../../src/hud/index.ts'],
+			sourcesContent: [SOURCE_TS, 'export class Ui {}\n'], mappings: '' })))
+	write(join(f.checkout, 'RELEASE-SOURCE.json'), JSON.stringify({ sourceCommit: 'a'.repeat(40), withheldPaths: ['web/src/hud/'] }))
+	try {
+		const { status, output } = verify(f)
+		assert.equal(status, 0, output)
+		assert.match(output, /1 web\/src files embedded in 1 source maps are byte-equal/)
+		assert.match(output, /1 embedded withheld-proprietary sources/)
+	} finally { rmSync(f.root, { recursive: true, force: true }) }
+})
+
+test('a source that is neither published nor withheld is a failure', () => {
+	const f = fixture(({ steelseed }) => write(join(steelseed, 'assets/index.js.map'),
+		JSON.stringify({ version: 3, sources: ['../../src/answer.ts', '../../src/mystery.ts'],
+			sourcesContent: [SOURCE_TS, 'export {}\n'], mappings: '' })))
+	write(join(f.checkout, 'RELEASE-SOURCE.json'), JSON.stringify({ sourceCommit: 'a'.repeat(40), withheldPaths: ['web/src/hud/'] }))
+	try {
+		const { status, output } = verify(f)
+		assert.equal(status, 1, 'expected a FAIL for an unaccounted source')
+		assert.match(output, /1 missing \(web\/src\/mystery\.ts\)/)
+	} finally { rmSync(f.root, { recursive: true, force: true }) }
+})
+
 for (const [what, change, pattern] of [
 	['a source that differs from the checkout', ({ steelseed }) => write(join(steelseed, 'assets/index.js.map'),
 		JSON.stringify({ version: 3, sources: ['../../src/answer.ts'], sourcesContent: ['export const answer = 41\n'], mappings: '' })), /web\/src files differ/],
@@ -175,6 +202,10 @@ function desktopFixture(change = () => {}) {
 	const app = join(f.root, 'pkg/Redline Wars.app'), resources = join(app, 'Contents/Resources')
 	writeAsar(join(resources, 'app.asar'), { ...shell, 'build/icon.png': 'png', 'shell/bg.webp': 'art', 'package.json': JSON.stringify({ name: 'shell', version: '1.0.0', main: 'main.mjs', type: 'module' }) })
 	cpSync(f.reference, join(resources, 'AppBundle'), { recursive: true })
+	// desktop/package.mjs filters *.map out of the shipped AppBundle; the fixture mirrors the
+	// packager, so its pass path exercises the reference-maps fallback.
+	for (const map of readdirSync(join(resources, 'AppBundle/steelseed/assets')).filter(name => name.endsWith('.js.map')))
+		rmSync(join(resources, 'AppBundle/steelseed/assets', map))
 	for (const [from, to] of [['engine/COPYING', 'COPYING-GPLv3.txt'], ['engine/AUTHORS', 'AUTHORS-OpenRA.txt'], ['engine/licenses/GPL-2.0.txt', 'GPL-2.0.txt'], ['engine/licenses/LGPL-2.1.txt', 'LGPL-2.1.txt'], ['engine/licenses/LGPL-3.0.txt', 'LGPL-3.0.txt']])
 		cpSync(join(checkout, from), join(resources, 'legal', to))
 	write(join(resources, 'legal/THIRD_PARTY_NOTICES.md'), NOTICES)
@@ -204,7 +235,19 @@ test('--strict passes a desktop package whose shell, payload, notices and manife
 		const { status, output } = verifyDesktop(f)
 		assert.equal(status, 0, output)
 		assert.match(output, /app\.asar: 4 shell scripts and pages byte-equal to the checkout; 2 brand image/)
+		assert.match(output, /the artifact ships no source maps \(desktop filter\)/)
 		assert.match(output, /source correspondence PASS/)
+	} finally { rmSync(f.root, { recursive: true, force: true }) }
+})
+
+test('--strict refuses a desktop package that ships the source maps the release does not publish', () => {
+	const f = desktopFixture(({ resources }) => {
+		write(join(resources, 'AppBundle/steelseed/assets/index.js.map'), JSON.stringify({ version: 3, sources: ['../../src/answer.ts'], sourcesContent: [SOURCE_TS], mappings: '' }))
+	})
+	try {
+		const { status, output } = verifyDesktop(f)
+		assert.equal(status, 1, `expected a FAIL for a shipped source map:\n${output}`)
+		assert.match(output, /the artifact ships 1 source map\(s\) the release does not publish/)
 	} finally { rmSync(f.root, { recursive: true, force: true }) }
 })
 

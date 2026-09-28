@@ -1,8 +1,0 @@
-[
-	{ "id": "you-suck", "text": "You suck!", "delivery": "[mocking] [laughs]" },
-	{ "id": "you-cant-win", "text": "You can't win!", "delivery": "[smug] [confident]" },
-	{ "id": "im-the-best", "text": "I'm the best!", "delivery": "[shouting] [excited]" },
-	{ "id": "the-champ-is-here", "text": "Sorry, the champ is here.", "delivery": "[smug] [sighs]" },
-	{ "id": "is-that-all", "text": "Is that all you've got?", "delivery": "[mocking]" },
-	{ "id": "better-luck", "text": "Better luck next time!", "delivery": "[laughs] [smug]" }
-]

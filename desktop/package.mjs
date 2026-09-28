@@ -243,7 +243,11 @@ export function targetConfig(target, nodeStaging, archName = 'x64', manifestDir 
     files: [...SHELL_FILES],
     directories: { output: 'dist' },
     extraResources: [
-      { from: appBundle, to: 'AppBundle' },
+      // No .js.map: the bundle's source maps embed the client's sourcesContent, and the
+      // shipped installers must not carry source the release does not publish (compliance.md
+      // §3 — the public tag is the source of record). The live site never serves maps either;
+      // source correspondence is proven from the --appbundle artifact, which keeps them.
+      { from: appBundle, to: 'AppBundle', filter: ['**/*', '!**/*.map'] },
       // electron-builder 26 resolves any directory named node_modules through
       // the PROJECT's dependency graph — desktop/package.json declares none, so
       // a single staging entry silently dropped the node's `ws` from every

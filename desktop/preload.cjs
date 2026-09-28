@@ -64,6 +64,6 @@ contextBridge.exposeInMainWorld('redline', {
 });
 
 // The in-game menu's exit button calls window.backToMain directly
-// (web/src/ui/index.ts): the shell shows the landing again WITHOUT
+// (web/src/hud/index.ts): the shell shows the landing again WITHOUT
 // reloading the engine page.
 contextBridge.exposeInMainWorld('backToMain', () => ipcRenderer.send('back-to-main'));

@@ -371,9 +371,17 @@ function checkNode(r, nodeRoot, kind) {
 	return assembly
 }
 
+// Release binaries are built from the full (private) tree, so their source maps legitimately
+// embed withheld-proprietary sources. RELEASE-SOURCE.json records the withheld paths; a map
+// source resolving there is expected and counted, while a PUBLISHED source that differs or a
+// source that is neither published nor withheld stays a failure.
+const withheldExact = new Set(releaseSource?.withheldPaths ?? [])
+const withheldUnder = [...withheldExact].filter(path => path.endsWith('/'))
+const isWithheld = rel => withheldExact.has(rel) || withheldUnder.some(prefix => rel.startsWith(prefix))
+
 function checkMaps(r, maps) {
 	// maps: [{ name, json }]; sources are relative to web/dist/assets (or dist/ for workers).
-	let equal = 0, art = 0
+	let equal = 0, art = 0, withheld = 0
 	const different = [], missing = [], other = [], unreadable = []
 	const seen = new Set()
 	for (const { name, json } of maps) json.sources.forEach((source, i) => {
@@ -384,6 +392,7 @@ function checkMaps(r, maps) {
 		const rel = `web/${source.slice(at)}`
 		if (seen.has(rel)) return
 		seen.add(rel)
+		if (isWithheld(rel)) { withheld++; return }
 		const file = join(SOURCE, rel)
 		if (!existsSync(file)) { missing.push(rel); return }
 		if (content == null) { unreadable.push(rel); return }
@@ -400,6 +409,7 @@ function checkMaps(r, maps) {
 		? `${different.length} web/src files differ (${different.slice(0, 6).join(', ')}), ${missing.length} missing (${missing.slice(0, 6).join(', ')}), ${unreadable.length} without embedded content (${unreadable.slice(0, 6).join(', ')})`
 		: `${equal} web/src files embedded in ${maps.length} source maps are byte-equal to the checkout`)
 	if (art) r.add('client', 'INFO', `${art} embedded art-pack modules (.forge/, separately licensed) not compared`)
+	if (withheld) r.add('client', 'INFO', `${withheld} embedded withheld-proprietary sources (RELEASE-SOURCE.json) not compared`)
 	if (other.length) r.add('client', 'INFO', `${other.length} other embedded sources: ${other.slice(0, 4).join(', ')}`)
 }
 
@@ -531,8 +541,10 @@ function hashesOutside(dir, skip) {
 	return new Map((existsSync(dir) ? walk(dir) : []).filter(path => !path.startsWith(`${skip}/`)).map(path => [path, sha256File(join(dir, path))]))
 }
 
-/** Binds the bytes that run to the candidate's own AppBundle (--appbundle). */
-function checkPayload(r, bundle, reference) {
+/** Binds the bytes that run to the candidate's own AppBundle (--appbundle). Desktop artifacts
+ *  legitimately strip their source maps (desktop/package.mjs filters *.map); other candidates
+ *  must carry every listed file. */
+function checkPayload(r, bundle, reference, { desktop = false } = {}) {
 	if (!reference) { r.add('payload', 'NOT_RUN', 'no reference AppBundle (--appbundle): the program files are tied to this source only through their source maps'); return }
 	if (resolve(bundle) === resolve(reference)) { r.add('payload', 'NOT_RUN', 'the reference is the artifact itself'); return }
 	const own = join(bundle, 'steelseed/composition.json'), ref = join(reference, 'steelseed/composition.json')
@@ -542,10 +554,18 @@ function checkPayload(r, bundle, reference) {
 	const listed = new Map(readJson(own).files.map(f => [f.path, f.sha256]))
 	const present = walk(join(bundle, 'steelseed')).filter(path => path !== 'composition.json')
 	const unlisted = present.filter(path => !listed.has(path))
-	const wrong = [...listed].filter(([path, want]) => !existsSync(join(bundle, 'steelseed', path)) || sha256File(join(bundle, 'steelseed', path)) !== want).map(([path]) => path)
+	// desktop/package.mjs filters *.map out of the shipped AppBundle: the installers must not
+	// embed source the release does not publish. On a desktop artifact a listed map may
+	// therefore be absent — but never present; its bytes live on in the reference build.
+	const stripped = desktop ? [...listed.keys()].filter(path => path.endsWith('.js.map') && !present.includes(path)) : []
+	const leaked = desktop ? present.filter(path => path.endsWith('.js.map')) : []
+	if (leaked.length) r.add('payload', 'FAIL', `the artifact ships ${leaked.length} source map(s) the release does not publish: ${leaked.slice(0, 4).join(', ')}`)
+	const wrong = [...listed].filter(([path, want]) => desktop && path.endsWith('.js.map') && stripped.includes(path) ? false
+		: !existsSync(join(bundle, 'steelseed', path)) || sha256File(join(bundle, 'steelseed', path)) !== want).map(([path]) => path)
 	r.add('payload', unlisted.length || wrong.length ? 'FAIL' : 'PASS', unlisted.length || wrong.length
 		? `presentation: ${wrong.length} listed files missing or different (${wrong.slice(0, 4).join(', ')}), ${unlisted.length} unlisted (${unlisted.slice(0, 4).join(', ')})`
-		: `presentation: ${listed.size} files present and equal to composition.json, none unlisted`)
+		: `presentation: ${listed.size - stripped.length} files present and equal to composition.json, none unlisted`)
+	if (stripped.length) r.add('payload', 'INFO', `${stripped.length} source maps intentionally not shipped (desktop filter); the reference build carries them and source correspondence is checked there`)
 	const mine = hashesOutside(bundle, 'steelseed'), theirs = hashesOutside(reference, 'steelseed')
 	const differ = [...theirs].filter(([path, hash]) => mine.get(path) !== hash).map(([path]) => path), extra = [...mine.keys()].filter(path => !theirs.has(path))
 	r.add('payload', differ.length || extra.length || !theirs.size ? 'FAIL' : 'PASS', !theirs.size ? 'the reference has no runtime beside steelseed/'
@@ -712,13 +732,24 @@ function verifyFile(file) {
 		checkIdentity(r, assembly?.commit ?? null, builds, unpacked.kind)
 		if (unpacked.appBundle) {
 			const assets = join(unpacked.appBundle, 'steelseed/assets')
-			checkMaps(r, readdirSync(assets).filter(f => f.endsWith('.js.map')).map(f => ({ name: f, json: readJson(join(assets, f)) })))
+			let maps = readdirSync(assets).filter(f => f.endsWith('.js.map')).map(f => ({ name: f, json: readJson(join(assets, f)) }))
+			// The desktop filter ships no source maps at all. Their bytes live in the reference
+			// build (--appbundle), whose composition.json checkPayload proves identical to this
+			// artifact's, so its maps tie the same program files to this source.
+			if (!maps.length && unpacked.kind === 'desktop' && APPBUNDLE) {
+				const reference = join(APPBUNDLE, 'steelseed/assets')
+				if (existsSync(reference)) {
+					maps = readdirSync(reference).filter(f => f.endsWith('.js.map')).map(f => ({ name: f, json: readJson(join(reference, f)) }))
+					r.add('client', 'INFO', 'the artifact ships no source maps (desktop filter); correspondence checked through the reference build\'s')
+				}
+			}
+			checkMaps(r, maps)
 		}
 		checkLegal(r, unpacked.legal)
 		checkManifest(r, unpacked.manifest, name)
 		checkBoundary(r, unpacked.kind, unpacked.scanRoot, unpacked.appBundle)
 		if (unpacked.kind === 'desktop') {
-			checkPayload(r, unpacked.appBundle, APPBUNDLE)
+			checkPayload(r, unpacked.appBundle, APPBUNDLE, { desktop: true })
 			checkShell(r, unpacked.resources)
 			checkRebuild(r, unpacked.appBundle)
 		}

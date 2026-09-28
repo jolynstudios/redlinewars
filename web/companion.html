@@ -1,1 +1,51 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090D11"><meta name="referrer" content="no-referrer"><title>JOA · Joint Operations Assistant</title></head><body class="joa-app"><script type="module" src="./src/companion/main.ts"></script></body></html>
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="theme-color" content="#090D11" />
+		<meta name="referrer" content="no-referrer" />
+		<title>JOA · Joint Operations Assistant</title>
+		<meta name="robots" content="noindex" />
+		<!-- Public stand-in page. The JOA companion app — the phone-side battle assistant that
+		     pairs with the desktop and browser clients — is Jolyn Studios' own work and is not
+		     part of the open-source client. The private tree builds the real page at this path;
+		     the source export publishes this note instead, so pairing links and old bookmarks
+		     land on an explanation rather than a blank screen. -->
+		<style>
+			:root { --ink: #e8e6e1; --dim: #9aa3ad; --brand: #c93630; }
+			* { box-sizing: border-box; }
+			html, body { margin: 0; min-height: 100%; background: #090d11; color: var(--ink);
+				font: 15px/1.6 system-ui, sans-serif; }
+			main { max-width: 520px; margin: 0 auto; padding: 12vh 24px 48px; }
+			.mark { display: block; margin: 0 auto 28px; }
+			h1 { margin: 0 0 6px; font-size: 22px; letter-spacing: 0.02em; text-align: center; }
+			.sub { margin: 0 0 28px; color: var(--dim); font-size: 13px; letter-spacing: 0.28em;
+				text-transform: uppercase; text-align: center; }
+			p { margin: 0 0 14px; }
+			.note { border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 10px; padding: 16px 18px;
+				background: rgba(16, 22, 28, 0.9); }
+			footer { margin-top: 40px; color: var(--dim); font-size: 12px; text-align: center; }
+			footer a { color: var(--ink); }
+		</style>
+	</head>
+	<body>
+		<main>
+			<svg class="mark" width="84" height="77" viewBox="44 58 312 284" role="img" aria-label="Redline Wars">
+				<path fill="#c93630" d="M113.67,65.9l-62.05,62.03v206.17h62.05v-40.28h72.61l40.27,40.28h121.83V65.9H113.67Z"></path>
+				<path fill="#fff" d="M225.13,253.55l-22.7-44.85h-56.48v44.85h-32.28V124.63h104.33c9.12,0,16.7,1.88,22.71,5.63,6,3.75,10.47,8.73,13.41,14.92,2.94,6.19,4.41,12.98,4.41,20.36,0,7.76-1.97,14.98-5.91,21.67-3.94,6.69-9.92,11.98-17.92,15.86l26.83,50.48h-36.41Z"></path>
+				<path fill="#c93630" d="M217.53,152.12c-2.56-1.19-5.66-1.78-9.29-1.78h-62.3v33.03h62.3c5.37,0,9.57-1.59,12.58-4.79,3-3.19,4.5-7.29,4.5-12.29,0-3.37-.65-6.29-1.97-8.72-1.31-2.44-3.25-4.25-5.82-5.45Z"></path>
+			</svg>
+			<h1>JOA · Joint Operations Assistant</h1>
+			<p class="sub">Redline Wars</p>
+			<div class="note">
+				<p>The companion app is part of the live Redline Wars service and is not included in the
+					open-source client. It pairs with the game you are playing — look for the phone button in
+					the in-game command bar and scan its code.</p>
+				<p>This page only appears in builds made from the public source. Nothing is wrong with your
+					pairing link; the assistant itself ships with the release builds.</p>
+			</div>
+			<footer>© 2026 Jolyn Studios · <a href="https://github.com/jolynstudios/redlinewars">jolynstudios/redlinewars</a></footer>
+		</main>
+	</body>
+</html>

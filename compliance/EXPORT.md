@@ -49,6 +49,8 @@ publish what it was meant to keep.
 | `deploy/`, `.github/` | 34 | production infrastructure: hosts, deployment, CI with its secrets |
 | `docs/`, `docs-archive/`, `issues/`, `plan/`, `Blender-Review/`, `scripts/`, internal root documents | 145 | internal notes, measurements and tooling |
 | `engine/.github/`, `engine/steelseed-host/tools/vmlab/`, `engine/steelseed-host/COMPLETION-AUDIT.md`, `web/.tmp-*` | 15 | upstream OpenRA's CI templates, an internal VM lab, an internal record, scratch scripts |
+| `web/src/hud/`, `web/src/companion/`, `web/src/core/tactical/`, `web/index.html`, `web/companion.html`, `web/src/audio/taunt-lines.json` | 34 | Jolyn Studios' game interface: setup, lobby, in-battle HUD, tutorial, match report, and the JOA companion with its tactical core — the studio's own work above the OpenRA protocol, replaced in the export by the stand-in node `web/src/ui` and the stand-in pages below |
+| 25 interface and companion gates under `web/tools/` and `engine/steelseed-host/tools/` | 25 | they import or read the withheld interface source, so they cannot exist in this tree |
 | root `LICENSE`, `README.md`, `THIRD_PARTY_NOTICES.md` | 3 | replaced by the public editions |
 
 Build output, such as `bin/`, `obj/`, `node_modules/`, `dist/` and `generated/`, never leaves, whatever
@@ -57,6 +59,27 @@ directory it is in.
 None of the withheld files is needed to build the game. Of the art, the build needs only the landmark
 manifest, which `tools/fallback-art.mjs` writes. The desktop packager needs audio in the bundle and the
 icons, and the stand-ins cover both.
+
+## Stand-in pages and the interface node
+
+From `v2026.09.28-aa02032` on, the interface carve-out works like the art stand-ins: the private tree
+carries the public replacements beside the real thing, and the export publishes them under the
+production names.
+
+- The production client page stays `web/index.html` in the private tree; the public page is written as
+  `web/public-index.html` and the export renames it onto `web/index.html` after extraction, so the
+  private tree can never accidentally serve the stand-in. Same for `web/public-companion.html`, which
+  publishes as `web/companion.html`.
+- `web/src/hud/` (the interface) and `web/src/ui/` (the stand-in presentation node) both register the
+  `ui` system id; `web/src/main.ts` prefers `hud/` whenever it is present, so the private builds are
+  unchanged and the exported build boots the stand-in.
+- `RELEASE-SOURCE.json` records the renames and the full list of withheld paths (`withheldPaths`), which
+  `tools/verify-release.mjs` uses to tell an expected withheld-proprietary source in a release build's
+  maps from a published source it cannot account for.
+
+The desktop packager also filters `*.map` out of the AppBundle it embeds, so the shipped installers
+carry no embedded interface source; the verifier checks correspondence against the build's own
+AppBundle, which keeps the maps.
 
 The withheld CI and deployment scripts are the official build's control scripts. They name production
 hosts and use secrets. `tools/build.mjs` runs the same build steps without them, and

@@ -95,6 +95,14 @@ function newestUnder(path, filter = null) {
 	return newest
 }
 
+// The source export withholds the interface gates — they test Jolyn Studios' own UI, which the
+// public tree replaces with the stand-in presentation node (web/src/ui). In the private tree
+// every step below must exist and a missing one is a broken step list; in the exported tree the
+// withheld ones are skipped, so an acceptance run there stays meaningful.
+const runnable = existsSync(resolve(gameRoot, 'web/src/hud/index.ts'))
+	? steps
+	: steps.filter(([, command, args]) => command !== process.execPath || existsSync(String(args[0])))
+
 /** Producer -> the output whose existence --validate requires, plus the inputs that date it. */
 const composeInputs = [resolve(gameRoot, 'engine/bin-browser/OpenRA.Browser.dll'), resolve(gameRoot, 'web/dist/index.html')]
 const validateOutputs = {
@@ -128,7 +136,7 @@ const validateOutputs = {
 	'final-assetgate': { output: resolve(gameRoot, 'engine/bin-browser/AppBundle'), sources: composeInputs },
 }
 
-for (const [name, command, args] of steps) {
+for (const [name, command, args] of runnable) {
 	if (validate && validateOutputs[name]) {
 		const producer = validateOutputs[name]
 		if (!existsSync(producer.output)) {
