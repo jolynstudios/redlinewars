@@ -20,6 +20,8 @@ interface CameraLike {
 	pickGroundPoint(screenX: number, screenY: number, ctx: Ctx): { x: number; y: number; z: number; cellX: number; cellY: number } | null
 	/** Snap the strategic camera focus to a world-space ground point (metres; 1024 world units per cell). */
 	focusWorld(worldX: number, worldZ: number): void
+	/** Show the renderer's selection rings for exactly these actors; an empty list clears them. */
+	selectActors(actorIds: readonly number[]): void
 }
 
 interface OwnActorHit {
@@ -42,7 +44,7 @@ const STYLE = `
 .rwp-card p { margin: 6px 0 14px; color: #9aa3ad; font-size: 12px; }
 .rwp-card select { width: 100%; padding: 7px 9px; margin-bottom: 12px; background: #10161c; color: #e8e6e1;
 	border: 1px solid rgba(255, 255, 255, .18); border-radius: 6px; }
-.rwp-start { width: 100%; padding: 10px 12px; background: #c93630; color: #fff; font-weight: 700; letter-spacing: .08em;
+.rwp-start { width: 100%; padding: 10px 12px; background: #fff; color: #090d11; font-weight: 700; letter-spacing: .08em;
 	text-transform: uppercase; border: 0; border-radius: 6px; cursor: pointer; }
 .rwp-start:disabled { opacity: .45; cursor: wait; }
 .rwp-status { margin: 10px 0 0; min-height: 16px; color: #9aa3ad; font-size: 12px; }
@@ -68,6 +70,8 @@ export class Ui {
 	private startButton: HTMLButtonElement | null = null
 	private catalog: SkirmishCatalog | null = null
 	private readonly selection: number[] = []
+	private hint = ''
+	private hintAt = 0
 	private renderPlayerId = 0
 	private running = false
 	// Set on start; consumed on the first frame that shows one of the local player's actors,
@@ -230,7 +234,7 @@ export class Ui {
 		})
 		const onKey = (event: KeyboardEvent) => {
 			if (event.defaultPrevented || !this.running) return
-			if (event.key === 'Escape') this.selection.length = 0
+			if (event.key === 'Escape') this.clearSelection()
 			else if (event.key === 'A' || event.key === 'a') this.selectAllOwn()
 		}
 		window.addEventListener('keydown', onKey)
@@ -269,6 +273,7 @@ export class Ui {
 		const hit = this.nearestActor(screenX, screenY, true)
 		if (!additive) this.selection.length = 0
 		if (hit && !this.selection.includes(hit.id)) this.selection.push(hit.id)
+		this.syncSelection()
 		this.refreshStrip(true)
 	}
 
@@ -280,6 +285,24 @@ export class Ui {
 			const id = actors.id[i]
 			if (actors.owner[i] === this.renderPlayerId && !this.selection.includes(id)) this.selection.push(id)
 		}
+		this.syncSelection()
+		this.refreshStrip(true)
+	}
+
+	private clearSelection(): void {
+		this.selection.length = 0
+		this.syncSelection()
+		this.refreshStrip(true)
+	}
+
+	/** The camera owns the rings the renderer draws around the selected actors; keep them exact. */
+	private syncSelection(): void {
+		this.ctx?.get<CameraLike>('camera')?.selectActors(this.selection)
+	}
+
+	private flash(text: string): void {
+		this.hint = text
+		this.hintAt = performance.now()
 		this.refreshStrip(true)
 	}
 
@@ -296,7 +319,10 @@ export class Ui {
 			contextual: true,
 			subjectIds: new Uint32Array(this.selection),
 			...(enemy ? { targetActorId: enemy.id } : { targetCell: { x: ground!.cellX, y: ground!.cellY } }),
-		}).catch(reply => console.warn('[ui] order refused:', reply))
+		}).then(() => this.flash('Order issued')).catch(reply => {
+			console.warn('[ui] order refused:', reply)
+			this.flash('Order refused')
+		})
 	}
 
 	// ------------------------------------------------------------------ battle readout
@@ -365,6 +391,11 @@ export class Ui {
 			const note = document.createElement('span')
 			note.className = 'rwp-dim'
 			note.textContent = 'Match over — reload the page to play again.'
+			strip.append(note)
+		} else if (this.hint && performance.now() - this.hintAt < 2500) {
+			const note = document.createElement('span')
+			note.className = 'rwp-dim'
+			note.textContent = ` · ${this.hint}`
 			strip.append(note)
 		}
 	}

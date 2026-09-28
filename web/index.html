@@ -20,22 +20,23 @@
 			:root {
 				--ink: #e8e6e1;
 				--dim: #9aa3ad;
-				--brand: #c93630;
+				/* Public build: no brand colour — the owner's call. Indicators are white. */
+			--brand: #ffffff;
 				--line: rgba(255, 255, 255, 0.14);
 			}
 			* { box-sizing: border-box; }
 			html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #090d11; color: var(--ink);
 				font: 14px/1.5 system-ui, sans-serif; }
-			#viewport { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+			#viewport { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none;
+				cursor: crosshair; }
 			.host-hidden { position: absolute; left: -9999px; top: 0; width: 1px; height: 1px; overflow: hidden; }
-			#sim-alarm { position: fixed; inset: auto 0 18px 0; text-align: center; color: #ffd9d6; font-weight: 700; }
+			#sim-alarm { position: fixed; inset: auto 0 18px 0; text-align: center; color: #fff; font-weight: 700; }
 
 			#boot { position: fixed; inset: 0; display: grid; place-items: center; background: #090d11; z-index: 10;
 				transition: opacity 0.45s ease; }
 			#boot.done { opacity: 0; pointer-events: none; }
 			#boot[hidden] { display: none; }
 			.boot-col { display: flex; flex-direction: column; align-items: center; gap: 18px; width: min(560px, 88vw); }
-			.boot-wordmark { width: min(360px, 70vw); height: auto; }
 			.boot-subtitle { margin: 0; color: var(--dim); letter-spacing: 0.34em; text-transform: uppercase; font-size: 12px; }
 			.boot-meter { width: 100%; }
 			.boot-line__clip { position: relative; height: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
@@ -52,7 +53,7 @@
 			.boot-step { display: grid; grid-template-columns: 26px 86px 1fr auto; gap: 10px; align-items: baseline;
 				padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 12px; }
 			.boot-step[data-status="pending"] { opacity: 0.45; }
-			.boot-step[data-status="active"] { border-color: rgba(201, 54, 48, 0.65); }
+			.boot-step[data-status="active"] { border-color: rgba(255, 255, 255, 0.5); }
 			.boot-step__index { color: var(--dim); font-variant-numeric: tabular-nums; }
 			.boot-step__name { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 11px; }
 			.boot-step__detail { color: var(--dim); }
@@ -65,7 +66,7 @@
 			.boot-fail__actions { display: flex; gap: 10px; }
 			.boot-btn { padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); background: none;
 				color: var(--ink); cursor: pointer; font-weight: 700; }
-			.boot-btn--primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+			.boot-btn--primary { background: var(--brand); border-color: var(--brand); color: #090d11; }
 			.boot-fail__details { margin-top: 12px; color: var(--dim); font-size: 12px; }
 			.boot-fail__details pre { max-height: 180px; overflow: auto; white-space: pre-wrap; }
 			.boot-tip__nav { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -89,10 +90,6 @@
 		</style>
 	</head>
 	<body>
-		<!-- Brand sprite: public/favicon.svg's mark and the public wordmark, inlined as text. -->
-		<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-			<symbol id="rw-wordmark" viewBox="44 58 1364 284"><path fill="#c93630" d="M52.34,127.93v206.17h85.66v-53.11h288.1l53.11,53.11h379.77l59.07-59.07V65.9H114.39l-62.04,62.02Z"/><path fill="#fff" d="M744.05,171.84h64.22v12.42h-48.42v12.33h42.85v12.24h-42.85v13.25h49.15v12.52h-64.96v-62.76ZM626.93,171.84h14.43l33.71,31.43c.67.61,1.52,1.45,2.56,2.51,1.04,1.07,2.09,2.15,3.15,3.24,1.06,1.1,1.99,2.07,2.79,2.92h.73c0-1.22-.03-2.74-.09-4.57-.06-1.83-.09-3.35-.09-4.57v-30.97h14.98v62.76h-14.25l-33.35-31.43c-1.58-1.52-3.23-3.17-4.93-4.93-1.71-1.77-3.08-3.2-4.11-4.29h-.73c.06.85.12,2.21.18,4.07.06,1.86.09,3.97.09,6.35v30.24h-15.07v-62.76ZM566.18,171.84h15.71v62.76h-15.71v-62.76ZM471.35,171.84h15.71v49.42h40.11v13.34h-55.82v-62.76ZM357.88,171.84h34.17c7.67,0,14.28,1.2,19.82,3.61,5.54,2.41,9.81,5.94,12.79,10.6,2.98,4.66,4.48,10.4,4.48,17.22s-1.49,12.47-4.48,17.13c-2.98,4.66-7.25,8.19-12.79,10.6-5.54,2.41-12.15,3.61-19.82,3.61h-34.17v-62.76ZM250.72,171.84h64.22v12.42h-48.42v12.33h42.85v12.24h-42.85v13.25h49.15v12.52h-64.96v-62.76ZM138.08,171.84h50.79c4.45,0,8.13.91,11.05,2.74,2.92,1.83,5.1,4.25,6.53,7.26,1.43,3.02,2.15,6.32,2.15,9.91,0,3.78-.96,7.29-2.88,10.55-1.92,3.26-4.83,5.83-8.72,7.72l13.06,24.58h-17.72l-11.05-21.83h-27.5v21.83h-15.71v-62.76Z"/><path fill="#c93630" d="M406.72,217.57c1.92-1.49,3.43-3.35,4.52-5.57,1.1-2.22,1.64-4.8,1.64-7.72v-2.19c0-2.86-.55-5.4-1.64-7.63-1.1-2.22-2.6-4.08-4.52-5.57-1.92-1.49-4.2-2.63-6.85-3.43-2.65-.79-5.56-1.19-8.72-1.19h-17.54v37.82h17.54c3.17,0,6.08-.38,8.72-1.14,2.65-.76,4.93-1.89,6.85-3.38Z"/><path fill="#c93630" d="M190.24,198.11c1.46-1.55,2.19-3.55,2.19-5.98,0-1.64-.32-3.06-.96-4.25s-1.58-2.07-2.83-2.65c-1.25-.58-2.76-.87-4.52-.87h-30.33v16.08h30.33c2.62,0,4.66-.78,6.12-2.33Z"/><path fill="#c93630" d="M1074.46,209.48c-.18.61-.38,1.29-.59,2.05-.21.76-.44,1.58-.69,2.47-.24.88-.47,1.74-.68,2.56-.21.82-.41,1.57-.59,2.24h-.55c-.12-.91-.3-1.96-.55-3.15-.24-1.19-.5-2.33-.78-3.43s-.53-2.01-.78-2.74l-10.78-37.64h-20.92l-10.69,37.64c-.12.49-.29,1.11-.5,1.87-.21.76-.41,1.58-.59,2.47-.18.88-.37,1.77-.55,2.65-.18.88-.33,1.66-.46,2.33h-.64c-.12-.85-.34-1.84-.64-2.97-.31-1.13-.59-2.27-.87-3.43-.27-1.16-.56-2.13-.87-2.92l-11.51-37.64h-16.72l20.56,62.76h19.55l11.33-39.83c.24-.73.5-1.64.78-2.74.27-1.1.55-2.21.82-3.33.27-1.13.5-2.12.69-2.97h.46c.12.79.29,1.71.5,2.74.21,1.04.47,2.12.78,3.24.3,1.13.58,2.15.82,3.06l11.69,39.83h19l20.74-62.76h-15.17l-11.6,37.64Z"/><path fill="#c93630" d="M1146.81,171.84l-31.34,62.76h16.26l5.39-11.33h35.9l5.39,11.33h17.17l-31.15-62.76h-17.63ZM1142.98,211.12l6.67-14.25c.43-.85.94-2,1.55-3.43.61-1.43,1.23-2.91,1.87-4.43.64-1.52,1.2-2.86,1.69-4.02h.73c.12.24.4.85.82,1.83.43.97.91,2.13,1.46,3.47.55,1.34,1.08,2.59,1.6,3.75.52,1.16.9,2.07,1.14,2.74l6.67,14.34h-24.21Z"/><path fill="#c93630" d="M1292.57,202.31c1.92-3.26,2.88-6.78,2.88-10.55s-.72-6.9-2.15-9.91c-1.43-3.01-3.61-5.44-6.53-7.26-2.92-1.83-6.61-2.74-11.05-2.74h-50.79v62.76h15.71v-21.83h27.5l11.05,21.83h17.72l-13.06-24.58c3.9-1.89,6.81-4.46,8.72-7.72ZM1277.09,198.11c-1.46,1.55-3.5,2.33-6.12,2.33h-30.33v-16.08h30.33c1.77,0,3.27.29,4.52.87,1.25.58,2.19,1.46,2.83,2.65s.96,2.6.96,4.25c0,2.44-.73,4.43-2.19,5.98Z"/><path fill="#c93630" d="M1397.09,207.2c-1.43-2.19-3.35-4-5.76-5.44-2.41-1.43-5.12-2.59-8.13-3.47-3.01-.88-6.14-1.58-9.36-2.1-3.23-.52-6.35-.97-9.36-1.37-3.01-.4-5.74-.84-8.18-1.33-2.44-.49-4.36-1.13-5.76-1.92-1.4-.79-2.1-1.86-2.1-3.2,0-1.03.61-1.99,1.83-2.88,1.22-.88,3.11-1.58,5.66-2.1,2.56-.52,5.88-.78,9.96-.78,3.11,0,5.83.3,8.18.91,2.34.61,4.17,1.42,5.48,2.42,1.31,1,1.96,2.18,1.96,3.52v1h15.26v-1.46c0-2.86-.67-5.42-2.01-7.67-1.34-2.25-3.37-4.17-6.08-5.76-2.71-1.58-6.04-2.79-10-3.61-3.96-.82-8.5-1.23-13.61-1.23s-9.61.4-13.66,1.19c-4.05.79-7.51,1.96-10.37,3.52-2.86,1.55-5.06,3.47-6.58,5.76-1.52,2.28-2.28,4.98-2.28,8.08,0,3.29.72,6.06,2.15,8.31,1.43,2.25,3.35,4.1,5.75,5.53,2.41,1.43,5.12,2.59,8.13,3.47,3.02.88,6.14,1.57,9.36,2.06,3.23.49,6.35.94,9.36,1.37,3.01.43,5.74.91,8.18,1.46,2.44.55,4.35,1.25,5.76,2.1,1.4.85,2.1,2.04,2.1,3.56,0,1.04-.37,1.93-1.1,2.7-.73.76-1.71,1.39-2.92,1.87-1.22.49-2.6.87-4.16,1.14-1.55.27-3.17.47-4.84.59-1.68.12-3.33.18-4.98.18-3.78,0-7.11-.24-10-.73-2.89-.49-5.1-1.31-6.62-2.47-1.52-1.16-2.28-2.65-2.28-4.48v-1.1c0-.3.06-.58.18-.82h-15.53c-.12.12-.17.27-.14.46.03.18.05.33.05.46,0,4.26.88,7.74,2.65,10.41,1.77,2.68,4.26,4.78,7.49,6.3,3.23,1.52,6.96,2.57,11.19,3.15,4.23.58,8.82.87,13.75.87,6.58,0,12.38-.69,17.4-2.06,5.02-1.37,8.97-3.55,11.83-6.53,2.86-2.98,4.29-6.94,4.29-11.88,0-3.17-.72-5.85-2.15-8.04Z"/></symbol>
-		</svg>
 		<!-- The composed OpenRA host owns these compatibility elements; STEELSEED never renders them. -->
 		<div id="status" class="host-hidden" aria-hidden="true"></div>
 		<pre id="log" class="host-hidden" aria-hidden="true"></pre>
@@ -108,7 +105,6 @@
 		<div id="boot" role="region" aria-label="Loading Redline Wars" data-state="loading">
 			<div class="boot-col">
 				<div class="boot-brand">
-					<svg class="boot-wordmark" viewBox="44 58 1364 284" role="img" aria-label="Redline Wars"><use href="#rw-wordmark"></use></svg>
 					<p class="boot-subtitle">Fractured Order — public build</p>
 				</div>
 				<div class="boot-meter">

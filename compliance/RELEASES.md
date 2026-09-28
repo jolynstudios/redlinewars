@@ -70,7 +70,18 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.28-aa02032 (the current release)
+## v2026.09.28-333da6c (the current release)
+
+Exported from private commit `333da6c8`, superseding `v2026.09.28-aa02032` the same evening at the owner's
+direction. The public pages lose the Redline Wars logo and every brand-red indicator turns white; the
+stand-in gains the affordances a player needs to see it work — a crosshair cursor over the viewport, the
+renderer's selection rings (the same `camera.selectActors` surface the production interface drives), and a
+short order-issued/order-refused note in the strip. The desktop landing's header mark loses the rounded
+white plate that had appeared behind it, so the header reads dark again.
+
+Downloads and the verification record will be added when the release is deployed.
+
+## v2026.09.28-aa02032 (superseded by v2026.09.28-333da6c)
 
 Exported from private commit `aa020326`. This is the interface withdrawal: the Jolyn Studios game
 interface — the setup screens, multiplayer lobby, in-battle HUD, tutorial, match report and the JOA
