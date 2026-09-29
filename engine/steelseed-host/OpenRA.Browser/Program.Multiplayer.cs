@@ -222,6 +222,42 @@ namespace OpenRA
 			}
 		}
 
+		// Community rooms: the creator may open a room without playing. The
+		// engine's own `spectate` lobby command releases the server-assigned
+		// slot (Slot = null → IsObserver) and the spectator stays a full lobby
+		// client — first validated connection keeps admin, so a spectating
+		// creator still owns roster, kick and start. AllowSpectators defaults
+		// to true in the mod, so no map or rules change is involved.
+		[JSExport]
+		internal static string LobbyBecomeSpectator()
+		{
+			try
+			{
+				var orderManager = Game.OrderManager;
+				var localClient = orderManager?.LocalClient;
+				if (localClient == null)
+					return "not connected";
+
+				if (orderManager.GameStarted)
+					return "game already started";
+
+				// Same fail-closed map check as the player claim: a spectator
+				// parked in a lobby whose map the client cannot load can never
+				// see the match start either.
+				var lobbyMap = orderManager.LobbyInfo?.GlobalSettings?.Map;
+				if (string.IsNullOrEmpty(lobbyMap) ||
+					Game.ModData.MapCache[lobbyMap].Status != MapStatus.Available)
+					return "map unavailable";
+
+				orderManager.IssueOrder(Order.Command("spectate"));
+				return "spectating";
+			}
+			catch (Exception e)
+			{
+				return $"failed: {e.Message}";
+			}
+		}
+
 		[JSExport]
 		internal static void LobbySetReady()
 		{
@@ -508,6 +544,91 @@ namespace OpenRA
 		}
 
 		/// <summary>
+		/// Admin changes the room's map through the server's own `map` lobby
+		/// command (LobbyCommands): the server rebuilds the slot list, resets
+		/// client states and notifies everyone. Fail-closed like the slot claim:
+		/// the client must hold the target map locally (every catalog map ships
+		/// in the AppBundle) or the sender would strand itself in an unloadable
+		/// lobby.
+		/// </summary>
+		[JSExport]
+		internal static string LobbySetMap(string mapUid)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			if (orderManager.GameStarted)
+				return "game already started";
+
+			if (string.IsNullOrEmpty(mapUid) ||
+				Game.ModData.MapCache[mapUid].Status != MapStatus.Available)
+				return "map unavailable";
+
+			orderManager.IssueOrder(Order.Command($"map {mapUid}"));
+			return $"map {mapUid} sent";
+		}
+
+		/// <summary>
+		/// Admin resizes the room to <paramref name="seats"/> seats: opens closed
+		/// unclaimed slots up to the target and closes surplus open ones (the
+		/// same `slot_open`/`slot_close` orders the server validates). The lobby
+		/// mirror's host controls call this so a community room is never stuck at
+		/// the seat count it booted with — the standing-room host may grow it to
+		/// the map's own ceiling.
+		/// </summary>
+		[JSExport]
+		internal static string LobbySetSeats(int seats)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			if (orderManager.GameStarted)
+				return "game already started";
+
+			var lobby = orderManager.LobbyInfo;
+			var occupied = lobby.Clients.Count(c => c.Slot != null);
+			var wanted = Math.Max(0, seats) - occupied;
+			var open = lobby.Slots
+				.Where(s => !s.Value.Closed && lobby.ClientInSlot(s.Key) == null)
+				.Select(s => s.Key)
+				.ToList();
+			var closed = lobby.Slots
+				.Where(s => s.Value.Closed && lobby.ClientInSlot(s.Key) == null)
+				.Select(s => s.Key)
+				.ToList();
+
+			var opened = 0;
+			foreach (var slot in closed)
+			{
+				if (open.Count + opened >= wanted)
+					break;
+
+				orderManager.IssueOrder(Order.Command($"slot_open {slot}"));
+				opened++;
+			}
+
+			var closedCount = 0;
+			foreach (var slot in open)
+			{
+				if (open.Count - closedCount <= wanted)
+					break;
+
+				orderManager.IssueOrder(Order.Command($"slot_close {slot}"));
+				closedCount++;
+			}
+
+			return $"seats {seats}: opened {opened}, closed {closedCount}";
+		}
+
+		/// <summary>
 		/// Per-player list for the bottom-left session HUD: name, connection
 		/// quality (Good/Moderate/Poor — the server pings every 5s and broadcasts
 		/// SyncConnectionQuality), lobby state (Disconnected marks a dropped
@@ -528,7 +649,9 @@ namespace OpenRA
 				var entries = orderManager.LobbyInfo.Clients.Select(c =>
 					$"{c.Name}|bot:{(c.Bot != null)}|{c.State}|q:{c.ConnectionQuality}|ms:{c.PingMs}|admin:{c.IsAdmin}|slot:{c.Slot ?? "none"}" +
 					$"|idx:{c.Index}|faction:{c.Faction}|color:{c.Color}|team:{c.Team}|spawn:{c.SpawnPoint}");
-				return $"started={orderManager.GameStarted} clients=[{string.Join(";;", entries)}]";
+				var openSeats = orderManager.LobbyInfo.Slots.Count(s => !s.Value.Closed);
+				return $"started={orderManager.GameStarted} clients=[{string.Join(";;", entries)}] " +
+					$"map={orderManager.LobbyInfo.GlobalSettings.Map ?? ""} seats={openSeats}";
 			}
 			catch (Exception e)
 			{

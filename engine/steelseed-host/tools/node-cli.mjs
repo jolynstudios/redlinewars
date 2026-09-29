@@ -67,6 +67,8 @@ function parseCliArgs(argv) {
     httpPort: num('--http'),
     basePort: num('--base-port'),
     idleKillSeconds: num('--idle-kill'),
+    acceptPlaced: flags.has('--accept-placed') || undefined,
+    adminIdleSeconds: num('--admin-idle-seconds'),
     lan: flags.has('--lan') || undefined,
     exitOnUpdateRequired: flags.has('--exit-on-update-required') || undefined,
     exitOnDrain: flags.has('--exit-on-drain') || undefined,
@@ -202,6 +204,10 @@ export function buildOptions(argv, env, runtime = {}) {
     nodeKeyFile: ensureNodeKeyFile(cli.nodeKeyFile, dataDir),
     name: cli.name,
     idleKillSeconds,
+    // Community placement opt-in + admin idle-demotion timer pass straight
+    // through; roomhost validates them against the mode (standing-only).
+    acceptPlaced: cli.acceptPlaced,
+    adminIdleSeconds: cli.adminIdleSeconds ?? (env.ADMIN_IDLE_SECONDS ? Number(env.ADMIN_IDLE_SECONDS) : undefined),
     // --lan in standing mode only means "no spine connection" (see spineUrl
     // above): roomhost refuses the LAN mux and beacon in standing mode
     // (T3.19), so the flag is not forwarded there. Every other mode (the

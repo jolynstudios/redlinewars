@@ -142,7 +142,11 @@ try {
 			cash: document.getElementById('hud-cash').textContent,
 			power: document.getElementById('hud-power').textContent,
 			buttonCount: buttons.length,
-			hasDisabled: buttons.some(button => button.disabled),
+			// The locked-tile contract (hud/index.ts rebuild/refresh): an unbuildable
+			// or stalled tile is never inert — it stays clickable (disabled === false)
+			// and answers with why via the locked class + aria-disabled.
+			hasLocked: buttons.some(button => button.classList.contains('locked')
+				&& button.getAttribute('aria-disabled') === 'true' && !button.disabled),
 			hasReady: ready != null,
 			productionInside: production.left >= 0 && production.right <= innerWidth && production.top >= 0 && production.bottom <= innerHeight,
 			orders,
@@ -213,7 +217,7 @@ try {
 	}
 	if (result.power !== '40 / 100') problems.push(`power rendered as '${result.power}', expected '40 / 100'`)
 	if (result.buttonCount !== 5) problems.push(`rendered ${result.buttonCount} item buttons, expected 5`)
-	if (!result.hasDisabled) problems.push('unbuildable production item was not disabled')
+	if (!result.hasLocked) problems.push('unbuildable production item is not locked-with-reason (locked class + aria-disabled, still clickable)')
 	if (!result.hasReady) problems.push('ready structure did not expose a placement action')
 	if (!result.productionInside) problems.push('production panel overflows the pinned viewport')
 	if (!mobile.productionInside) problems.push('production panel overflows the 640x760 mobile viewport')

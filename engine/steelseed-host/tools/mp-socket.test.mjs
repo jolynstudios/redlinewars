@@ -190,7 +190,9 @@ test('a send served before the socket is open fails closed', () => {
 	// Nothing reached the wire; the connection failed with a reason instead.
 	assert.equal(ws.sent.length, 0);
 	assert.deepEqual(f.program.closes, [1]);
-	assert.deepEqual(f.getCloseInfo(1), { code: 0, reason: 'send on a closed socket' });
+	const early = f.getCloseInfo(1);
+	assert.equal(early.code, 0);
+	assert.equal(early.reason, 'send on a closed socket');
 	// A late open must not resurrect the failed connection.
 	ws.openEvent();
 	assert.deepEqual(f.program.opened, []);
@@ -261,13 +263,49 @@ test('a create that never opens fails closed after the 15 s connect timeout', t 
 	t.mock.timers.tick(1);
 	// Failed once, with a reason, and the socket was closed.
 	assert.deepEqual(f.program.closes, [1]);
-	assert.deepEqual(f.getCloseInfo(1), { code: 0, reason: 'connect timeout' });
+	const timedOut = f.getCloseInfo(1);
+	assert.equal(timedOut.code, 0);
+	assert.equal(timedOut.reason, 'connect timeout');
+	assert.ok(Number.isFinite(timedOut.at), 'close records carry a recording timestamp');
 	assert.notEqual(ws.closeArgs, null);
 	assert.equal(ws.readyState, FakeWebSocket.CLOSED);
-	// The trailing native close event does not clobber the timeout reason.
+	// The trailing native close event does not clobber the timeout reason —
+	// nor its recording moment.
 	ws.closeEvent(1006);
-	assert.deepEqual(f.getCloseInfo(1), { code: 0, reason: 'connect timeout' });
+	assert.equal(f.getCloseInfo(1), timedOut);
 	assert.deepEqual(f.program.closes, [1]);
+});
+
+test('a previous session\'s close stays readable with its own recording time', () => {
+	// Regression (community gate runs 19-22): close records persist forever
+	// by design, and the HUD aborts a join on the most recent one. A join
+	// after a demotion (connection 1 force-closed) read that corpse as ITS
+	// verdict and aborted within one poll — the new socket never dialled.
+	// The contract that makes the HUD guard possible: every record carries
+	// `at`, entries are never consumed, and a later session's close becomes
+	// the most recent entry.
+	const f = fixture();
+	f.connect(1);
+	f.serveMpWork();
+	f.created[0].closeEvent(1000, 'demoted');
+	const corpse = f.getCloseInfo();
+	assert.equal(corpse.code, 1000);
+	assert.equal(corpse.reason, 'demoted');
+	// Connection 2 joins AFTER connection 1 died; its record is distinct. In
+	// the real flow minutes pass between the two (a demotion teardown, the
+	// NotConnected wait, the settle) — here both land in one clock tick, so
+	// the provable contract is: recording times never go backwards and every
+	// record carries one. The HUD compares `at` against a joinStartedAt
+	// captured BEFORE its dial, which is strictly older than its own close.
+	f.connect(2);
+	f.serveMpWork();
+	f.created[1].openEvent();
+	assert.equal(f.getCloseInfo(), corpse, 'an open connection records nothing');
+	f.created[1].closeEvent(4404, 'room reserved');
+	const fresh = f.getCloseInfo();
+	assert.notEqual(fresh, corpse);
+	assert.equal(fresh.code, 4404);
+	assert.ok(Number.isFinite(fresh.at) && fresh.at >= corpse.at, 'recording times are wall-clock and never go backwards');
 });
 
 test('received bytes forward byte-exact; an oversize message arrives in recvCap slices', () => {

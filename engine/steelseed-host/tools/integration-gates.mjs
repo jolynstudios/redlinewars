@@ -240,10 +240,20 @@ function assetGate() {
 	// audited host allowlist), which this chain invokes separately.
 	// The engine wwwroot carries the multiplayer WebSocket transport (the browser
 	// joiner's own protocol, per the deployment/relay design) — primitives there
-	// are the product. web/src has no such role and stays fully banned.
+	// are the product. web/src has one such role too: the JOA companion transport,
+	// which lives in the phone app (web/src/companion) AND the in-battle panel
+	// (core/tactical/primary.ts) — both open the companion relay WebSocket by
+	// design (shipped 2026-09-28). Exact web/src relpaths; everything else in
+	// web/src stays fully banned.
+	const webSrcRoot = resolve(webRoot, 'src')
+	const companionTransportSource = path => {
+		const rel = relative(webSrcRoot, path).split(sep).join('/')
+		return rel.startsWith('companion/') || rel === 'core/tactical/primary.ts'
+	}
 	for (const path of localRuntimeSources) {
 		const text = readFileSync(path, 'utf8')
 		if (path.includes('wwwroot')) continue
+		if (companionTransportSource(path)) continue
 		if (/\bnew\s+(?:XMLHttpRequest|WebSocket|EventSource)\s*\(|\bnavigator\s*\.\s*sendBeacon\s*\(/.test(text))
 			fail(`assetgate found runtime network primitive in ${relative(gameRoot, path)}`)
 	}

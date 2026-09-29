@@ -5,10 +5,15 @@
 # exiting with status 3 (--exit-on-update-required), which
 # RestartPreventExitStatus=3 turns into "stay down until the operator
 # installs the new zip". Intentional drain exits 4 and also stays down.
+# --accept-placed (W1/W2): players may create their own rooms on this node
+# through the relay, max 4 player seats each, next to the standing rooms.
+# --max-matches 4 (CPX22 2 vCPU/4 GB: 2 standing + up to 2 placed fits with
+# ~100-200 MB per room; computeCapacity() gates down under load). An idle
+# lobby admin is demoted after the 600 s default (--admin-idle-seconds).
 # No .NET, no open inbound port, no owner token:
 # only REDLINE_NODE_KEY (the local loopback API key) is generated at install.
 [Unit]
-Description=Steelthorn node (community server: standing rooms + match servers)
+Description=Steelthorn node (community server: standing rooms + placed player rooms)
 After=network-online.target
 Wants=network-online.target
 
@@ -20,7 +25,7 @@ WorkingDirectory=/opt/redline-node
 # key.conf drop-in. Do not put a placeholder Environment assignment here:
 # systemd tokenizes its spaces and logs an invalid-assignment warning on every
 # daemon reload and service restart.
-ExecStart=/usr/bin/node /opt/redline-node/steelseed-host/tools/node-cli.mjs --spine wss://spine.redlinewars.online/node --mode standing --rooms-file /etc/redline-node/rooms.json --data-dir /var/lib/redline-node --max-matches 2 --exit-on-update-required --exit-on-drain
+ExecStart=/usr/bin/node /opt/redline-node/steelseed-host/tools/node-cli.mjs --spine wss://spine.redlinewars.online/node --mode standing --rooms-file /etc/redline-node/rooms.json --data-dir /var/lib/redline-node --max-matches 4 --accept-placed --exit-on-update-required --exit-on-drain
 StateDirectory=redline-node
 Restart=always
 RestartSec=5

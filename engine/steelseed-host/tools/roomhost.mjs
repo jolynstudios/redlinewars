@@ -96,6 +96,80 @@ export function publicNodeName(name) {
 		: 'Redline host';
 }
 
+// W3: the admin idle-demotion decision, pure so tests can drive it with a
+// synthetic clock. Mirrors the engine's admin rule from tunnel liveness alone:
+// the first validated entry in room.conns (insertion order = engine client
+// index order) is the admin. Exemptions: not in `lobby`, fewer than two
+// validated members (waiting alone is the owner's rule), adminIdleSeconds 0
+// (disabled) and every unvalidated socket.
+export function adminIdleDemotion(room, now, adminIdleSeconds) {
+	if (!(adminIdleSeconds > 0) || !room || room.state !== 'lobby') return null;
+	const members = [...room.conns.values()].filter(rec => rec.validated);
+	if (members.length < 2) return null;
+	const admin = members[0];
+	return now - admin.lastInboundAt > adminIdleSeconds * 1000 ? admin : null;
+}
+
+// Seat census (owner 2026-09-29: "if i open a room without me playing why
+// does it count me as a player, when hosting in that mode?"). The engine
+// prints one STEELSEED_ROOM line per actual change (join, seat claim/release,
+// spectate, slot resize, map change, drop) — the only seat truth on stdout,
+// because the pump stays blind to order bytes (§3 rule 3). Before the first
+// join the map's full slot list is open — nobody has arranged the room yet —
+// so the advertised create-time seats stay authoritative (a standing room
+// would otherwise list the map's full width, 0/8, instead of its configured
+// size). Once anyone has joined, the engine's own arrangement — including an
+// admin's resize or map change — is the truth and stays so even after the
+// room empties again. Returns null for other lines, else { changed } for the
+// caller's registry report.
+export function applyRoomCensus(room, line) {
+	const census = /STEELSEED_ROOM seated=(\d+) observers=(\d+) slots=(\d+) map=(\S+)/.exec(line);
+	if (!census) return null;
+	const seated = Number(census[1]);
+	if (seated + Number(census[2]) > 0) room.censusSeen = true;
+	const capacity = room.censusSeen ? Number(census[3]) : null;
+	const liveMap = room.censusSeen ? census[4] : null;
+	const changed = room.seated !== seated || room.capacity !== capacity || room.liveMap !== liveMap;
+	if (changed) {
+		room.seated = seated;
+		room.capacity = capacity;
+		room.liveMap = liveMap;
+	}
+	return { changed };
+}
+
+// W3 inbound-activity classifier for the demotion watcher. Any inbound byte
+// proves a live socket, never a present human: the server pings every second
+// (Connection.cs) and the client auto-answers, so pings must not refresh the
+// timer. The client stream is the 8-byte protocol/client-index handshake, then
+// [i32 LE length][packet] frames; a ping response is exactly 14 bytes
+// ([i32 0][u8 0x20][i64 timestamp][u8 queue], OrderIO.SerializePingResponse).
+// Anything unparseable counts as activity — the watcher must fail open, never
+// demote a human because the parser has a blind spot.
+export function createInboundActivityTracker(onActivity, { maxFrameBytes = 1 << 20 } = {}) {
+	let pending = null; // a frame split across TCP chunks carries to the next call
+	let handshaked = false;
+	return chunk => {
+		let buf = pending ? Buffer.concat([pending, chunk]) : chunk;
+		pending = null;
+		if (!handshaked) {
+			if (buf.length < 8) { pending = buf; return; }
+			buf = buf.subarray(8); // protocol version + client index
+			handshaked = true;
+		}
+		while (buf.length >= 4) {
+			const length = buf.readInt32LE(0);
+			if (length < 0 || length > maxFrameBytes) { onActivity(); return; }
+			if (buf.length < 4 + length) break;
+			const frame = buf.subarray(4, 4 + length);
+			buf = buf.subarray(4 + length);
+			const ping = length === 14 && frame.readInt32LE(0) === 0 && frame[4] === 0x20;
+			if (!ping) onActivity();
+		}
+		if (buf.length > 0) pending = Buffer.from(buf); // copy: never pin a whole chunk
+	};
+}
+
 export function parseArgv(argv = process.argv.slice(2)) {
 	const value = (name, fallback) => {
 		const i = argv.indexOf(name);
@@ -127,6 +201,10 @@ export function parseArgv(argv = process.argv.slice(2)) {
 		basePort: Number(value('--base-port', String(protocol.ports.dedicatedBase))),
 		maxMatches: Number(value('--max-matches', '2')),
 		idleKillSeconds: Number(value('--idle-kill', String(protocol.timeouts.idleKillDefaultSeconds))),
+		// Community placement opt-in (standing mode only) and the admin
+		// idle-demotion timer (0 disables it entirely).
+		acceptPlaced: has('--accept-placed'),
+		adminIdleSeconds: Number(value('--admin-idle-seconds', String(protocol.nodeApi.adminIdleDefaultSeconds))),
 		bundle: value('--bundle', null),
 		spineUrl: value('--spine', null),
 		dataDir: value('--data-dir', null),
@@ -226,6 +304,13 @@ export async function startNode(options = {}) {
 		throw new Error('roomhost: --lan is not available in standing mode — a community server is reached through the relay only');
 	if (mode === 'standing' && !options.roomsFile)
 		throw new Error('roomhost: standing mode requires --rooms-file (§5.4)');
+	// Placement opt-in: donate nodes already take placed rooms by design, so
+	// the flag is a standing-mode switch and a mistake anywhere else.
+	if (options.acceptPlaced && mode !== 'standing')
+		throw new Error('roomhost: --accept-placed is a standing-mode flag — donate nodes accept placement already');
+	const adminIdleSeconds = options.adminIdleSeconds ?? protocol.nodeApi.adminIdleDefaultSeconds;
+	if (!Number.isInteger(adminIdleSeconds) || adminIdleSeconds < 0 || adminIdleSeconds > 86400)
+		throw new Error('roomhost: --admin-idle-seconds must be an integer 0…86400 (0 disables idle demotion)');
 	const nodeName = publicNodeName(options.name);
 	// T2.5: the app version advertised at registration; the desktop package's
 	// version when this repo carries it, else the dev placeholder.
@@ -522,6 +607,11 @@ async function allocateRoom(spec) {
 		solo: spec.solo,
 		debugSync,
 		ranked: spec.ranked === true,
+		// Owner 2026-09-29: an unranked room's admin may re-map the lobby
+		// live, so the pool widens to the node's own stamped catalog. Ranked
+		// rooms keep the T1.2 pin — the ranked contract is the create-time
+		// map, and nothing may widen it.
+		mapPool: spec.ranked === true ? null : [...catalogByUid.keys()],
 	}, { engineRoot, supportDir: roomDir });
 	const child = spawn(runner.cmd, [...runner.prefixArgs, ...args], {
 		cwd: engineRoot,
@@ -558,6 +648,14 @@ async function allocateRoom(spec) {
 		// replaced protocol.standing.restartAfterEndSeconds after it ends.
 		standingEntry: spec.standing ?? null,
 		players: 0,
+		// Seat census (engine's STEELSEED_ROOM line): the directory row counts
+		// SEATS, not connections — a spectating host is a host, not a player.
+		// Null until the engine speaks (older binaries fall back to the
+		// connection count above).
+		seated: null,
+		capacity: null,
+		liveMap: null,
+		censusSeen: false,
 		// T1.4: booting ──TCP accept probe──▶ reserved ──first join──▶ lobby
 		// ──started──▶ playing; any exit ──▶ ended. Single-use: the room never
 		// becomes a fresh lobby.
@@ -567,6 +665,10 @@ async function allocateRoom(spec) {
 		// has no late-join, so an abandoned room is unclaimable and only lies
 		// in the directory.
 		lastActiveAt: Date.now(),
+		// Admin idle-demotion bookkeeping (W3): localPort → { validated,
+		// lastInboundAt, close }. Insertion order mirrors the engine's client
+		// index order, so the first validated entry is the admin.
+		conns: new Map(),
 		child,
 		createdAt: Date.now(),
 	};
@@ -698,7 +800,31 @@ function setRoomState(room, state) {
 function handleRoomLine(room, line) {
 	const policy = /^STEELSEED_JOA_POLICY (enabled|disabled)$/.exec(line.trim());
 	if (policy && room.state !== 'playing') { room.companionAllowed = !room.ranked && policy[1] === 'enabled'; spineReportRooms(); return; }
-	if (line.includes('notification-joined') && room.state === 'reserved') setRoomState(room, 'lobby');
+	const census = applyRoomCensus(room, line);
+	if (census) {
+		if (census.changed) spineReportRooms();
+		return;
+	}
+	// Admin idle-demotion (W3): the dedicated server's stdout only echoes bare
+	// fluent keys (no names, no indices — those stay in the server's log
+	// file), so the watcher mirrors the engine's admin rule from tunnel
+	// liveness alone: the first validated connection is admin, and on every
+	// disconnect the engine reassigns to the lowest remaining client index
+	// (Server.cs DropClient) — exactly "the oldest still-live tunnel". The
+	// one unobservable divergence is a manual make_admin; it can leave the
+	// oldest tunnel idle-demoted while someone else holds admin. Logged.
+	if (line.includes('notification-new-admin')) {
+		console.log(`[room ${room.id.slice(0, 6)}] admin reassigned by the server`);
+		return;
+	}
+	// A join claims the room from `reserved` OR `booting`: the creator's
+	// notification can beat the accept probe (the spine routes their ws the
+	// moment create-ok answers), and from `booting` the claim would otherwise
+	// be dropped and the probe callback below would strand the room in
+	// `reserved` until the claim TTL killed it — with the creator connected.
+	// The probe callback's `state === 'booting'` guard keeps it from
+	// downgrading a room that already reached `lobby` this way.
+	if (line.includes('notification-joined') && (room.state === 'reserved' || room.state === 'booting')) setRoomState(room, 'lobby');
 	else if (line.includes('notification-game-started') && room.state === 'lobby') setRoomState(room, 'playing');
 	else if (line.includes('No one is playing, shutting down')) {
 		// Single-use rooms: a finished match never becomes a fresh lobby.
@@ -765,6 +891,18 @@ const stateTimer = setInterval(() => {
 				}
 			});
 		}
+		// W3: admin idle-demotion. An admin who does nothing for
+		// adminIdleSeconds while someone else is waiting loses the room: the
+		// node drops their tunnel and the engine's own drop-reassignment
+		// promotes the oldest remaining human (Server.cs DropClient) with a
+		// visible NewAdmin notice. Exemptions live in adminIdleDemotion().
+		const demoted = adminIdleDemotion(room, now, adminIdleSeconds);
+		if (demoted) {
+			const idleMin = Math.round((now - demoted.lastInboundAt) / 60000);
+			const waiting = [...room.conns.values()].filter(rec => rec.validated).length - 1;
+			console.log(`[roomhost] admin idle-demoted: room ${room.id.slice(0, 6)} admin idle ${idleMin} min with ${waiting} waiting — dropping their connection`);
+			demoted.close();
+		}
 	}
 }, 500);
 stateTimer.unref();
@@ -783,9 +921,12 @@ function roomSummary(room) {
 	return {
 		roomId: room.id,
 		name: room.name ?? `Room-${room.id.slice(0, 6)}`,
-		map: room.map,
-		slots: room.slots,
-		players: room.players,
+		// Census-first: the engine's live arrangement beats the create-time row
+		// once anyone has joined (the admin may have re-mapped or resized the
+		// room); seats, not connections.
+		map: room.liveMap ?? room.map,
+		slots: room.capacity ?? room.slots,
+		players: room.seated ?? room.players,
 		createdAt: room.createdAt,
 		// Host-chosen room ambience (tod/weather/gamespeed/...). Pass-through:
 		// the spine forwards summaries verbatim, so joiners inherit at start.
@@ -817,7 +958,7 @@ function keyMatches(provided) {
 // with 400 {"error":"invalid","field":…}. Request fields are `name` and
 // `solo`; today's settings.roomName / settings.mod /
 // settings.enableSingleplayer are unknown fields and are ignored.
-function validateCreate(body, { keyed }) {
+function validateCreate(body, { keyed, placedCeiling } = {}) {
 	const fail = field => ({ error: 'invalid', field });
 	if (!body || typeof body !== 'object' || Array.isArray(body)) return fail('map');
 	const map = body.map;
@@ -826,8 +967,9 @@ function validateCreate(body, { keyed }) {
 	const slots = body.slots;
 	// §5.3: slots in 2…5. The 2…8 owner-tier ceiling lands with owner tier
 	// registration (Phase 6, protocol.nodeApi.slotsMaxOwnerTier) — until then
-	// every caller gets the community ceiling.
-	const slotCeiling = protocol.nodeApi.slotsMax;
+	// every caller gets the community ceiling. `placedCeiling` narrows it to
+	// the standing tier's placement budget for spine-placed community rooms.
+	const slotCeiling = placedCeiling ?? protocol.nodeApi.slotsMax;
 	if (!Number.isInteger(slots) || slots < protocol.nodeApi.slotsMin || slots > slotCeiling || slots > (entry.players ?? slotCeiling)) return fail('slots');
 	let name = typeof body.name === 'string' ? body.name.normalize('NFC').trim() : null;
 	if (name !== null && (name.length < 1 || name.length > 32)) return fail('name');
@@ -1123,7 +1265,16 @@ const httpServer = http.createServer(async (req, res) => {
 			return;
 		}
 	}
-	const url = new URL(req.url, `http://127.0.0.1:${apiPort}`);
+	// OWASP (malformed-request robustness): req.url is attacker-controlled and
+	// Node's URL constructor throws on inputs like `//[`. An async-handler
+	// throw has no catch anywhere and would take the node — every room and
+	// match with it — down: refuse the request, never the process.
+	let url;
+	try { url = new URL(req.url, `http://127.0.0.1:${apiPort}`); }
+	catch {
+		sendJson(400, { error: 'malformed request' });
+		return;
+	}
 
 // T2.2: the one create/kill implementation behind the /v2 contract (§5.3).
 const createRoom = async () => {
@@ -1300,8 +1451,17 @@ function muxPeerKey(req) {
 }
 
 wsServer.on('upgrade', (req, socket, head) => {
-	console.log(`[roomhost] upgrade ${new URL(req.url, 'http://local.invalid').pathname} rooms=${rooms.size} origin=${req.headers.origin ?? '-'}`);
-	const url = new URL(req.url, 'http://127.0.0.1');
+	// Same malformed-request guard as the http handler: a req.url the URL
+	// constructor rejects must be a 400 here too — a throw in this sync
+	// listener would crash the node before any origin check runs.
+	let url;
+	try { url = new URL(req.url, 'http://127.0.0.1'); }
+	catch {
+		socket.write('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+		socket.destroy();
+		return;
+	}
+	console.log(`[roomhost] upgrade ${url.pathname} rooms=${rooms.size} origin=${req.headers.origin ?? '-'}`);
 	// Native clients send no Origin; the Electron/shared AppBundle uses a
 	// loopback Origin. A foreign web page must not drive a LAN/loopback mux as
 	// a cross-site WebSocket even if it learns a room id.
@@ -1357,17 +1517,49 @@ wsServer.on('upgrade', (req, socket, head) => {
 		attachPlayer(room);
 		console.log(`[roomhost] ws #${id} -> room ${room.id} (port ${room.port}, players ${room.players})`);
 		ws.on('close', () => detachPlayer(room));
-		pump(ws, room.port, id);
+		pump(ws, room.port, id, null, room);
 	});
 	});
 
 let connId = 0;
 
-function pump(ws, targetPort, id, onClosed) {
+function pump(ws, targetPort, id, onClosed, room = null) {
 	let tcp = null;
 	let tcpReady = false;
 	let closed = false;
 	let retryTimer = null;
+	let connPort = null;
+	// Admin idle-demotion: register this tunnel's server-side socket so the
+	// watcher can map stdout lines onto it and timestamp inbound bytes.
+	const trackConnect = () => {
+		if (!room || tcp.localPort === undefined) return;
+		connPort = tcp.localPort;
+		room.conns.set(connPort, {
+			// `validated` flips on the first inbound bytes — the OpenRA
+			// handshake — so half-open sockets never count as lobby members.
+			validated: false, lastInboundAt: Date.now(),
+			close: () => closeBoth('admin idle-demoted'),
+		});
+	};
+	// W3/F3: every inbound byte flips `validated` (a live handshake), but only
+	// non-ping frames refresh the demotion timer — the engine's 1 s auto-pings
+	// must never count as a present human.
+	const noteActivity = createInboundActivityTracker(() => {
+		if (connPort === null) return;
+		const rec = room.conns.get(connPort);
+		if (rec) rec.lastInboundAt = Date.now();
+	});
+	const trackInbound = chunk => {
+		if (!room || connPort === null) return;
+		const rec = room.conns.get(connPort);
+		if (rec) rec.validated = true;
+		noteActivity(chunk);
+	};
+	const trackClose = () => {
+		if (!room || connPort === null) return;
+		room.conns.delete(connPort);
+		connPort = null;
+	};
 	// A dead room must not buffer client bytes forever: cap the backlog and put
 	// a hard deadline on the "dedicated still booting" retry loop (H1).
 	const deadline = Date.now() + 30_000;
@@ -1399,6 +1591,7 @@ function pump(ws, targetPort, id, onClosed) {
 		tcp.on('connect', () => {
 			tcpReady = true;
 			writer.attach(tcp);
+			trackConnect();
 			console.log(`[roomhost] #${id} connected to 127.0.0.1:${targetPort}`);
 		});
 		tcp.on('data', chunk => {
@@ -1420,6 +1613,7 @@ function pump(ws, targetPort, id, onClosed) {
 
 	ws.on('message', (data, isBinary) => {
 		const chunk = data instanceof Buffer ? data : Buffer.from(data);
+		trackInbound(chunk);
 		writer.write(chunk);
 	});
 
@@ -1427,6 +1621,7 @@ function pump(ws, targetPort, id, onClosed) {
 		if (closed) return;
 		closed = true;
 		clearTimeout(retryTimer);
+		trackClose();
 		console.log(`[roomhost] #${id} ${why}`);
 		writer.close();
 		wsWriter.close();
@@ -1518,9 +1713,9 @@ if (options.lan) {
 				.map(room => ({
 					id: room.id,
 					name: room.name ?? `Room-${room.id.slice(0, 6)}`,
-					map: catalogByUid.get(room.map)?.title ?? room.map,
-					slots: room.slots,
-					players: room.players,
+					map: catalogByUid.get(room.liveMap ?? room.map)?.title ?? (room.liveMap ?? room.map),
+					slots: room.capacity ?? room.slots,
+					players: room.seated ?? room.players,
 					state: room.state,
 					locked: !!room.password,
 				})),
@@ -1590,14 +1785,17 @@ function spineReportRooms() {
 	// directory to lobby/playing (§5.4).
 	spineSendJson({
 		t: 'rooms',
-		rooms: [...rooms.values()].map(room => ({
-			...roomSummary(room),
-			hostName: nodeName,
-			mapUid: room.map,
-			mapTitle: catalogByUid.get(room.map)?.title ?? '',
-			state: room.state,
-			locked: !!room.password,
-		})),
+		rooms: [...rooms.values()].map(room => {
+			const mapUid = room.liveMap ?? room.map;
+			return {
+				...roomSummary(room),
+				hostName: nodeName,
+				mapUid,
+				mapTitle: catalogByUid.get(mapUid)?.title ?? '',
+				state: room.state,
+				locked: !!room.password,
+			};
+		}),
 	});
 }
 
@@ -1645,6 +1843,7 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 		tcp.on('connect', () => {
 			tcpReady = true;
 			writer.attach(tcp);
+			trackConnect();
 		});
 		tcp.on('data', chunk => {
 			if (closed || !tunnelWriter) return;
@@ -1670,6 +1869,27 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 			if (!closed) spineCloseChannel(chanId);
 		});
 	}
+	// Admin idle-demotion: same bookkeeping as pump(), on the relay path.
+	let connPort = null;
+	const trackConnect = () => {
+		if (tcp.localPort === undefined) return;
+		connPort = tcp.localPort;
+		room.conns.set(connPort, {
+			validated: false, lastInboundAt: Date.now(),
+			close: () => spineCloseChannel(chanId),
+		});
+	};
+	const trackClose = () => {
+		if (connPort === null) return;
+		room.conns.delete(connPort);
+		connPort = null;
+	};
+	// Same activity rule as pump(): ping responses are not a human.
+	const noteActivity = createInboundActivityTracker(() => {
+		if (connPort === null) return;
+		const rec = room.conns.get(connPort);
+		if (rec) rec.lastInboundAt = Date.now();
+	});
 	const channel = {
 		roomId,
 		chanId,
@@ -1677,10 +1897,18 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 		observeBuffer: Buffer.alloc(0),
 		clientIndex: undefined,
 		writer,
-		write: chunk => writer.write(chunk),
+		write: chunk => {
+			if (connPort !== null) {
+				const rec = room.conns.get(connPort);
+				if (rec) rec.validated = true;
+				noteActivity(chunk);
+			}
+			writer.write(chunk);
+		},
 		destroy: () => {
 			closed = true;
 			clearTimeout(retryTimer);
+			trackClose();
 			writer.close();
 			try { tcp.destroy(); } catch { /* already gone */ }
 		},
@@ -1736,6 +1964,11 @@ function spineConnect({ candidate = false } = {}) {
 				build: buildInfo?.simBuild ?? 'unknown',
 				rulesHash: process.env.REDLINE_RANKED_RULES_HASH ?? '',
 				mode,
+			// Standing nodes advertise placement opt-in explicitly (§5.5): the
+			// relay only ever considers them with acceptsPlaced true.
+			...(mode === 'standing' && options.acceptPlaced
+				? { acceptsPlaced: true, placedSlotsMax: protocol.nodeApi.placedSlotsMax }
+				: {}),
 			name: nodeName,
 			maxMatches,
 			app: appVersion,
@@ -1780,7 +2013,16 @@ function spineConnect({ candidate = false } = {}) {
 				send({ t: 'create-fail', reqId: msg.reqId, error: 'no-capacity' });
 				return;
 			}
-		const spec = validateCreate(msg, { keyed: false });
+			// Fail closed: a standing node serves its own rooms-file entries;
+			// player-placed rooms arrive only through the explicit opt-in.
+			if (mode === 'standing' && !options.acceptPlaced) {
+				console.log('[roomhost] spine create rejected: standing-mode without --accept-placed');
+				send({ t: 'create-fail', reqId: msg.reqId, error: protocol.nodeApi.standingErrorCode });
+				return;
+			}
+			// Community placement keeps the smaller ceiling (max 5 player
+			// slots — the standing tier's capacity budget); donate/own keep 2…5.
+		const spec = validateCreate(msg, { keyed: false, placedCeiling: mode === 'standing' ? protocol.nodeApi.placedSlotsMax : protocol.nodeApi.slotsMax });
 			if (spec.error) {
 				send({ t: 'create-fail', reqId: msg.reqId, error: 'invalid', field: spec.field });
 				return;

@@ -5,6 +5,11 @@
 //   mode 'echo': the fake dedicated listens on its Server.ListenPort and pipes
 //                bytes back (exercises the pump roundtrip and prints
 //                `notification-joined` so the room reaches `lobby`).
+//   mode 'eager': like echo, but `notification-joined` prints the moment the
+//                listen socket exists — BEFORE the node's 500 ms accept probe
+//                can leave `booting`. That is the fast-creator race (the spine
+//                routes the creator's ws the instant create-ok answers) made
+//                deterministic.
 //   mode 'idle': the fake dedicated only stays alive (rooms stay `booting`).
 //
 // The tree carries copies of the node sources and a tiny map catalog so
@@ -45,6 +50,22 @@ net.createServer(socket => socket.pipe(socket)).listen(port, '127.0.0.1', () => 
 	// reserved -> lobby transition is observable. 1.5 s keeps it comfortably
 	// behind the node's 500 ms accept-probe tick (booting -> reserved first).
 	setTimeout(() => console.log('notification-joined'), 1500);
+});
+setInterval(() => {}, 10_000);
+`,
+	eager: `#!/usr/bin/env node
+// Fixture dedicated server: listens on Server.ListenPort, echoes bytes, and
+// claims the room the INSTANT the socket exists (before the node's 500 ms
+// accept-probe tick) — the join-beats-the-probe race, deterministically.
+const net = require('node:net');
+const fs = require('node:fs');
+const arg = name => (process.argv.find(a => a.startsWith(name + '=')) || '').slice(name.length + 1);
+const port = Number(arg('Server.ListenPort'));
+const supportDir = arg('Engine.SupportDir');
+try { fs.mkdirSync(supportDir, { recursive: true }); } catch {}
+try { fs.writeFileSync(require('node:path').join(supportDir, 'fixture.pid'), String(process.pid)); } catch {}
+net.createServer(socket => socket.pipe(socket)).listen(port, '127.0.0.1', () => {
+	console.log('notification-joined');
 });
 setInterval(() => {}, 10_000);
 `,

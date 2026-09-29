@@ -82,9 +82,12 @@ export function resolveRunner(engineRoot) {
 }
 
 // The exact argument list of §5.4 — nothing more, nothing less. `room`:
-// {name, port, map, password, solo, debugSync, ranked}; `paths`: {engineRoot,
-// supportDir}. Server.MapPool is pinned to the room's own map: it is what
-// stops a crafted client from switching maps in the lobby (T1.2).
+// {name, port, map, password, solo, debugSync, ranked, mapPool}; `paths`:
+// {engineRoot, supportDir}. Server.MapPool is pinned to the room's own map
+// when the caller passes no pool (ranked rooms — the T1.2 pin: the ranked
+// contract is the create-time map). Unranked rooms pass the node's stamped
+// catalog so the room's admin may re-map the lobby live (owner 2026-09-29);
+// the server still validates admin rights and every uid against the pool.
 export function buildArgs(room, paths) {
 	return [
 		`Engine.EngineDir=${paths.engineRoot}`,
@@ -93,7 +96,7 @@ export function buildArgs(room, paths) {
 		`Server.Name=${room.name}`,
 		`Server.ListenPort=${room.port}`,
 		`Server.Map=${room.map}`,
-		`Server.MapPool=${room.map}`,
+		`Server.MapPool=${(room.mapPool ?? [room.map]).join(',')}`,
 		`Server.Password=${room.password ?? ''}`,
 		`Server.EnableSingleplayer=${room.solo ? 'True' : 'False'}`,
 		'Server.AdvertiseOnline=False',

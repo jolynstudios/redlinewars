@@ -29,14 +29,22 @@ function assetViolations(root, excluded = new Set()) {
 }
 
 const violations = []
+// The site favicon is the one authored presentation asset the product ships
+// outside the hashed steelseed/assets banks: the browser chrome needs the
+// vector at the document root (web/public/favicon.svg, copied by the vite
+// build to steelseed/favicon.svg in the bundle). Exact relpaths — any other
+// svg/png anywhere stays forbidden.
+const boundaryExemptRelPaths = new Set(['public/favicon.svg', 'steelseed/favicon.svg'])
 for (const root of [resolve(gameRoot, 'engine/openra'), hostRoot, resolve(gameRoot, 'web')])
-	for (const path of assetViolations(root, excludedSourceDirectories)) violations.push(`${root}:${path}`)
+	for (const path of assetViolations(root, excludedSourceDirectories))
+		if (!boundaryExemptRelPaths.has(path)) violations.push(`${root}:${path}`)
 // The bundle deliberately serves the user-mandated ElevenLabs voice banks and
 // authored portraits as hashed files under steelseed/assets (the vite build
 // emits them from the .forge banks). Source-side scans above stay strict;
 // inside the bundle only that directory is exempt — any other binary still
 // fails the extension scan.
-for (const path of assetViolations(bundleRoot, new Set(['assets']))) violations.push(`bundle:${path}`)
+for (const path of assetViolations(bundleRoot, new Set(['assets'])))
+	if (!boundaryExemptRelPaths.has(path)) violations.push(`bundle:${path}`)
 if (violations.length) fail(TOOL, `forbidden presentation assets crossed the boundary:\n${violations.join('\n')}`)
 
 const runtimeSourceRoots = [
@@ -73,9 +81,22 @@ const allowedRemoteHosts = new Set([
 	'www.openra.net',
 	'docs.ambientcg.com',
 	'raw.githubusercontent.com',
+	// The game's own site family: the Exit button sends browsers home
+	// (play → apex, web/src/hud/index.ts), and net-config/companion defaults
+	// point at the shipped spine/relay on the same domain. First-party
+	// endpoints, auditable.
+	'redlinewars.online',
+	'play.redlinewars.online',
+	'www.redlinewars.online',
+	// Art-pack download-catalog provenance (same role as ambientcg/quaternius
+	// above): cgtrader entries in the units chunk are descriptive links.
+	'www.cgtrader.com',
 ])
-	// Doc placeholders like `http://host:port` in comments are not endpoints.
-	const placeholderHosts = new Set(['host', 'host:port', 'ip', 'ip:port', 'hostname', 'example.com', 'example.org'])
+	// Doc placeholders like `http://host:port` in comments are not endpoints
+	// (192.168.x.x likewise: sha256.ts documents that a LAN origin is not a CDN),
+	// and loopback literals are the loader page's own defaults (the agent-sidecar
+	// input's http://127.0.0.1:4112) — nothing remote.
+	const placeholderHosts = new Set(['host', 'host:port', 'ip', 'ip:port', 'hostname', 'example.com', 'example.org', '192.168.x.x', '127.0.0.1', 'localhost', '[::1]'])
 function remoteUrlViolation(text, label) {
 	for (const match of text.matchAll(/https?:\/\/([^/\s"'`#?()<>;,]+)/gi)) {
 		const host = match[1].toLowerCase().replace(/:\d+$/, '')
@@ -93,8 +114,14 @@ for (const root of runtimeSourceRoots) {
 		// The engine C# clients carry the multiplayer transport itself: WebSocket /
 		// ClientWebSocket there are the game's own protocol, not presentation
 		// fetching, and must never fail this scan. The web presentation layer has
-		// no such role, so its network primitives stay banned outright.
+		// one such role too: the JOA companion transport, which lives in the phone
+		// app (web/src/companion) AND the in-battle panel
+		// (core/tactical/primary.ts) — both open the companion relay WebSocket by
+		// design (shipped 2026-09-28). Everything else in the presentation layer
+		// stays banned outright. The remote-URL audit above still applies.
 		if (!isPresentation) continue
+		const sourceRel = relative(root, path).split(sep).join('/')
+		if (sourceRel.startsWith('companion/') || sourceRel === 'core/tactical/primary.ts') continue
 		if (/\bnew\s+(?:XMLHttpRequest|WebSocket|EventSource)\s*\(|\bnavigator\s*\.\s*sendBeacon\s*\(/.test(source))
 			fail(TOOL, `runtime networking in authored source ${relative(gameRoot, path)}`)
 	}
@@ -112,8 +139,13 @@ for (const path of appTextFiles) {
 	remoteUrlViolation(text, `app-owned bundle file ${relative(bundleRoot, path)}`)
 	// openra-mp-socket.js is the shipped multiplayer transport (the browser
 	// joiner's WebSocket connection): its `new WebSocket` is the product, not
-	// presentation fetching. Every other app-owned bundle file stays strict.
+	// presentation fetching. companion-<hash>.js (the compiled phone app from
+	// web/src/companion) and steelseed-hud-<hash>.js (the compiled in-battle
+	// panel carrying core/tactical/primary.ts) hold the JOA companion transport
+	// — same rule. The remote-URL audit above already ran on these files; every
+	// other app-owned bundle file stays strict.
 	if (/(^|\/)openra-mp-socket\.js$/.test(path)) continue
+	if (/(^|\/)(companion|steelseed-hud)-[A-Za-z0-9_-]+\.js$/.test(path)) continue
 	if (/\bnew\s+(?:XMLHttpRequest|WebSocket|EventSource)\s*\(|\bnavigator\s*\.\s*sendBeacon\s*\(/.test(text))
 		fail(TOOL, `runtime network primitive in app-owned bundle file ${relative(bundleRoot, path)}`)
 }

@@ -32,6 +32,8 @@
     "slotsMin": 2,
     "slotsMax": 5,
     "slotsMaxOwnerTier": 8,
+    "placedSlotsMax": 5,
+    "adminIdleDefaultSeconds": 600,
     "standingErrorCode": "standing-mode"
   },
   "nodeTunnel": {

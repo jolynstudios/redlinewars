@@ -28,6 +28,8 @@ test('pairing requires main approval; permissions, pause, resume, expiry and rev
  phone.send({type:'taunt',taunt:'<script>'}); assert.equal((await phone.next()).type,'taunt-refused');
  primary.send({type:'permission',tier:'support'}); assert.equal((await phone.next()).tier,'support');
  phone.send({type:'intent',intent:{action:'move'}}); assert.equal((await phone.next()).type,'error');
+ // Repair is a technician's action (owner 2026-09-29): support tier passes it through.
+ phone.send({type:'intent',intent:{action:'repair',id:'r1'}}); assert.equal((await primary.next()).intent.id,'r1');
  phone.send({type:'intent',intent:{action:'support',id:'s1'}}); assert.equal((await primary.next()).intent.id,'s1');
  primary.send({type:'pause',paused:true}); assert.equal((await phone.next()).paused,true);
  phone.send({type:'intent',intent:{action:'support'}}); assert.equal((await phone.next()).type,'error');

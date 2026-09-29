@@ -81,7 +81,7 @@ export function createCompanionService({ originAllowed = () => false, authorizeH
 					const time = now(); if (time - session.intentAt >= 1000) { session.intentAt = time; session.intentCount = 0; }
 					if (++session.intentCount > 5 || session.paused || time - session.lastPrimary > 2000 || session.tier === 'information') { reject(ws, 'Commands unavailable'); return; }
 					const action = message.intent?.action;
-					if (!['support', 'move', 'attack', 'attack-move', 'stop', 'scout'].includes(action) || (session.tier === 'support' && action !== 'support')) { reject(ws, 'Permission does not allow this action'); return; }
+					if (!['support', 'repair', 'move', 'attack', 'attack-move', 'stop', 'scout'].includes(action) || (session.tier === 'support' && action !== 'support' && action !== 'repair')) { reject(ws, 'Permission does not allow this action'); return; }
 					json(session.primary, { type: 'intent', intent: message.intent, tier: session.tier });
 				}
 				// A taunt is voice, not a command: every permission may send one, a few seconds apart.

@@ -72,7 +72,11 @@ export function installMpSocket(program, heapView) {
 			const syntheticSend = existing.code === 0 && existing.reason === 'send on a closed socket'
 			if (!syntheticSend || code === 0) return
 		}
-		closeInfo.set(id, { code, reason })
+		// `at` (wall clock, so the page's HUD can compare across the worker
+		// boundary): entries persist forever, and a join that reads a PREVIOUS
+		// connection's close would abort on a corpse — the HUD ignores closes
+		// recorded before its join started.
+		closeInfo.set(id, { code, reason, at: Date.now() })
 	}
 
 	function wsCreate(id, url, recvPtr, recvCap, sendPtr) {

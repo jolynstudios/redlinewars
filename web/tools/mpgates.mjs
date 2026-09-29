@@ -30,6 +30,7 @@ const BROWSER_GATES = [
 	['mpgate:shroud', path.join(engineTests, 'mp-shroudgate.mjs'), []],
 	['mpgate:relay', path.join(engineTests, 'mp-relaygate.mjs'), []],
 	['mpgate:lifecycle', path.join(engineTests, 'mp-lifecyclegate.mjs'), []],
+	['mpgate:community', path.join(engineTests, 'mp-communitygate.mjs'), []],
 	['mpgate:desync', path.join(webDir, 'multiplayer-desyncgate.mjs'), []],
 ];
 

@@ -425,7 +425,7 @@ function inCooldown(node) {
 	return true;
 }
 
-function placementCandidates(geo, ownerOnly = false) {
+function placementCandidates(geo, ownerOnly = false, slots = Number.POSITIVE_INFINITY) {
 	const wantedGeo = geo ? String(geo).toLowerCase() : '';
 	const eligible = liveNodes().filter(node => {
 		const status = nodeStatus(node);
@@ -433,7 +433,14 @@ function placementCandidates(geo, ownerOnly = false) {
 			return false;
 		if (wantedGeo && !node.geo.toLowerCase().startsWith(wantedGeo)) return false;
 		if (ownerOnly) return node.tier === 'owner';
-		return node.tier !== 'owner' && node.mode === 'donate';
+		// The ordinary pool is non-owner nodes only: an owner-tier node (even
+		// one in donate mode) stays reserved for ownerOverflow/Ranked.
+		if (node.tier === 'owner') return false;
+		if (node.mode === 'donate') return true;
+		// Standing (community) nodes join the ordinary pool only on their
+		// explicit placement opt-in, and only when their advertised
+		// player-slot budget covers the request (community rooms max 5).
+		return node.mode === 'standing' && node.acceptsPlaced === true && slots <= node.placedSlotsMax;
 	});
 	return eligible.sort((a, b) => nodeStatus(a).rtt - nodeStatus(b).rtt);
 }
@@ -445,8 +452,8 @@ function ordinaryOwnerAllowed() {
 	return config.placement === 'donated+owner' && config.ownerOverflow === true;
 }
 
-function placementPool(geo, allowOwner) {
-	const donated = placementCandidates(geo, false);
+function placementPool(geo, allowOwner, slots) {
+	const donated = placementCandidates(geo, false, slots);
 	const owner = allowOwner ? placementCandidates(geo, true) : [];
 	return orderedPlacementCandidates(donated, owner, allowOwner);
 }
@@ -657,6 +664,11 @@ wss.on('connection', (ws, req) => {
 					node.id = nodeId;
 					node.registered = true;
 					node.mode = protocol.nodeModes.includes(msg.mode) ? msg.mode : 'own';
+					// Community placement opt-in (§5.5): only a standing node that
+					// explicitly advertises acceptsPlaced joins the ordinary pool;
+					// its player-slot budget is clamped to the community ceiling.
+					node.acceptsPlaced = node.mode === 'standing' && msg.acceptsPlaced === true;
+					node.placedSlotsMax = boundedInteger(msg.placedSlotsMax, protocol.nodeApi.slotsMin, protocol.nodeApi.placedSlotsMax, protocol.nodeApi.placedSlotsMax);
 					node.build = typeof msg.build === 'string' ? cleanText(msg.build, 16) : '';
 					node.rulesHash = typeof msg.rulesHash === 'string' ? cleanText(msg.rulesHash, 128) : cleanText(msg.health?.rulesHash ?? '', 128);
 					node.name = typeof msg.name === 'string' ? cleanText(msg.name, 32) : '';
@@ -681,7 +693,7 @@ wss.on('connection', (ws, req) => {
 							burst: limits.channelBurstBytes,
 						},
 					});
-					console.log(`[spine] node ${nodeId} registered tier=${node.tier} mode=${node.mode} build=${node.build || '?'} maxMatches=${node.capacity}`);
+					console.log(`[spine] node ${nodeId} registered tier=${node.tier} mode=${node.mode} build=${node.build || '?'} maxMatches=${node.capacity}${node.acceptsPlaced ? ` acceptsPlaced=true slots≤${node.placedSlotsMax}` : ''}`);
 				} else if (bearerOwner) {
 					// Protocol 1 (no `proto` field): valid owner token required. It
 					// has no stable identity to replace, so the global cap is absolute.
@@ -1016,7 +1028,9 @@ function readBody(req) {
 		let size = 0;
 		req.on('data', c => {
 			size += c.length;
-			if (size > 16 * 1024) reject(new Error('body too large'));
+			// Past the cap the socket is destroyed too: a caller that keeps
+			// streaming would otherwise hold the connection open after reject.
+			if (size > 16 * 1024) { req.destroy(); reject(new Error('body too large')); }
 			else chunks.push(c);
 		});
 		req.on('end', () => resolve(Buffer.concat(chunks).toString()));
@@ -1187,7 +1201,17 @@ es.onmessage = e => { try { render(JSON.parse(e.data)); } catch {} };
 </script></body></html>`;
 
 const httpServer = http.createServer(async (req, res) => {
-	const url = new URL(req.url ?? '/', 'http://spine.invalid');
+	// OWASP (malformed-request robustness): req.url is attacker-controlled and
+	// Node's URL constructor throws on inputs like `//[` (llhttp happily
+	// delivers them). A throw in this async handler has no catch anywhere and
+	// would kill the whole relay — every tunnel and match with it.
+	let url;
+	try { url = new URL(req.url ?? '/', 'http://spine.invalid'); }
+	catch {
+		res.writeHead(400, { 'content-type': 'text/plain' });
+		res.end('malformed request');
+		return;
+	}
 	// CORS (§5.2): the Origin is echoed only when it is one of the site
 	// origins or a loopback origin — never `*`, never for a foreign origin.
 	applyCors(req, res);
@@ -1283,6 +1307,8 @@ const httpServer = http.createServer(async (req, res) => {
 		// no-Origin exception, authenticated by its ranked provision bearer; it
 		// may only use that exception for a ranked finalization below.
 		if ((hasOrigin && !loopbackOrigin && !siteOrigin) || (!hasOrigin && !serviceAuthorized)) {
+			// Cheater visibility (OWASP logging): every refusal names the caller.
+			console.error(`[spine] create refused: origin-not-allowed from ${clientIpOf(req)} origin=${String(origin ?? 'none').slice(0, 60)}`);
 			res.writeHead(403, { 'content-type': 'application/json' });
 			res.end(JSON.stringify({ error: 'origin-not-allowed' }));
 			return;
@@ -1333,17 +1359,25 @@ const httpServer = http.createServer(async (req, res) => {
 		}
 		// Room placement is expensive (spawns a dedicated). Per-IP rate limit:
 		// the one real client need is a host clicking once; faster is abuse.
+		// REDLINE_SPINE_RELAX_ROOM_LIMITS=1 exists ONLY for the local E2E
+		// gates, whose every browser client shares 127.0.0.1 and would starve
+		// on the 3-per-10-min budget and the one-live-room rule. The limits'
+		// own behaviour stays covered by relay-placement tests on spines
+		// started without the flag; production units never set it.
+		const relaxCreateLimits = process.env.REDLINE_SPINE_RELAX_ROOM_LIMITS === '1';
 		const clientKey = ipKey(clientIpOf(req));
 		const livePlaced = placedIpRooms.get(clientKey);
-		if (livePlaced && placedRooms.has(livePlaced)) {
+		if (!relaxCreateLimits && livePlaced && placedRooms.has(livePlaced)) {
+			console.error(`[spine] create refused: one-room-per-ip (${clientKey} already holds ${livePlaced})`);
 			res.writeHead(429, { 'content-type': 'application/json' });
 			res.end(JSON.stringify({ error: 'one-room-per-ip' }));
 			return;
 		}
 		const now = Date.now();
-		const budget = consumeCreateBudget(createRate, clientKey, now, createRateWindowMs, createRateLimit);
+		const budget = consumeCreateBudget(createRate, clientKey, now, createRateWindowMs, relaxCreateLimits ? 1000 : createRateLimit);
 		if (!budget.allowed) {
 			const retryAfter = Math.max(1, Math.ceil(budget.retryAfterMs / 1000));
+			console.error(`[spine] create refused: rate (${clientKey}, retry after ${retryAfter}s)`);
 			res.writeHead(429, { 'content-type': 'application/json', 'retry-after': String(retryAfter) });
 			res.end(JSON.stringify({ error: 'rate' }));
 			return;
@@ -1389,7 +1423,7 @@ const httpServer = http.createServer(async (req, res) => {
 		const allowOwner = ordinaryOwnerAllowed();
 		const candidates = body.ranked === true
 			? placementCandidates(body.geo, true).filter(node => node.id === rankedAdmission.roomClaim.nodeId)
-			: placementPool(body.geo, allowOwner);
+			: placementPool(body.geo, allowOwner, body.slots);
 		for (const node of candidates) {
 			try {
 				const created = await createRoomOnNode(node, { ...body, hostKey });
@@ -1410,6 +1444,9 @@ const httpServer = http.createServer(async (req, res) => {
 					if (rankedReservation.idempotencyKey) rankedProvisionIdempotency.delete(rankedReservation.idempotencyKey);
 				}
 				if (!body.ranked) placedIpRooms.set(clientKey, created.roomId);
+				// Cheater visibility: the operator's log must answer "who made
+				// which room where" — including the ipKey, without PII beyond it.
+				console.log(`[spine] room ${created.roomId} placed on node ${node.id} (${node.tier === 'owner' ? 'owner' : HOST_KIND_BY_MODE[node.mode] ?? 'player'}${body.ranked ? ', ranked' : ''}) for ${clientKey}`);
 				const summary = created.summary;
 				res.writeHead(201, { 'content-type': 'application/json' });
 				res.end(JSON.stringify({ room: {
@@ -1421,7 +1458,9 @@ const httpServer = http.createServer(async (req, res) => {
 					state: 'booting',
 					locked: !!body.password,
 					build: node.build,
-					hostKind: node.tier === 'owner' ? 'owner' : 'donated',
+					// Same rule as v2Room: the create answer must not lie about
+					// the host kind of the node that took the room.
+					hostKind: node.tier === 'owner' ? 'owner' : HOST_KIND_BY_MODE[node.mode] ?? 'player',
 					wsUrl: wsUrlFor(created.roomId),
 					...(body.ranked ? {} : { hostKey: created.hostKey }),
 				} }));
@@ -1430,6 +1469,7 @@ const httpServer = http.createServer(async (req, res) => {
 				console.error(`[spine] placement candidate ${node.id} failed: ${error.message}`);
 			}
 		}
+		console.error(`[spine] create refused: no-capacity for ${clientKey} (${candidates.length} candidates tried)`);
 		res.writeHead(503, { 'content-type': 'application/json' });
 		res.end(JSON.stringify({ error: 'no-capacity' }));
 		return;
@@ -1445,6 +1485,12 @@ const httpServer = http.createServer(async (req, res) => {
 
 	if (url.pathname === '/v2/config' && req.method === 'GET') {
 		const free = nodesForCapacity => nodesForCapacity.reduce((total, node) => total + nodeStatus(node).freeMatches, 0);
+		// Capacity answers "can a player host AT ALL?" for the client's host
+		// button, so it is probed at the minimum room size (2). The default
+		// slots parameter is Infinity — right for "any candidate", but it would
+		// exclude every standing community node from the count (they only take
+		// placed rooms up to placedSlotsMax, 5), leaving a standing-only
+		// network reporting donatedFree: 0 while matches are free.
 		res.writeHead(200, { 'content-type': 'application/json' });
 		res.end(JSON.stringify({
 			schema: 1,
@@ -1452,11 +1498,11 @@ const httpServer = http.createServer(async (req, res) => {
 			browserMultiplayer: config.browserMultiplayer,
 			placement: config.placement,
 			capacity: {
-				donatedFree: free(placementCandidates('', false)),
+				donatedFree: free(placementCandidates('', false, 2)),
 				// The shipped client adds donatedFree + ownerFree to decide whether it
 				// can offer public hosting, so owner capacity only counts while
 				// ordinary rooms may use it; Ranked's owner capacity is reported apart.
-				ownerFree: ordinaryOwnerAllowed() ? free(placementCandidates('', true)) : 0,
+				ownerFree: ordinaryOwnerAllowed() ? free(placementCandidates('', true, 2)) : 0,
 				rankedOwnerFree: config.placement === 'donated+owner' ? free(placementCandidates('', true)) : 0,
 			},
 			draining,
@@ -1520,10 +1566,11 @@ const httpServer = http.createServer(async (req, res) => {
 		// The page graph spans the bundle root (steelseed/index.html imports
 		// ../main.js, which imports ./_framework/*), so any GET path that
 		// resolves inside the bundle is served; API routes above already ran.
-		const rel = decodeURIComponent(url.pathname).replace(/^\/+/, '');
-		// resolve() then a root check: ../ tricks must never escape the bundle.
-		const file = path.resolve(bundleDir, rel === '' ? 'index.html' : rel);
 		try {
+			// A malformed %-escape (`/%zz`) throws: fall to the 404 below.
+			const rel = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+			// resolve() then a root check: ../ tricks must never escape the bundle.
+			const file = path.resolve(bundleDir, rel === '' ? 'index.html' : rel);
 			if (!file.startsWith(bundleDir + path.sep)) throw new Error('outside bundle');
 			const stat = fs.statSync(file);
 			if (!stat.isFile()) throw new Error('not a file');
@@ -1544,7 +1591,15 @@ const httpServer = http.createServer(async (req, res) => {
 
 
 function routePlayerWs(roomId, req, socket, head) {
-	const query = new URL(req.url, 'http://127.0.0.1').searchParams;
+	// The upgrade listener already parsed this req.url, but parse defensively
+	// anyway: a throw inside handleUpgrade would crash the relay.
+	let query;
+	try { query = new URL(req.url, 'http://127.0.0.1').searchParams; }
+	catch {
+		socket.write('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+		socket.destroy();
+		return;
+	}
 	const access = placedRooms.get(roomId) ?? null;
 	const roomOwnerNode = nodes.get(roomOwner.get(roomId) ?? '');
 	const reportedRoom = roomOwnerNode?.rooms.get(roomId);
@@ -1554,6 +1609,10 @@ function routePlayerWs(roomId, req, socket, head) {
 	const hostKey = query.get('k') ?? '';
 	const claim = query.get('claim') ?? '';
 	if (access && !access.ranked && roomState === 'reserved' && hostKey !== access.hostKey) {
+		// Cheater visibility: a refused upgrade must be visible — only the
+		// creator's hostKey may open a reserved room, and the operator's log
+		// has to answer "who tried which room".
+		console.log(`[spine] player ws refused: room ${roomId} reserved, key ${hostKey === '' ? 'absent' : 'wrong'} (from ${ipKey(clientIpOf(req))})`);
 		wss.handleUpgrade(req, socket, head, playerWs => closeRelayWs(playerWs, 4404, protocol.playerCloseCodes['4404'].reason));
 		return;
 	}
@@ -1598,7 +1657,7 @@ function routePlayerWs(roomId, req, socket, head) {
 		players.set(chanId, {
 			// `node` is the tunnel this channel rides; a reconnect gives the same
 			// nodeId a new tunnel, so teardown follows the object, not the id.
-			companionNonce: /^[0-9a-f]{64}$/.test(new URL(req.url, 'http://local.invalid').searchParams.get('joa') ?? '') ? new URL(req.url, 'http://local.invalid').searchParams.get('joa') : null,
+			companionNonce: /^[0-9a-f]{64}$/.test(query.get('joa') ?? '') ? query.get('joa') : null,
 			ws: playerWs, writer, nodeId: owner.id, node: owner, roomId, ipKey: peerKey,
 			hostKey: access?.hostKey ?? '', claim,
 			rate: { in: newChannelBucket(), out: newChannelBucket() },
@@ -1629,6 +1688,11 @@ function routePlayerWs(roomId, req, socket, head) {
 httpServer.listen(dirPort, '127.0.0.1', () => {
 	console.log(`[spine] directory http://127.0.0.1:${dirPort}/v2/config  (rooms: /v2/rooms, nodes: /nodes)`);
 });
+// The create-limit relaxation exists ONLY for the local E2E gates (every
+// browser client shares 127.0.0.1). It silently disables one-room-per-ip and
+// the create rate budget, so a relay that boots with it must say so — loudly.
+if (process.env.REDLINE_SPINE_RELAX_ROOM_LIMITS === '1')
+	console.error('[spine] WARNING: REDLINE_SPINE_RELAX_ROOM_LIMITS=1 — one-room-per-ip and the create rate budget are DISABLED. Local gates only; never point a production unit at this.');
 const companionService = createCompanionService({ enabled: process.env.JOA_ENABLED === '1', originAllowed: origin => isLoopbackOrigin(origin) || config.siteOrigins.includes(origin), authorizeHosted: async admission => {
 	if (placedRooms.get(admission.roomId)?.ranked === true) return false;
 	if (!/^[0-9a-f]{64}$/.test(admission.nonce ?? '') || !/^[0-9a-f]{16}$/.test(admission.roomId ?? '')) return false;
@@ -1643,7 +1707,16 @@ const wsListen = http.createServer((req, res) => {
 	res.end('websocket upgrade required');
 });
 wsListen.on('upgrade', (req, socket, head) => {
-	const url = new URL(req.url ?? '/', 'http://spine.invalid');
+	// Same malformed-request guard as the http handler: a req.url the URL
+	// constructor rejects must be a 400, never a throw in this sync listener —
+	// that would crash the relay before the origin checks even run.
+	let url;
+	try { url = new URL(req.url ?? '/', 'http://spine.invalid'); }
+	catch {
+		socket.write('HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n');
+		socket.destroy();
+		return;
+	}
 	if (url.pathname === '/v2/companion/ws') { companionService.upgrade(req, socket, head); return; }
 	if (url.pathname === '/node') {
 		// Nodes are native/service clients and never send Origin. Refusing every

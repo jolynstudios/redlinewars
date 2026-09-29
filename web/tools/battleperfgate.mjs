@@ -39,9 +39,18 @@ try {
 	page.on('response', r => { if (r.status() === 404 && r.url().endsWith('/rooms')) roomMisses.push(r.url()) })
 	page.on('pageerror', e => errors.push(`pageerror: ${e.message.slice(0, 200)}`))
 	// The lobby polls the room directory at the page origin; a bare test server has none.
+	// The account surface likewise probes the account origin from net-config
+	// (www.redlinewars.online/api/…): from a local test origin that probe is
+	// CORS-refused by design — the site itself serves the same origin family.
+	// Expected local noise, same class as the /rooms 404 above: drop the CORS
+	// line and the ERR_FAILED resource line that follows it.
+	let droppedAccountCors = false
 	page.on('console', m => {
 		if (m.type() !== 'error') return
 		if (m.text().startsWith('Failed to load resource') && roomMisses.length > 0) { roomMisses.pop(); return }
+		if (m.text().includes('blocked by CORS policy') && m.text().includes('/api/')) { droppedAccountCors = true; return }
+		if (droppedAccountCors && m.text().startsWith('Failed to load resource: net::ERR_FAILED')) { droppedAccountCors = false; return }
+		droppedAccountCors = false
 		errors.push(`console: ${m.text().slice(0, 200)}`)
 	})
 	await page.goto(`${preview.baseUrl}&quality=high`, { waitUntil: 'domcontentloaded', timeout: 60000 })

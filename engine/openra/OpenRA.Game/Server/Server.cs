@@ -1366,6 +1366,8 @@ namespace OpenRA.Server
 
 				foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
 					t.LobbyInfoSynced(this);
+
+				SendRoomCensus();
 			}
 		}
 
@@ -1383,6 +1385,8 @@ namespace OpenRA.Server
 
 				foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
 					t.LobbyInfoSynced(this);
+
+				SendRoomCensus();
 
 				// The full LobbyInfo includes ping info, so we can delay the next partial ping update
 				// TODO: Replace the special-case ping updates with more general LobbyInfo delta updates
@@ -1404,6 +1408,8 @@ namespace OpenRA.Server
 
 				foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
 					t.LobbyInfoSynced(this);
+
+				SendRoomCensus();
 			}
 		}
 
@@ -1420,7 +1426,44 @@ namespace OpenRA.Server
 
 				foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
 					t.LobbyInfoSynced(this);
+
+				SendRoomCensus();
 			}
+		}
+
+		// Machine-readable lobby census for the hosting node (roomhost.mjs): the
+		// node counts connections, but a room's directory row must count SEATS —
+		// a spectating host is a host, not a player. Only the dedicated server
+		// prints it, and only when a value changes, so the log stays quiet. The
+		// four SyncLobby* calls below cover every seat-relevant mutation (join,
+		// slot claim/release, spectate, make_spectator, slot_open/close/bot, map
+		// change, drop) without parsing a single order byte.
+		int lastCensusSeated = -1, lastCensusObservers = -1, lastCensusCapacity = -1;
+		string lastCensusMap = null;
+
+		public void SendRoomCensus()
+		{
+			if (Type != ServerType.Dedicated)
+				return;
+
+			int seated, capacity, observers;
+			string map;
+			lock (LobbyInfo)
+			{
+				seated = LobbyInfo.Slots.Count(slot => LobbyInfo.ClientInSlot(slot.Key) != null);
+				capacity = LobbyInfo.Slots.Count(slot => !slot.Value.Closed);
+				observers = LobbyInfo.Clients.Count(client => client.Slot == null && client.Bot == null);
+				map = LobbyInfo.GlobalSettings.Map ?? "";
+			}
+
+			if (seated == lastCensusSeated && observers == lastCensusObservers && capacity == lastCensusCapacity && map == lastCensusMap)
+				return;
+
+			lastCensusSeated = seated;
+			lastCensusObservers = observers;
+			lastCensusCapacity = capacity;
+			lastCensusMap = map;
+			WriteLineWithTimeStamp($"STEELSEED_ROOM seated={seated} observers={observers} slots={capacity} map={map}");
 		}
 
 		public void StartGame()

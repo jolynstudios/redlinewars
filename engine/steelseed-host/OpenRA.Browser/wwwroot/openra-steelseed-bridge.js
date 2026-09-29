@@ -280,6 +280,10 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 			return P.LobbyClaimPlayerSlot();
 		},
 
+		async lobbyBecomeSpectator() {
+			return P.LobbyBecomeSpectator();
+		},
+
 		async lobbySetReady() {
 			P.LobbySetReady();
 		},
@@ -330,6 +334,14 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 
 		async lobbyKick(clientIndex) {
 			return P.LobbyKick(Number(clientIndex));
+		},
+
+		async lobbySetMap(mapUid) {
+			return P.LobbySetMap(String(mapUid));
+		},
+
+		async lobbySetSeats(seats) {
+			return P.LobbySetSeats(Number(seats));
 		},
 
 		async lobbyStartGame() {
