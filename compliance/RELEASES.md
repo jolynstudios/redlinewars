@@ -89,9 +89,22 @@ and the AppBundle, all jobs green including the macOS GPU gates) and `3664291117
 (`components=downloadables`, after this source tag was pushed). The ten packages and `SHA256SUMS` are
 on the `latest` release and mirrored at `/downloads/`; the deploy verified the mirror with
 `sha256sum -c` and the live site serves build `92e9eeeec519` (`build.json`, the relay's
-`acceptedBuilds`, and the host-control symbols in the HUD chunk). The full strict verification pass
-of the desktop packages against a freshly built reference AppBundle is queued for the morning and
-will be recorded here.
+`acceptedBuilds`, and the host-control symbols in the HUD chunk). **Verification: PASS** in strict mode, 30 September
+2026 (`--strict --sums SHA256SUMS`, 10 artifacts and the live site, against a clean `tools/build.mjs`
+build of this tag, `simBuild 92e9eeeec519`): every artifact's sha256 equals its `SHA256SUMS` line;
+the five node zips pass their full inventory, licences, notices and the no-client boundary; the five
+desktop packages pass payload end to end — composition, 1234 presentation files, the 301 runtime
+files, shell, notices and manifests — and the live site passes fully (composition, 19 served
+scripts, 163 `web/src` files through the reference maps, 284 `_framework` files).
+
+One property of the publishing split, recorded for the next verification: the game deploy
+(`36637559151`) and the downloadables run (`36642911170`) each built its own shared AppBundle from
+the same commit `7360ec112e8c`, and the two agree byte for byte on every emitted `.js` — the
+shipped code is deterministic — but four source maps differ between the runs (`steelseed-audio`,
+`-hud`, `-materials`, `-units`), the chunks that embed the art packs. The desktop packages are
+consistent with their own run's AppBundle (they pass strict against it) and the desktop filter does
+not ship those maps; the strict check fails only when a desktop package is compared against the
+*other* run's AppBundle. A single-run release, like `v2026.09.29-a2b7ac6`, cannot hit this.
 
 ## v2026.09.29-a2b7ac6 (superseded by v2026.09.29-7360ec1)
 
