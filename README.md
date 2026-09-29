@@ -16,6 +16,9 @@ strategy game built on [OpenRA](https://www.openra.net). It has:
 
 It is free software under the GNU General Public License, version 3 or later: see [LICENSE](LICENSE) and
 [NOTICE.md](NOTICE.md). Third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+What that adds to the commons — the browser port, the WebGPU client, the procedural art and audio
+pipelines, the relay federation, the Electron shell and the gate suite — is inventoried in
+[CONTRIBUTION.md](CONTRIBUTION.md).
 
 - Play: https://www.redlinewars.online
 - Bugs: https://github.com/jolynstudios/redlinewars/issues
