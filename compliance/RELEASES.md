@@ -70,7 +70,30 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.29-a2b7ac6 (the current release)
+## v2026.09.29-7360ec1 (the current release)
+
+Exported from private commit `7360ec11`. Player-facing: rooms now count seats, not connections — a
+dedicated server reports a lobby census (`STEELSEED_ROOM seated/observers/slots/map`) from every
+seat-relevant lobby sync in both engine trees, so a creator who opens a room without playing shows as
+0/N in the directory while a real joiner counts 1/N; and a community room's host (the admin) can
+change map and seat count live from a host panel, unranked rooms widen their map pool to the stamped
+catalog while ranked keeps its pin, and the seat ceiling stays 5. The near-miss this tag also fixes:
+the shipping pipeline could leave the browser bundle's embedded mod stamp one sim build behind the
+servers (a forced `dotnet publish` alone skips the packing when its incremental link is up to date),
+which every server answered with "Not running the same version" — `web/tools/ship.mjs` now re-publishes
+on stamp drift and re-syncs the AppBundle support files plus their `blazor.boot.json` hashes, and the
+ranked end-to-end match that caught it passes again (pins regenerated to sim build `92e9eeeec519`).
+
+Published by deploy runs `36637559151` (`components=all` — relay, node, landing, ranked control plane
+and the AppBundle, all jobs green including the macOS GPU gates) and `36642911170`
+(`components=downloadables`, after this source tag was pushed). The ten packages and `SHA256SUMS` are
+on the `latest` release and mirrored at `/downloads/`; the deploy verified the mirror with
+`sha256sum -c` and the live site serves build `92e9eeeec519` (`build.json`, the relay's
+`acceptedBuilds`, and the host-control symbols in the HUD chunk). The full strict verification pass
+of the desktop packages against a freshly built reference AppBundle is queued for the morning and
+will be recorded here.
+
+## v2026.09.29-a2b7ac6 (superseded by v2026.09.29-7360ec1)
 
 Exported from private commit `a2b7ac68`, one commit past `v2026.09.28-2df2ad8` after its strict check
 failed; every owner-asked change of that tag rides here unchanged, and the one repair is in the
