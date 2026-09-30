@@ -91,6 +91,39 @@ fix commit `127dd139` — the re-pinned Ranked E2E gate (`simBuild 3fe0cba30479`
 receipt and native replay verification, effective rules hash unchanged) and a withheld source-gate
 test update — neither changes the published tree.
 
+Published by deploy run `36717267918` (`components=all`, 30 September 2026 — the `simBuild` moved, so
+the single-dispatch path carried every component together: the relay, the account API, the game node,
+landing, the Ranked control plane, the shared AppBundle and the downloadables). The live site serves
+build `3fe0cba30479`.
+
+### Downloads: www.redlinewars.online/downloads
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 458308201 | `d84a53207d5f7a6511400d5ab776b8e3e90ad0fc48096a61f4f92852b4bd20c1` |
+| `Redline-Wars-macOS-arm64.zip` | 488543793 | `0b2d72e28ec8c5628e90ad6de1ece1853348ef6f705c161c0f3c67ab16b7f76c` |
+| `Redline-Wars-macOS-x64.zip` | 497321635 | `e24163bbfa3982140a25c4505cce467edc1c6dc0cf353944cad8ea9ddb24058e` |
+| `Redline-Wars-Linux-x64.AppImage` | 454183819 | `4fe59f672e869c8d026021aa0249aa5794db4d780aae722b6ef6479c789b6079` |
+| `Redline-Wars-Linux-arm64.AppImage` | 454260327 | `f72758ceba1bd7ada95d2c1c805a9d8d383908d8a9ce24de50fd413a952fea9b` |
+| `redline-node-linux-x64.zip` | 72765614 | `febee289e56628e6cd89b3ebf7dc75f70668f412eda41837c62ff1b48f0f0be6` |
+| `redline-node-linux-arm64.zip` | 70021153 | `ca816af0f5af43082c39482ea97d056f4bf89cea50a94c67f0a7faa34a60625b` |
+| `redline-node-win-x64.zip` | 109255248 | `12c11629ee3edfed624f2f581f293ea90e12b30bd040ca7c0a78fa029f5f3fa1` |
+| `redline-node-osx-arm64.zip` | 68396635 | `3dd2bed5bbec719b66e98e4daef3544745444a7fe8c760426af2982a5805cc5d` |
+| `redline-node-osx-x64.zip` | 71620551 | `d82711df93acc96fd598c40b6c71ba44c455ab1b42f0538d1015af2e92b6cfc4` |
+
+**Verification: PASS** in strict mode, 30 September 2026 (`--strict --sums SHA256SUMS --appbundle
+<the deploy run's own AppBundle>`, 10 artifacts and the live site against a clean `tools/build.mjs`
+build of this tag, `simBuild 3fe0cba30479`, 223 checks): every artifact's sha256 equals its
+`SHA256SUMS` line as mirrored; the five node zips pass their full inventory (218/218 first-party node
+files, byte-equal sources), licences, notices and the no-client boundary; the five desktop packages
+pass payload end to end — composition, 1234 presentation files, runtime, shell, notices and manifests
+— against the run's own AppBundle, which is also exactly what the live site serves (a single-run
+release: the split-run caveat of `v2026.09.29-7360ec1` cannot apply). The live site passes fully: the
+served composition is the run's, its 19 scripts match, the 163 `web/src` files through the reference
+maps equal the tag's, and the 284 `_framework` files equal the build's. Not run: `--rebuild` and
+platform execution reports; the deploy's own macOS gates (signing, GPU gates, the packaged selftest)
+ran green inside run `36717267918`.
+
 ## v2026.09.30-127dd13 (superseded by v2026.09.30-9aad742)
 
 The export of the fix commit `127dd139` itself, tagged before the release head moved two
