@@ -70,9 +70,9 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.30-127dd13 (the current release)
+## v2026.09.30-9aad742 (the current release)
 
-Exported from private commit `127dd139`. Player-facing: the host's lobby finally works with AI.
+Exported from private commit `9aad742c`. Player-facing: the host's lobby finally works with AI.
 A bot now takes its seat Ready the moment it enters — it has no player to press Ready, so the seat
 itself must be — instead of sitting "Not ready" as the last blocker; the host can remove the AI it
 added (`Remove AI` re-opens every bot's slot, which the server already treats as evicting the bot);
@@ -86,9 +86,12 @@ engine change lives in both trees and the lobby sync is network-visible, so clie
 releases move together — the game deploys first, then the node. Proven before release on a local
 spine, a standing node and the real dedicated runner: join → bots Ready on entry → Start enabled
 with one human + AI → Remove AI empties the table → re-add → start → the match ran 20 s with no
-disconnect; the node suite is 125/125.
+disconnect; the node suite is 125/125. The release head `9aad742c` carries two follow-ups over the
+fix commit `127dd139` — the re-pinned Ranked E2E gate (`simBuild 3fe0cba30479`, signed settled
+receipt and native replay verification, effective rules hash unchanged) and a withheld source-gate
+test update — neither changes the published tree.
 
-## v2026.09.30-1bdea0a (superseded by v2026.09.30-127dd13)
+## v2026.09.30-1bdea0a (superseded by v2026.09.30-9aad742)
 
 Exported from private commit `1bdea0ae`. Player-facing: joining a network room from the site on a
 high-latency link failed every time — the join reached the server, the server accepted the handshake
