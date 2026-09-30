@@ -91,6 +91,12 @@ fix commit `127dd139` — the re-pinned Ranked E2E gate (`simBuild 3fe0cba30479`
 receipt and native replay verification, effective rules hash unchanged) and a withheld source-gate
 test update — neither changes the published tree.
 
+## v2026.09.30-127dd13 (superseded by v2026.09.30-9aad742)
+
+The export of the fix commit `127dd139` itself, tagged before the release head moved two
+private-only follow-ups on (see `v2026.09.30-9aad742`, the current release, for the full
+entry). The published tree is identical; nothing was distributed from this tag.
+
 ## v2026.09.30-1bdea0a (superseded by v2026.09.30-9aad742)
 
 Exported from private commit `1bdea0ae`. Player-facing: joining a network room from the site on a

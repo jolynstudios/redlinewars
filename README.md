@@ -32,6 +32,7 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 | Tag | Source of |
 |---|---|
 | [`v2026.09.30-9aad742`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-9aad742) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.30-127dd13`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-127dd13) | the same release's fix commit before its private-only Ranked re-pin follow-up; identical published tree, superseded by `v2026.09.30-9aad742` within the hour |
 | [`v2026.09.30-1bdea0a`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-1bdea0a) | the same, on 30 September 2026; superseded by `v2026.09.30-9aad742` later the same day (bots seat ready, AI removable, solo rooms start) |
 | [`v2026.09.30-27197e6`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-27197e6) | the same, on 30 September 2026; superseded by `v2026.09.30-1bdea0a` later the same day (high-latency room joins repaired) |
 | [`v2026.09.29-7360ec1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.29-7360ec1) | the same, on 29–30 September 2026; superseded by `v2026.09.30-27197e6` on 30 September 2026 (the lobby counts seats, not people; Community #1 at five seats) |
