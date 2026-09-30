@@ -70,7 +70,23 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.30-27197e6 (the current release)
+## v2026.09.30-1bdea0a (the current release)
+
+Exported from private commit `1bdea0ae`. Player-facing: joining a network room from the site on a
+high-latency link failed every time — the join reached the server, the server accepted the handshake
+and sent the lobby, and the client then reported `not connected` and hung up about half a second in.
+The seat claim raced the server's first lobby sync: the engine marks the connection live the instant
+its handshake validates, but the local player only becomes visible to the claim one engine tick
+later, when that sync lands — on a nearby server the sync wins the race, on a distant one the claim
+does, and the claim treated "not visible yet" as "not connected". The claim and the spectator path
+now wait briefly for the sync instead of refusing; a real failure still fails through the existing
+wording. The lobby's focus cue also stops throwing on browser-extension keydowns without a key.
+`simBuild` is unchanged (`92e9eeeec519`); the engine and the network protocol are untouched. The
+repair was proven against the live community room before release: the pre-fix client fails at
+519 ms with `not connected`, the fixed client claims its seat, receives the lobby sync and holds
+the connection.
+
+## v2026.09.30-27197e6 (superseded by v2026.09.30-1bdea0a)
 
 Exported from private commit `27197e69`. Player-facing: the lobby counts seats, not people — the two
 in-room lobby panels (the seat panel and the bottom-left player list) counted every connection, so a
