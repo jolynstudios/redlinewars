@@ -19,6 +19,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Text;
+using System.Text.Json;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using OpenRA.Network;
@@ -314,6 +317,12 @@ namespace OpenRA
 			var orderManager = Game.OrderManager;
 			if (orderManager == null)
 				return "not connected";
+			if (optionId is "tod" or "weather")
+			{
+				var global = orderManager.LobbyInfo.GlobalSettings;
+				return LobbySetAmbience(optionId == "tod" ? value : global.TimeOfDay,
+					optionId == "weather" ? value : global.Weather);
+			}
 			orderManager.IssueOrder(Order.Command($"option {optionId} {value}"));
 			return $"option {optionId} {value}";
 		}
@@ -578,6 +587,9 @@ namespace OpenRA
 			if (orderManager.LocalClient is not { IsAdmin: true })
 				return "not admin";
 
+			var target = orderManager.LobbyInfo.ClientWithIndex(clientIndex);
+			if (target?.IsBot == true)
+				return LobbyRemoveBot(clientIndex);
 			orderManager.IssueOrder(Order.Command($"kick {clientIndex} False"));
 			return $"kick {clientIndex} sent";
 		}
@@ -632,39 +644,201 @@ namespace OpenRA
 			if (orderManager.GameStarted)
 				return "game already started";
 
-			var lobby = orderManager.LobbyInfo;
-			var occupied = lobby.Clients.Count(c => c.Slot != null);
-			var wanted = Math.Max(0, seats) - occupied;
-			var open = lobby.Slots
-				.Where(s => !s.Value.Closed && lobby.ClientInSlot(s.Key) == null)
-				.Select(s => s.Key)
-				.ToList();
-			var closed = lobby.Slots
-				.Where(s => s.Value.Closed && lobby.ClientInSlot(s.Key) == null)
-				.Select(s => s.Key)
-				.ToList();
+			if (seats < 2 || seats > 5)
+				return "invalid capacity";
+			orderManager.IssueOrder(Order.Command($"capacity {seats}"));
+			return $"seats {seats} sent";
+		}
 
-			var opened = 0;
-			foreach (var slot in closed)
+		[JSExport]
+		internal static string LobbySetFactionFor(int clientIndex, string factionId)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"faction {clientIndex} {factionId}"));
+			return $"faction {clientIndex} {factionId} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySetTeamFor(int clientIndex, int team)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"team {clientIndex} {team}"));
+			return $"team {clientIndex} {team} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySetAmbience(string tod, string weather)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			if (tod is not ("auto" or "day" or "night") || weather is not ("off" or "on"))
+				return "invalid ambience";
+			orderManager.IssueOrder(Order.Command($"ambience {tod} {weather}"));
+			return "ambience sent";
+		}
+
+		[JSExport]
+		internal static string LobbyRemoveBot(int clientIndex)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient is not { IsAdmin: true })
+				return "not admin";
+			var target = orderManager.LobbyInfo.ClientWithIndex(clientIndex);
+			if (target?.IsBot != true || target.Slot == null)
+				return "not a bot";
+			orderManager.IssueOrder(Order.Command($"slot_open {target.Slot}"));
+			return $"removed bot {clientIndex} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySendChat(string text)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			if (orderManager.GameStarted)
+				return "game already started";
+			text = EphemeralLobbyChat.Sanitize(text);
+			if (text.Length == 0)
+				return "empty message";
+			var request = orderManager.LobbyChat.BeginSend();
+			if (request == 0)
+				return "a message is awaiting confirmation";
+			orderManager.IssueOrder(Order.FromTargetString("LobbyChat", text, true, request));
+			return $"chat queued {request}";
+		}
+
+		[JSExport]
+		internal static string GetLobbyChatSendStatus(int request)
+		{
+			var manager = Game.OrderManager;
+			if (manager == null)
+				return "chat session ended";
+			if (manager.Connection is NetworkConnection { ConnectionState: ConnectionState.NotConnected })
+				manager.LobbyChat.Clear();
+			return manager.LobbyChat.SendStatus((uint)request) ?? "chat session ended";
+		}
+
+		[JSExport]
+		internal static void CancelLobbyChatSend(int request)
+		{
+			Game.OrderManager?.LobbyChat.ConfirmSend((uint)request, "Chat confirmation timed out. Retry shortly.");
+		}
+
+		[JSExport]
+		internal static string GetLobbySnapshotProbe()
+		{
+			var manager = Game.OrderManager;
+			if (manager?.LobbyInfo == null || manager.LocalClient == null)
+				return "null";
+			if (manager.Connection is NetworkConnection { ConnectionState: ConnectionState.NotConnected })
+				manager.LobbyChat.Clear();
+			var lobby = manager.LobbyInfo;
+			var global = lobby.GlobalSettings;
+			var mapCache = Game.ModData?.MapCache;
+			// Leaving multiplayer installs a local manager before its map is set.
+			if (global == null || string.IsNullOrEmpty(global.Map) || mapCache == null)
+				return "null";
+			var map = mapCache[global.Map];
+			var mapAvailable = map.Status == MapStatus.Available;
+			var reason = mapAvailable ? LobbyPolicy.StartReason(lobby, map.SpawnPoints.Length) : "Map unavailable.";
+			using var stream = new MemoryStream();
+			using (var json = new Utf8JsonWriter(stream))
 			{
-				if (open.Count + opened >= wanted)
-					break;
-
-				orderManager.IssueOrder(Order.Command($"slot_open {slot}"));
-				opened++;
+				json.WriteStartObject();
+				json.WriteBoolean("started", manager.GameStarted);
+				json.WriteNumber("localClientIndex", manager.LocalClient.Index);
+				json.WriteNumber("adminClientIndex", lobby.Clients.FirstOrDefault(c => c.IsAdmin)?.Index ?? -1);
+				json.WriteBoolean("ranked", global.Ranked);
+				json.WriteString("map", global.Map);
+				json.WriteNumber("capacity", lobby.Slots.Count(s => !s.Value.Closed));
+				json.WriteNumber("requestedCapacity", global.RequestedCapacity);
+				json.WriteString("tod", global.TimeOfDay);
+				json.WriteString("weather", global.Weather);
+				json.WriteBoolean("startAllowed", !manager.GameStarted && reason == null);
+				json.WriteString("startReason", reason);
+				json.WriteStartArray("options");
+				if (mapAvailable)
+					foreach (var option in MapOptions(map).Values.Where(o => o.IsVisible).OrderBy(o => o.DisplayOrder))
+					{
+						if (!global.LobbyOptions.TryGetValue(option.Id, out var state))
+							continue;
+						WriteLobbyOption(json, option.Id, option.Name, state.Value, state.IsLocked, option.Values);
+					}
+				WriteLobbyOption(json, "tod", "Time of day", global.TimeOfDay, global.Ranked,
+					new Dictionary<string, string> { ["auto"] = "Auto", ["day"] = "Day", ["night"] = "Night" });
+				WriteLobbyOption(json, "weather", "Weather", global.Weather, global.Ranked,
+					new Dictionary<string, string> { ["off"] = "Off", ["on"] = "On" });
+				json.WriteEndArray();
+				json.WriteStartArray("clients");
+				foreach (var client in lobby.Clients)
+				{
+					json.WriteStartObject();
+					json.WriteNumber("index", client.Index);
+					json.WriteString("name", client.Name);
+					json.WriteBoolean("bot", client.IsBot);
+					json.WriteBoolean("admin", client.IsAdmin);
+					json.WriteString("slot", client.Slot);
+					json.WriteString("state", client.State.ToString());
+					json.WriteString("faction", client.Faction);
+					json.WriteString("color", client.Color.ToString());
+					json.WriteNumber("team", client.Team);
+					json.WriteNumber("spawn", client.SpawnPoint);
+					json.WriteEndObject();
+				}
+				json.WriteEndArray();
+				json.WriteStartArray("slots");
+				foreach (var slot in lobby.Slots)
+				{
+					json.WriteStartObject();
+					json.WriteString("id", slot.Key);
+					json.WriteBoolean("closed", slot.Value.Closed);
+					json.WriteBoolean("required", slot.Value.Required);
+					json.WriteBoolean("lockFaction", global.Ranked || slot.Value.LockFaction);
+					json.WriteBoolean("lockTeam", global.Ranked || slot.Value.LockTeam);
+					json.WriteBoolean("lockSpawn", global.Ranked || slot.Value.LockSpawn);
+					json.WriteEndObject();
+				}
+				json.WriteEndArray();
+				json.WriteStartArray("chat");
+				if (!manager.GameStarted)
+					foreach (var message in manager.LobbyChat.Messages)
+					{
+						json.WriteStartObject();
+						json.WriteNumber("sequence", message.Sequence);
+						json.WriteNumber("clientIndex", message.ClientIndex);
+						json.WriteString("name", message.Name);
+						json.WriteString("text", message.Text);
+						json.WriteEndObject();
+					}
+				json.WriteEndArray();
+				json.WriteEndObject();
 			}
+			return Encoding.UTF8.GetString(stream.ToArray());
+		}
 
-			var closedCount = 0;
-			foreach (var slot in open)
+		static void WriteLobbyOption(Utf8JsonWriter json, string id, string name, string value, bool locked, IReadOnlyDictionary<string, string> values)
+		{
+			json.WriteStartObject();
+			json.WriteString("id", id);
+			json.WriteString("name", name);
+			json.WriteString("value", value);
+			json.WriteBoolean("locked", locked);
+			json.WriteStartArray("values");
+			foreach (var choice in values)
 			{
-				if (open.Count - closedCount <= wanted)
-					break;
-
-				orderManager.IssueOrder(Order.Command($"slot_close {slot}"));
-				closedCount++;
+				json.WriteStartObject();
+				json.WriteString("id", choice.Key);
+				json.WriteString("label", choice.Value);
+				json.WriteEndObject();
 			}
-
-			return $"seats {seats}: opened {opened}, closed {closedCount}";
+			json.WriteEndArray();
+			json.WriteEndObject();
 		}
 
 		/// <summary>

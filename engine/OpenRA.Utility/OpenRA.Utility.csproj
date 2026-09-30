@@ -4,7 +4,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\OpenRA.Game\OpenRA.Game.csproj" />
+		<!-- Validation and catalog export must load the same engine and mod graph
+		     as the browser and dedicated host. -->
+		<ProjectReference Include="..\openra\OpenRA.Game\OpenRA.Game.csproj" />
+		<ProjectReference Include="..\openra\OpenRA.Mods.Common\OpenRA.Mods.Common.csproj" />
+		<ProjectReference Include="..\openra\OpenRA.Mods.Cnc\OpenRA.Mods.Cnc.csproj" />
+		<ProjectReference Include="..\steelseed-host\OpenRA.Mods.Steelseed\OpenRA.Mods.Steelseed.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<TrimmerRootAssembly Include="mscorlib" />

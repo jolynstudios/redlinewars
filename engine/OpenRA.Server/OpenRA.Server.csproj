@@ -4,7 +4,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\OpenRA.Game\OpenRA.Game.csproj" />
+		<!-- The dedicated entry point uses the exact simulation and mod projects
+		     shipped by steelseed-host/OpenRA.Browser. Explicit mod references also
+		     make dotnet publish carry their dynamic runtime dependencies without
+		     overlays from a separately built legacy engine/bin tree. -->
+		<ProjectReference Include="..\openra\OpenRA.Game\OpenRA.Game.csproj" />
+		<ProjectReference Include="..\openra\OpenRA.Mods.Common\OpenRA.Mods.Common.csproj" />
+		<ProjectReference Include="..\openra\OpenRA.Mods.Cnc\OpenRA.Mods.Cnc.csproj" />
+		<ProjectReference Include="..\steelseed-host\OpenRA.Mods.Steelseed\OpenRA.Mods.Steelseed.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<TrimmerRootAssembly Include="mscorlib" />

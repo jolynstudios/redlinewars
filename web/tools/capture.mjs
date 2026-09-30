@@ -13,7 +13,7 @@
 // Usage:
 //   node tools/capture.mjs [shot] [--out dir] [--url u] [--width w] [--height h]
 //                          [--dpr n] [--quality low|medium|high] [--seed s]
-//                          [--frames n] [--deterministic] [--keep-server]
+//                          [--frames n] [--deterministic] [--keep-server] [--start-skirmish]
 
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
@@ -166,6 +166,12 @@ try {
 		timezoneId: 'UTC',
 	})
 	const page = await context.newPage()
+	// A composed capture needs an actual match: the live bridge takes precedence
+	// over devmap. Local captures remain independent of production accounts.
+	if (flags.has('start-skirmish') && ['127.0.0.1', 'localhost', '[::1]'].includes(new URL(url).hostname)) {
+		await page.route('**/net-config.json', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ schema: 1, browserMultiplayer: 'off' }) }))
+		await page.route('**/api/me', route => route.fulfill({ status: 200, contentType: 'application/json', body: '{"user":null}' }))
+	}
 
 	// Any page error is a capture failure. A frame that renders while the console is
 	// full of exceptions is exactly the state rule 8 exists to catch.
@@ -224,6 +230,12 @@ try {
 		.catch(() => {
 			errors.push('boot overlay never hid — the shot has the splash composited over the scene')
 		})
+
+	if (flags.has('start-skirmish')) {
+		await page.waitForFunction(() => globalThis.steelseedBridge && !document.getElementById('session-start')?.disabled, undefined, { timeout: 120000 })
+		await page.click('#session-start')
+		await page.waitForFunction(() => globalThis.steelseed.ctx.snapshot?.actors?.count > 0 && document.getElementById('session-ui')?.hidden, undefined, { timeout: 120000 })
+	}
 
 	// A dropped actor is a SILENT defect and this is the only place that can see it.
 	//

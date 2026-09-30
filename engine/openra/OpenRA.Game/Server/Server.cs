@@ -124,6 +124,7 @@ namespace OpenRA.Server
 		public ServerSettings Settings;
 		public ModData ModData;
 		public List<string> TempBans = [];
+		public readonly LobbyAdminLease AdminLease = new();
 		public string GeneratedMapData;
 
 		// Managed by LobbyCommands
@@ -630,7 +631,8 @@ namespace OpenRA.Server
 				{
 					lock (LobbyInfo)
 					{
-						client.Slot = LobbyInfo.FirstEmptySlot();
+						client.Slot = Settings.ObserverFirstJoin && !Settings.Ranked && !LobbyInfo.Clients.Any(c => c.IsAdmin)
+							? null : LobbyInfo.FirstEmptySlot();
 						client.IsAdmin = !LobbyInfo.Clients.Any(c => c.IsAdmin);
 
 						if (client.IsObserver && !LobbyInfo.GlobalSettings.AllowSpectators)
@@ -1098,6 +1100,42 @@ namespace OpenRA.Server
 							SendFluentMessageTo(conn, UnknownServerCommand, ["command", o.TargetString]);
 						}
 
+						break;
+					}
+
+					case "LobbyChat":
+					case "Chat" when State == ServerState.WaitingPlayers:
+					{
+						var sender = GetClient(conn);
+						void Acknowledge(string error = null)
+						{
+							if (o.OrderString != "LobbyChat")
+								return;
+							var ack = Order.FromTargetString(error == null ? "LobbyChatAccepted" : "LobbyChatRejected", error ?? "", true, o.ExtraData);
+							DispatchOrdersToClient(conn, 0, 0, ack.Serialize());
+						}
+						if (State != ServerState.WaitingPlayers || sender == null || sender.IsBot)
+						{
+							Acknowledge("Lobby chat is unavailable.");
+							break;
+						}
+						if (playerMessageTracker.IsPlayerAtFloodLimit(conn))
+						{
+							Acknowledge("Chat is temporarily rate limited. Retry shortly.");
+							break;
+						}
+						var text = EphemeralLobbyChat.Sanitize(o.TargetString);
+						if (text.Length == 0)
+						{
+							Acknowledge("The message is empty.");
+							break;
+						}
+						if (sender.IsAdmin)
+							AdminLease.Activity(sender.Index, Environment.TickCount64);
+						var echo = Order.FromTargetString("LobbyChatMessage", text, true, (uint)sender.Index).Serialize();
+						foreach (var recipient in Conns.Where(c => c.Validated).ToArray())
+							DispatchOrdersToClient(recipient, 0, 0, echo);
+						Acknowledge();
 						break;
 					}
 

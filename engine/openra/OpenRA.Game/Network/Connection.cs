@@ -204,6 +204,8 @@ namespace OpenRA.Network
 		void IConnection.Receive(OrderManager orderManager)
 		{
 			PumpTransport();
+			if (ConnectionState == ConnectionState.NotConnected)
+				orderManager.LobbyChat.Clear();
 
 			// Locally generated orders
 			while (sentImmediateOrders.TryDequeue(out var i))
@@ -282,6 +284,11 @@ namespace OpenRA.Network
 				if (disposed)
 					return;
 			}
+
+			// A final queued server echo can arrive before the transport-close event.
+			// Drain refusal/error packets, then discard any chat they reintroduced.
+			if (ConnectionState == ConnectionState.NotConnected)
+				orderManager.LobbyChat.Clear();
 		}
 
 		public void StartRecording(Func<string> chooseFilename)

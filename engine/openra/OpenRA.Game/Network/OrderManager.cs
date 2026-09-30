@@ -31,6 +31,7 @@ namespace OpenRA.Network
 		readonly Dictionary<int, (int SyncHash, ulong DefeatState)> syncForFrame = [];
 
 		public Session LobbyInfo = new();
+		public readonly EphemeralLobbyChat LobbyChat = new();
 
 		/// <summary>Null when watching a replay.</summary>
 		public Session.Client LocalClient => LobbyInfo.ClientWithIndex(Connection.LocalClientId);
@@ -108,6 +109,7 @@ namespace OpenRA.Network
 			// other players to compare against if a desync did occur
 			generateSyncReport = Connection is not ReplayConnection && LobbyInfo.GlobalSettings.EnableSyncReports;
 
+			LobbyChat.Clear();
 			NetFrameNumber = 1;
 			LocalFrameNumber = 0;
 			LastTickTime.Value = Game.RunTime;
@@ -146,6 +148,8 @@ namespace OpenRA.Network
 
 		public void ReceiveDisconnect(int clientId, int frame)
 		{
+			if (clientId == Connection.LocalClientId)
+				LobbyChat.Clear();
 			// All clients must process the disconnect on the same world tick to allow synced actions to run deterministically.
 			// The server guarantees that we will not receive any more order packets from this client from this frame, so we
 			// can insert a marker in the orders stream and process the synced disconnect behaviours on the first tick of that frame.
@@ -286,6 +290,7 @@ namespace OpenRA.Network
 
 		public void Dispose()
 		{
+			LobbyChat.Clear();
 			disposed = true;
 			Connection?.Dispose();
 		}

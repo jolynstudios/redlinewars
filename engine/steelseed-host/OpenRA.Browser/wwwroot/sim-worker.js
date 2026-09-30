@@ -134,6 +134,7 @@ async function boot(query, argv) {
 				GetConnectionProbe: text(() => program.GetConnectionProbe()),
 				GetServerErrorProbe: text(() => program.GetServerErrorProbe()),
 				GetLobbyPlayersProbe: text(() => program.GetLobbyPlayersProbe()),
+				GetLobbySnapshotProbe: text(() => program.GetLobbySnapshotProbe()),
 				sessionStatus,
 				supportPowers,
 			},

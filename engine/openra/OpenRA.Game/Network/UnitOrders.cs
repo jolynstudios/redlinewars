@@ -49,6 +49,25 @@ namespace OpenRA.Network
 		{
 			switch (order.OrderString)
 			{
+				case "LobbyChatAccepted":
+					if (clientId == 0 && !orderManager.GameStarted && (world == null || !world.IsReplay))
+						orderManager.LobbyChat.ConfirmSend(order.ExtraData);
+					break;
+
+				case "LobbyChatRejected":
+					if (clientId == 0 && !orderManager.GameStarted && (world == null || !world.IsReplay))
+						orderManager.LobbyChat.ConfirmSend(order.ExtraData, order.TargetString);
+					break;
+
+				case "LobbyChatMessage":
+					if (clientId == 0 && !orderManager.GameStarted && (world == null || !world.IsReplay))
+						orderManager.LobbyChat.Add(orderManager.LobbyInfo.ClientWithIndex((int)order.ExtraData), order.TargetString);
+					break;
+
+				case "LobbyChat":
+					// Local immediate delivery is ignored; only the authenticated server echo counts.
+					break;
+
 				// Server message
 				case "Message":
 					TextNotificationsManager.AddSystemLine(order.TargetString);
@@ -111,6 +130,8 @@ namespace OpenRA.Network
 
 				case "Chat":
 				{
+					if (!orderManager.GameStarted)
+						break;
 					var client = orderManager.LobbyInfo.ClientWithIndex(clientId);
 					if (client == null)
 						break;
@@ -292,6 +313,7 @@ namespace OpenRA.Network
 
 				case "ServerError":
 				{
+					orderManager.LobbyChat.Clear();
 					orderManager.ServerError = order.TargetString;
 					orderManager.AuthenticationFailed = false;
 					break;

@@ -20,7 +20,6 @@ import { createHash } from 'node:crypto'
 import { copyFileSync, existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { build } from 'esbuild'
 import { decodePng } from './png.mjs'
 
 const TOOL = 'roleportraits'
@@ -34,6 +33,9 @@ const readJson = path => JSON.parse(readFileSync(path, 'utf8'))
 
 /** The game's own validators, bundled from source so this tool cannot drift from them. */
 export async function loadRolePackApi() {
+	// Keep optional portrait generation inside main's fallback boundary, including
+	// tool loading, rather than aborting the web build at module import time.
+	const { build } = await import('esbuild')
 	const bundle = await build({
 		stdin: { contents: `export { validateRolePackManifest } from './src/units/role-assets.ts'
 export { validateRoleSurfaceManifest } from './src/materials/role-surfaces.ts'

@@ -49,7 +49,9 @@ const findings = []
 const near = (a, b, tolerance) => Math.abs(a - b) <= tolerance
 
 const { browser } = await launchGpuBrowser(await loadChromium(TOOL), TOOL)
-const page = await browser.newPage({ viewport: { width: 1512, height: 900 } })
+// The owner hides the camera pad for fine pointers; this gate exercises its
+// intended coarse-pointer path. Desktop keys/edge controls are covered by gamecontrolgate.
+const page = await browser.newPage({ viewport: { width: 1512, height: 900 }, hasTouch: true })
 const pageErrors = []
 page.on('pageerror', error => pageErrors.push(error.message))
 try {
@@ -179,6 +181,7 @@ try {
 	// --- 3. camera controls ------------------------------------------------------------------
 	// The pan/tilt/turn cluster lives inside the overview's collapsible <details id="hud-camera">;
 	// a player opens the Camera section first, so the gate opens it before measuring the controls.
+	if (!await page.evaluate(() => matchMedia('(pointer: coarse)').matches)) fail('camera-pad gate requires a real coarse-pointer context')
 	await page.click('#hud-camera summary')
 	const cameraState = () => page.evaluate(() => {
 		const camera = steelseed.ctx.get('render').camera

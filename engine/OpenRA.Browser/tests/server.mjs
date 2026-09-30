@@ -74,6 +74,18 @@ const server = createServer(async (req, res) => {
 			return;
 		}
 
+		// A shared bundle is linked as /steelseed as well as /steelseed/index.html.
+		// Canonicalise directories before serving their index: relative Vite assets
+		// and ../main.js resolve against the wrong parent without the trailing slash.
+		if (!url.pathname.endsWith('/') && (await fs.stat(file)).isDirectory()) {
+			res.writeHead(308, {
+				location: `${url.pathname}/${url.search}`,
+				'cache-control': 'no-store'
+			});
+			res.end();
+			return;
+		}
+
 		// readFile follows symlinks, so the devcontent link into Support/ works.
 		const data = await fs.readFile(file);
 		// Content-hashed build artifacts (vite chunks, forged packs, portraits) are
@@ -96,5 +108,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, host, () => {
-	console.log(`[server] serving ${root} (+ /fixtures from ${fixtures}) at http://${host}:${port}/`);
+	console.log(`[server] serving ${root} (+ /fixtures from ${fixtures}) at http://${host}:${server.address().port}/`);
 });

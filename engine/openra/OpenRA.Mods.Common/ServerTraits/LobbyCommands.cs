@@ -183,8 +183,55 @@ namespace OpenRA.Mods.Common.Server
 				{ "spawn", Spawn },
 				{ "clear_spawn", ClearPlayerSpawn },
 				{ "color", PlayerColor },
-				{ "sync_lobby", SyncLobby }
+				{ "sync_lobby", SyncLobby },
+				{ "capacity", Capacity },
+				{ "ambience", Ambience }
 			};
+
+		static readonly HashSet<string> RankedImmutableCommands =
+		[
+			"allow_spectators", "spectate", "slot", "slot_close", "slot_open", "slot_bot", "map", "option",
+			"reset_options", "assignteams", "make_spectator", "faction", "team", "handicap", "spawn",
+			"clear_spawn", "sync_lobby", "capacity", "ambience"
+		];
+
+		static void ApplyRankedClientSettings(S server, Session.Client client)
+		{
+			if (!server.Settings.Ranked || client?.Slot == null)
+				return;
+
+			client.Team = 0;
+			client.Handicap = 0;
+			client.Faction = "Random";
+			var seat = server.LobbyInfo.Slots.Keys.ToList().IndexOf(client.Slot) + 1;
+			client.SpawnPoint = seat > 0 && seat <= server.Map.SpawnPoints.Length ? seat : 0;
+		}
+
+		static void ApplyRankedSettings(S server)
+		{
+			if (!server.Settings.Ranked)
+				return;
+
+			server.LobbyInfo.GlobalSettings.AllowSpectators = false;
+			if (server.LobbyInfo.GlobalSettings.LobbyOptions.TryGetValue("cheats", out var cheats))
+			{
+				cheats.Value = false.ToString();
+				cheats.PreferredValue = false.ToString();
+				cheats.IsLocked = true;
+			}
+
+			if (server.LobbyInfo.GlobalSettings.LobbyOptions.TryGetValue("joa-companion", out var companion))
+			{
+				companion.Value = false.ToString();
+				companion.PreferredValue = false.ToString();
+				companion.IsLocked = true;
+			}
+
+			foreach (var option in server.LobbyInfo.GlobalSettings.LobbyOptions.Values)
+				option.IsLocked = true;
+			foreach (var client in server.LobbyInfo.Clients)
+				ApplyRankedClientSettings(server, client);
+		}
 
 		static bool ValidateSlotCommand(S server, Connection conn, Session.Client client, string arg, bool requiresHost)
 		{
@@ -210,6 +257,10 @@ namespace OpenRA.Mods.Common.Server
 		{
 			lock (server.LobbyInfo)
 			{
+				var commandName = command.Split(' ').FirstOrDefault();
+				if (server.Settings.Ranked && commandName != null && RankedImmutableCommands.Contains(commandName))
+					return false;
+
 				// Kick command is always valid for the host
 				if (command.StartsWith("kick ", StringComparison.Ordinal) || command.StartsWith("vote_kick ", StringComparison.Ordinal))
 					return true;
@@ -219,7 +270,7 @@ namespace OpenRA.Mods.Common.Server
 					server.SendFluentMessageTo(conn, StateUnchangedGameStarted, ["command", command]);
 					return false;
 				}
-				else if (client.State == Session.ClientState.Ready && !(command.StartsWith("state", StringComparison.Ordinal) || command == "startgame"))
+				else if (client.State == Session.ClientState.Ready && !client.IsAdmin && !(command.StartsWith("state ", StringComparison.Ordinal) || command == "startgame"))
 				{
 					server.SendFluentMessageTo(conn, StateUnchangedReady);
 					return false;
@@ -240,6 +291,8 @@ namespace OpenRA.Mods.Common.Server
 			if (!commandHandlers.TryGetValue(cmdName, out var a))
 				return false;
 
+			if (client.IsAdmin)
+				server.AdminLease.Activity(client.Index, Environment.TickCount64);
 			return a(server, conn, client, cmdValue);
 		}
 
@@ -255,7 +308,7 @@ namespace OpenRA.Mods.Common.Server
 					return;
 
 				// Does server have at least 2 human players?
-				if (!server.LobbyInfo.GlobalSettings.EnableSingleplayer && nonBotPlayers.Count() < 2)
+				if (server.Settings.Ranked ? nonBotPlayers.Count() < 2 : !server.LobbyInfo.GlobalSettings.EnableSingleplayer && server.LobbyInfo.Clients.Count(c => c.Slot != null) < 2)
 					return;
 
 				// Are the map conditions satisfied?
@@ -264,6 +317,9 @@ namespace OpenRA.Mods.Common.Server
 
 				// Don't start without any players
 				if (server.LobbyInfo.Slots.All(sl => server.LobbyInfo.ClientInSlot(sl.Key) == null))
+					return;
+
+				if (LobbyPolicy.StartReason(server.LobbyInfo, server.Map.SpawnPoints.Length) != null)
 					return;
 
 				// Does the host have the map installed?
@@ -285,6 +341,9 @@ namespace OpenRA.Mods.Common.Server
 				if (LobbyUtils.InsufficientEnabledSpawnPoints(server.Map, server.LobbyInfo))
 					return;
 
+				ApplyRankedSettings(server);
+				server.SyncLobbyInfo();
+				Console.WriteLine("STEELSEED_JOA_POLICY " + (!server.Settings.Ranked && server.LobbyInfo.GlobalSettings.OptionOrDefault("joa-companion", false) ? "enabled" : "disabled"));
 				server.StartGame();
 			}
 		}
@@ -293,7 +352,7 @@ namespace OpenRA.Mods.Common.Server
 		{
 			lock (server.LobbyInfo)
 			{
-				if (!Enum.TryParse<Session.ClientState>(s, out var state))
+				if (!Enum.TryParse<Session.ClientState>(s, out var state) || state is not (Session.ClientState.Ready or Session.ClientState.NotReady or Session.ClientState.Invalid))
 				{
 					server.SendFluentMessageTo(conn, MalformedCommand, ["command", "state"]);
 
@@ -320,6 +379,13 @@ namespace OpenRA.Mods.Common.Server
 					return true;
 				}
 
+				var reason = LobbyPolicy.StartReason(server.LobbyInfo, server.Map.SpawnPoints.Length);
+				if (reason != null)
+				{
+					server.SendOrderTo(conn, "Message", reason);
+					return true;
+				}
+
 				if (server.LobbyInfo.Slots.Any(sl => sl.Value.Required && server.LobbyInfo.ClientInSlot(sl.Key) == null))
 				{
 					server.SendFluentMessageTo(conn, NoStartUntilRequiredSlotsFull);
@@ -332,7 +398,7 @@ namespace OpenRA.Mods.Common.Server
 					return true;
 				}
 
-				if (!server.LobbyInfo.GlobalSettings.EnableSingleplayer && server.LobbyInfo.NonBotPlayers.Count() < 2)
+				if (server.Settings.Ranked ? server.LobbyInfo.NonBotPlayers.Count() < 2 : !server.LobbyInfo.GlobalSettings.EnableSingleplayer && server.LobbyInfo.Clients.Count(c => c.Slot != null) < 2)
 				{
 					server.SendFluentMessageTo(conn, TwoHumansRequired);
 					return true;
@@ -344,6 +410,9 @@ namespace OpenRA.Mods.Common.Server
 					return true;
 				}
 
+				ApplyRankedSettings(server);
+				server.SyncLobbyInfo();
+				Console.WriteLine("STEELSEED_JOA_POLICY " + (!server.Settings.Ranked && server.LobbyInfo.GlobalSettings.OptionOrDefault("joa-companion", false) ? "enabled" : "disabled"));
 				server.StartGame();
 
 				return true;
@@ -374,6 +443,7 @@ namespace OpenRA.Mods.Common.Server
 				if (!slot.LockColor)
 					client.PreferredColor = client.Color = SanitizePlayerColor(server, client.Color, client.Index, conn);
 
+				ResetReady(server);
 				server.SyncLobbyClients();
 				CheckAutoStart(server);
 
@@ -385,7 +455,7 @@ namespace OpenRA.Mods.Common.Server
 		{
 			lock (server.LobbyInfo)
 			{
-				if (bool.TryParse(s, out server.LobbyInfo.GlobalSettings.AllowSpectators))
+				if (client.IsAdmin && bool.TryParse(s, out server.LobbyInfo.GlobalSettings.AllowSpectators))
 				{
 					server.SyncLobbyGlobalSettings();
 					return true;
@@ -408,6 +478,7 @@ namespace OpenRA.Mods.Common.Server
 					client.Team = 0;
 					client.Handicap = 0;
 					client.Color = Color.White;
+					client.State = Session.ClientState.NotReady;
 					server.SyncLobbyClients();
 					CheckAutoStart(server);
 					return true;
@@ -431,6 +502,7 @@ namespace OpenRA.Mods.Common.Server
 					if (occupant.Bot != null)
 					{
 						server.LobbyInfo.Clients.Remove(occupant);
+						ResetReady(server);
 						server.SyncLobbyClients();
 					}
 					else
@@ -438,14 +510,16 @@ namespace OpenRA.Mods.Common.Server
 						var occupantConn = server.Conns.FirstOrDefault(c => c.PlayerIndex == occupant.Index);
 						if (occupantConn != null)
 						{
-							server.SendOrderTo(conn, "ServerError", SlotClosed);
+							server.SendOrderTo(occupantConn, "ServerError", SlotClosed);
 							server.DropClient(occupantConn);
 						}
 					}
 				}
 
 				server.LobbyInfo.Slots[s].Closed = true;
+				ResetReady(server);
 				server.SyncLobbySlots();
+				server.SyncLobbyClients();
 
 				return true;
 			}
@@ -459,6 +533,8 @@ namespace OpenRA.Mods.Common.Server
 					return false;
 
 				var slot = server.LobbyInfo.Slots[s];
+				if (server.IsMultiplayer && slot.Closed && server.LobbyInfo.Slots.Count(sl => !sl.Value.Closed) >= Math.Min(5, server.LobbyInfo.GlobalSettings.RequestedCapacity))
+					return false;
 				slot.Closed = false;
 				server.SyncLobbySlots();
 
@@ -467,6 +543,7 @@ namespace OpenRA.Mods.Common.Server
 				if (occupant != null && occupant.Bot != null)
 					server.LobbyInfo.Clients.Remove(occupant);
 
+				ResetReady(server);
 				server.SyncLobbyClients();
 
 				return true;
@@ -494,6 +571,9 @@ namespace OpenRA.Mods.Common.Server
 					Log.Write("server", $"Invalid bot controller client index: {parts[1]}");
 					return false;
 				}
+
+				if (!slot.AllowBots || slot.Closed || server.LobbyInfo.ClientWithIndex(controllerClientIndex) is not { IsAdmin: true, IsBot: false })
+					return false;
 
 				// Invalid slot
 				if (bot != null && bot.Bot == null)
@@ -551,6 +631,7 @@ namespace OpenRA.Mods.Common.Server
 				}
 
 				S.SyncClientToPlayerReference(bot, server.Map.Players.Players[parts[0]]);
+				ResetReady(server);
 				server.SyncLobbyClients();
 				server.SyncLobbySlots();
 
@@ -585,7 +666,7 @@ namespace OpenRA.Mods.Common.Server
 
 						server.LobbyInfo.GlobalSettings.Map = map.Uid;
 
-						var oldSlots = server.LobbyInfo.Slots.Keys.ToArray();
+						var oldClients = server.LobbyInfo.Slots.Keys.Select(slot => server.LobbyInfo.ClientInSlot(slot)).Where(c => c != null).ToArray();
 						server.Map = server.ModData.MapCache[server.LobbyInfo.GlobalSettings.Map];
 						server.LobbyInfo.GlobalSettings.MapStatus = server.MapStatusCache[server.Map];
 
@@ -605,7 +686,7 @@ namespace OpenRA.Mods.Common.Server
 						foreach (var c in server.LobbyInfo.Clients)
 						{
 							c.Faction = SanitizePlayerFaction(server, c.Faction, selectableFactions);
-							c.State = Session.ClientState.Invalid;
+							c.State = c.IsBot ? Session.ClientState.Ready : Session.ClientState.Invalid;
 						}
 
 						// Reassign players into new slots based on their old slots:
@@ -614,13 +695,10 @@ namespace OpenRA.Mods.Common.Server
 						//  - Bots who now lack a slot are dropped
 						//  - Bots who are not defined in the map rules are dropped
 						var botTypes = server.Map.PlayerActorInfo.TraitInfos<IBotInfo>().Select(t => t.Type);
-						var slots = server.LobbyInfo.Slots.Keys.ToArray();
+						var slots = (server.IsMultiplayer ? server.LobbyInfo.Slots.Keys.Take(Math.Min(5, server.LobbyInfo.GlobalSettings.RequestedCapacity)) : server.LobbyInfo.Slots.Keys).ToArray();
 						var i = 0;
-						foreach (var os in oldSlots)
+						foreach (var c in oldClients)
 						{
-							var c = server.LobbyInfo.ClientInSlot(os);
-							if (c == null)
-								continue;
 
 							c.SpawnPoint = 0;
 							c.Slot = i < slots.Length ? slots[i++] : null;
@@ -642,6 +720,7 @@ namespace OpenRA.Mods.Common.Server
 							if (c.Slot != null && !server.LobbyInfo.Slots[c.Slot].LockColor)
 								c.Color = c.PreferredColor = SanitizePlayerColor(server, c.Color, c.Index, conn);
 
+						ApplyCapacity(server);
 						server.LobbyInfo.DisabledSpawnPoints.Clear();
 
 						server.SendFluentMessage(ChangedMap, "player", client.Name, "map", server.Map.Title);
@@ -651,7 +730,7 @@ namespace OpenRA.Mods.Common.Server
 						if ((server.LobbyInfo.GlobalSettings.MapStatus & Session.MapStatus.UnsafeCustomRules) != 0)
 							server.SendFluentMessage(CustomRules);
 
-						if (!server.LobbyInfo.GlobalSettings.EnableSingleplayer)
+						if (server.Settings.Ranked)
 							server.SendFluentMessage(TwoHumansRequired);
 						else if (server.Map.Players.Players.Where(p => p.Value.Playable).All(p => !p.Value.AllowBots))
 							server.SendFluentMessage(MapBotsDisabled);
@@ -711,6 +790,8 @@ namespace OpenRA.Mods.Common.Server
 				}
 
 				var oo = server.LobbyInfo.GlobalSettings.LobbyOptions[option.Id];
+				if (oo.IsLocked)
+					return false;
 				if (oo.Value == split[1])
 					return true;
 
@@ -724,7 +805,7 @@ namespace OpenRA.Mods.Common.Server
 
 				server.SyncLobbyGlobalSettings();
 				foreach (var c in server.LobbyInfo.Clients)
-					c.State = Session.ClientState.NotReady;
+					c.State = c.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 
 				server.SyncLobbyClients();
 
@@ -755,7 +836,7 @@ namespace OpenRA.Mods.Common.Server
 				server.SyncLobbyGlobalSettings();
 
 				foreach (var c in server.LobbyInfo.Clients)
-					c.State = Session.ClientState.NotReady;
+					c.State = c.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 
 				server.SyncLobbyClients();
 
@@ -801,6 +882,7 @@ namespace OpenRA.Mods.Common.Server
 						player.Team = assigned++ * teamCount / clientCount + 1;
 				}
 
+				ResetReady(server);
 				server.SyncLobbyClients();
 
 				return true;
@@ -919,7 +1001,26 @@ namespace OpenRA.Mods.Common.Server
 			}
 		}
 
-		void OpenRA.Server.ITick.Tick(S server) => server.VoteKickTracker.Tick();
+		void OpenRA.Server.ITick.Tick(S server)
+		{
+			server.VoteKickTracker.Tick();
+			lock (server.LobbyInfo)
+			{
+				var admin = server.LobbyInfo.Clients.FirstOrDefault(c => c.IsAdmin && !c.IsBot);
+				if (admin == null)
+					return;
+				var successor = server.AdminLease.Successor(admin.Index,
+					server.LobbyInfo.Clients.Where(c => !c.IsBot).Select(c => c.Index),
+					server.State == ServerState.WaitingPlayers && server.IsMultiplayer,
+					Environment.TickCount64, (long)server.Settings.AdminIdleTimeoutSeconds * 1000);
+				if (successor is int next)
+				{
+					var conn = server.Conns.FirstOrDefault(c => c.PlayerIndex == admin.Index);
+					if (conn != null)
+						MakeAdmin(server, conn, admin, next.ToStringInvariant());
+				}
+			}
+		}
 
 		static bool MakeAdmin(S server, Connection conn, Session.Client client, string s)
 		{
@@ -943,6 +1044,7 @@ namespace OpenRA.Mods.Common.Server
 				var newAdminClient = server.GetClient(newAdminConn);
 				client.IsAdmin = false;
 				newAdminClient.IsAdmin = true;
+				server.AdminLease.Activity(newAdminId, Environment.TickCount64);
 
 				var bots = server.LobbyInfo.Slots
 					.Select(slot => server.LobbyInfo.ClientInSlot(slot.Key))
@@ -1015,7 +1117,11 @@ namespace OpenRA.Mods.Common.Server
 			lock (server.LobbyInfo)
 			{
 				var parts = s.Split(' ');
-				var targetClient = server.LobbyInfo.ClientWithIndex(Exts.ParseInt32Invariant(parts[0]));
+				if (parts.Length != 2 || !Exts.TryParseInt32Invariant(parts[0], out var targetIndex))
+					return false;
+				var targetClient = server.LobbyInfo.ClientWithIndex(targetIndex);
+				if (targetClient?.Slot == null)
+					return false;
 
 				// Only the host can change other client's info
 				if (targetClient.Index != client.Index && !client.IsAdmin)
@@ -1027,7 +1133,7 @@ namespace OpenRA.Mods.Common.Server
 
 				var faction = parts[1];
 				var isValidFaction = server.Map.WorldActorInfo.TraitInfos<FactionInfo>()
-					.Any(f => f.Selectable && f.InternalName == client.Faction);
+					.Any(f => f.Selectable && f.InternalName == faction);
 
 				if (!isValidFaction)
 				{
@@ -1036,6 +1142,7 @@ namespace OpenRA.Mods.Common.Server
 				}
 
 				targetClient.Faction = faction;
+				targetClient.State = targetClient.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 				server.SyncLobbyClients();
 
 				return true;
@@ -1047,7 +1154,11 @@ namespace OpenRA.Mods.Common.Server
 			lock (server.LobbyInfo)
 			{
 				var parts = s.Split(' ');
-				var targetClient = server.LobbyInfo.ClientWithIndex(Exts.ParseInt32Invariant(parts[0]));
+				if (parts.Length != 2 || !Exts.TryParseInt32Invariant(parts[0], out var targetIndex))
+					return false;
+				var targetClient = server.LobbyInfo.ClientWithIndex(targetIndex);
+				if (targetClient?.Slot == null)
+					return false;
 
 				// Only the host can change other client's info
 				if (targetClient.Index != client.Index && !client.IsAdmin)
@@ -1057,13 +1168,14 @@ namespace OpenRA.Mods.Common.Server
 				if (server.LobbyInfo.Slots[targetClient.Slot].LockTeam)
 					return true;
 
-				if (!Exts.TryParseInt32Invariant(parts[1], out var team))
+				if (!Exts.TryParseInt32Invariant(parts[1], out var team) || team < 0 || team > 5)
 				{
 					Log.Write("server", $"Invalid team: {s}");
 					return false;
 				}
 
 				targetClient.Team = team;
+				targetClient.State = targetClient.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 				server.SyncLobbyClients();
 
 				return true;
@@ -1075,7 +1187,11 @@ namespace OpenRA.Mods.Common.Server
 			lock (server.LobbyInfo)
 			{
 				var parts = s.Split(' ');
-				var targetClient = server.LobbyInfo.ClientWithIndex(Exts.ParseInt32Invariant(parts[0]));
+				if (parts.Length != 2 || !Exts.TryParseInt32Invariant(parts[0], out var targetIndex))
+					return false;
+				var targetClient = server.LobbyInfo.ClientWithIndex(targetIndex);
+				if (targetClient?.Slot == null)
+					return false;
 
 				// Only the host can change other client's info
 				if (targetClient.Index != client.Index && !client.IsAdmin)
@@ -1100,6 +1216,7 @@ namespace OpenRA.Mods.Common.Server
 				}
 
 				targetClient.Handicap = handicap;
+				targetClient.State = targetClient.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 				server.SyncLobbyClients();
 
 				return true;
@@ -1148,7 +1265,11 @@ namespace OpenRA.Mods.Common.Server
 			lock (server.LobbyInfo)
 			{
 				var parts = s.Split(' ');
-				var targetClient = server.LobbyInfo.ClientWithIndex(Exts.ParseInt32Invariant(parts[0]));
+				if (parts.Length != 2 || !Exts.TryParseInt32Invariant(parts[0], out var targetIndex))
+					return false;
+				var targetClient = server.LobbyInfo.ClientWithIndex(targetIndex);
+				if (targetClient?.Slot == null)
+					return false;
 
 				// Only the host can change other client's info
 				if (targetClient.Index != client.Index && !client.IsAdmin)
@@ -1169,7 +1290,7 @@ namespace OpenRA.Mods.Common.Server
 					return true;
 				}
 
-				if (server.LobbyInfo.Clients.Any(cc => cc != client && (cc.SpawnPoint == spawnPoint) && (cc.SpawnPoint != 0)))
+				if (server.LobbyInfo.Clients.Any(cc => cc != targetClient && (cc.SpawnPoint == spawnPoint) && (cc.SpawnPoint != 0)))
 				{
 					server.SendFluentMessageTo(conn, SpawnOccupied);
 					return true;
@@ -1192,6 +1313,7 @@ namespace OpenRA.Mods.Common.Server
 				}
 
 				targetClient.SpawnPoint = spawnPoint;
+				targetClient.State = targetClient.IsBot ? Session.ClientState.Ready : Session.ClientState.NotReady;
 				server.SyncLobbyClients();
 
 				return true;
@@ -1326,7 +1448,14 @@ namespace OpenRA.Mods.Common.Server
 					.Where(s => s != null)
 					.ToDictionary(s => s.PlayerReference, s => s);
 
+				server.LobbyInfo.GlobalSettings.Ranked = server.Settings.Ranked;
+				server.LobbyInfo.GlobalSettings.RequestedCapacity = server.Settings.LobbyCapacity > 0
+					? Math.Clamp(server.Settings.LobbyCapacity, 2, 5) : Math.Min(5, server.LobbyInfo.Slots.Count);
+				server.LobbyInfo.GlobalSettings.TimeOfDay = server.Settings.LobbyTimeOfDay is "day" or "night" ? server.Settings.LobbyTimeOfDay : "auto";
+				server.LobbyInfo.GlobalSettings.Weather = server.Settings.LobbyWeather == "on" ? "on" : "off";
+				ApplyCapacity(server);
 				LoadMapSettings(server, server.LobbyInfo.GlobalSettings, server.Map);
+				ApplyRankedSettings(server);
 			}
 		}
 
@@ -1359,7 +1488,7 @@ namespace OpenRA.Mods.Common.Server
 
 				foreach (var o in options)
 				{
-					var value = o.DefaultValue;
+					var value = o.Id == "joa-companion" ? server.Settings.JoaCompanion.ToString() : o.DefaultValue;
 					var preferredValue = o.DefaultValue;
 					if (gs.LobbyOptions.TryGetValue(o.Id, out var state))
 					{
@@ -1419,6 +1548,7 @@ namespace OpenRA.Mods.Common.Server
 					server.SendOrderTo(conn, "SyncMapPool", FieldSaver.FormatValue(server.MapPool));
 
 				var client = server.GetClient(conn);
+				ApplyRankedClientSettings(server, client);
 
 				// Validate whether color is allowed and get an alternative if it isn't
 				if (client.Slot != null && !server.LobbyInfo.Slots[client.Slot].LockColor)
@@ -1434,13 +1564,65 @@ namespace OpenRA.Mods.Common.Server
 				server.TempBans.Clear();
 
 				// Re-enable spectators
-				server.LobbyInfo.GlobalSettings.AllowSpectators = true;
+				server.LobbyInfo.GlobalSettings.AllowSpectators = !server.Settings.Ranked;
 
 				// Reset player slots
 				server.LobbyInfo.Slots = server.Map.Players.Players
 					.Select(p => MakeSlotFromPlayerReference(p.Value))
 					.Where(ss => ss != null)
 					.ToDictionary(ss => ss.PlayerReference, ss => ss);
+				ApplyCapacity(server);
+			}
+		}
+
+		static void ResetReady(S server)
+		{
+			foreach (var c in server.LobbyInfo.Clients)
+				if (!c.IsBot && !c.IsInvalid)
+					c.State = Session.ClientState.NotReady;
+		}
+
+		static void ApplyCapacity(S server)
+		{
+			if (!server.IsMultiplayer)
+				return;
+			var limit = Math.Min(server.LobbyInfo.GlobalSettings.RequestedCapacity, 5);
+			var i = 0;
+			foreach (var slot in server.LobbyInfo.Slots.Values)
+				slot.Closed = i++ >= limit;
+		}
+
+		static bool Capacity(S server, Connection conn, Session.Client client, string s)
+		{
+			lock (server.LobbyInfo)
+			{
+				if (!client.IsAdmin || !Exts.TryParseInt32Invariant(s, out var capacity) || capacity < 2 || capacity > 5 || capacity > server.LobbyInfo.Slots.Count)
+					return false;
+				if (server.LobbyInfo.Slots.Skip(capacity).Any(slot => server.LobbyInfo.ClientInSlot(slot.Key) != null))
+				{
+					server.SendOrderTo(conn, "Message", "Remove or move occupants before shrinking the room.");
+					return true;
+				}
+				server.LobbyInfo.GlobalSettings.RequestedCapacity = capacity;
+				ApplyCapacity(server);
+				ResetReady(server);
+				server.SyncLobbyInfo();
+				return true;
+			}
+		}
+
+		static bool Ambience(S server, Connection conn, Session.Client client, string s)
+		{
+			lock (server.LobbyInfo)
+			{
+				var parts = s.Split(' ');
+				if (!client.IsAdmin || parts.Length != 2 || parts[0] is not ("auto" or "day" or "night") || parts[1] is not ("off" or "on"))
+					return false;
+				server.LobbyInfo.GlobalSettings.TimeOfDay = parts[0];
+				server.LobbyInfo.GlobalSettings.Weather = parts[1];
+				ResetReady(server);
+				server.SyncLobbyInfo();
+				return true;
 			}
 		}
 

@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "product": "Redline Wars: Fractured Order",
-  "sourceCommit": "9aad742c9fdc675be5abe65f5e68d27ae4e4c6a3",
-  "sourceCommitDate": "2026-09-30T14:49:11+02:00",
+  "sourceCommit": "ecb69d1eecdabd9f0d547eca20cf845d578d55c0",
+  "sourceCommitDate": "2026-09-30T20:36:15+02:00",
   "exportedWith": "tools/export-release.mjs",
-  "published": 4189,
+  "published": 4202,
   "withheld": {
     "the marketing site": 1231,
     "Blender sources and the art pipeline": 918,

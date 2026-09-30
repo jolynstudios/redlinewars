@@ -218,6 +218,10 @@ namespace OpenRA.Network
 			public bool EnableGameSaves;
 			public bool EnableSyncReports;
 			public bool Dedicated;
+			public bool Ranked;
+			public int RequestedCapacity;
+			public string TimeOfDay = "auto";
+			public string Weather = "off";
 
 			// 120ms network frame interval for 40ms local tick
 			public int NetFrameInterval = 3;

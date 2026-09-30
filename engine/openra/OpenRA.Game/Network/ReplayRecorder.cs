@@ -73,6 +73,9 @@ namespace OpenRA.Network
 
 		public void Receive(int clientID, byte[] data)
 		{
+			data = EphemeralLobbyChat.WithoutCommunication(data);
+			if (data == null)
+				return;
 			if (disposed) // TODO: This can be removed once NetworkConnection is fixed to dispose properly.
 				return;
 

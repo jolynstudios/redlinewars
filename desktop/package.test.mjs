@@ -4,10 +4,28 @@ import test from 'node:test';
 import path from 'node:path';
 import os from 'node:os';
 
-import { appBundleAudioAssets, ensureNpmCollectorWorkspacesFlag, PUBLIC_ARTIFACTS, SHELL_FILES, shellSourceProblems, targetConfig } from './package.mjs';
+import { appBundleAudioAssets, ensureNpmCollectorWorkspacesFlag, parsePackageOptions, PUBLIC_ARTIFACTS, SHELL_FILES, shellSourceProblems, targetConfig } from './package.mjs';
 import { LEGAL_DOCS } from './shell-options.mjs';
 
 const repoRoot = path.resolve(import.meta.dirname, '..');
+
+test('one output directory selects isolated candidate packaging without changing shared inputs', () => {
+	const ordinary = parsePackageOptions([], 'darwin', '/tmp/ignored-working-dir');
+	assert.deepEqual(ordinary, { target: 'mac', outputDir: path.join(import.meta.dirname, 'dist') });
+	const candidate = parsePackageOptions(['mac', '--output-dir', 'stage/fix-final-build/packages-candidate'], 'darwin', repoRoot);
+	assert.equal(candidate.outputDir, path.join(repoRoot, 'stage/fix-final-build/packages-candidate'));
+	assert.notEqual(candidate.outputDir, ordinary.outputDir);
+	assert.deepEqual(parsePackageOptions(['--output-dir', '/tmp/isolated-output', 'win'], 'linux'), { target: 'win', outputDir: '/tmp/isolated-output' });
+	for (const target of ['mac', 'win', 'linux']) {
+		const config = targetConfig(target, '/tmp/candidate-node-staging', 'x64', '/tmp/candidate-manifest-staging', candidate.outputDir);
+		assert.equal(config.directories.output, candidate.outputDir);
+		assert.equal(config.extraResources.find(resource => resource.to === 'AppBundle').from, path.join(repoRoot, 'engine/bin-browser/AppBundle'), 'candidate uses the existing canonical game');
+		assert.equal(config.extraResources.find(resource => resource.to === 'steelseed-node').from, '/tmp/candidate-node-staging');
+	}
+	for (const args of [['--output-dir'], ['--output-dir', ''], ['--output-dir', '--other'], ['--output-dir', '/tmp/a', '--output-dir', '/tmp/b'], ['--other'], ['mac', 'linux'], ['other'], ['__proto__']])
+		assert.throws(() => parsePackageOptions(args, 'darwin'), /package:/);
+	assert.throws(() => parsePackageOptions([], 'other'), /specify mac, win or linux/);
+});
 
 test('desktop package carries every imported shell module', () => {
 	const config = targetConfig('linux', '/tmp/redline-node-fixture');

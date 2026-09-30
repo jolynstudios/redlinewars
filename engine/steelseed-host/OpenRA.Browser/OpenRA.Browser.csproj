@@ -61,6 +61,13 @@
 	<Target Name="DisableAnalyzers" />
 
 	<Target Name="GenerateAssetlessRaMod" BeforeTargets="PrepareForBuild">
+		<!-- Map hashing and resolved actor export invoke this native utility.
+		     Build it before generation so a clean browser publish has no hidden
+		     dependency on pre-existing engine/bin files. Strip browser publish
+		     properties: the utility runs on the build machine, never in WASM. -->
+		<MSBuild Projects="$(MSBuildThisFileDirectory)../../OpenRA.Utility/OpenRA.Utility.csproj"
+			Targets="Restore;Build" Properties="Configuration=$(Configuration)"
+			RemoveProperties="RuntimeIdentifier;SelfContained;PublishTrimmed;RunAOTCompilation;SteelseedParityReference;TargetPlatform" />
 		<Exec Command="node &quot;$(MSBuildThisFileDirectory)../tools/build-ra-mod.mjs&quot;" />
 		<Exec Condition="'$(SteelseedParityReference)' == 'true'" Command="node &quot;$(MSBuildThisFileDirectory)../tools/build-ra-reference.mjs&quot;" />
 		<ItemGroup>

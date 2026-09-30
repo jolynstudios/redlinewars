@@ -1,5 +1,7 @@
 // One packaging entry (T3.13): `npm run package` → `node package.mjs [mac|win|linux]`
 // (default: the host OS). Packaging never builds (AGENTS.md rule 5): this
+// --output-dir <path> selects one output root for isolated candidate QA while
+// an older installed/running app remains untouched (default: desktop/dist).
 // script VALIDATES the inputs, assembles the node per target RID with the one
 // assembler (assembleNode, T1.0 — no node file is ever listed by hand, L27),
 // and hands electron-builder a config whose extraResources maps exactly that
@@ -55,6 +57,27 @@ export function targetForPlatform(platform = process.platform) {
   if (platform === 'win32') return 'win';
   if (platform === 'linux') return 'linux';
   return null;
+}
+
+export function parsePackageOptions(argv, platform = process.platform, cwd = process.cwd()) {
+  let target, outputDir;
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === '--output-dir') {
+      if (outputDir !== undefined) throw new Error('package: --output-dir may be supplied only once');
+      const value = argv[++i];
+      if (!value || value.startsWith('--')) throw new Error('package: --output-dir requires a path');
+      outputDir = path.resolve(cwd, value);
+    } else if (arg.startsWith('--')) throw new Error(`package: unknown option "${arg}"`);
+    else {
+      if (target !== undefined) throw new Error('package: supply one target: mac, win or linux');
+      if (!Object.hasOwn(TARGET_RIDS, arg)) throw new Error(`package: unknown target "${arg}" — expected mac, win or linux`);
+      target = arg;
+    }
+  }
+  target ??= targetForPlatform(platform);
+  if (!target) throw new Error('package: specify mac, win or linux for this host platform');
+  return { target, outputDir: outputDir ?? path.join(here, 'dist') };
 }
 
 function readSimBuild(file) {
@@ -170,8 +193,8 @@ export function validateTarget(target) {
 
 // The staged node for one RID: a plain assembleNode() product, so the node
 // inside every artifact is byte-comparable via nodeparitygate (T1.0, L27).
-async function stageNode(rid) {
-  const out = path.join(here, 'dist', 'node-staging', rid);
+async function stageNode(rid, outputDir) {
+  const out = path.join(outputDir, 'node-staging', rid);
   fs.rmSync(out, { recursive: true, force: true });
   await assembleNode({ rid, out });
   return out;
@@ -214,8 +237,8 @@ async function electronBuild(platformName, targetName, archName, config) {
   await build({ targets: platform.createTarget(targetName, arch), config, projectDir: here });
 }
 
-function appPaths(target) {
-  if (target === 'mac') return ['dist/mac-arm64/Redline Wars.app', 'dist/mac/Redline Wars.app'];
+function appPaths(target, outputDir) {
+  if (target === 'mac') return ['mac-arm64/Redline Wars.app', 'mac/Redline Wars.app'].map(rel => path.join(outputDir, rel));
   return [];
 }
 
@@ -234,14 +257,14 @@ function stagedNodeModules(nodeStaging) {
 // would poison the second build() of the same run.
 // Pure and exported so the win/linux configs can be inspected structurally
 // (CI validation) without building them.
-export function targetConfig(target, nodeStaging, archName = 'x64', manifestDir = null) {
+export function targetConfig(target, nodeStaging, archName = 'x64', manifestDir = null, outputDir = path.join(here, 'dist')) {
   return {
     appId: 'nl.jolynstudios.redlinewars',
     productName: 'Redline Wars',
     // Installer / Info.plist / exe metadata: the app is ours (GPLv3 or later), the engine OpenRA's.
     copyright: '© 2026 Jolyn Studios · Engine: OpenRA (GPLv3)',
     files: [...SHELL_FILES],
-    directories: { output: 'dist' },
+    directories: { output: outputDir },
     extraResources: [
       // No client .js.map: the presentation bundle's source maps embed the client's
       // sourcesContent, and the shipped installers must not carry source the release does not
@@ -301,8 +324,8 @@ export function targetConfig(target, nodeStaging, archName = 'x64', manifestDir 
 }
 
 // The release manifest of one package, staged for extraResources before electron-builder runs.
-function stageManifest(target, archName, rid, nodeStaging) {
-  const dir = path.join(here, 'dist', 'manifest-staging', rid);
+function stageManifest(target, archName, rid, nodeStaging, outputDir) {
+  const dir = path.join(outputDir, 'manifest-staging', rid);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(dir, { recursive: true });
   const manifest = releaseManifest({
@@ -317,7 +340,7 @@ function stageManifest(target, archName, rid, nodeStaging) {
   return { dir, manifest };
 }
 
-async function packageMac() {
+async function packageMac(outputDir) {
   const manifests = {};
   for (const arch of ['arm64', 'x64']) {
     const rid = arch === 'arm64' ? 'osx-arm64' : 'osx-x64';
@@ -335,15 +358,14 @@ async function packageMac() {
       if (result.status !== 0)
         throw new Error(`macOS ${rid} ${label} failed (${result.status ?? result.error?.code})`);
     }
-    const nodeStaging = await stageNode(rid);
-    const { dir, manifest } = stageManifest('mac', arch, rid, nodeStaging);
+    const nodeStaging = await stageNode(rid, outputDir);
+    const { dir, manifest } = stageManifest('mac', arch, rid, nodeStaging, outputDir);
     manifests[arch] = manifest;
-    await electronBuild('mac', 'dir', arch, targetConfig('mac', nodeStaging, arch, dir));
+    await electronBuild('mac', 'dir', arch, targetConfig('mac', nodeStaging, arch, dir, outputDir));
   }
   // Seal the outer app around the already-signed child. Apple Silicon refuses
   // an unsigned .NET apphost inside Resources (SIGKILL before TCP listen).
-  for (const [index, rel] of appPaths('mac').entries()) {
-    const appPath = path.join(here, rel);
+  for (const [index, appPath] of appPaths('mac', outputDir).entries()) {
     if (!fs.existsSync(appPath)) throw new Error(`macOS app missing after packaging: ${appPath}`);
     const rid = TARGET_RIDS.mac[index];
     const server = path.join(appPath, 'Contents/Resources/steelseed-node/bin-standalone', rid, 'OpenRA.Server');
@@ -363,7 +385,7 @@ async function packageMac() {
   }
   // Beta notes for the receiving Mac (the host-for-others helper and the
   // quarantine-fix helper of earlier dev builds are gone, A14/T3.13 item 7).
-  const leemmijDir = path.join(here, 'dist/mac-arm64');
+  const leemmijDir = path.join(outputDir, 'mac-arm64');
   fs.mkdirSync(leemmijDir, { recursive: true });
   fs.writeFileSync(path.join(leemmijDir, 'LEEMMIJ.txt'), [
     'Redline Wars beta (Mac)',
@@ -382,10 +404,10 @@ async function packageMac() {
   // then archive that exact signed directory under the public release name.
   // `ditto` is the macOS-native zip lane and preserves the app bundle metadata.
   for (const arch of ['arm64', 'x64']) {
-    const appPath = path.join(here, arch === 'arm64'
-      ? 'dist/mac-arm64/Redline Wars.app'
-      : 'dist/mac/Redline Wars.app');
-    const artifact = path.join(here, 'dist', PUBLIC_ARTIFACTS.mac[arch]);
+    const appPath = path.join(outputDir, arch === 'arm64'
+      ? 'mac-arm64/Redline Wars.app'
+      : 'mac/Redline Wars.app');
+    const artifact = path.join(outputDir, PUBLIC_ARTIFACTS.mac[arch]);
     fs.rmSync(artifact, { force: true });
     const zip = spawnSync('ditto', ['-c', '-k', '--sequesterRsrc', '--keepParent', appPath, artifact], { stdio: 'inherit' });
     if (zip.status !== 0)
@@ -394,15 +416,15 @@ async function packageMac() {
   }
 }
 
-async function packageWin() {
-  const nodeStaging = await stageNode('win-x64');
-  const { dir, manifest } = stageManifest('win', 'x64', 'win-x64', nodeStaging);
-  await electronBuild('win', 'nsis', 'x64', targetConfig('win', nodeStaging, 'x64', dir));
-  verifyPackagedResources(path.join(here, 'dist/win-unpacked/resources'), 'win-x64');
-  writeSidecar(path.join(here, 'dist', PUBLIC_ARTIFACTS.win.x64), manifest);
+async function packageWin(outputDir) {
+  const nodeStaging = await stageNode('win-x64', outputDir);
+  const { dir, manifest } = stageManifest('win', 'x64', 'win-x64', nodeStaging, outputDir);
+  await electronBuild('win', 'nsis', 'x64', targetConfig('win', nodeStaging, 'x64', dir, outputDir));
+  verifyPackagedResources(path.join(outputDir, 'win-unpacked/resources'), 'win-x64');
+  writeSidecar(path.join(outputDir, PUBLIC_ARTIFACTS.win.x64), manifest);
 }
 
-async function packageLinux() {
+async function packageLinux(outputDir) {
   // The AppImage arm64 runtime shipped by electron-builder 25 links the
   // unversioned libz.so (normally supplied only by zlib development packages).
   // Package on Linux, where patchelf can make the runtime depend on the
@@ -414,12 +436,12 @@ async function packageLinux() {
     throw new Error('Linux AppImage packaging requires patchelf (install it before packaging)');
   for (const arch of ['x64', 'arm64']) {
     const rid = arch === 'arm64' ? 'linux-arm64' : 'linux-x64';
-    const nodeStaging = await stageNode(rid);
-    const { dir, manifest } = stageManifest('linux', arch, rid, nodeStaging);
-    await electronBuild('linux', 'AppImage', arch, targetConfig('linux', nodeStaging, arch, dir));
-    verifyPackagedResources(path.join(here, arch === 'arm64'
-      ? 'dist/linux-arm64-unpacked/resources' : 'dist/linux-unpacked/resources'), rid);
-    const appImage = path.join(here, 'dist', PUBLIC_ARTIFACTS.linux[arch]);
+    const nodeStaging = await stageNode(rid, outputDir);
+    const { dir, manifest } = stageManifest('linux', arch, rid, nodeStaging, outputDir);
+    await electronBuild('linux', 'AppImage', arch, targetConfig('linux', nodeStaging, arch, dir, outputDir));
+    verifyPackagedResources(path.join(outputDir, arch === 'arm64'
+      ? 'linux-arm64-unpacked/resources' : 'linux-unpacked/resources'), rid);
+    const appImage = path.join(outputDir, PUBLIC_ARTIFACTS.linux[arch]);
     const needed = spawnSync('patchelf', ['--print-needed', appImage], { encoding: 'utf8' });
     if (needed.status !== 0)
       throw new Error(`Cannot inspect ${appImage} ELF dependencies: ${needed.stderr || needed.error}`);
@@ -440,11 +462,10 @@ async function packageLinux() {
 const TARGET_BUILDERS = { mac: packageMac, win: packageWin, linux: packageLinux };
 
 async function main() {
-  const target = process.argv[2] ?? targetForPlatform();
-  if (!TARGET_BUILDERS[target]) {
-    console.error(`package: unknown target "${target ?? ''}" — expected mac, win or linux (default: the host OS)`);
-    process.exit(1);
-  }
+  let options;
+  try { options = parsePackageOptions(process.argv.slice(2)); }
+  catch (error) { console.error(error.message); process.exit(1); }
+  const { target, outputDir } = options;
   const failures = validateTarget(target);
   if (failures.length > 0) {
     console.error(`package: preflight failed for ${target}\n  - ${failures.join('\n  - ')}`);
@@ -452,10 +473,10 @@ async function main() {
   }
   if (ensureNpmCollectorWorkspacesFlag() === 'flagged')
     console.log('package: re-applied --workspaces=false to electron-builder\'s npm collector (a fresh npm ci wipes it)');
-  await TARGET_BUILDERS[target]();
-  fs.rmSync(path.join(here, 'dist', 'node-staging'), { recursive: true, force: true });
-  fs.rmSync(path.join(here, 'dist', 'manifest-staging'), { recursive: true, force: true });
-  console.log(`package: ${target} done`);
+  await TARGET_BUILDERS[target](outputDir);
+  fs.rmSync(path.join(outputDir, 'node-staging'), { recursive: true, force: true });
+  fs.rmSync(path.join(outputDir, 'manifest-staging'), { recursive: true, force: true });
+  console.log(`package: ${target} done in ${outputDir}`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {

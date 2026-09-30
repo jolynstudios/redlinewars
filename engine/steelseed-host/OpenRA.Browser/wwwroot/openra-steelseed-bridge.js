@@ -256,6 +256,9 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 			return P.GetLobbyPlayersProbe();
 		},
 
+		getLobbySnapshotProbe() { return P.GetLobbySnapshotProbe(); },
+		async probeLobbySnapshot() { return P.GetLobbySnapshotProbe(); },
+
 		getSupportPowers() {
 			try { return JSON.parse(P.GetSupportPowers()); } catch { return null; }
 		},
@@ -295,6 +298,26 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 		async lobbySetFaction(factionId) {
 			return P.LobbySetFaction(String(factionId));
 		},
+
+		async lobbySetFactionFor(index, faction) { return P.LobbySetFactionFor(Number(index), String(faction)); },
+		async lobbySetTeamFor(index, team) { return P.LobbySetTeamFor(Number(index), Number(team)); },
+		async lobbyRemoveBot(index) { return P.LobbyRemoveBot(Number(index)); },
+		async lobbySendChat(text) {
+			const queued = P.LobbySendChat(String(text));
+			const match = /^chat queued (\d+)$/.exec(queued);
+			if (!match) return queued;
+			const request = Number(match[1]);
+			const deadline = Date.now() + 5000;
+			while (Date.now() < deadline) {
+				const status = P.GetLobbyChatSendStatus(request);
+				if (status === 'accepted') return 'chat sent';
+				if (status !== 'pending') return status;
+				await new Promise(resolve => setTimeout(resolve, 100));
+			}
+			P.CancelLobbyChatSend(request);
+			return 'Chat confirmation timed out. Retry shortly.';
+		},
+		async lobbySetAmbience(tod, weather) { return P.LobbySetAmbience(String(tod), String(weather)); },
 
 		async lobbySetTeam(team) {
 			return P.LobbySetTeam(Number(team));

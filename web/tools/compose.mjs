@@ -93,10 +93,13 @@ const presentationScript = /<script type="module"[^>]*src="\.\/assets\/[^\"]+"[^
 if (!presentationScript.test(index))
 	throw new Error('compose: Vite index has no relative presentation module marker')
 const withHost = index.replace(presentationScript, `${HOST_SCRIPT}\n\t\t$&`)
-// The boot redirect pins mode=game for the engine while KEEPING any extra query
+// Set boot defaults before either module runs, keeping the current document.
+// A redirect lets WebKit evaluate modules from the discarded page after its DOM
+// has gone away. The engine reads location.search, so history is sufficient.
+// Pin mode=game for the engine while KEEPING any extra query
 // the player arrived with (?debug=on&hostedon, ?join=<roomId>, …) — T5.5/T5.6
 // deep links depend on their parameters surviving the redirect.
-const bootHost = '<script>(function(){var q=location.search;if(!/[?&]mode=/.test(q)){var extra=q?\'&\'+q.slice(1):"";location.replace(location.pathname+"?mode=game&platform=null"+extra+location.hash)}})()</script>'
+const bootHost = '<script>(function(){var q=location.search;if(!/[?&]mode=/.test(q)){var extra=q?\'&\'+q.slice(1):"";history.replaceState(history.state,"",location.pathname+"?mode=game&platform=null"+extra+location.hash)}})()</script>'
 writeFileSync(indexPath, withHost.includes('</head>') ? withHost.replace('</head>', `\t${bootHost}\n\t</head>`) : `${bootHost}\n${withHost}`)
 
 // --prune: keep only this build's hashed assets. Local iteration otherwise piles up every

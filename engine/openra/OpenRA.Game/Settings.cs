@@ -150,6 +150,27 @@ namespace OpenRA
 		[Desc("For dedicated servers only, save replays for all games played.")]
 		public bool RecordReplays = false;
 
+		[Desc("Enforce immutable canonical Ranked lobby settings.")]
+		public bool Ranked = false;
+
+		[Desc("Default JOA companion permission for the lobby.")]
+		public bool JoaCompanion = true;
+
+		[Desc("Selected multiplayer seat capacity, between two and five; zero uses the map ceiling.")]
+		public int LobbyCapacity = 0;
+
+		[Desc("First validated unranked room client starts as an observer admin.")]
+		public bool ObserverFirstJoin = false;
+
+		[Desc("Lobby admin inactivity lease in seconds. Zero disables it.")]
+		public int AdminIdleTimeoutSeconds = 600;
+
+		[Desc("Shared multiplayer time of day: auto, day or night.")]
+		public string LobbyTimeOfDay = "auto";
+
+		[Desc("Shared multiplayer weather: off or on.")]
+		public string LobbyWeather = "off";
+
 		[Desc("For dedicated servers only, treat maps that fail the lint checks as invalid.")]
 		public bool EnableLintChecks = true;
 

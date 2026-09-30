@@ -61,6 +61,7 @@ export function createPageBridge(worker) {
 		getConnectionProbe: () => sync.GetConnectionProbe ?? '',
 		getServerErrorProbe: () => sync.GetServerErrorProbe ?? '',
 		getLobbyPlayersProbe: () => sync.GetLobbyPlayersProbe ?? '',
+		getLobbySnapshotProbe: () => sync.GetLobbySnapshotProbe ?? 'null',
 		getSupportPowers: () => sync.supportPowers ?? null,
 		getSessionStatus: () => sync.sessionStatus ?? null,
 	}

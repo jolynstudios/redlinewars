@@ -56,6 +56,13 @@ namespace OpenRA
 
 		static void Run(string[] args)
 		{
+			// These projects are shared with the browser and referenced by this host.
+			// Register their default-context assemblies before the manifest loader
+			// creates custom contexts, which would otherwise duplicate trait types.
+			ObjectCreator.RegisterAssembly(typeof(Mods.Common.Traits.MobileInfo).Assembly);
+			ObjectCreator.RegisterAssembly(typeof(Mods.Cnc.Traits.ChronoshiftableInfo).Assembly);
+			ObjectCreator.RegisterAssembly(typeof(Mods.Steelseed.SteelseedDeploymentInfo).Assembly);
+
 			var engineDir = Environment.GetEnvironmentVariable("ENGINE_DIR");
 			if (!string.IsNullOrEmpty(engineDir))
 				Platform.OverrideEngineDir(engineDir);

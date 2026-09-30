@@ -8,6 +8,26 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.09.30-ecb69d1 — desktop/lobby fixes (release candidate)
+
+Source: private commit `ecb69d1eecdabd9f0d547eca20cf845d578d55c0`, simulation build
+`8a45d97ae0f6`, mod hash `f924d02e240281cb7718eea7125f9ea2335e012fe704ee7997066ff7aa03b81d`.
+The corresponding source tag is published before binaries. Production installation and CI-built
+artifact hashes are pending; no live-release verification is claimed in this entry yet.
+
+Changes: observer-host administration without occupying a chair; clean lobby/session transitions;
+one-click human and AI removal; consistent discovery; retained capacity and corrected Start rules;
+server-validated administrator controls and Ready updates; inactive-administrator transfer;
+ephemeral lobby chat; canonical engine build graph and URL handling; desktop Main-to-Skirmish cleanup.
+New audio/video is excluded. The separate direct-connection experiment is not in this source tag.
+
+Local qualification: 166 web, 121 hosting and 45 desktop tests, 23 engine lobby tests, 13 real lobby
+test groups, Chromium/WebKit/Firefox paths, production-AOT ranked receipt and native replay verification,
+and actual arm64 packaged UI. Existing strict cadence thresholds unchanged: all four measured profiles
+pass (p50 8.3–9.4 ms, worst frame 17.6–18.3 ms), with no model fallbacks. This is measured-profile
+evidence, not a universal hardware claim. Physical cross-device/network and Windows/Linux render
+qualification remains outstanding; local Mac packages are ad-hoc signed, not notarized.
+
 ## Before the first tag
 
 The release discipline — tags, `RELEASE-MANIFEST.json`, `SHA256SUMS`, the downloads page — began with

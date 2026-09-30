@@ -45,6 +45,12 @@ namespace OpenRA.Server
 
 		static void Run(string[] args)
 		{
+			// Resolve all manifest traits from the shared referenced assemblies,
+			// just as the browser host does, preserving one type identity per trait.
+			ObjectCreator.RegisterAssembly(typeof(Mods.Common.Traits.MobileInfo).Assembly);
+			ObjectCreator.RegisterAssembly(typeof(Mods.Cnc.Traits.ChronoshiftableInfo).Assembly);
+			ObjectCreator.RegisterAssembly(typeof(Mods.Steelseed.SteelseedDeploymentInfo).Assembly);
+
 			var arguments = new Arguments(args);
 
 			var engineDirArg = arguments.GetValue("Engine.EngineDir", null);

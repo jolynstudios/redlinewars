@@ -12,7 +12,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { WebSocketServer } from 'ws';
 import { spawnProcessGroup, stopProcessGroup } from '../../../web/tools/process-group.mjs';
 import { makeNodeTree } from './roomhost-fixture.mjs';
-import { adminIdleDemotion, createInboundActivityTracker, parseArgv } from './roomhost.mjs';
+import { parseArgv } from './roomhost.mjs';
+import { buildArgs } from './dedicated-runner.mjs';
 
 // A real standing node (fixture dedicated) behind a fake spine socket.
 async function standingFixture(t, { acceptPlaced = true, mode = 'standing', wait = true, fixture = 'echo' } = {}) {
@@ -129,123 +130,11 @@ test('a creator whose join beats the accept probe still claims the placed room',
 	await f.until(() => f.log.includes(`[room ${ok.roomId.slice(0, 6)}] state lobby`));
 });
 
-// ---- the admin idle-demotion decision (pure, synthetic clock) ----
-
-function roomFixture(state, conns) {
-	return { id: '0123456789abcdef', state, conns: new Map(conns) };
-}
-const conn = (lastInboundAt, validated = true) => ({ validated, lastInboundAt, close: () => {} });
-const MINUTE = 60_000;
-const NOW = 10 * MINUTE;
-
-test('an idle admin with a second validated member is demoted', () => {
-	const room = roomFixture('lobby', [
-		[50001, conn(NOW - 11 * MINUTE)],
-		[50002, conn(NOW - 1 * MINUTE)],
-	]);
-	const demoted = adminIdleDemotion(room, NOW, 600);
-	assert.equal(demoted, room.conns.get(50001), 'the first validated entry is the admin');
-});
-
-test('waiting alone is exempt: an idle admin keeps the room', () => {
-	const room = roomFixture('lobby', [[50001, conn(NOW - 30 * MINUTE)]]);
-	assert.equal(adminIdleDemotion(room, NOW, 600), null);
-});
-
-test('an active admin is never demoted', () => {
-	const room = roomFixture('lobby', [
-		[50001, conn(NOW - 5 * MINUTE)],
-		[50002, conn(NOW - 9 * MINUTE)],
-	]);
-	assert.equal(adminIdleDemotion(room, NOW, 600), null);
-});
-
-test('unvalidated sockets never count as waiting members', () => {
-	const room = roomFixture('lobby', [
-		[50001, conn(NOW - 30 * MINUTE)],
-		[50002, conn(NOW - 30 * MINUTE, false)],
-	]);
-	assert.equal(adminIdleDemotion(room, NOW, 600), null);
-});
-
-test('no demotion outside the lobby, and 0 disables the watcher entirely', () => {
-	const playing = roomFixture('playing', [
-		[50001, conn(NOW - 30 * MINUTE)],
-		[50002, conn(NOW - 30 * MINUTE)],
-	]);
-	assert.equal(adminIdleDemotion(playing, NOW, 600), null);
-	const lobby = roomFixture('lobby', [
-		[50001, conn(NOW - 30 * MINUTE)],
-		[50002, conn(NOW - 30 * MINUTE)],
-	]);
-	assert.equal(adminIdleDemotion(lobby, NOW, 0), null);
-});
-
-// ---- inbound activity classification (W3/F3: pings are not a human) ----
-// Client stream: [i32 protocol][i32 clientIndex] handshake, then
-// [i32 LE length][packet] frames. A ping response is exactly 14 bytes:
-// [i32 0][u8 0x20][i64 timestamp][u8 queue] (OrderIO.SerializePingResponse).
-const HANDSHAKE = (() => { const b = Buffer.alloc(8); b.writeInt32LE(7, 0); b.writeInt32LE(1, 4); return b; })();
-const pingFrame = () => {
-	const body = Buffer.alloc(14);
-	body.writeInt32LE(0, 0);       // frame 0
-	body.writeUInt8(0x20, 4);      // OrderTypes.Ping
-	body.writeBigInt64LE(1_769_000_000_000n, 5); // timestamp
-	body.writeUInt8(0, 13);        // order queue length
-	const frame = Buffer.alloc(4 + body.length);
-	frame.writeInt32LE(body.length, 0);
-	body.copy(frame, 4);
-	return frame;
-};
-const orderFrame = (type = 0x2f) => {
-	const body = Buffer.from([0, 0, 0, 0, type, 1, 2, 3]);
-	const frame = Buffer.alloc(4 + body.length);
-	frame.writeInt32LE(body.length, 0);
-	body.copy(frame, 4);
-	return frame;
-};
-const framed = (...frames) => Buffer.concat([HANDSHAKE, ...frames]);
-
-test('a stream of nothing but ping responses never counts as activity', () => {
-	let hits = 0;
-	const mark = createInboundActivityTracker(() => { hits++; });
-	mark(framed(pingFrame(), pingFrame()));
-	mark(pingFrame());
-	assert.equal(hits, 0, 'engine auto-pings must not refresh the demotion timer');
-});
-
-test('a real order frame counts as activity, even alongside pings', () => {
-	let hits = 0;
-	const mark = createInboundActivityTracker(() => { hits++; });
-	mark(framed(pingFrame(), orderFrame()));
-	mark(pingFrame());
-	mark(orderFrame());
-	assert.equal(hits, 2);
-});
-
-test('frames split across chunks still parse (handshake and frame edges)', () => {
-	let hits = 0;
-	const mark = createInboundActivityTracker(() => { hits++; });
-	const stream = framed(pingFrame(), orderFrame(), pingFrame());
-	// Feed it in 3-byte slices: every boundary case lands somewhere.
-	for (let i = 0; i < stream.length; i += 3) mark(stream.subarray(i, i + 3));
-	assert.equal(hits, 1, 'exactly the one real order frame is activity');
-});
-
-test('a 14-byte frame that is not the auto-ping shape counts as activity', () => {
-	let hits = 0;
-	const mark = createInboundActivityTracker(() => { hits++; });
-	const fake = orderFrame(0x20); // ping TYPE but a nonzero frame number
-	mark(framed(fake));
-	assert.equal(hits, 1, 'only frame-0 pings are the engine keepalive');
-});
-
-test('an unparseable stream fails open: every chunk counts as activity', () => {
-	let hits = 0;
-	const mark = createInboundActivityTracker(() => { hits++; });
-	const garbage = Buffer.from([0xff, 0xff, 0xff, 0x7f, 1, 2, 3]); // length > cap
-	mark(Buffer.concat([HANDSHAKE, garbage]));
-	assert.ok(hits >= 1, 'the watcher must never demote on a parser blind spot');
+// Idle authority stays inside the same engine as the game, including LAN.
+test('dedicated gets capacity, observer-first admission and authoritative idle policy', () => {
+	const args = buildArgs({ name: 'test', port: 1234, map: 'a'.repeat(40), slots: 5, adminIdleSeconds: 600, settings: { tod: 'night', weather: 'on' } }, { engineRoot: '/fixture', supportDir: '/fixture/room' });
+	for (const value of ['Server.LobbyCapacity=5', 'Server.ObserverFirstJoin=True', 'Server.AdminIdleTimeoutSeconds=600', 'Server.LobbyTimeOfDay=night', 'Server.LobbyWeather=on']) assert.ok(args.includes(value), value);
+	assert.ok(buildArgs({map:'a',adminIdleSeconds:0}, {engineRoot:'/a',supportDir:'/b'}).includes('Server.AdminIdleTimeoutSeconds=0'));
 });
 
 // ---- argv surface ----

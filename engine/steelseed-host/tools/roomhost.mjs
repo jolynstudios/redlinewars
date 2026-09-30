@@ -96,20 +96,6 @@ export function publicNodeName(name) {
 		: 'Redline host';
 }
 
-// W3: the admin idle-demotion decision, pure so tests can drive it with a
-// synthetic clock. Mirrors the engine's admin rule from tunnel liveness alone:
-// the first validated entry in room.conns (insertion order = engine client
-// index order) is the admin. Exemptions: not in `lobby`, fewer than two
-// validated members (waiting alone is the owner's rule), adminIdleSeconds 0
-// (disabled) and every unvalidated socket.
-export function adminIdleDemotion(room, now, adminIdleSeconds) {
-	if (!(adminIdleSeconds > 0) || !room || room.state !== 'lobby') return null;
-	const members = [...room.conns.values()].filter(rec => rec.validated);
-	if (members.length < 2) return null;
-	const admin = members[0];
-	return now - admin.lastInboundAt > adminIdleSeconds * 1000 ? admin : null;
-}
-
 // Seat census (owner 2026-09-29: "if i open a room without me playing why
 // does it count me as a player, when hosting in that mode?"). The engine
 // prints one STEELSEED_ROOM line per actual change (join, seat claim/release,
@@ -136,38 +122,6 @@ export function applyRoomCensus(room, line) {
 		room.liveMap = liveMap;
 	}
 	return { changed };
-}
-
-// W3 inbound-activity classifier for the demotion watcher. Any inbound byte
-// proves a live socket, never a present human: the server pings every second
-// (Connection.cs) and the client auto-answers, so pings must not refresh the
-// timer. The client stream is the 8-byte protocol/client-index handshake, then
-// [i32 LE length][packet] frames; a ping response is exactly 14 bytes
-// ([i32 0][u8 0x20][i64 timestamp][u8 queue], OrderIO.SerializePingResponse).
-// Anything unparseable counts as activity — the watcher must fail open, never
-// demote a human because the parser has a blind spot.
-export function createInboundActivityTracker(onActivity, { maxFrameBytes = 1 << 20 } = {}) {
-	let pending = null; // a frame split across TCP chunks carries to the next call
-	let handshaked = false;
-	return chunk => {
-		let buf = pending ? Buffer.concat([pending, chunk]) : chunk;
-		pending = null;
-		if (!handshaked) {
-			if (buf.length < 8) { pending = buf; return; }
-			buf = buf.subarray(8); // protocol version + client index
-			handshaked = true;
-		}
-		while (buf.length >= 4) {
-			const length = buf.readInt32LE(0);
-			if (length < 0 || length > maxFrameBytes) { onActivity(); return; }
-			if (buf.length < 4 + length) break;
-			const frame = buf.subarray(4, 4 + length);
-			buf = buf.subarray(4 + length);
-			const ping = length === 14 && frame.readInt32LE(0) === 0 && frame[4] === 0x20;
-			if (!ping) onActivity();
-		}
-		if (buf.length > 0) pending = Buffer.from(buf); // copy: never pin a whole chunk
-	};
 }
 
 export function parseArgv(argv = process.argv.slice(2)) {
@@ -604,6 +558,9 @@ async function allocateRoom(spec) {
 		port,
 		map,
 		password: spec.password,
+		slots,
+		settings: spec.settings,
+		adminIdleSeconds,
 		solo: spec.solo,
 		debugSync,
 		ranked: spec.ranked === true,
@@ -665,10 +622,6 @@ async function allocateRoom(spec) {
 		// has no late-join, so an abandoned room is unclaimable and only lies
 		// in the directory.
 		lastActiveAt: Date.now(),
-		// Admin idle-demotion bookkeeping (W3): localPort → { validated,
-		// lastInboundAt, close }. Insertion order mirrors the engine's client
-		// index order, so the first validated entry is the admin.
-		conns: new Map(),
 		child,
 		createdAt: Date.now(),
 	};
@@ -805,18 +758,6 @@ function handleRoomLine(room, line) {
 		if (census.changed) spineReportRooms();
 		return;
 	}
-	// Admin idle-demotion (W3): the dedicated server's stdout only echoes bare
-	// fluent keys (no names, no indices — those stay in the server's log
-	// file), so the watcher mirrors the engine's admin rule from tunnel
-	// liveness alone: the first validated connection is admin, and on every
-	// disconnect the engine reassigns to the lowest remaining client index
-	// (Server.cs DropClient) — exactly "the oldest still-live tunnel". The
-	// one unobservable divergence is a manual make_admin; it can leave the
-	// oldest tunnel idle-demoted while someone else holds admin. Logged.
-	if (line.includes('notification-new-admin')) {
-		console.log(`[room ${room.id.slice(0, 6)}] admin reassigned by the server`);
-		return;
-	}
 	// A join claims the room from `reserved` OR `booting`: the creator's
 	// notification can beat the accept probe (the spine routes their ws the
 	// moment create-ok answers), and from `booting` the claim would otherwise
@@ -891,18 +832,7 @@ const stateTimer = setInterval(() => {
 				}
 			});
 		}
-		// W3: admin idle-demotion. An admin who does nothing for
-		// adminIdleSeconds while someone else is waiting loses the room: the
-		// node drops their tunnel and the engine's own drop-reassignment
-		// promotes the oldest remaining human (Server.cs DropClient) with a
-		// visible NewAdmin notice. Exemptions live in adminIdleDemotion().
-		const demoted = adminIdleDemotion(room, now, adminIdleSeconds);
-		if (demoted) {
-			const idleMin = Math.round((now - demoted.lastInboundAt) / 60000);
-			const waiting = [...room.conns.values()].filter(rec => rec.validated).length - 1;
-			console.log(`[roomhost] admin idle-demoted: room ${room.id.slice(0, 6)} admin idle ${idleMin} min with ${waiting} waiting — dropping their connection`);
-			demoted.close();
-		}
+
 	}
 }, 500);
 stateTimer.unref();
@@ -1197,7 +1127,7 @@ const MIME = {
 	'.map': 'application/json',
 };
 
-function serveStatic(pathname, res) {
+function serveStatic(pathname, res, search = '') {
 	let rel;
 	try { rel = decodeURIComponent(pathname).replace(/^\/+/, ''); }
 	catch {
@@ -1213,6 +1143,13 @@ function serveStatic(pathname, res) {
 		return;
 	}
 	fs.stat(target, (err, st) => {
+		// Relative Vite assets require a directory URL, including when a LAN
+		// invite enters at /steelseed?room=... rather than index.html.
+		if (!err && st.isDirectory() && !pathname.endsWith('/')) {
+			res.writeHead(308, { location: `${pathname}/${search}`, 'cache-control': 'no-store' });
+			res.end();
+			return;
+		}
 		const file = !err && st.isDirectory() ? path.join(target, 'index.html') : target;
 		if (err || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
 			res.writeHead(404);
@@ -1433,7 +1370,7 @@ const createRoom = async () => {
 		return;
 	}
 	if (req.method === 'GET' && httpPort !== 0) {
-		serveStatic(url.pathname, res);
+		serveStatic(url.pathname, res, url.search);
 		return;
 	}
 
@@ -1535,38 +1472,6 @@ function pump(ws, targetPort, id, onClosed, room = null) {
 	let tcpReady = false;
 	let closed = false;
 	let retryTimer = null;
-	let connPort = null;
-	// Admin idle-demotion: register this tunnel's server-side socket so the
-	// watcher can map stdout lines onto it and timestamp inbound bytes.
-	const trackConnect = () => {
-		if (!room || tcp.localPort === undefined) return;
-		connPort = tcp.localPort;
-		room.conns.set(connPort, {
-			// `validated` flips on the first inbound bytes — the OpenRA
-			// handshake — so half-open sockets never count as lobby members.
-			validated: false, lastInboundAt: Date.now(),
-			close: () => closeBoth('admin idle-demoted'),
-		});
-	};
-	// W3/F3: every inbound byte flips `validated` (a live handshake), but only
-	// non-ping frames refresh the demotion timer — the engine's 1 s auto-pings
-	// must never count as a present human.
-	const noteActivity = createInboundActivityTracker(() => {
-		if (connPort === null) return;
-		const rec = room.conns.get(connPort);
-		if (rec) rec.lastInboundAt = Date.now();
-	});
-	const trackInbound = chunk => {
-		if (!room || connPort === null) return;
-		const rec = room.conns.get(connPort);
-		if (rec) rec.validated = true;
-		noteActivity(chunk);
-	};
-	const trackClose = () => {
-		if (!room || connPort === null) return;
-		room.conns.delete(connPort);
-		connPort = null;
-	};
 	// A dead room must not buffer client bytes forever: cap the backlog and put
 	// a hard deadline on the "dedicated still booting" retry loop (H1).
 	const deadline = Date.now() + 30_000;
@@ -1598,7 +1503,6 @@ function pump(ws, targetPort, id, onClosed, room = null) {
 		tcp.on('connect', () => {
 			tcpReady = true;
 			writer.attach(tcp);
-			trackConnect();
 			console.log(`[roomhost] #${id} connected to 127.0.0.1:${targetPort}`);
 		});
 		tcp.on('data', chunk => {
@@ -1620,7 +1524,6 @@ function pump(ws, targetPort, id, onClosed, room = null) {
 
 	ws.on('message', (data, isBinary) => {
 		const chunk = data instanceof Buffer ? data : Buffer.from(data);
-		trackInbound(chunk);
 		writer.write(chunk);
 	});
 
@@ -1628,7 +1531,6 @@ function pump(ws, targetPort, id, onClosed, room = null) {
 		if (closed) return;
 		closed = true;
 		clearTimeout(retryTimer);
-		trackClose();
 		console.log(`[roomhost] #${id} ${why}`);
 		writer.close();
 		wsWriter.close();
@@ -1850,7 +1752,6 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 		tcp.on('connect', () => {
 			tcpReady = true;
 			writer.attach(tcp);
-			trackConnect();
 		});
 		tcp.on('data', chunk => {
 			if (closed || !tunnelWriter) return;
@@ -1876,27 +1777,6 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 			if (!closed) spineCloseChannel(chanId);
 		});
 	}
-	// Admin idle-demotion: same bookkeeping as pump(), on the relay path.
-	let connPort = null;
-	const trackConnect = () => {
-		if (tcp.localPort === undefined) return;
-		connPort = tcp.localPort;
-		room.conns.set(connPort, {
-			validated: false, lastInboundAt: Date.now(),
-			close: () => spineCloseChannel(chanId),
-		});
-	};
-	const trackClose = () => {
-		if (connPort === null) return;
-		room.conns.delete(connPort);
-		connPort = null;
-	};
-	// Same activity rule as pump(): ping responses are not a human.
-	const noteActivity = createInboundActivityTracker(() => {
-		if (connPort === null) return;
-		const rec = room.conns.get(connPort);
-		if (rec) rec.lastInboundAt = Date.now();
-	});
 	const channel = {
 		roomId,
 		chanId,
@@ -1905,17 +1785,11 @@ function spineOpenChannel(chanId, roomId, access = {}) {
 		clientIndex: undefined,
 		writer,
 		write: chunk => {
-			if (connPort !== null) {
-				const rec = room.conns.get(connPort);
-				if (rec) rec.validated = true;
-				noteActivity(chunk);
-			}
 			writer.write(chunk);
 		},
 		destroy: () => {
 			closed = true;
 			clearTimeout(retryTimer);
-			trackClose();
 			writer.close();
 			try { tcp.destroy(); } catch { /* already gone */ }
 		},
