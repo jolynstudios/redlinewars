@@ -86,6 +86,39 @@ repair was proven against the live community room before release: the pre-fix cl
 519 ms with `not connected`, the fixed client claims its seat, receives the lobby sync and holds
 the connection.
 
+Published by deploy runs `36696086584` (`components=game`, the live site now serving build
+`92e9eeeec519` with the fix in the served hud chunk) and `36698057151` (`components=downloadables`).
+
+### Downloads: www.redlinewars.online/downloads
+
+| Artifact | Bytes | sha256 |
+|---|---:|---|
+| `Redline-Wars-Windows-x64-Setup.exe` | 458247326 | `eb7bec1dd658abe4987920ba44c130c26890abfe6225ba40acb31b20ad1cb239` |
+| `Redline-Wars-macOS-arm64.zip` | 488541100 | `fde529a1e05b145dae7374a99258551a3faef8811ca6f337990405c3aba13e29` |
+| `Redline-Wars-macOS-x64.zip` | 497318936 | `7914037317d710064cad1bd00ef342b787d0a9b990e4281277fb423a927728f6` |
+| `Redline-Wars-Linux-x64.AppImage` | 454179840 | `6d24fa3eede8b7f53df14cc46a460708d9dd3adf7c4d0b5abc4438b4c3be6b3e` |
+| `Redline-Wars-Linux-arm64.AppImage` | 454256586 | `b2ccbb3729477d06441d786a9b3a056620c5ab0b2ab1a010a53ec2f6a05d8ff6` |
+| `redline-node-linux-x64.zip` | 72765375 | `a3d2755e72d7717ef033ee13807a65fd8023b6d1398d639dc72812896343f778` |
+| `redline-node-linux-arm64.zip` | 70020886 | `9c1ce09603c1f2ccd0f011bcf2a18b901812efc637174e7bd5d5e10958e43dda` |
+| `redline-node-win-x64.zip` | 109255003 | `1fa50d860f8dd13fab71083bf7a8140b2913afa79e49789e99c7963c5b18e943` |
+| `redline-node-osx-arm64.zip` | 68396359 | `9990d4f6ec554c7f88d29a138e230044b3bf3d4b1810bc6a239fed076d272f26` |
+| `redline-node-osx-x64.zip` | 71620265 | `ac2899920d9a99031db1031f54b751fb9acde6fd595c81617b01755ec90f52e2` |
+
+**Verification: PASS** in strict mode, 30 September 2026 (`--strict --sums SHA256SUMS --appbundle
+<the downloadables run's own AppBundle>`, 10 artifacts and the live site against a clean
+`tools/build.mjs` build of this tag, `simBuild 92e9eeeec519`, itself verified byte-stamped against
+the live `build.json` before the check): every artifact's sha256 equals its `SHA256SUMS` line as
+mirrored; the five node zips pass their full inventory, licences, notices and the no-client
+boundary; the five desktop packages pass payload end to end — composition, presentation files,
+runtime, shell, notices and manifests — against the downloadables run's own AppBundle (the
+split-run caveat of `v2026.09.29-7360ec1` applies unchanged: compare each desktop package with its
+own run's AppBundle only). The live site passes fully: the served composition is the game deploy's,
+its scripts match, the 163 `web/src` files through the reference maps equal the tag's, and the
+284 `_framework` files equal the build's. The join repair itself was proven on the live site: a
+headless client joined the community room, claimed a seat on the wire, received the lobby sync and
+held the connection. Not run: `--rebuild` and platform execution reports; the deploy's own macOS
+gates (signing, GPU gates, the packaged selftest) ran green inside run `36698057151`.
+
 ## v2026.09.30-27197e6 (superseded by v2026.09.30-1bdea0a)
 
 Exported from private commit `27197e69`. Player-facing: the lobby counts seats, not people — the two
