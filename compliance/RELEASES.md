@@ -8,6 +8,16 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.09.30-5a4a3fb — release CI catalog fix (release candidate)
+
+Source: private commit `5a4a3fbb32d99f7491995ce89ad1beb3c2e62f79`. Game, shell and packaging sources
+are byte-identical to the qualified `ecb69d1e` candidate below; only private `.github/workflows/ci.yml`
+changes. A clean cross-platform CI checkout lacked the resolved RA catalog required by node
+assembly. Both node-package lanes now explicitly export it before packaging, matching the existing
+deployment build. No gate was bypassed. Failed CI run `36767792998` is retained; the corrected exact-
+commit run must pass before production dispatch. Production installation and artifact hashes remain
+pending. Simulation build remains `8a45d97ae0f6`.
+
 ## v2026.09.30-ecb69d1 — desktop/lobby fixes (release candidate)
 
 Source: private commit `ecb69d1eecdabd9f0d547eca20cf845d578d55c0`, simulation build
