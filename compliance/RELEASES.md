@@ -8,7 +8,7 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
-## v2026.09.30-a22a4de — full-release failure propagation (release candidate)
+## v2026.09.30-a22a4de — verified desktop/lobby release
 
 Source: private commit `a22a4decfcc5ca4ada989cb1bdc5aa8efb5a5648`. Game, renderer and shell
 implementation remain unchanged from the qualified desktop/lobby fixes, simulation `8a45d97ae0f6`.
@@ -18,8 +18,46 @@ Full releases now require successful upstream backend deployment before changing
 browser publication waits for API, relay, nodes and ranked provisioning; downloads wait for the
 browser publication. A skipped prerequisite cannot bypass a rejected full release. Existing partial
 component routes remain available. Sixty targeted tests pass, including the actual failed-package
-outcome and native-path selection; the deployment graph is acyclic. Exact-commit CI and live
-verification are pending. No audio/video is included.
+outcome and native-path selection; the deployment graph is acyclic. All nine exact-commit CI lanes
+passed (`36779371183`), followed by the complete production deployment (`36780272930`). No new
+audio/video is included. Browser multiplayer remains `join`, accepting simulation `8a45d97ae0f6`.
+
+Post-deployment strict verification: the live browser's 19 scripts and 284 framework files equal
+the exact CI AppBundle; all ten public desktop/node archives pass checksums, source correspondence,
+notices and applicable payload checks. Desktop payloads carry the same composition and 301 runtime
+files. Both Mac node total content digests were independently recomputed. The temporary Ubuntu
+7-Zip audit installation needed its codec directory as the working directory; initial extraction
+failures are retained, and the three installers subsequently passed without modifying artifacts or
+verifier checks. All ten public HTTPS HEAD lengths and the published checksum list match; the Mac
+arm64 archive was also downloaded over HTTPS and its complete bytes hashed.
+
+The actual published Mac arm64 app passed deep strict signature verification and visible keyboard,
+focus, window-size, human-plus-AI multiplayer, Main and subsequent Skirmish tests using an isolated
+profile. It closed normally without surviving child processes. The final AppBundle passes all four
+unchanged strict cadence profiles: p50 8.3–8.8 ms, worst frame at most 18.5 ms, renderScale 1 and zero
+model fallbacks. The previous live version measured p50 8.3–9.0 ms on the same profiles. These are
+measured-profile results, not universal hardware guarantees.
+
+The public Utility/mod was independently rebuilt: 180 generated files byte-equal, zero Utility
+warnings/errors. A complete public client/native rebuild and physical Windows/Linux, cross-device
+LAN/IPv6/NAT qualification were not performed. Verification reports distinguish NOT_RUN rebuild
+and platform claims. The earlier partial-deployment incident and exact rollback remain recorded
+under `edf9051`; the repaired full-release prerequisites all succeeded in this final deployment.
+
+Published artifacts at `https://www.redlinewars.online/downloads/`:
+
+| Artifact | SHA256 |
+|---|---|
+| Redline-Wars-Linux-arm64.AppImage | `981b8f87e19ac355e06f9faf82162706dcd7695855dd320d464dfdef2945d735` |
+| Redline-Wars-Linux-x64.AppImage | `534433025101c5c387b59ad1a30ce8da3338b2bf5aa6b661a95f4be3e3ded6af` |
+| Redline-Wars-Windows-x64-Setup.exe | `e6844495ce0a163a98015b47a3e455b7b56afbe7e6dc654c490ece133c504d4b` |
+| Redline-Wars-macOS-arm64.zip | `28775f2a608677de9cc2d2e773190ffa80332abae30a936473831785f604a7f2` |
+| Redline-Wars-macOS-x64.zip | `a92fa1dc46033a369812d045f5dd5ffb1b08c38b36304917ef7beb8fee06cdb0` |
+| redline-node-linux-arm64.zip | `7960f1c9163fff47a92c9934480341815723b61a368b91e1944518f8a4609ef6` |
+| redline-node-linux-x64.zip | `86c82b780c33008800304c4635ff70693e3c732c7d77ea683af477e1a6f538b8` |
+| redline-node-osx-arm64.zip | `e088b3f88d67d70827cde4383cb050b23795e729bf68d75ba451db37ee48a372` |
+| redline-node-osx-x64.zip | `bc98ae802c018ecc939793bca3b85517f65672d53d8b87891e51b7040e8e3991` |
+| redline-node-win-x64.zip | `ca34e4cba5d1628867cedf615b470b2e97b3a397b22148d5971d3711eeae91f9` |
 
 ## v2026.09.30-edf9051 — signed Mac node content digest (stopped release candidate)
 

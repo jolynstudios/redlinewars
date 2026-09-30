@@ -31,13 +31,13 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.30-a22a4de`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a22a4de) | desktop/lobby fixes with full-release failure propagation and a portable Windows path test; production verification pending |
+| [`v2026.09.30-a22a4de`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a22a4de) | verified live browser, all ten desktop/node downloads and coordinated backends; desktop/lobby fixes, ephemeral lobby chat, no new audio/video |
 | [`v2026.09.30-edf9051`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-edf9051) | release stopped on a Windows test-path assumption; unintended node update rolled back, source retained |
 | [`v2026.09.30-a3367f1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a3367f1) | CI passed; release cancelled before production because the signed Mac node content digest was stale |
 | [`v2026.09.30-97ddee8`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-97ddee8) | desktop/lobby fix candidate with qualified-client release ordering and portable Windows archive tests; release pending verification |
 | [`v2026.09.30-5a4a3fb`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-5a4a3fb) | the same qualified desktop/lobby candidate plus the clean-CI node catalog export; coordinated release pending verification |
 | [`v2026.09.30-ecb69d1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-ecb69d1) | qualified desktop/lobby fix candidate; coordinated browser/host/download release pending verification; no new audio/video |
-| [`v2026.09.30-9aad742`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-9aad742) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.30-9aad742`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-9aad742) | previous browser/desktop/node release, superseded by `v2026.09.30-a22a4de` |
 | [`v2026.09.30-127dd13`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-127dd13) | the same release's fix commit before its private-only Ranked re-pin follow-up; identical published tree, superseded by `v2026.09.30-9aad742` within the hour |
 | [`v2026.09.30-1bdea0a`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-1bdea0a) | the same, on 30 September 2026; superseded by `v2026.09.30-9aad742` later the same day (bots seat ready, AI removable, solo rooms start) |
 | [`v2026.09.30-27197e6`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-27197e6) | the same, on 30 September 2026; superseded by `v2026.09.30-1bdea0a` later the same day (high-latency room joins repaired) |
