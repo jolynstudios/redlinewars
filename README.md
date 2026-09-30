@@ -31,7 +31,8 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.30-a3367f1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a3367f1) | the same fix candidate with native Windows ZIP-manifest reading; release pending verification |
+| [`v2026.09.30-edf9051`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-edf9051) | desktop/lobby fix candidate with refreshed signed Mac node digests; production verification pending |
+| [`v2026.09.30-a3367f1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a3367f1) | CI passed; release cancelled before production because the signed Mac node content digest was stale |
 | [`v2026.09.30-97ddee8`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-97ddee8) | desktop/lobby fix candidate with qualified-client release ordering and portable Windows archive tests; release pending verification |
 | [`v2026.09.30-5a4a3fb`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-5a4a3fb) | the same qualified desktop/lobby candidate plus the clean-CI node catalog export; coordinated release pending verification |
 | [`v2026.09.30-ecb69d1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-ecb69d1) | qualified desktop/lobby fix candidate; coordinated browser/host/download release pending verification; no new audio/video |

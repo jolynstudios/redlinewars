@@ -8,7 +8,18 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
-## v2026.09.30-a3367f1 — native Windows ZIP manifest reader (release candidate)
+## v2026.09.30-edf9051 — signed Mac node content digest (release candidate)
+
+Source: private commit `edf90517e011ae7c08e1fda7833dfef6a440371d`. The game, shell and
+simulation build `8a45d97ae0f6` are unchanged from the qualified desktop/lobby fixes.
+The preceding release's signed Mac node artifact was checked before deployment: its individual
+native checksums were refreshed, but its enclosing `RELEASE-MANIFEST.json` content digest was stale.
+The signing step now refreshes both records using the canonical content-digest function and refuses
+changes to unsigned source files. The real downloaded arm64 node was repaired and its digest
+verified; 14 targeted tests pass, including altered-source rejection. Exact-commit CI and production
+verification are pending. No new audio/video is included.
+
+## v2026.09.30-a3367f1 — native Windows ZIP manifest reader (cancelled release candidate)
 
 Source: private commit `a3367f1fb06c863b961b2ebcd56889ec5fa149bf`. Simulation build remains
 `8a45d97ae0f6`; game and shell code is unchanged from the qualified fix candidate.
@@ -18,7 +29,10 @@ archive API, normalizing member separators and decoding UTF-8, without installin
 The Unix archive listing also accepts CRLF. Real manifest, sidecar and missing-manifest assertions
 remain intact; local targeted tests pass 13/13. The prior exact-commit run passed eight lanes and
 failed Windows; its failure remains recorded rather than waived. Latest exact-commit CI and
-production verification remain pending. No new audio/video is included.
+production verification were pending at export time. All nine exact-commit CI lanes subsequently
+passed in run `36770167186`. Full deployment run `36771155961` was cancelled before production
+because the signed Mac node content digest was stale; no backend, browser or download deployment
+job ran. The artifact and its failed digest audit were retained. No new audio/video is included.
 
 ## v2026.09.30-97ddee8 — coordinated release preparation (release candidate)
 

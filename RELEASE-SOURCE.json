@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "product": "Redline Wars: Fractured Order",
-  "sourceCommit": "a3367f1fb06c863b961b2ebcd56889ec5fa149bf",
-  "sourceCommitDate": "2026-09-30T22:05:16+02:00",
+  "sourceCommit": "edf90517e011ae7c08e1fda7833dfef6a440371d",
+  "sourceCommitDate": "2026-09-30T22:42:47+02:00",
   "exportedWith": "tools/export-release.mjs",
   "published": 4202,
   "withheld": {
@@ -12,7 +12,7 @@
     "local backup tree": 435,
     "internal issue notes": 67,
     "internal measurements and notes": 58,
-    "production infrastructure": 32,
+    "production infrastructure": 33,
     "internal document": 26,
     "brand artwork": 22,
     "interface gate for the withheld HUD (© Jolyn Studios)": 20,
@@ -1449,6 +1449,7 @@
     "command.md",
     "deploy/ci/archive-payload.py",
     "deploy/ci/install-blender.sh",
+    "deploy/ci/restamp-signed-node.mjs",
     "deploy/ci/restore-art-sources.sh",
     "deploy/ci/restore-forge-baseline.sh",
     "deploy/ci/stage-api-payload.sh",
