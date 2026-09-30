@@ -15,7 +15,8 @@ test('one output directory selects isolated candidate packaging without changing
 	const candidate = parsePackageOptions(['mac', '--output-dir', 'stage/fix-final-build/packages-candidate'], 'darwin', repoRoot);
 	assert.equal(candidate.outputDir, path.join(repoRoot, 'stage/fix-final-build/packages-candidate'));
 	assert.notEqual(candidate.outputDir, ordinary.outputDir);
-	assert.deepEqual(parsePackageOptions(['--output-dir', '/tmp/isolated-output', 'win'], 'linux'), { target: 'win', outputDir: '/tmp/isolated-output' });
+	const absoluteOutput = path.join(os.tmpdir(), 'isolated output');
+	assert.deepEqual(parsePackageOptions(['--output-dir', absoluteOutput, 'win'], 'linux'), { target: 'win', outputDir: absoluteOutput });
 	for (const target of ['mac', 'win', 'linux']) {
 		const config = targetConfig(target, '/tmp/candidate-node-staging', 'x64', '/tmp/candidate-manifest-staging', candidate.outputDir);
 		assert.equal(config.directories.output, candidate.outputDir);

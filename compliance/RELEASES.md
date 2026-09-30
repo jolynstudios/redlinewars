@@ -8,7 +8,20 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
-## v2026.09.30-edf9051 — signed Mac node content digest (release candidate)
+## v2026.09.30-a22a4de — full-release failure propagation (release candidate)
+
+Source: private commit `a22a4decfcc5ca4ada989cb1bdc5aa8efb5a5648`. Game, renderer and shell
+implementation remain unchanged from the qualified desktop/lobby fixes, simulation `8a45d97ae0f6`.
+The Windows output-directory test now uses a native absolute temporary path, including spaces,
+instead of requiring a Unix spelling. Assertions remain enabled on every packaging OS.
+Full releases now require successful upstream backend deployment before changing nodes and landing;
+browser publication waits for API, relay, nodes and ranked provisioning; downloads wait for the
+browser publication. A skipped prerequisite cannot bypass a rejected full release. Existing partial
+component routes remain available. Sixty targeted tests pass, including the actual failed-package
+outcome and native-path selection; the deployment graph is acyclic. Exact-commit CI and live
+verification are pending. No audio/video is included.
+
+## v2026.09.30-edf9051 — signed Mac node content digest (stopped release candidate)
 
 Source: private commit `edf90517e011ae7c08e1fda7833dfef6a440371d`. The game, shell and
 simulation build `8a45d97ae0f6` are unchanged from the qualified desktop/lobby fixes.
@@ -18,6 +31,18 @@ The signing step now refreshes both records using the canonical content-digest f
 changes to unsigned source files. The real downloaded arm64 node was repaired and its digest
 verified; 14 targeted tests pass, including altered-source rejection. Exact-commit CI and production
 verification are pending. No new audio/video is included.
+
+Subsequent evidence: all nine CI lanes passed (`36774568044`), the AOT AppBundle, GPU gates and
+Mac/Linux package jobs passed in full-release run `36775561664`. Both signed Mac node digests
+matched their actual ZIP payloads. The Windows package job failed one test that expected the
+literal Unix path `/tmp/isolated-output`; Windows correctly produced a drive-qualified native path.
+The release was cancelled. A downstream condition incorrectly allowed skipped backends and the
+node deployment attempted build `8a45d97ae0f6` against the unchanged relay accepting `3fe0cba30479`;
+the nodes exited, while the browser stayed on the old release. The exact previous node tree and
+its deployment checksum checkpoint were restored. Both nodes again reported the old build and
+connected relay, and all six production services were active. Landing ran; API, relay, browser and
+public-download publication did not. The failed artifacts, logs and rollback evidence were retained.
+The corrected downstream conditions and Windows fixture are in the next source tag above.
 
 ## v2026.09.30-a3367f1 — native Windows ZIP manifest reader (cancelled release candidate)
 
