@@ -31,7 +31,8 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
-| [`v2026.09.29-7360ec1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.29-7360ec1) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.30-27197e6`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-27197e6) | the browser game at play.redlinewars.online, and the desktop apps (Windows, macOS, Linux) and community node zips at www.redlinewars.online/downloads |
+| [`v2026.09.29-7360ec1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.29-7360ec1) | the same, on 29–30 September 2026; superseded by `v2026.09.30-27197e6` on 30 September 2026 (the lobby counts seats, not people; Community #1 at five seats) |
 | [`v2026.09.29-a2b7ac6`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.29-a2b7ac6) | the same, on 29 September 2026; superseded by `v2026.09.29-7360ec1` the same night (seat census and live host control) |
 | [`v2026.09.28-2df2ad8`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-2df2ad8) | the same, briefly, overnight 28–29 September 2026; superseded by `v2026.09.29-a2b7ac6` after its strict check failed |
 | [`v2026.09.28-a7bcd14`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.28-a7bcd14) | the same, briefly, on 28 September 2026; superseded by `v2026.09.28-2df2ad8` before either deployed |

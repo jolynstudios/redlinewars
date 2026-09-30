@@ -70,7 +70,23 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.29-7360ec1 (the current release)
+## v2026.09.30-27197e6 (the current release)
+
+Exported from private commit `27197e69`. Player-facing: the lobby counts seats, not people — the two
+in-room lobby panels (the seat panel and the bottom-left player list) counted every connection, so a
+host who opened a room without playing rendered as a player row, with faction/team/spawn selects no
+server would honour, and the seat panel read "Players · 2" in a 2-seat room with one joiner, as if
+the room were full; the room directory was already seat-only since `v2026.09.29-7360ec1`. Both
+panels now follow the same seat rule everywhere else uses (`slot:none` is a spectator): observers
+render as a `watching` row without controls, the headers count seated players and name the watchers
+("Players · 1 · 1 watching"), and the admin's spawn reassignment deals to seated players only.
+Community #1 grows with it: the standing-room example ships 5 seats on a rotation of maps with five
+or more spawn points (Sudden Death, Unconventional Warfare, Doughnut) instead of 2 seats pinned to a
+2-spawn map, which is why the community server advertised "2 players max"; the live server's rooms
+file was moved to the same rotation the day this ships. `simBuild` is unchanged
+(`92e9eeeec519`); the engine and the network protocol are untouched.
+
+## v2026.09.29-7360ec1 (superseded by v2026.09.30-27197e6)
 
 Exported from private commit `7360ec11`. Player-facing: rooms now count seats, not connections — a
 dedicated server reports a lobby census (`STEELSEED_ROOM seated/observers/slots/map`) from every

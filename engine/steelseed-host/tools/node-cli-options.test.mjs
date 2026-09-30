@@ -82,7 +82,10 @@ test('first run copies rooms.example.json to rooms.json once, appending the mach
 	const created = JSON.parse(fs.readFileSync(path.join(cwd, 'rooms.json'), 'utf8'));
 	assert.equal(created.rooms.length, 1);
 	assert.equal(created.rooms[0].name, 'Community #1 (MacBook-Pro-2)');
-	assert.deepEqual(created.rooms[0].maps, ['af68f5f539b2717234b48d7fd687d3a6ae9cc916']);
+	// The copy is verbatim: whatever maps the example ships (the 5-slot
+	// community rotation since 2026-09-30) must land unchanged.
+	const example = JSON.parse(fs.readFileSync(path.join(cwd, 'rooms.example.json'), 'utf8'));
+	assert.deepEqual(created.rooms[0].maps, example.rooms[0].maps);
 	assert.equal(fs.existsSync(path.join(cwd, 'rooms.example.json')), true, 'the example stays for reference');
 
 	// The copy happens ONCE: a second start (even under another hostname)
