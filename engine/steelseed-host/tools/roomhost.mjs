@@ -1059,11 +1059,18 @@ function loadStandingRooms(file, maxEntries) {
 		}, { keyed: true });
 		if (spec.error)
 			throw new Error(`roomhost: ${label}: invalid ${spec.field}`);
+		// Standing rooms exist to be joined by whoever walks in, so a host and
+		// a table of bots must be able to start — the server's
+		// EnableSingleplayer therefore defaults ON here. An entry that wants the
+		// two-human rule back says `"solo": false`.
+		if (raw.solo !== undefined && typeof raw.solo !== 'boolean')
+			throw new Error(`roomhost: ${label}: solo must be a boolean when present`);
 		return {
 			name: spec.name,
 			slots: spec.slots,
 			password: spec.password,
 			settings: spec.settings,
+			solo: raw.solo !== false,
 			maps,
 			cursor: 0,
 			disabled: false,
@@ -1102,7 +1109,7 @@ function bootStandingRoom(entry) {
 		password: entry.password,
 		settings: entry.settings,
 		visibility: 'public',
-		solo: false,
+		solo: entry.solo !== false,
 		map: uid,
 		standing: entry,
 	}).then(room => {
@@ -2027,6 +2034,10 @@ function spineConnect({ candidate = false } = {}) {
 				send({ t: 'create-fail', reqId: msg.reqId, error: 'invalid', field: spec.field });
 				return;
 			}
+			// The spine owns this room's solo rule (unranked: a host plus bots may
+			// start; ranked: two humans); validateCreate could not — `solo && keyed`
+			// is the node-key HTTP rule, and this tunnel is the spine itself.
+			spec.solo = msg.solo === true;
 			inFlightCreates++;
 			let room;
 			try {

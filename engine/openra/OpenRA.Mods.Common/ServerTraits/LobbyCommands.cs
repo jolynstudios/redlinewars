@@ -526,7 +526,10 @@ namespace OpenRA.Mods.Common.Server
 						SpawnPoint = 0,
 						Team = 0,
 						Handicap = 0,
-						State = Session.ClientState.NotReady,
+						// A bot has no player to press Ready, so it takes its
+						// seat ready: the lobby should never show the bot as
+						// the one blocker left.
+						State = Session.ClientState.Ready,
 						BotControllerClientIndex = controllerClientIndex
 					};
 

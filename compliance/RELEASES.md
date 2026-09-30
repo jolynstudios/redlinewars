@@ -70,7 +70,25 @@ its absence in `RELEASE-SOURCE.json` instead of failing — and `64fae7ae20ab`, 
 site served. `--historical` publishes nothing beyond what the normal export would; without it, a private
 entry that matches no tracked path still fails the export.
 
-## v2026.09.30-1bdea0a (the current release)
+## v2026.09.30-127dd13 (the current release)
+
+Exported from private commit `127dd139`. Player-facing: the host's lobby finally works with AI.
+A bot now takes its seat Ready the moment it enters — it has no player to press Ready, so the seat
+itself must be — instead of sitting "Not ready" as the last blocker; the host can remove the AI it
+added (`Remove AI` re-opens every bot's slot, which the server already treats as evicting the bot);
+and the Start gate mirrors the server's own rule — at least one seated human and every required
+seat filled, with bots counting toward filling — so a host alone with a table of AI can start the
+match instead of waiting for a second human who never comes. Standing rooms now run with the
+server's single-player switch on by default (a rooms-file entry may still pin `"solo": false`),
+and player-created unranked rooms are created solo the same way; ranked rooms keep the two-human
+rule — bots never settle a ranked match. `simBuild` moves (`92e9eeeec519` → `3fe0cba30479`): the
+engine change lives in both trees and the lobby sync is network-visible, so client and node
+releases move together — the game deploys first, then the node. Proven before release on a local
+spine, a standing node and the real dedicated runner: join → bots Ready on entry → Start enabled
+with one human + AI → Remove AI empties the table → re-add → start → the match ran 20 s with no
+disconnect; the node suite is 125/125.
+
+## v2026.09.30-1bdea0a (superseded by v2026.09.30-127dd13)
 
 Exported from private commit `1bdea0ae`. Player-facing: joining a network room from the site on a
 high-latency link failed every time — the join reached the server, the server accepted the handshake

@@ -11,7 +11,8 @@ import { makeNodeTree } from './roomhost-fixture.mjs';
 
 const MiB = 1024 * 1024;
 
-async function fixture(t, load, memory, expected, { standing = false, exitOnDrain = false } = {}) {
+async function fixture(t, load, memory, expected, options = {}) {
+	const { standing = false, exitOnDrain = false, standingRooms = null } = options;
 	const dir = await mkdtemp(path.join(os.tmpdir(), 'roomhost-capacity-'));
 	const fx = await makeNodeTree(t, { mode: standing ? 'echo' : 'idle' });
 	const spine = new WebSocketServer({ host: '127.0.0.1', port: 0 });
@@ -37,7 +38,10 @@ async function fixture(t, load, memory, expected, { standing = false, exitOnDrai
 	});
 	await writeFile(path.join(dir, 'os.mjs'), `import os from 'node:os';\nos.loadavg = () => [${load},${load},${load}];\nos.freemem = () => ${memory};\nprocess.availableMemory = () => ${memory};\nos.totalmem = () => ${8192 * MiB};\nos.cpus = () => Array(4).fill({});\n`);
 	if (standing) await writeFile(path.join(dir, 'rooms.json'), JSON.stringify({
-		schema: 1, rooms: [{ name: 'Community test', slots: 2, password: '', maps: [fx.mapUid], settings: { gamespeed: 'default', tod: 'auto', weather: 'on' } }],
+		schema: 1,
+		rooms: typeof standingRooms === 'function'
+			? standingRooms(fx.mapUid)
+			: standingRooms ?? [{ name: 'Community test', slots: 2, password: '', maps: [fx.mapUid], settings: { gamespeed: 'default', tod: 'auto', weather: 'on' } }],
 	}));
 	child = spawnProcessGroup(process.execPath, ['--import', pathToFileURL(path.join(dir, 'os.mjs')).href, `${fx.dir}/steelseed-host/tools/roomhost.mjs`,
 		'--http', '0', '--ws', '0', '--spine', `ws://127.0.0.1:${spine.address().port}`,
@@ -57,19 +61,24 @@ async function fixture(t, load, memory, expected, { standing = false, exitOnDrai
 			await delay(25);
 		}
 	}
-	// The first periodic status follows the sampler; register uses the empty-ring fallback.
-	await until(() => messages.some(m => m.t === 'status' && m.healthy === expected.healthy && m.degraded === expected.degraded));
-	const match = /directory (http:\/\/127\.0\.0\.1:\d+)\/v2\/rooms/.exec(log);
-	assert.ok(match, log);
+	// The first periodic status follows the sampler; register uses the empty-ring
+	// fallback. A fastExit boot (invalid rooms file) never gets this far.
+	let directoryUrl = null;
+	if (!options.fastExit) {
+		await until(() => messages.some(m => m.t === 'status' && m.healthy === expected.healthy && m.degraded === expected.degraded));
+		const match = /directory (http:\/\/127\.0\.0\.1:\d+)\/v2\/rooms/.exec(log);
+		assert.ok(match, log);
+		directoryUrl = match[1];
+	}
 	async function request(method, body, pathname = '/v2/rooms') {
-		const response = await fetch(`${match[1]}${pathname}`, {
+		const response = await fetch(`${directoryUrl}${pathname}`, {
 			method, signal: AbortSignal.timeout(3000),
 			headers: { 'content-type': 'application/json', 'x-redline-node-key': fx.key },
 			...(body ? { body: JSON.stringify(body) } : {}),
 		});
 		return { status: response.status, body: await response.json() };
 	}
-	return { request, async waitForExit() {
+	return { request, log: () => log, async waitForExit() {
 		const deadline = Date.now() + 5000;
 		while (child.exitCode === null && Date.now() < deadline) await delay(25);
 		return child.exitCode;
@@ -133,4 +142,18 @@ test('a standing node drains its empty community lobby and exits', async t => {
 	const drain = await f.request('POST', {}, '/v2/drain');
 	assert.equal(drain.status, 200);
 	assert.equal(await f.waitForExit(), 4);
+});
+
+// Standing rooms default to solo (EnableSingleplayer) so a host plus bots can
+// start; an entry that opts out must say so with a boolean, nothing else.
+test('a standing rooms file rejects a non-boolean solo', async t => {
+	const f = await fixture(t, 0, 1024 * MiB, { healthy: true, degraded: false }, {
+		standing: true,
+		fastExit: true,
+		// Everything else about the entry is valid, so the only rule left to
+		// trip is `solo`'s boolean check — the node must fail fast, not serve.
+		standingRooms: mapUid => [{ name: 'Community test', slots: 2, password: '', maps: [mapUid], solo: 'yes', settings: { gamespeed: 'default', tod: 'auto', weather: 'on' } }],
+	});
+	assert.notEqual(await f.waitForExit(), 0);
+	assert.match(f.log(), /solo must be a boolean/);
 });

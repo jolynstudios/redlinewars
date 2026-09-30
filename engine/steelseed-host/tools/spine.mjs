@@ -1065,6 +1065,10 @@ function createRoomOnNode(node, body) {
 			t: 'create', reqId, roomId: body.roomId, map: body.map, slots: body.slots ?? null,
 			settings: body.settings ?? {}, name: body.name ?? 'Room',
 			password: body.password ?? '', hostKey, ranked: body.ranked === true,
+			// Unranked rooms may start with one human plus bots (the host's Add AI
+			// must lead somewhere); ranked keeps the two-human rule — bots never
+			// settle a ranked match.
+			solo: body.ranked !== true,
 			roomClaim: body.roomClaim ?? null, participantClaims: body.participantClaims ?? [],
 		});
 	});

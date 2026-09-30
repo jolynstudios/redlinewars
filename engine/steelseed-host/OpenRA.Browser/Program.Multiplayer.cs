@@ -447,6 +447,12 @@ namespace OpenRA
 			if (admin == null)
 				return "no admin";
 
+			// The server refuses every non-state command from a Ready client, and
+			// changing the table is exactly when a host stops being ready — so
+			// unready first and let the lobby show it.
+			if (orderManager.LocalClient?.State == Session.ClientState.Ready)
+				orderManager.IssueOrder(Order.Command("state NotReady"));
+
 			var added = 0;
 			foreach (var slot in orderManager.LobbyInfo.Slots)
 			{
@@ -457,6 +463,39 @@ namespace OpenRA
 				added++;
 			}
 			return $"added {added} bots";
+		}
+
+		/// <summary>
+		/// Admin removes every seated bot: the server's `slot_open` already treats
+		/// a bot occupant as removable, so re-opening each bot's slot evicts it.
+		/// The counterpart of LobbyAddBots — a host who added a bot to fill the
+		/// table must also be able to unfill it.
+		/// </summary>
+		[JSExport]
+		internal static string LobbyRemoveBots()
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (!orderManager.LobbyInfo.Clients.Any(c => c.IsAdmin))
+				return "no admin";
+
+			// Same Ready-lock as LobbyAddBots: unready before touching the table.
+			if (orderManager.LocalClient?.State == Session.ClientState.Ready)
+				orderManager.IssueOrder(Order.Command("state NotReady"));
+
+			var removed = 0;
+			foreach (var slot in orderManager.LobbyInfo.Slots)
+			{
+				var occupant = orderManager.LobbyInfo.ClientInSlot(slot.Key);
+				if (occupant?.Bot == null)
+					continue;
+
+				orderManager.IssueOrder(Order.Command($"slot_open {slot.Key}"));
+				removed++;
+			}
+			return $"removed {removed} bots";
 		}
 
 		/// <summary>

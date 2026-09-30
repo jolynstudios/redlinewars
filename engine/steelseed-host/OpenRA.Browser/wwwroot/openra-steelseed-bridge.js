@@ -324,6 +324,10 @@ export function createSteelseedBridge(P, localHeapViewU8, mp = null) {
 			return P.LobbyAddBots();
 		},
 
+		async lobbyRemoveBots() {
+			return P.LobbyRemoveBots();
+		},
+
 		async lobbyCloseEmptySlots() {
 			return P.LobbyCloseEmptySlots();
 		},
