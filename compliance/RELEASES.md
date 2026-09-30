@@ -8,6 +8,20 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.09.30-97ddee8 — coordinated release preparation (release candidate)
+
+Source: private commit `97ddee8cdbc2ac79761b0ee98c177f0add2f2d40`, simulation build `8a45d97ae0f6`.
+Game, shell and packaging sources are unchanged from the qualified `ecb69d1e` candidate.
+The full-release API and relay jobs now wait for the shared AppBundle, GPU gates, all desktop
+packages and signed Mac node archives before switching production backend versions. Partial
+component releases retain their existing routes. Outcome tests prove failed, cancelled, skipped or
+incomplete preparations block a full release. The Windows manifest test now creates its real ZIP
+fixture using built-in PowerShell instead of depending on an absent `zip` executable; manifest,
+archive and checksum assertions remain intact. Local targeted tests: 13/13, no skips.
+
+Exact-commit CI and production artifact verification are pending; no successful live deployment
+is claimed yet. Earlier failed CI runs and source tags remain preserved; no tag was moved.
+
 ## v2026.09.30-5a4a3fb — release CI catalog fix (release candidate)
 
 Source: private commit `5a4a3fbb32d99f7491995ce89ad1beb3c2e62f79`. Game, shell and packaging sources

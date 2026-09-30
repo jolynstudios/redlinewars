@@ -18,6 +18,15 @@ function fixture() {
 	return dir;
 }
 
+function zipFixture(dir, name) {
+	assert.ok(['pkg.zip', 'bare.zip'].includes(name));
+	const result = process.platform === 'win32'
+		? spawnSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command',
+			`Compress-Archive -LiteralPath pkg -DestinationPath '${name}'`], { cwd: dir })
+		: spawnSync('zip', ['-rq', name, 'pkg'], { cwd: dir });
+	assert.equal(result.status, 0, `fixture archive failed: ${result.error?.message ?? result.stderr?.toString()}`);
+}
+
 test('the contents digest covers every file but the manifest and the skipped paths', () => {
 	const dir = fixture();
 	try {
@@ -74,8 +83,7 @@ test('the manifest names this checkout, and the sidecar the finished artifact', 
 		assert.equal(manifest.contents.node.files, 2);
 		assert.deepEqual(manifest.contents.node.skipped, ['node_modules/']);
 		writeManifest(pkg, manifest);
-		const zip = spawnSync('zip', ['-rq', 'pkg.zip', 'pkg'], { cwd: dir });
-		assert.equal(zip.status, 0, 'zip is needed for this test');
+		zipFixture(dir, 'pkg.zip');
 		const artifact = path.join(dir, 'pkg.zip');
 		assert.deepEqual(readEmbeddedManifest(artifact), manifest);
 		const sidecar = JSON.parse(fs.readFileSync(writeSidecar(artifact, manifest), 'utf8'));
@@ -83,7 +91,7 @@ test('the manifest names this checkout, and the sidecar the finished artifact', 
 		assert.equal(sidecar.artifactBytes, fs.statSync(artifact).size);
 		// An artifact without a manifest has none to report.
 		fs.rmSync(path.join(pkg, MANIFEST_NAME));
-		spawnSync('zip', ['-rq', 'bare.zip', 'pkg'], { cwd: dir });
+		zipFixture(dir, 'bare.zip');
 		assert.equal(readEmbeddedManifest(path.join(dir, 'bare.zip')), null);
 	} finally {
 		fs.rmSync(dir, { recursive: true, force: true });
