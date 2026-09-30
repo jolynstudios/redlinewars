@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "product": "Redline Wars: Fractured Order",
-  "sourceCommit": "97ddee8cdbc2ac79761b0ee98c177f0add2f2d40",
-  "sourceCommitDate": "2026-09-30T21:54:31+02:00",
+  "sourceCommit": "a3367f1fb06c863b961b2ebcd56889ec5fa149bf",
+  "sourceCommitDate": "2026-09-30T22:05:16+02:00",
   "exportedWith": "tools/export-release.mjs",
   "published": 4202,
   "withheld": {

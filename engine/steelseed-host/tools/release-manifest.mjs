@@ -140,10 +140,34 @@ export function writeSidecar(artifactPath, manifest) {
 /** The manifest inside a zip or tgz artifact (null when it has none). */
 export function readEmbeddedManifest(artifactPath) {
   const name = path.basename(artifactPath);
+  if (process.platform === 'win32' && !name.endsWith('.tgz')) {
+    // PowerShell ZIPs may use backslashes and native unzip emits CRLF. Read the
+    // exact entry through the built-in ZIP API, without depending on a Unix tool.
+    const quotedPath = path.resolve(artifactPath).replaceAll("'", "''");
+    const script = `
+      $ErrorActionPreference = 'Stop'
+      [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      $archive = [System.IO.Compression.ZipFile]::OpenRead('${quotedPath}')
+      try {
+        foreach ($entry in $archive.Entries) {
+          $member = $entry.FullName.Replace('\\', '/')
+          if ($member -eq '${MANIFEST_NAME}' -or ($member.EndsWith('/${MANIFEST_NAME}') -and $member.Split('/').Length -eq 2)) {
+            $reader = New-Object System.IO.StreamReader($entry.Open())
+            try { [Console]::Write($reader.ReadToEnd()) } finally { $reader.Dispose() }
+            break
+          }
+        }
+      } finally { $archive.Dispose() }
+    `;
+    const text = execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-EncodedCommand',
+      Buffer.from(script, 'utf16le').toString('base64')], { encoding: 'utf8' });
+    return text ? JSON.parse(text) : null;
+  }
   const listing = name.endsWith('.tgz')
     ? execFileSync('tar', ['-tzf', artifactPath], { encoding: 'utf8', maxBuffer: 64 << 20 })
     : execFileSync('unzip', ['-Z1', artifactPath], { encoding: 'utf8', maxBuffer: 64 << 20 });
-  const member = listing.split('\n').find(line => line === MANIFEST_NAME || line.endsWith(`/${MANIFEST_NAME}`) && line.split('/').length === 2);
+  const member = listing.split(/\r?\n/).find(line => line === MANIFEST_NAME || line.endsWith(`/${MANIFEST_NAME}`) && line.split('/').length === 2);
   if (!member) return null;
   const text = name.endsWith('.tgz')
     ? execFileSync('tar', ['-xzOf', artifactPath, member], { encoding: 'utf8' })

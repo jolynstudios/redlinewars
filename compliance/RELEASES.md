@@ -8,6 +8,18 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.09.30-a3367f1 — native Windows ZIP manifest reader (release candidate)
+
+Source: private commit `a3367f1fb06c863b961b2ebcd56889ec5fa149bf`. Simulation build remains
+`8a45d97ae0f6`; game and shell code is unchanged from the qualified fix candidate.
+The Windows archive fixture in CI exposed that the Unix-oriented manifest reader did not recognize
+its ZIP member. On Windows the packaging helper now reads ZIP manifests through the built-in .NET
+archive API, normalizing member separators and decoding UTF-8, without installing a new tool.
+The Unix archive listing also accepts CRLF. Real manifest, sidecar and missing-manifest assertions
+remain intact; local targeted tests pass 13/13. The prior exact-commit run passed eight lanes and
+failed Windows; its failure remains recorded rather than waived. Latest exact-commit CI and
+production verification remain pending. No new audio/video is included.
+
 ## v2026.09.30-97ddee8 — coordinated release preparation (release candidate)
 
 Source: private commit `97ddee8cdbc2ac79761b0ee98c177f0add2f2d40`, simulation build `8a45d97ae0f6`.
