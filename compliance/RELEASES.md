@@ -8,6 +8,31 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.10.01-ebb5a77 — final spawn/fence source, publication pending
+
+Source: private commit `ebb5a7730a23795bfaf38ad5dcab68d3a6df6dbf`; simulation `8d75165f9b39`.
+Game, renderer and shell code are unchanged from the spawn/fence candidate below. The private
+CI lane now explicitly installs Playwright's pinned Chromium before performance measurement:
+run `36831293881` passed the shared build and native/browser spawn gates, but never started
+cadence measurement because that executable was missing. Its failure is retained. No performance
+threshold or test profile was relaxed. Fifteen targeted deployment/comparison tests pass.
+
+The local M3 Pro comparison passes all six predetermined alternating old/new runs, each with four
+profiles, render scale 1, zero fallbacks and 278 loaded assets. Median p95 does not increase on any
+profile: Dynamic fog on 17.5 → 17.0 ms; Dynamic fog off 25.1 → 25.0 ms; High fog on 17.3 → 16.7 ms;
+High fog off 25.1 → 17.7 ms. These finite measurements are not universal hardware guarantees or a
+claim that the repair caused a speedup. Earlier failed measurements under competing workloads remain.
+
+All thirteen actual lobby checks pass, including temporary chat with no persistent history.
+Chromium/WebGPU, Chromium/WebGL, WebKit and Firefox paths pass three sizes with keyboard and
+click controls; the WebGL paths retain their existing engine/HUD capabilities. The story's final
+commit record includes 910 commits, 897 visible rows, 33 active days, through 1 October.
+
+This source tag is published before binaries. Corrected non-publishing qualification run
+`36836016735`, coordinated game/server/download publication, final archive correspondence and
+shipped-app execution remain pending. Existing downloads are still `v2026.09.30-a22a4de`.
+No new audio/video or runtime media library. Physical Windows/Linux and WAN/router tests are open.
+
 ## v2026.10.01-9c0ecfe — spawn/fence candidate, publication pending
 
 Source: private commit `9c0ecfe5eb33afe8b4be348bde4e7866c37e33e9`; simulation `8d75165f9b39`.
