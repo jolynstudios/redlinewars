@@ -17,6 +17,9 @@ try {
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url.href, {waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(n=>document.querySelector('#session-map')?.options.length===n,expectedMaps,{timeout:120000});
+  // Catalog readiness precedes hull/shader warmup. Real pointer actions must
+  // wait until the loading overlay has left, including its normal fade.
+  await page.locator('#boot').waitFor({state:'hidden',timeout:180000});
   if(river) await page.getByRole('combobox',{name:'Map — choose the battlefield',exact:true}).selectOption({label:'River Crossing — STEELSEED · 64×48'});
   await page.getByRole('group',{name:'Player 1 — you',exact:true}).getByRole('combobox',{name:'Faction',exact:true}).selectOption({label:'England'});
   await page.getByRole('group',{name:'Player 1 — you',exact:true}).getByRole('combobox',{name:'Spawn',exact:true}).selectOption({label:String(humanSpawn)});

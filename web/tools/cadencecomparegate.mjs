@@ -35,15 +35,16 @@ export function compareCadence(runs) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
 	const option = name => process.argv.find(arg => arg.startsWith(`--${name}=`))?.slice(name.length + 3)
 	const before = option('before'), after = option('after'), out = resolve(option('out') ?? 'stage/cadence-comparison')
+	const headed = process.argv.includes('--headed')
 	assert.ok(before && after, 'Supply --before=URL and --after=URL for the immutable bundles')
 	mkdirSync(out, { recursive: true })
 	const runs = []
-	const report = { pass: false, before, after, repeats: 3, policy: 'Every absolute gate passes; median p95 may not increase on any profile', runs }
+	const report = { pass: false, before, after, headed, repeats: 3, policy: 'Every absolute gate passes; median p95 may not increase on any profile', runs }
 	try {
 		for (let iteration = 0; iteration < 3; iteration++) {
 			const run = {}; runs.push(run)
 			for (const side of iteration % 2 ? ['after', 'before'] : ['before', 'after']) {
-				const result = spawnSync(process.execPath, [fileURLToPath(new URL('./cadencegate.mjs', import.meta.url))], {
+				const result = spawnSync(process.execPath, [fileURLToPath(new URL('./cadencegate.mjs', import.meta.url)), ...(headed ? ['--headed'] : [])], {
 					env: { ...process.env, STEELSEED_URL: side === 'before' ? before : after },
 					encoding: 'utf8', maxBuffer: 20 * 1024 * 1024, timeout: 600000,
 				})

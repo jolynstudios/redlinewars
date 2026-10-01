@@ -8,6 +8,40 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.10.01-2bebbd8 — final spawn/fence source, full release pending
+
+Source: private commit `2bebbd8af1cc8976fc85c30115b2e7a73faf68ee`; simulation `8d75165f9b39`.
+The game, renderer and shell implementation remains the spawn/fence repair described below.
+All nine source CI lanes pass for `ebb5a773` (`36837150497`). Subsequent code changes affect
+only measurement controls and test readiness: both immutable cadence profiles use a visible
+compositor, and actual lobby pointer clicks await the disappearance of the real loading overlay.
+Every absolute cadence limit and the zero-increase median-p95 rule remain unchanged. Fifteen
+negative/comparison/deployment contract tests pass. The story records 913 commits, 900 visible
+rows, 33 active days, through 1 October, including the test repairs.
+
+Qualification failures are retained: `36831293881` lacked the pinned Playwright executable;
+`36836016735` stopped on the unchanged old reference's headless p50 16.8 ms (limit 16.7 ms);
+`36837907977` stopped before cadence on a real loading overlay intercepting an early test click.
+The follow-up `36839583629` was cancelled by us before publication in favour of the complete
+release pipeline with the same mandatory gates. None of these runs deployed a new component.
+An additional six-run comparison of the exact CI AppBundle is running on the physical M3 Pro;
+its first old/new pair passes every absolute profile. No uncompleted measurement is called green.
+
+Both actually packaged Mac arm64 and x64-under-Rosetta candidates pass keyboard, focus, window
+sizes, human-plus-AI LAN multiplayer and subsequent Skirmish, closing without surviving processes
+or renderer errors. The initial x64 UI run during concurrent AOT compilation timed out; preserved.
+The unchanged gate passes after that compile work ends. Rosetta is not a physical Intel-Mac test.
+A fresh public `v2026.10.01-9c0ecfe` checkout builds the complete client/server/Utility/mod/AOT lane
+with public stand-in art; all 185 generated files equal the official candidate. This is rebuild
+capability evidence, not byte-equality of separately licensed artwork. Engine/client/shell source
+remains equal in this tag apart from the test-only changes above.
+
+Source published ahead of binary distribution. Coordinated full release, exact archive/source
+correspondence, final live checks and execution of the shipped app remain pending. Public downloads
+remain `v2026.09.30-a22a4de`. No new audio/video, TURN/SFU, media library or runtime dependency.
+Temporary lobby text chat remains independently tested. Physical Windows/Linux/Intel-Mac and WAN/
+router tests remain open. Universal NAT/firewall connectivity without a permitted path is unsolved.
+
 ## v2026.10.01-ebb5a77 — final spawn/fence source, publication pending
 
 Source: private commit `ebb5a7730a23795bfaf38ad5dcab68d3a6df6dbf`; simulation `8d75165f9b39`.
