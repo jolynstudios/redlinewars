@@ -34,6 +34,7 @@ const maps = [firstMap, secondMap];
 if (!maps.every(Boolean)) throw new Error('gate needs two generated maps with at least five seats');
 const netConfig = JSON.parse(fs.readFileSync(path.join(bundle, 'steelseed/net-config.json'), 'utf8'));
 const clients = [];
+const layoutOnly = process.argv.includes('--layout-only');
 const checks = [];
 const log = [];
 const privateMessages = [];
@@ -145,6 +146,8 @@ async function host(client, { observer = false, capacity = 5, name = `${client.n
 		return loadPct < 0.8 && available > 512 * 1024 * 1024 && result.data.freeMatches > 0;
 	}, 'local node healthy with room capacity', 240_000);
 	await client.page.click('#session-tab-mp');
+	if (!await client.page.locator('#session-mp-roomname').isVisible())
+		await client.page.locator('#mp-other-rooms > summary').click();
 	await client.page.fill('#session-mp-name', client.name);
 	await client.page.fill('#session-mp-roomname', name);
 	await client.page.selectOption('#session-mp-slots', String(capacity));
@@ -223,9 +226,12 @@ async function chooseRule(client, id) {
 	const descriptor = s.options.find(option => option.id === id && !option.locked && option.values.some(v => v.id !== option.value));
 	assert(descriptor, `no mutable ${id} engine option`);
 	const wanted = descriptor.values.find(v => v.id !== descriptor.value).id;
+	const section = client.page.locator('.mp-lobby-section').filter({ has: client.page.locator(`select[data-field="lobby-${id}"]`) });
+	if (!await section.evaluate(node => node.open)) await section.locator('summary').click();
 	await client.page.locator(`.mp-lobby-rules select[data-field="lobby-${id}"]`).selectOption(wanted);
 	await client.page.locator('.mp-lobby-note').click();
 	await state(client, s => s.options.some(option => option.id === id && option.value === wanted), `rule ${id} round trip`);
+	await waitFor(() => section.evaluate(node => node.open), `rule ${id} disclosure remains open after engine update`);
 }
 function files(root) {
 	return fs.readdirSync(root, { withFileTypes: true }).flatMap(entry => {
@@ -269,10 +275,11 @@ try {
 	const chromium = await loadChromium('mp-desktop-lobbygate');
 	const admin = await boot(chromium, 'LobbyAdmin');
 	const alpha = await boot(chromium, 'LobbyAlpha');
-	const bravo = await boot(chromium, 'LobbyBravo');
+	const bravo = layoutOnly ? null : await boot(chromium, 'LobbyBravo');
 	assertBrowserClean();
 	assert(clients.every(client => client.accountFixtures > 0), 'anonymous account bootstrap fixture was not exercised');
 	let room;
+	lobbyChecks: {
 	await check('observer host retains administration and capacity five without a seat', async () => {
 		room = await host(admin, { observer: true });
 		const s = await state(admin, s => local(s)?.admin && local(s).slot == null && s.capacity === 5, 'observer admin and five seats');
@@ -294,8 +301,60 @@ try {
 		assert(geometry.rules.top >= Math.max(...geometry.selects.map(box => box.bottom)), `rules stretch Map/Seats below their row: ${JSON.stringify(geometry)}`);
 		await screenshot(admin, '01-observer-admin');
 	});
+	await check('lobby disclosures and visible chat work at desktop and mobile sizes', async () => {
+		const sections = admin.page.locator('.mp-lobby-section');
+		assert(await sections.count() === 3, 'missing Starting conditions, Match rules or Time & weather');
+		assert(await sections.evaluateAll(nodes => nodes.every(node => !node.open)), 'rules should start collapsed');
+		const head = sections.first().locator('summary');
+		await head.focus();
+		await admin.page.keyboard.press('Space');
+		await waitFor(() => sections.first().evaluate(node => node.open), 'keyboard opens rules');
+		await admin.page.keyboard.press('Enter');
+		await waitFor(() => sections.first().evaluate(node => !node.open), 'keyboard closes rules');
+		for (const width of [1440, 1024, 390]) {
+			await admin.page.setViewportSize({ width, height: 1000 });
+			await admin.page.locator('.mp-lobby-conversation').scrollIntoViewIfNeeded();
+			const view = await admin.page.evaluate(() => {
+				const box = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height }; };
+				return { width: innerWidth, scrollWidth: document.documentElement.scrollWidth, chat: box('.mp-lobby-conversation'), form: box('.mp-lobby-chat-form'), log: box('.mp-lobby-chat'), empty: box('.mp-lobby-chat-empty'), room: box('.mp-lobby-room'), settings: box('.mp-lobby-host') };
+			});
+			assert(view.scrollWidth <= width + 1, `lobby overflows horizontally at ${width}: ${JSON.stringify(view)}`);
+			assert(view.chat.height >= 280 && view.chat.left >= 0 && view.chat.right <= width, `chat pane missing or clipped: ${JSON.stringify(view)}`);
+			assert(view.form.top > view.empty.top && view.form.bottom <= view.chat.bottom && view.form.width > 200, `chat composer overlaps content: ${JSON.stringify(view)}`);
+			if (width > 1100) assert(view.chat.left >= view.room.right, 'desktop chat must sit beside setup');
+			else assert(view.chat.bottom <= view.settings.top, 'small-screen chat must precede extended settings');
+			await screenshot(admin, `01-layout-${width}`);
+		}
+		await admin.page.setViewportSize({ width: 1440, height: 1000 });
+	});
+	if (layoutOnly) {
+		await check('layout-only: chat, read-only rules and admin handover use the live engine', async () => {
+			await join(alpha, room);
+			await waitFor(() => alpha.page.locator('.mp-lobby-host > label > select').evaluateAll(nodes => nodes.length === 2 && nodes.every(node => node.disabled)), 'guest Map and Seats disabled');
+			await waitFor(() => alpha.page.locator('.mp-lobby-rules select').evaluateAll(nodes => nodes.length > 0 && nodes.every(node => node.disabled)), 'guest rules populated and read-only');
+			const message = await chat(admin, 'layout-visible-chat');
+			await expectChat(alpha, message);
+			assert(await alpha.page.locator('.mp-lobby-chat-empty').isHidden(), 'empty hint stays over actual messages');
+			await screenshot(admin, '02-layout-live-chat');
+			const guestSummary = alpha.page.locator('.mp-lobby-section').first().locator('summary');
+			await guestSummary.focus();
+			await chooseRule(admin, 'tod');
+			const tod = (await snapshot(admin)).options.find(option => option.id === 'tod').value;
+			await waitFor(() => alpha.page.locator('select[data-field="lobby-tod"]').inputValue().then(value => value === tod), 'room update while guest summary has keyboard focus');
+			assert(await guestSummary.evaluate(node => node === document.activeElement), 'server update lost disclosure keyboard focus');
+			await leave(admin);
+			await state(alpha, s => local(s).admin, 'guest promoted after departure');
+			await waitFor(() => alpha.page.locator('.mp-lobby-host > label > select').evaluateAll(nodes => nodes.length === 2 && nodes.every(node => !node.disabled)), 'promoted Map and Seats enabled');
+			await waitFor(() => alpha.page.locator('select[data-field="lobby-weather"]').isEnabled(), 'promoted rule enabled with disclosure focused');
+			await chooseRule(alpha, 'weather');
+			await leave(alpha);
+		});
+		break lobbyChecks;
+	}
 	await check('ready toggles and live chat has no backlog for later members', async () => {
 		await join(alpha, room);
+		await waitFor(() => alpha.page.locator('.mp-lobby-host > label > select').evaluateAll(nodes => nodes.length === 2 && nodes.every(node => node.disabled)), 'non-admin sees read-only Map and Seats');
+		await waitFor(() => alpha.page.locator('.mp-lobby-rules select').evaluateAll(nodes => nodes.length > 0 && nodes.every(node => node.disabled)), 'non-admin rules populated and read-only');
 		await ready(alpha);
 		await ready(alpha, false);
 		const earlier = await chat(admin, 'before-bravo');
@@ -508,6 +567,7 @@ try {
 		}
 		checks.push({ name: 'node logs/support/replay canary inspection', status: 'passed', files: inspected.map(file => path.relative(dataDir, file)) });
 	});
+	}
 	assertBrowserClean();
 	passed = true;
 } catch (error) {
@@ -522,7 +582,7 @@ try {
 	for (const client of clients) await client.browser.close().catch(() => {});
 	await stopProcessGroup(roomhost).catch(error => checks.push({ name: 'cleanup', status: 'failed', error: String(error) }));
 	fs.writeFileSync(path.join(outputDir, 'report.json'), JSON.stringify({
-		status: passed ? 'passed' : 'failed', bundle, build, idleSeconds, checks,
+		status: passed ? 'passed' : 'failed', scope: layoutOnly ? 'layout-only' : 'full-lobby', bundle, build, idleSeconds, checks,
 		limitations: ['Chromium loopback browser gate; packaged desktop, physical devices and real-network paths are separate release checks.', 'Browser storage inspection covers local/session storage and IndexedDB; client replay export requires separate replay gate.'],
 	}, null, 2));
 	if (passed) fs.rmSync(dataDir, { recursive: true, force: true });

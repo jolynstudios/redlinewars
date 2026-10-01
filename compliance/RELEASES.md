@@ -8,7 +8,30 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
-## v2026.10.01-2bebbd8 — final spawn/fence source, full release pending
+## v2026.10.01-dbac4fe — candidate source, game release held
+
+Source: private commit `dbac4fe31c7e2293cafb219c6b614bdda18af9e6`; simulation `8d75165f9b39`.
+The engine and shell source remain the candidate below. The separately licensed lobby interface
+adds three collapsible settings groups, a visible temporary-chat panel, responsive layout and
+read-only guest controls. Initial real lobby verification passes all fourteen checks; the final
+layout-focused verification passes three checks, including three viewport widths, keyboard focus
+across authoritative updates, live chat and admin handover. Typecheck, 168 tool tests and 21
+site/deployment contract tests pass. The story records 915 commits and 902 visible timeline rows.
+
+**Game publication held.** The exact CI-built AppBundle fails the predeclared three-pair comparison
+on the physical M3 Pro: Dynamic/fog-off median p95 is 17.1 ms before and 17.3 ms after. All six runs
+pass the absolute limits. The other three median profiles are 16.7→16.7, 16.7→16.7 and 17.5→17.4 ms.
+No threshold or quality limit is weakened, and the failed report is retained. Full deployment
+`36840054373` was cancelled before any production component changed. This result establishes a
+release hold, not the cause of the difference. Regenerated packs with unchanged source hashes
+are an investigation lead, not a demonstrated repair. Public game/downloads remain A22.
+
+The public URL/CSP correction remains live. A landing-only update records this candidate and hold
+without replacing the game or backends. No audio/video, TURN/SFU, media transport or new runtime
+library is included. Corresponding source is published ahead of any candidate binary distribution;
+it is not a declaration that the candidate passed the release gates.
+
+## v2026.10.01-2bebbd8 — spawn/fence source, deployment held
 
 Source: private commit `2bebbd8af1cc8976fc85c30115b2e7a73faf68ee`; simulation `8d75165f9b39`.
 The game, renderer and shell implementation remains the spawn/fence repair described below.
@@ -24,8 +47,9 @@ Qualification failures are retained: `36831293881` lacked the pinned Playwright 
 `36837907977` stopped before cadence on a real loading overlay intercepting an early test click.
 The follow-up `36839583629` was cancelled by us before publication in favour of the complete
 release pipeline with the same mandatory gates. None of these runs deployed a new component.
-An additional six-run comparison of the exact CI AppBundle is running on the physical M3 Pro;
-its first old/new pair passes every absolute profile. No uncompleted measurement is called green.
+The additional six-run comparison of the exact CI AppBundle completed on the physical M3 Pro.
+Every absolute profile passed, but the strict Dynamic/fog-off median p95 comparison failed
+17.1→17.3 ms. Full release `36840054373` was cancelled before deployment; see the hold above.
 
 Both actually packaged Mac arm64 and x64-under-Rosetta candidates pass keyboard, focus, window
 sizes, human-plus-AI LAN multiplayer and subsequent Skirmish, closing without surviving processes
