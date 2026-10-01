@@ -31,6 +31,7 @@ tagged artifact with its sha256, its tag and how it was checked against that tag
 
 | Tag | Source of |
 |---|---|
+| [`v2026.10.01-9c0ecfe`](https://github.com/jolynstudios/redlinewars/tree/v2026.10.01-9c0ecfe) | River Crossing spawn/fence repair candidate; strict performance qualification and coordinated publication pending; no new audio/video |
 | [`v2026.09.30-a22a4de`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a22a4de) | verified live browser, all ten desktop/node downloads and coordinated backends; desktop/lobby fixes, ephemeral lobby chat, no new audio/video |
 | [`v2026.09.30-edf9051`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-edf9051) | release stopped on a Windows test-path assumption; unintended node update rolled back, source retained |
 | [`v2026.09.30-a3367f1`](https://github.com/jolynstudios/redlinewars/tree/v2026.09.30-a3367f1) | CI passed; release cancelled before production because the signed Mac node content digest was stale |

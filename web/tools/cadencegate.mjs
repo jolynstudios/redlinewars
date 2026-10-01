@@ -14,7 +14,8 @@ function pct(xs, p) {
 	return s[Math.min(s.length - 1, Math.floor(p * (s.length - 1)))]
 }
 
-const browser = await chromium.launch({ args: ['--enable-unsafe-webgpu', '--use-angle=metal'] })
+const headless = !process.argv.includes('--headed')
+const browser = await chromium.launch({ headless, args: ['--enable-unsafe-webgpu', '--use-angle=metal'] })
 try {
 	async function boot(quality) {
 		const page = await (await browser.newContext({ viewport: { width: 1512, height: 982 }, deviceScaleFactor: 2 })).newPage()
@@ -77,6 +78,7 @@ try {
 			const samples = globalThis.__samples.slice(12)
 			return {
 				samples,
+				backend: steelseed.ctx.backend,
 				scale: steelseed.frameStats.renderScale,
 				actors: steelseed.ctx.snapshot.actors.count,
 				loaded: units.forgeStats.loaded,
@@ -98,20 +100,24 @@ try {
 		const p50 = pct(row.samples, 0.5)
 		const worst = Math.max(...row.samples)
 		assert.equal(errors.length, 0, errors.join('\n'))
+		assert.equal(row.backend, 'webgpu', 'Cadence qualification requires the real WebGPU renderer')
 		assert.ok(row.loaded > 0, 'Blender roster did not load')
 		assert.equal(row.fallback, 0)
 		assert.ok(row.actors > 0)
-		assert.ok(p50 <= 16.7, `${quality} fog ${fog} p50 ${p50}`)
+		// Subtracting large browser timestamps can leave picosecond-scale binary
+		// rounding above an exact boundary (16.700000000004 vs 16.7). This is
+		// below the clock's resolution; no measurable budget increase is allowed.
+		assert.ok(p50 <= 16.7 || p50 - 16.7 <= 1e-9, `${quality} fog ${fog} p50 ${p50}`)
 		assert.ok(worst <= 50, `${quality} fog ${fog} worst ${worst}`)
 		arms.push({
 			quality, fog, map,
-			p50: +p50.toFixed(2), worst: +worst.toFixed(2), p99: +pct(row.samples, 0.99).toFixed(2),
+			p50: +p50.toFixed(2), worst: +worst.toFixed(2), p95: +pct(row.samples, 0.95).toFixed(2), p99: +pct(row.samples, 0.99).toFixed(2),
 			actors: row.actors, loaded: row.loaded, fallback: row.fallback, scale: row.scale,
 		})
 		console.log(quality, 'fog', fog, 'p50', p50.toFixed(2), 'worst', worst.toFixed(1), 'actors', row.actors, 'blender', row.loaded)
 		await page.close()
 	}
-	console.log(JSON.stringify({ pass: true, arms }))
+	console.log(JSON.stringify({ pass: true, headless, arms }))
 } finally {
 	await browser.close()
 }

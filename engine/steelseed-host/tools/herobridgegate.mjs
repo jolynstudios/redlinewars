@@ -2,9 +2,10 @@
 import assert from 'node:assert/strict'
 import {mkdirSync,writeFileSync} from 'node:fs'
 import {resolve} from 'node:path'
-import {bootRuntime,configFor,renderPlayerIndex,waitForSnapshot} from './runtime-fixture.mjs'
+import {configFor,renderPlayerIndex,waitForSnapshot} from './runtime-fixture.mjs'
+import { bootHeroBridgeFixture, BRIDGE_FIXTURE_TITLE } from './hero-bridge-fixture.mjs'
 const out=resolve(import.meta.dirname,'../../../.artifacts/planx/bridge-engine');mkdirSync(out,{recursive:true})
-const runtime=await bootRuntime(),catalog=runtime.bridge.getSkirmishCatalog(),map=catalog.maps.find(m=>m.title==='River Crossing — STEELSEED')
+const runtime=await bootHeroBridgeFixture(),catalog=runtime.bridge.getSkirmishCatalog(),map=catalog.maps.find(m=>m.title===BRIDGE_FIXTURE_TITLE)
 assert.ok(map,'dedicated bridge map missing')
 assert.equal(runtime.bridge.startSkirmish(configFor(catalog,map,{withBot:false})).status,'loading')
 let current=await waitForSnapshot(runtime,{minimumTick:0,timeoutMs:30000}),names=runtime.bridge.snapshotTypeTable().split('\n'),local=renderPlayerIndex(current.header)

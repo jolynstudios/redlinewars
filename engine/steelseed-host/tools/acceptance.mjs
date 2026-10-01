@@ -40,6 +40,7 @@ const steps = [
 	['actorgate', process.execPath, [resolve(import.meta.dirname, 'actorgate.mjs')]],
 	['contextcollisiongate', process.execPath, [resolve(import.meta.dirname, 'contextcollisiongate.mjs')]],
 	['deploygate', process.execPath, [resolve(import.meta.dirname, 'deploygate.mjs')]],
+	['spawngate', process.execPath, [resolve(import.meta.dirname, 'spawngate.mjs')]],
 	['resourcegate', process.execPath, [resolve(gameRoot, 'web/tools/resourcegate.mjs')]],
 	['economygate', process.execPath, [resolve(gameRoot, 'web/tools/economygate.mjs')]],
 	['frozengate', process.execPath, [resolve(import.meta.dirname, 'frozengate.mjs')]],

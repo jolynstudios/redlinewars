@@ -87,7 +87,7 @@ const PRIVATE = [
 	// SFX renders, promotion of supplied .blend files). They build no part of the game's code.
 	// art-fetch.mjs is published: the published web/tools/sourcelicensegate.mjs imports it, and it
 	// only fetches and checks the recorded CC0/CC-BY sources; it holds no art.
-	...['blender-forge.mjs', 'environment-forge.mjs', 'material-forge.mjs', 'tree-forge.mjs', 'forge.mjs',
+	...['blender-forge.mjs', 'environment-forge.mjs', 'living-forge.mjs', 'material-forge.mjs', 'tree-forge.mjs', 'forge.mjs',
 		'rosterbake.mjs', 'promoterifle.mjs', 'rifleassetgate.mjs', 'gen-death-voices.mjs', 'gen-shout-voices.mjs',
 		'render-jackson-elevenlabs.mjs', 'render-riki-elevenlabs.mjs', 'render-sfx-elevenlabs.mjs', 'render-spy-elevenlabs.mjs',
 		'render-voices-cartesia.mjs'].map(name => [`web/tools/${name}`, 'art pipeline (builds separately licensed art)']),

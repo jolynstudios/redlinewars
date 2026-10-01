@@ -8,6 +8,29 @@ before their tag existed; the gap is recorded in
 [v2026.09.28-ab47013](#v20260928-ab47013-the-downloads-of-28-september-2026), and that tag was published
 with the release after it.
 
+## v2026.10.01-9c0ecfe — spawn/fence candidate, publication pending
+
+Source: private commit `9c0ecfe5eb33afe8b4be348bde4e7866c37e33e9`; simulation `8d75165f9b39`.
+Four bridge-test patrol actors fixed to Multi0 are removed from the public River Crossing map.
+Bridge physics tests retain those actors in a private in-memory fixture, leaving the playable map
+to OpenRA's normal starting-army placement. The separately licensed fence asset's posts now
+reach both rails, with unchanged triangle count and exported mesh size. Its existing authoring
+pipeline remains separately licensed; the corresponding source contains the engine/client code
+and test changes under their existing licences. No library or media integration is added.
+
+Twenty-four actual engine starts check both players' selected spawns and MCV deployment. Two
+browser games verify native/drawn positions and the Construction Yard. Bridge physics/visibility,
+browser input, native Ranked surrender-replay settlement and a 60-second paired multiplayer
+hash/stall check pass. The nine source CI lanes pass for the game fix commit `d254836d`.
+
+This source is published ahead of binary distribution. The non-publishing qualification run
+`36831293881` compares the immutable previous AppBundle with this simulation through the
+same shared build lane. Every existing absolute cadence limit must pass; three predetermined
+alternating pairs may not increase median p95 on any of the four profiles. Earlier local reference
+runs failed under competing CPU/GPU work; they do not qualify the candidate. Final performance,
+coordinated browser/server/download publication and shipped-package verification are pending.
+The currently distributed game and ten downloads remain `v2026.09.30-a22a4de`. No new audio/video.
+
 ## v2026.09.30-a22a4de — verified desktop/lobby release
 
 Source: private commit `a22a4decfcc5ca4ada989cb1bdc5aa8efb5a5648`. Game, renderer and shell

@@ -33,7 +33,7 @@ function memoryIndexedDb() {
 	} }
 }
 
-export async function bootRuntime({ bundleRoot = resolve(hostRoot, '../bin-browser/AppBundle') } = {}) {
+export async function bootRuntime({ bundleRoot = resolve(hostRoot, '../bin-browser/AppBundle'), fixtureFiles = null } = {}) {
 	// Keep the headless fixture aligned with the browser globals read by the host
 	// adapters.  These are deliberately minimal: gates exercise the real WASM host,
 	// while rendering and focus policy remain browser concerns.
@@ -52,6 +52,21 @@ export async function bootRuntime({ bundleRoot = resolve(hostRoot, '../bin-brows
 		getElementById: element, hasFocus: () => true, addEventListener: () => {},
 	}
 	globalThis.requestAnimationFrame = callback => { globalThis.__steelseedPump = callback }
+	// Gate-only files are installed into the runtime's private in-memory VFS before
+	// engine initialization. The shared AppBundle and shipped mod stay unchanged.
+	if (fixtureFiles) {
+		const { dotnet } = await import(pathToFileURL(resolve(bundleRoot, '_framework/dotnet.js')).href)
+		dotnet.withModuleConfig({ onDotnetReady() {
+			const module = globalThis.getDotnetRuntime(0).Module
+			for (const [path, bytes] of fixtureFiles) {
+				if (!path.startsWith('/openra/engine/mods/ra/maps/gate-') || path.includes('..'))
+					throw new Error('runtime-fixture: fixture path outside gate map directory')
+				const slash = path.lastIndexOf('/'), parent = path.slice(0, slash)
+				module.FS_createPath('/', parent.slice(1), true, true)
+				module.FS_createDataFile(parent, path.slice(slash + 1), bytes, true, true)
+			}
+		} })
+	}
 	const main = resolve(bundleRoot, 'main.js')
 	await import(`${pathToFileURL(main).href}?gate=${Date.now()}`)
 	if (!globalThis.steelseedBridge) throw new Error('runtime-fixture: bridge did not publish')

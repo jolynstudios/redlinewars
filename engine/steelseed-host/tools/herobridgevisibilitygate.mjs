@@ -3,9 +3,10 @@
 import assert from'node:assert/strict'
 import {mkdirSync,writeFileSync}from'node:fs'
 import {resolve}from'node:path'
-import {bootRuntime,configFor,renderPlayerIndex,waitForSnapshot}from'./runtime-fixture.mjs'
+import {configFor,renderPlayerIndex,waitForSnapshot}from'./runtime-fixture.mjs'
+import { bootHeroBridgeFixture, BRIDGE_FIXTURE_TITLE } from './hero-bridge-fixture.mjs'
 const out=resolve(import.meta.dirname,'../../../.artifacts/planx/bridge-visibility');mkdirSync(out,{recursive:true})
-const r=await bootRuntime(),catalog=r.bridge.getSkirmishCatalog(),map=catalog.maps.find(m=>m.title==='River Crossing — STEELSEED');assert.ok(map)
+const r=await bootHeroBridgeFixture(),catalog=r.bridge.getSkirmishCatalog(),map=catalog.maps.find(m=>m.title===BRIDGE_FIXTURE_TITLE);assert.ok(map)
 assert.equal(r.bridge.startSkirmish(configFor(catalog,map,{withBot:false})).status,'loading');const rows=[]
 function save(result,label){
  const {header:h,bytes}=result,v=h.view,sh=h.sections.get(6),count=v.getUint32(sh.offset,true),states=new Uint8Array(64*48)

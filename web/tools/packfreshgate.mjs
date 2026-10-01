@@ -78,6 +78,16 @@ for (const actor of ladders) {
 		staleLadders.push({ actor, reason: `authored against ${ladder.parentSourceSha256.slice(0, 12)}, parent is now ${actual.slice(0, 12)}`, states: ladder.states?.length ?? 0 })
 }
 
+// Ambient scenery has its own pack; its saved sources must be just as fresh.
+const living = JSON.parse(readFileSync(join(web, '.forge/living/manifest.json'), 'utf8'))
+for (const [id, asset] of Object.entries(living.assets)) {
+    const path = join(game, asset.sourcePath)
+    assert.ok(existsSync(path), `living/${id}: source missing`)
+    assert.equal(sha(readFileSync(path)), asset.sourceSha256,
+        `living/${id}: stale scenery pack; run npm run forge:living`)
+}
+console.log(`packfreshgate: ${Object.keys(living.assets).length} living sources match their pack`)
+
 // Menu portraits are a separate Blender render pipeline; a fresh mesh cannot prove them fresh.
 const previewRoot = join(web, '.forge/blender/previews')
 const previews = JSON.parse(readFileSync(join(previewRoot, 'manifest.json'), 'utf8')).portraits
