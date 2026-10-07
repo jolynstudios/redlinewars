@@ -112,11 +112,14 @@ async function startSpine(t, { config = null, extraArgs = [], env = {} } = {}) {
 // Opens a node tunnel; resolves after the upgrade. `register` (when given)
 // is sent at once; the first text reply (if any) is captured — a register
 // that never earns one (it was refused) rejects after 5 s, never hangs.
-async function connectNode(relayWsPort, register, { bearer = null, headers = {}, autoPong = true } = {}) {
+async function connectNode(relayWsPort, register, { bearer = null, headers = {}, autoPong = true, onPing = null } = {}) {
 	const ws = new WebSocket(`ws://127.0.0.1:${relayWsPort}/node`, {
 		headers: bearer ? { authorization: `Bearer ${bearer}`, ...headers } : headers,
 		autoPong,
 	});
+	// The relay pings during the upgrade. Install custom pong handling before
+	// awaiting open: upgrade and ping may arrive in the same network read.
+	if (onPing) ws.on('ping', data => onPing(data, ws));
 	ws.on('error', () => { /* refused sockets surface via 'close' */ });
 	const result = { ws, reply: null, closed: null };
 	result.closed = new Promise(resolve => ws.on('close', (code, reasonBuf) => resolve({ code, reason: reasonBuf.toString() })));
@@ -638,22 +641,22 @@ test('liveness tolerates one missed beat and still drops a silent socket', { tim
 	const beatMs = 400;
 	const spine = await startSpine(t, { extraArgs: ['--ping-interval-ms', String(beatMs)] });
 	// autoPong is off, so each tunnel answers its pings on its own schedule.
-	const answer = (conn, delayFor) => {
+	const answer = delayFor => {
 		let pings = 0;
-		conn.ws.on('ping', data => {
+		return (data, ws) => {
 			const wait = delayFor(pings++);
 			if (wait === null) return;
-			setTimeout(() => { if (conn.ws.readyState === WebSocket.OPEN) conn.ws.pong(data); }, wait).unref();
-		});
+			setTimeout(() => { if (ws.readyState === WebSocket.OPEN) ws.pong(data); }, wait).unref();
+		};
 	};
 	// The connect-time ping is still in flight when the shared beat fires (a join
 	// that lands within one RTT of a beat), and every later pong misses one beat.
 	// Neither may drop the tunnel: only missedPongLimit consecutive misses do.
-	const slow = await connectNode(spine.relayWsPort, registerMsg(), { autoPong: false });
-	answer(slow, n => n === 0 ? beatMs * 0.9 : beatMs * 1.5);
+	const slow = await connectNode(spine.relayWsPort, registerMsg(), {
+		autoPong: false, onPing: answer(n => n === 0 ? beatMs * 0.9 : beatMs * 1.5),
+	});
 	// A tunnel that never answers is still dropped.
 	const silent = await connectNode(spine.relayWsPort, registerMsg(), { autoPong: false });
-	answer(silent, () => null);
 	await Promise.all([slow.reply, silent.reply]);
 	let silentDropped = false;
 	silent.closed.then(() => { silentDropped = true; });
