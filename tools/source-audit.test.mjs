@@ -61,7 +61,8 @@ test('source audit accepts public source, notice text and the single public work
 test('public CI stays read-only and runs the shared clean build without deployment', () => {
  const workflow = readFileSync(new URL('../.github/workflows/public-source.yml', import.meta.url), 'utf8')
  assert.match(workflow, /pull_request:/)
- assert.match(workflow, /push:\s*branches: \[main\]/)
+ assert.match(workflow, /push:\s*branches: \['\*\*'\]/)
+ assert.match(workflow, /cancel-in-progress: true/)
  assert.match(workflow, /permissions:\s*contents: read/)
  assert.match(workflow, /persist-credentials: false/)
  assert.match(workflow, /node-version: '22'/)

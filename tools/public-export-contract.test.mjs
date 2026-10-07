@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
@@ -27,6 +27,29 @@ function inputs(write) {
 }
 test('public source inputs validate without private Git history or proprietary components', () => fixture(({ root, write }) => {
  inputs(write); assert.equal(validatePublicSource(root), 'a'.repeat(40))
+}))
+for (const kind of ['ordinary', 'credential', 'symlink']) test(`archive export audits committed ${kind} content before success`, () => fixture(({ root, write }) => {
+ inputs(write)
+ for (const file of ['export-release.mjs', 'source-audit.mjs', 'public-source-gate.mjs', 'export-policy.mjs'])
+  write('tools/' + file, readFileSync(new URL('./' + file, import.meta.url)))
+ const secret = 'ghp_' + 'a'.repeat(36)
+ if (kind === 'credential') write('tools/unexpected.txt', secret)
+ if (kind === 'symlink') symlinkSync('../LICENSE', join(root, 'tools/link.txt'))
+ const git = args => {
+  const result = spawnSync('git', ['-c', 'user.name=Source test', '-c', 'user.email=test@example.invalid', ...args], { cwd: root, encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stderr)
+ }
+ git(['init', '-q']); git(['add', '.']); git(['-c', 'commit.gpgsign=false', 'commit', '-qm', 'Fixture'])
+ const out = join(root, 'export')
+ const result = spawnSync(process.execPath, [join(root, 'tools/export-release.mjs'), '--commit', 'HEAD', '--out', out], { encoding: 'utf8' })
+ if (kind === 'ordinary') {
+  assert.equal(result.status, 0, result.stderr)
+  assert.ok(existsSync(join(out, 'web/src/render/renderer.ts')))
+ } else {
+  assert.notEqual(result.status, 0)
+  assert.equal(existsSync(out), false)
+  assert.ok(!result.stderr.includes(secret))
+ }
 }))
 test('excluded UI, media dependency and missing engine input each fail the gate', () => fixture(({ root, write }) => {
  inputs(write); write('web/src/hud/index.ts', 'private UI')
