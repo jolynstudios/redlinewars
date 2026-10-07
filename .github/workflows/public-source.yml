@@ -1,0 +1,39 @@
+name: Public source
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  source-build:
+    name: Public source audit and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Install WebAssembly workload
+        run: dotnet workload install wasm-tools
+      - name: Audit source inventory and credential patterns
+        run: node tools/source-audit.mjs
+      - name: Test source and artifact guards
+        run: node --test tools/*.test.mjs
+      - name: Build the public edition from source
+        run: node tools/build.mjs
+      - name: Recheck the source inventory after building
+        run: node tools/source-audit.mjs
+      - name: Check built client sources and notices
+        run: node tools/verify-release.mjs --source . engine/bin-browser/AppBundle
+      # Physical WebGPU checks remain in the local browser harness; this job
+      # proves the clean source build and does not claim GPU/platform acceptance.

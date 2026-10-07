@@ -14,6 +14,17 @@ export const EXCLUDED = [
  'art/voices/riki', 'brand', 'landing', 'deploy',
  'release/consolidation.json', 'release/qualification-selection.json',
 ]
+// WebGPU is part of this edition. Its implementation and shaders must travel
+// with the engine, minimal interface and reproducible build entry points.
+export const REQUIRED = [
+ 'LICENSE', 'NOTICE.md', 'AUTHORS', 'THIRD_PARTY_NOTICES.md',
+ 'web/src/main.ts', 'web/src/ui/index.ts', 'web/index.html', 'web/tools/compose.mjs',
+ 'web/src/render/index.ts', 'web/src/render/renderer.ts', 'web/src/render/shaders.ts',
+ 'web/src/render/cutout-shaders.ts', 'web/src/render/post.ts',
+ 'engine/steelseed-host/OpenRA.Browser/OpenRA.Browser.csproj',
+ 'release/game-version.mjs', 'release/game-version.json',
+ '.github/workflows/public-source.yml',
+]
 export function validatePublicSource(root) {
  const record = JSON.parse(readFileSync(resolve(root, 'RELEASE-SOURCE.json'), 'utf8'))
  assert.equal(record.schema, 2, 'public source: unsupported edition record')
@@ -22,10 +33,7 @@ export function validatePublicSource(root) {
  assert.match(record.version, /^\d+\.\d+\.\d+$/, 'public source: edition version is required')
  for (const path of EXCLUDED)
   assert.ok(!existsSync(resolve(root, path)), 'public source: excluded input present: ' + path)
- for (const path of ['LICENSE', 'NOTICE.md', 'AUTHORS', 'THIRD_PARTY_NOTICES.md',
-  'web/src/ui/index.ts', 'web/index.html', 'web/tools/compose.mjs',
-  'engine/steelseed-host/OpenRA.Browser/OpenRA.Browser.csproj',
-  'release/game-version.mjs', 'release/game-version.json'])
+ for (const path of REQUIRED)
   assert.ok(existsSync(resolve(root, path)), 'public source: required input missing: ' + path)
  for (const area of ['web', 'engine', 'desktop']) {
   for (const name of ['package.json', 'package-lock.json'])

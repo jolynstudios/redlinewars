@@ -9,7 +9,7 @@ if (args.some(arg => arg !== '--build')) {
  process.exit(2)
 }
 validatePublicSource(root)
-for (const argv of [['tools/source-audit.mjs'], ['--test', 'tools/public-export-contract.test.mjs', 'tools/verify-release.test.mjs'],
+for (const argv of [['tools/source-audit.mjs'], ['--test', 'tools/public-export-contract.test.mjs', 'tools/source-audit.test.mjs', 'tools/verify-release.test.mjs'],
  ...(args.includes('--build') ? [['tools/build.mjs']] : [])]) {
  const result = spawnSync(process.execPath, argv, { cwd: root, stdio: 'inherit' })
  if (result.status !== 0) process.exit(result.status || 1)
