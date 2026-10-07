@@ -1,0 +1,4613 @@
+{
+	"slots": [
+		{
+			"name": "foundry_anvil",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.625,
+			"widthM": 1.125,
+			"hp": 4200,
+			"armourIndex": 3,
+			"cost": 1600,
+			"buildTicks": 240,
+			"speed": 38,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 8,
+				"offsetM": [
+					0,
+					0.33203125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "AnvilShell",
+					"muzzleM": [
+						0.87890625,
+						0,
+						0.17578125
+					],
+					"recoilM": 0.1669921875,
+					"rangeM": 5.5,
+					"reloadTicks": 46,
+					"damage": 620,
+					"armourBias": 0.19047619047619047,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_bastion",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 3,
+			"widthM": 1.125,
+			"hp": 9600,
+			"armourIndex": 3,
+			"cost": 2400,
+			"buildTicks": 340,
+			"speed": 34,
+			"locomotor": "naval",
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 40,
+				"offsetM": [
+					0,
+					0.400390625,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "BastionGun",
+					"muzzleM": [
+						1.0498046875,
+						0.400390625,
+						0
+					],
+					"recoilM": 0.1669921875,
+					"rangeM": 9,
+					"reloadTicks": 60,
+					"damage": 690,
+					"armourBias": 0.18181818181818182,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_bellows",
+			"faction": 0,
+			"family": 3,
+			"archetype": "rotorcraft",
+			"lengthM": 1.75,
+			"widthM": 1.125,
+			"hp": 2600,
+			"armourIndex": 3,
+			"cost": 1300,
+			"buildTicks": 210,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 10,
+			"targetsAir": true,
+			"vtol": true,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "BellowsSalvo",
+					"muzzleM": [
+						0,
+						-0.0830078125,
+						-0.2080078125
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 5.5,
+					"reloadTicks": 24,
+					"damage": 330,
+					"armourBias": -0.10526315789473684,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_boiler",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 3800,
+			"armourIndex": 4,
+			"cost": 700,
+			"buildTicks": 130,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 120,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_bollard",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 2,
+			"widthM": 1.375,
+			"hp": 6400,
+			"armourIndex": 3,
+			"cost": 1900,
+			"buildTicks": 250,
+			"speed": 24,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 16,
+				"offsetM": [
+					0,
+					0.412109375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "BollardArm",
+					"muzzleM": [
+						0.599609375,
+						0.3017578125,
+						0
+					],
+					"recoilM": 0.19140625,
+					"rangeM": 7,
+					"reloadTicks": 96,
+					"damage": 820,
+					"armourBias": 0.2336448598130841,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_bolt",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1250,
+			"armourIndex": 1,
+			"cost": 180,
+			"buildTicks": 30,
+			"speed": 56,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "BoltArm",
+					"muzzleM": [
+						0.224609375,
+						0.1640625,
+						0
+					],
+					"recoilM": 0.052734375,
+					"rangeM": 3,
+					"reloadTicks": 20,
+					"damage": 110,
+					"armourBias": -0.31868131868131866,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_bulwark",
+			"faction": 0,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 4400,
+			"armourIndex": 4,
+			"cost": 800,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 48,
+				"offsetM": [
+					0,
+					0.3125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "BulwarkDriver",
+					"muzzleM": [
+						0.5,
+						0,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 7,
+					"reloadTicks": 22,
+					"damage": 300,
+					"armourBias": -0.02564102564102564,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -15,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_capstan",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.5,
+			"widthM": 1,
+			"hp": 6400,
+			"armourIndex": 3,
+			"cost": 1600,
+			"buildTicks": 260,
+			"speed": 42,
+			"locomotor": "naval",
+			"visionM": 10,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 64,
+				"offsetM": [
+					0,
+					0.3251953125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "CapstanBattery",
+					"muzzleM": [
+						0.849609375,
+						0.3251953125,
+						0
+					],
+					"recoilM": 0.1044921875,
+					"rangeM": 7.5,
+					"reloadTicks": 40,
+					"damage": 420,
+					"armourBias": 0.047619047619047616,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_casemate",
+			"faction": 0,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 3400,
+			"armourIndex": 4,
+			"cost": 600,
+			"buildTicks": 110,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 48,
+				"offsetM": [
+					0,
+					0.6396484375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "CasemateArm",
+					"muzzleM": [
+						0.5595703125,
+						0.4794921875,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 7,
+					"reloadTicks": 47,
+					"damage": 512,
+					"armourBias": 0.06976744186046512,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_cinder",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1050,
+			"armourIndex": 1,
+			"cost": 420,
+			"buildTicks": 105,
+			"speed": 64,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "CinderFan",
+					"muzzleM": [
+						0.68359375,
+						0.48828125,
+						0
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 3.5,
+					"reloadTicks": 10,
+					"damage": 65,
+					"armourBias": -0.4634146341463415,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_clamp",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1250,
+			"armourIndex": 1,
+			"cost": 360,
+			"buildTicks": 95,
+			"speed": 58,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "ClampDriver",
+					"muzzleM": [
+						0,
+						0.5419921875,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 5.5,
+					"reloadTicks": 36,
+					"damage": 300,
+					"armourBias": 0.2222222222222222,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_cleat",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.5625,
+			"widthM": 1.125,
+			"hp": 3800,
+			"armourIndex": 1,
+			"cost": 900,
+			"buildTicks": 135,
+			"speed": 44,
+			"locomotor": "ground",
+			"visionM": 8,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 48,
+				"offsetM": [
+					0,
+					0.3369140625,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "CleatArm",
+					"muzzleM": [
+						0.46875,
+						0.2470703125,
+						0
+					],
+					"recoilM": 0.095703125,
+					"rangeM": 8,
+					"reloadTicks": 46,
+					"damage": 330,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_crucible",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 9000,
+			"armourIndex": 4,
+			"cost": 2000,
+			"buildTicks": 300,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 50,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 0
+		},
+		{
+			"name": "foundry_cupola",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 2,
+			"hp": 5600,
+			"armourIndex": 4,
+			"cost": 800,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 75,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_dragline",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.5,
+			"widthM": 0.875,
+			"hp": 2700,
+			"armourIndex": 3,
+			"cost": 1250,
+			"buildTicks": 205,
+			"speed": 48,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "DraglineHook",
+					"muzzleM": [
+						0.75,
+						0.1669921875,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 4.5,
+					"reloadTicks": 32,
+					"damage": 340,
+					"armourBias": 0.2,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 20,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_dredger",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.375,
+			"widthM": 0.9501953125,
+			"hp": 5200,
+			"armourIndex": 3,
+			"cost": 1300,
+			"buildTicks": 240,
+			"speed": 40,
+			"locomotor": "naval",
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 72,
+				"offsetM": [
+					0,
+					0.2841796875,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "DredgerArm",
+					"muzzleM": [
+						0.7119140625,
+						0.208984375,
+						0
+					],
+					"recoilM": 0.10546875,
+					"rangeM": 6,
+					"reloadTicks": 36,
+					"damage": 380,
+					"armourBias": 0.024390243902439025,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_ember",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1000,
+			"armourIndex": 1,
+			"cost": 320,
+			"buildTicks": 44,
+			"speed": 48,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "EmberArm",
+					"muzzleM": [
+						0.224609375,
+						0.1640625,
+						0
+					],
+					"recoilM": 0.078125,
+					"rangeM": 5,
+					"reloadTicks": 44,
+					"damage": 240,
+					"armourBias": -0.31868131868131866,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_flakrack",
+			"faction": 0,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 3500,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 165,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": true,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 60,
+				"offsetM": [
+					0,
+					0.3125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "FlakrackBurst",
+					"muzzleM": [
+						0.5078125,
+						0.439453125,
+						0.09765625
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 8,
+					"reloadTicks": 10,
+					"damage": 150,
+					"armourBias": -0.3157894736842105,
+					"burst": 4,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -20,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_flint",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.7998046875,
+			"widthM": 0.7998046875,
+			"hp": 1700,
+			"armourIndex": 3,
+			"cost": 420,
+			"buildTicks": 55,
+			"speed": 40,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "FlintArm",
+					"muzzleM": [
+						0.2392578125,
+						0.17578125,
+						0
+					],
+					"recoilM": 0.10546875,
+					"rangeM": 4,
+					"reloadTicks": 62,
+					"damage": 380,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_flywheel",
+			"faction": 0,
+			"family": 4,
+			"archetype": "fixedWing",
+			"lengthM": 1.625,
+			"widthM": 0.875,
+			"hp": 1350,
+			"armourIndex": 1,
+			"cost": 900,
+			"buildTicks": 160,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 11,
+			"targetsAir": true,
+			"vtol": false,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "FlywheelBolt",
+					"muzzleM": [
+						0.25,
+						0,
+						-0.2080078125
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 6,
+					"reloadTicks": 14,
+					"damage": 180,
+					"armourBias": -0.4117647058823529,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_forge",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 4,
+			"hp": 5000,
+			"armourIndex": 4,
+			"cost": 1800,
+			"buildTicks": 270,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -50,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx",
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_gale",
+			"faction": 0,
+			"family": 3,
+			"archetype": "rotorcraft",
+			"lengthM": 1.625,
+			"widthM": 1.0625,
+			"hp": 3000,
+			"armourIndex": 3,
+			"cost": 1100,
+			"buildTicks": 190,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 9,
+			"targetsAir": true,
+			"vtol": true,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "GaleArm",
+					"muzzleM": [
+						0.4873046875,
+						0.2333984375,
+						0
+					],
+					"recoilM": 0.09765625,
+					"rangeM": 5,
+					"reloadTicks": 40,
+					"damage": 340,
+					"armourBias": 0.024390243902439025,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_girder",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.375,
+			"widthM": 1,
+			"hp": 2600,
+			"armourIndex": 1,
+			"cost": 600,
+			"buildTicks": 95,
+			"speed": 62,
+			"locomotor": "ground",
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 80,
+				"offsetM": [
+					0,
+					0.2998046875,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "GirderArm",
+					"muzzleM": [
+						0.412109375,
+						0.2197265625,
+						0
+					],
+					"recoilM": 0.06640625,
+					"rangeM": 3,
+					"reloadTicks": 22,
+					"damage": 180,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_grapnel",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2,
+			"widthM": 0.7998046875,
+			"hp": 3600,
+			"armourIndex": 1,
+			"cost": 900,
+			"buildTicks": 180,
+			"speed": 58,
+			"locomotor": "naval",
+			"visionM": 8,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 96,
+				"offsetM": [
+					0,
+					0.25,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "GrapnelGun",
+					"muzzleM": [
+						0.599609375,
+						0.25,
+						0
+					],
+					"recoilM": 0.0625,
+					"rangeM": 5,
+					"reloadTicks": 22,
+					"damage": 175,
+					"armourBias": -0.2972972972972973,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_hammer",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.75,
+			"widthM": 1.25,
+			"hp": 5200,
+			"armourIndex": 3,
+			"cost": 1400,
+			"buildTicks": 190,
+			"speed": 30,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 24,
+				"offsetM": [
+					0,
+					0.375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "HammerArm",
+					"muzzleM": [
+						0.5244140625,
+						0.2744140625,
+						0
+					],
+					"recoilM": 0.15625,
+					"rangeM": 5,
+					"reloadTicks": 70,
+					"damage": 640,
+					"armourBias": 0.2336448598130841,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_hawser",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.25,
+			"widthM": 0.900390625,
+			"hp": 4800,
+			"armourIndex": 1,
+			"cost": 1200,
+			"buildTicks": 220,
+			"speed": 50,
+			"locomotor": "naval",
+			"visionM": 12,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 80,
+				"offsetM": [
+					0,
+					0.283203125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "HawserRack",
+					"muzzleM": [
+						0.7001953125,
+						0.283203125,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 11,
+					"reloadTicks": 34,
+					"damage": 300,
+					"armourBias": -0.15,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_hearth",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 2,
+			"hp": 4400,
+			"armourIndex": 4,
+			"cost": 1100,
+			"buildTicks": 190,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 60,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_ingot",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.849609375,
+			"widthM": 0.849609375,
+			"hp": 2200,
+			"armourIndex": 3,
+			"cost": 560,
+			"buildTicks": 70,
+			"speed": 34,
+			"locomotor": "ground",
+			"visionM": 3,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "IngotArm",
+					"muzzleM": [
+						0.2548828125,
+						0.1865234375,
+						0
+					],
+					"recoilM": 0.08984375,
+					"rangeM": 3,
+					"reloadTicks": 40,
+					"damage": 300,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_kiln",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.4375,
+			"widthM": 0.8125,
+			"hp": 1900,
+			"armourIndex": 1,
+			"cost": 1100,
+			"buildTicks": 190,
+			"speed": 42,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "KilnArc",
+					"muzzleM": [
+						0.609375,
+						0.203125,
+						0
+					],
+					"recoilM": 0.125,
+					"rangeM": 9,
+					"reloadTicks": 72,
+					"damage": 480,
+					"armourBias": -0.38095238095238093,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_mandrel",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.5,
+			"widthM": 1.125,
+			"hp": 3200,
+			"armourIndex": 1,
+			"cost": 760,
+			"buildTicks": 120,
+			"speed": 52,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 60,
+				"offsetM": [
+					0,
+					0.3369140625,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "MandrelArm",
+					"muzzleM": [
+						0.44921875,
+						0.2470703125,
+						0
+					],
+					"recoilM": 0.08203125,
+					"rangeM": 4,
+					"reloadTicks": 30,
+					"damage": 260,
+					"armourBias": 0.024390243902439025,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_rack",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.3125,
+			"widthM": 0.9375,
+			"hp": 2100,
+			"armourIndex": 1,
+			"cost": 850,
+			"buildTicks": 155,
+			"speed": 56,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": true,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 40,
+				"offsetM": [
+					-0.291015625,
+					0.291015625,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "RackBurst",
+					"muzzleM": [
+						0.5,
+						0.1875,
+						0.125
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 6,
+					"reloadTicks": 12,
+					"damage": 130,
+					"armourBias": -0.35294117647058826,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_rammer",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.09375,
+			"widthM": 0.6875,
+			"hp": 1150,
+			"armourIndex": 1,
+			"cost": 420,
+			"buildTicks": 90,
+			"speed": 86,
+			"locomotor": "ground",
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "RammerSpikes",
+					"muzzleM": [
+						0.546875,
+						0.125,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 2.5,
+					"reloadTicks": 14,
+					"damage": 170,
+					"armourBias": -0.45454545454545453,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_ravelin",
+			"faction": 0,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 6600,
+			"armourIndex": 4,
+			"cost": 1400,
+			"buildTicks": 210,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 20,
+				"offsetM": [
+					0,
+					0.9599609375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "RavelinArm",
+					"muzzleM": [
+						0.83984375,
+						0.7197265625,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 5,
+					"reloadTicks": 63,
+					"damage": 712,
+					"armourBias": 0.06976744186046512,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_redoubt",
+			"faction": 0,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 4800,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 32,
+				"offsetM": [
+					0,
+					0.6396484375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "RedoubtArm",
+					"muzzleM": [
+						0.5595703125,
+						0.4794921875,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 6,
+					"reloadTicks": 54,
+					"damage": 600,
+					"armourBias": 0.06976744186046512,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_relay",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 3200,
+			"armourIndex": 4,
+			"cost": 1100,
+			"buildTicks": 190,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 12,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -30,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_retort",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 5600,
+			"armourIndex": 4,
+			"cost": 1500,
+			"buildTicks": 230,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -45,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx_",
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_rivet",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 900,
+			"armourIndex": 1,
+			"cost": 240,
+			"buildTicks": 70,
+			"speed": 72,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "RivetArc",
+					"muzzleM": [
+						0.375,
+						0.375,
+						0
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 4,
+					"reloadTicks": 18,
+					"damage": 110,
+					"armourBias": -0.21212121212121213,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_rivetworks",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 2,
+			"hp": 4600,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 225,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -20,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_skyhook",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 5200,
+			"armourIndex": 4,
+			"cost": 1600,
+			"buildTicks": 250,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -35,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx",
+				"xx_"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_slipway",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 4,
+			"widthM": 2,
+			"hp": 3600,
+			"armourIndex": 4,
+			"cost": 1500,
+			"buildTicks": 260,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -40,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxxx",
+				"xxxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_store",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 2,
+			"hp": 4200,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 160,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 5000,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_tapping",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 4,
+			"widthM": 3,
+			"hp": 7200,
+			"armourIndex": 4,
+			"cost": 1900,
+			"buildTicks": 280,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -25,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxxx",
+				"xxxx",
+				"xxxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_tender",
+			"faction": 0,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 1.875,
+			"widthM": 0.75,
+			"hp": 2800,
+			"armourIndex": 1,
+			"cost": 800,
+			"buildTicks": 170,
+			"speed": 66,
+			"locomotor": "naval",
+			"visionM": 10,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 104,
+				"offsetM": [
+					0,
+					0.224609375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "TenderArm",
+					"muzzleM": [
+						0.5625,
+						0.1640625,
+						0
+					],
+					"recoilM": 0.0625,
+					"rangeM": 7,
+					"reloadTicks": 20,
+					"damage": 160,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_thermal",
+			"faction": 0,
+			"family": 3,
+			"archetype": "rotorcraft",
+			"lengthM": 1.5,
+			"widthM": 1,
+			"hp": 2200,
+			"armourIndex": 1,
+			"cost": 800,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 8,
+			"targetsAir": true,
+			"vtol": true,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "ThermalArm",
+					"muzzleM": [
+						0.44921875,
+						0.2197265625,
+						0
+					],
+					"recoilM": 0.072265625,
+					"rangeM": 4,
+					"reloadTicks": 26,
+					"damage": 210,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_tongs",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.625,
+			"widthM": 1.1875,
+			"hp": 4100,
+			"armourIndex": 3,
+			"cost": 1050,
+			"buildTicks": 155,
+			"speed": 38,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 40,
+				"offsetM": [
+					0,
+					0.35546875,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "TongsArm",
+					"muzzleM": [
+						0.4873046875,
+						0.2607421875,
+						0
+					],
+					"recoilM": 0.119140625,
+					"rangeM": 6,
+					"reloadTicks": 52,
+					"damage": 450,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_trackyard",
+			"faction": 0,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 5,
+			"widthM": 2,
+			"hp": 6200,
+			"armourIndex": 4,
+			"cost": 1400,
+			"buildTicks": 230,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -30,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxxxx",
+				"xxxxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_tread",
+			"faction": 0,
+			"family": 0,
+			"archetype": "trackedVehicle",
+			"lengthM": 1.25,
+			"widthM": 1,
+			"hp": 1800,
+			"armourIndex": 3,
+			"cost": 700,
+			"buildTicks": 135,
+			"speed": 54,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 20,
+				"offsetM": [
+					0,
+					0.125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "ForgePulse",
+					"muzzleM": [
+						0.703125,
+						0.078125,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 5,
+					"reloadTicks": 28,
+					"damage": 260,
+					"armourBias": -0.05263157894736842,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_updraft",
+			"faction": 0,
+			"family": 3,
+			"archetype": "rotorcraft",
+			"lengthM": 1.8125,
+			"widthM": 1.1875,
+			"hp": 3800,
+			"armourIndex": 3,
+			"cost": 1600,
+			"buildTicks": 240,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 7,
+			"targetsAir": true,
+			"vtol": true,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "UpdraftArm",
+					"muzzleM": [
+						0.54296875,
+						0.2607421875,
+						0
+					],
+					"recoilM": 0.140625,
+					"rangeM": 6,
+					"reloadTicks": 64,
+					"damage": 560,
+					"armourBias": 0.2336448598130841,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "foundry_warden",
+			"faction": 0,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 2100,
+			"armourIndex": 3,
+			"cost": 650,
+			"buildTicks": 145,
+			"speed": 44,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "WardenMaul",
+					"muzzleM": [
+						0.458984375,
+						0.3125,
+						0
+					],
+					"recoilM": 0.125,
+					"rangeM": 2.5,
+					"reloadTicks": 48,
+					"damage": 520,
+					"armourBias": 0.16279069767441862,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_aerie",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 4,
+			"hp": 4700,
+			"armourIndex": 4,
+			"cost": 1600,
+			"buildTicks": 250,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -35,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx",
+				"x_",
+				"x_"
+			],
+			"plan": [
+				[
+					-0.625,
+					-2.125
+				],
+				[
+					0.5,
+					-1.9375
+				],
+				[
+					0.75,
+					0.4375
+				],
+				[
+					0.125,
+					2.125
+				],
+				[
+					-0.6875,
+					1.625
+				],
+				[
+					-0.75,
+					-0.5625
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_aperture",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 0.875,
+			"widthM": 1.5,
+			"hp": 1650,
+			"armourIndex": 1,
+			"cost": 1050,
+			"buildTicks": 180,
+			"speed": 50,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "ApertureRay",
+					"muzzleM": [
+						0.609375,
+						0.203125,
+						0
+					],
+					"recoilM": 0.125,
+					"rangeM": 10,
+					"reloadTicks": 64,
+					"damage": 420,
+					"armourBias": -0.4634146341463415,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.3125,
+					-0.75
+				],
+				[
+					0.28125,
+					-0.625
+				],
+				[
+					0.4375,
+					0.125
+				],
+				[
+					0.09375,
+					0.75
+				],
+				[
+					-0.34375,
+					0.5
+				],
+				[
+					-0.40625,
+					-0.1875
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_apex",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.6875,
+			"widthM": 1.0625,
+			"hp": 4600,
+			"armourIndex": 3,
+			"cost": 1500,
+			"buildTicks": 200,
+			"speed": 46,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 36,
+				"offsetM": [
+					0,
+					0.318359375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "ApexArm",
+					"muzzleM": [
+						0.505859375,
+						0.2333984375,
+						0
+					],
+					"recoilM": 0.146484375,
+					"rangeM": 6,
+					"reloadTicks": 66,
+					"damage": 590,
+					"armourBias": 0.2336448598130841,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_array",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 3,
+			"hp": 3200,
+			"armourIndex": 4,
+			"cost": 950,
+			"buildTicks": 170,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -15,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_beacon",
+			"faction": 1,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 3600,
+			"armourIndex": 4,
+			"cost": 800,
+			"buildTicks": 140,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 12,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 56,
+				"offsetM": [
+					0,
+					0.6396484375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "BeaconArm",
+					"muzzleM": [
+						0.5595703125,
+						0.4794921875,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 12,
+					"reloadTicks": 48,
+					"damage": 525,
+					"armourBias": 0.06976744186046512,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_caisson",
+			"faction": 1,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.625,
+			"widthM": 1.0498046875,
+			"hp": 6800,
+			"armourIndex": 3,
+			"cost": 1700,
+			"buildTicks": 270,
+			"speed": 38,
+			"locomotor": "naval",
+			"visionM": 8,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 48,
+				"offsetM": [
+					0,
+					0.34375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "CaissonMortar",
+					"muzzleM": [
+						0.9169921875,
+						0.34375,
+						0
+					],
+					"recoilM": 0.125,
+					"rangeM": 8,
+					"reloadTicks": 72,
+					"damage": 640,
+					"armourBias": 0.2558139534883721,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_cantilever",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 0.9375,
+			"widthM": 1.4375,
+			"hp": 1850,
+			"armourIndex": 1,
+			"cost": 830,
+			"buildTicks": 150,
+			"speed": 62,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": true,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 40,
+				"offsetM": [
+					0,
+					0.291015625,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "CantileverPulse",
+					"muzzleM": [
+						0.5,
+						0.1875,
+						0.125
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 6.5,
+					"reloadTicks": 11,
+					"damage": 120,
+					"armourBias": -0.3939393939393939,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.34375,
+					-0.6875
+				],
+				[
+					0.21875,
+					-0.71875
+				],
+				[
+					0.46875,
+					0.0625
+				],
+				[
+					0.15625,
+					0.71875
+				],
+				[
+					-0.3125,
+					0.5625
+				],
+				[
+					-0.4375,
+					-0.125
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_cell",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 3,
+			"hp": 3400,
+			"armourIndex": 4,
+			"cost": 700,
+			"buildTicks": 130,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 120,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"x_",
+				"xx"
+			],
+			"plan": [
+				[
+					-0.625,
+					-1
+				],
+				[
+					0.5,
+					-0.875
+				],
+				[
+					0.75,
+					0.25
+				],
+				[
+					0.125,
+					1
+				],
+				[
+					-0.625,
+					0.75
+				],
+				[
+					-0.75,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_chord",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.375,
+			"widthM": 0.900390625,
+			"hp": 2400,
+			"armourIndex": 1,
+			"cost": 680,
+			"buildTicks": 105,
+			"speed": 70,
+			"locomotor": "ground",
+			"visionM": 8,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 88,
+				"offsetM": [
+					0,
+					0.26953125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "ChordArm",
+					"muzzleM": [
+						0.412109375,
+						0.197265625,
+						0
+					],
+					"recoilM": 0.0703125,
+					"rangeM": 4,
+					"reloadTicks": 24,
+					"damage": 200,
+					"armourBias": -0.31868131868131866,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_chorus",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1750,
+			"armourIndex": 3,
+			"cost": 620,
+			"buildTicks": 135,
+			"speed": 52,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "ChorusWave",
+					"muzzleM": [
+						0.400390625,
+						0.375,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 4.5,
+					"reloadTicks": 30,
+					"damage": 260,
+					"armourBias": 0.17073170731707318,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_cipher",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.7001953125,
+			"widthM": 0.7001953125,
+			"hp": 900,
+			"armourIndex": 1,
+			"cost": 240,
+			"buildTicks": 32,
+			"speed": 76,
+			"locomotor": "ground",
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "CipherArm",
+					"muzzleM": [
+						0.2099609375,
+						0.1533203125,
+						0
+					],
+					"recoilM": 0.048828125,
+					"rangeM": 4,
+					"reloadTicks": 16,
+					"damage": 90,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_cirrus",
+			"faction": 1,
+			"family": 4,
+			"archetype": "fixedWing",
+			"lengthM": 1,
+			"widthM": 1.75,
+			"hp": 2600,
+			"armourIndex": 1,
+			"cost": 1300,
+			"buildTicks": 205,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 10,
+			"targetsAir": true,
+			"vtol": false,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "CirrusArm",
+					"muzzleM": [
+						0.2998046875,
+						0.384765625,
+						0
+					],
+					"recoilM": 0.109375,
+					"rangeM": 8,
+					"reloadTicks": 46,
+					"damage": 400,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_extruder",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 3,
+			"hp": 4200,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 170,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -20,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"x_",
+				"xx"
+			],
+			"plan": [
+				[
+					-0.625,
+					-1
+				],
+				[
+					0.5,
+					-0.875
+				],
+				[
+					0.75,
+					0.25
+				],
+				[
+					0.125,
+					1
+				],
+				[
+					-0.625,
+					0.75
+				],
+				[
+					-0.75,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_facet",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.5,
+			"widthM": 1,
+			"hp": 3400,
+			"armourIndex": 1,
+			"cost": 980,
+			"buildTicks": 145,
+			"speed": 58,
+			"locomotor": "ground",
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 64,
+				"offsetM": [
+					0,
+					0.2998046875,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "FacetArm",
+					"muzzleM": [
+						0.44921875,
+						0.2197265625,
+						0
+					],
+					"recoilM": 0.10546875,
+					"rangeM": 7,
+					"reloadTicks": 44,
+					"damage": 380,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_filament",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 1100,
+			"armourIndex": 1,
+			"cost": 360,
+			"buildTicks": 46,
+			"speed": 60,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "FilamentArm",
+					"muzzleM": [
+						0.224609375,
+						0.1640625,
+						0
+					],
+					"recoilM": 0.072265625,
+					"rangeM": 6,
+					"reloadTicks": 38,
+					"damage": 210,
+					"armourBias": -0.31868131868131866,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_frameyard",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 4,
+			"hp": 5600,
+			"armourIndex": 4,
+			"cost": 1400,
+			"buildTicks": 230,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -30,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xx_",
+				"xxx",
+				"xx_"
+			],
+			"plan": [
+				[
+					-1.125,
+					-2
+				],
+				[
+					0.875,
+					-1.8125
+				],
+				[
+					1.375,
+					0.5
+				],
+				[
+					0.25,
+					2
+				],
+				[
+					-1.25,
+					1.4375
+				],
+				[
+					-1.375,
+					-0.5
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_halyard",
+			"faction": 1,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.125,
+			"widthM": 0.849609375,
+			"hp": 3200,
+			"armourIndex": 1,
+			"cost": 1100,
+			"buildTicks": 200,
+			"speed": 64,
+			"locomotor": "naval",
+			"visionM": 13,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 112,
+				"offsetM": [
+					0,
+					0.2392578125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "HalyardRail",
+					"muzzleM": [
+						0.625,
+						0.2392578125,
+						0
+					],
+					"recoilM": 0.0517578125,
+					"rangeM": 13,
+					"reloadTicks": 28,
+					"damage": 245,
+					"armourBias": -0.07317073170731707,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_helix",
+			"faction": 1,
+			"family": 3,
+			"archetype": "rotorcraft",
+			"lengthM": 1,
+			"widthM": 1.625,
+			"hp": 2200,
+			"armourIndex": 3,
+			"cost": 1250,
+			"buildTicks": 200,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 10,
+			"targetsAir": true,
+			"vtol": true,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "HelixChord",
+					"muzzleM": [
+						0,
+						-0.0830078125,
+						-0.2080078125
+					],
+					"recoilM": 0.125,
+					"rangeM": 5.5,
+					"reloadTicks": 26,
+					"damage": 360,
+					"armourBias": 0.12195121951219512,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.375,
+					-0.8125
+				],
+				[
+					0.25,
+					-0.75
+				],
+				[
+					0.5,
+					0.09375
+				],
+				[
+					0.15625,
+					0.8125
+				],
+				[
+					-0.4375,
+					0.625
+				],
+				[
+					-0.5,
+					-0.1875
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_kite",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 0.75,
+			"widthM": 1.25,
+			"hp": 900,
+			"armourIndex": 1,
+			"cost": 400,
+			"buildTicks": 85,
+			"speed": 96,
+			"locomotor": "hover",
+			"visionM": 7,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "KiteDart",
+					"muzzleM": [
+						0.5,
+						0.125,
+						0
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 4,
+					"reloadTicks": 10,
+					"damage": 100,
+					"armourBias": -0.5,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.21875,
+					-0.625
+				],
+				[
+					0.25,
+					-0.5
+				],
+				[
+					0.375,
+					0.1875
+				],
+				[
+					0.0625,
+					0.625
+				],
+				[
+					-0.25,
+					0.4375
+				],
+				[
+					-0.34375,
+					-0.15625
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_lens",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 3,
+			"hp": 2900,
+			"armourIndex": 4,
+			"cost": 1100,
+			"buildTicks": 190,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 12,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -30,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"x_",
+				"xx"
+			],
+			"plan": [
+				[
+					-0.625,
+					-1
+				],
+				[
+					0.5,
+					-0.875
+				],
+				[
+					0.75,
+					0.25
+				],
+				[
+					0.125,
+					1
+				],
+				[
+					-0.625,
+					0.75
+				],
+				[
+					-0.75,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_mandala",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 4500,
+			"armourIndex": 4,
+			"cost": 1800,
+			"buildTicks": 270,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -50,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"x_x",
+				"xxx"
+			],
+			"plan": [
+				[
+					-1,
+					-1.625
+				],
+				[
+					0.9375,
+					-1.375
+				],
+				[
+					1.25,
+					0.4375
+				],
+				[
+					0.125,
+					1.625
+				],
+				[
+					-1.1875,
+					1.125
+				],
+				[
+					-1.25,
+					-0.5
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_meridian",
+			"faction": 1,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.875,
+			"widthM": 0.974609375,
+			"hp": 7600,
+			"armourIndex": 1,
+			"cost": 2200,
+			"buildTicks": 320,
+			"speed": 46,
+			"locomotor": "naval",
+			"visionM": 11,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 56,
+				"offsetM": [
+					0,
+					0.3662109375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "MeridianArc",
+					"muzzleM": [
+						1,
+						0.3662109375,
+						0
+					],
+					"recoilM": 0.1455078125,
+					"rangeM": 11,
+					"reloadTicks": 48,
+					"damage": 545,
+					"armourBias": 0.11627906976744186,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_nexus",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 8200,
+			"armourIndex": 4,
+			"cost": 2000,
+			"buildTicks": 300,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 50,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xx_",
+				"xxx"
+			],
+			"plan": [
+				[
+					-1.125,
+					-1.625
+				],
+				[
+					0.875,
+					-1.4375
+				],
+				[
+					1.25,
+					0.375
+				],
+				[
+					0.25,
+					1.625
+				],
+				[
+					-1.125,
+					1.1875
+				],
+				[
+					-1.3125,
+					-0.375
+				]
+			],
+			"techDepth": 0
+		},
+		{
+			"name": "lattice_node",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.875,
+			"widthM": 1.1875,
+			"hp": 5600,
+			"armourIndex": 3,
+			"cost": 1750,
+			"buildTicks": 235,
+			"speed": 34,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 28,
+				"offsetM": [
+					0,
+					0.35546875,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "NodeArm",
+					"muzzleM": [
+						0.5625,
+						0.2607421875,
+						0
+					],
+					"recoilM": 0.173828125,
+					"rangeM": 5,
+					"reloadTicks": 84,
+					"damage": 730,
+					"armourBias": 0.2336448598130841,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_obelisk",
+			"faction": 1,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 5400,
+			"armourIndex": 4,
+			"cost": 1250,
+			"buildTicks": 195,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 8,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 24,
+				"offsetM": [
+					0,
+					0.9599609375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "ObeliskArm",
+					"muzzleM": [
+						0.83984375,
+						0.7197265625,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 8,
+					"reloadTicks": 57,
+					"damage": 637,
+					"armourBias": 0.06976744186046512,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_phase",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 0.8125,
+			"widthM": 1.375,
+			"hp": 2300,
+			"armourIndex": 3,
+			"cost": 1200,
+			"buildTicks": 195,
+			"speed": 72,
+			"locomotor": "hover",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "PhaseShear",
+					"muzzleM": [
+						0.75,
+						0.1669921875,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 5.5,
+					"reloadTicks": 26,
+					"damage": 280,
+					"armourBias": 0.07317073170731707,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 20,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.25,
+					-0.6875
+				],
+				[
+					0.3125,
+					-0.53125
+				],
+				[
+					0.40625,
+					0.21875
+				],
+				[
+					0.03125,
+					0.6875
+				],
+				[
+					-0.375,
+					0.40625
+				],
+				[
+					-0.40625,
+					-0.21875
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_plenum",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 3,
+			"widthM": 3,
+			"hp": 6000,
+			"armourIndex": 4,
+			"cost": 1700,
+			"buildTicks": 260,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": 130,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxx",
+				"xxx",
+				"xxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_pontoon",
+			"faction": 1,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 2.5,
+			"widthM": 0.900390625,
+			"hp": 4400,
+			"armourIndex": 1,
+			"cost": 1450,
+			"buildTicks": 250,
+			"speed": 54,
+			"locomotor": "naval",
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 88,
+				"offsetM": [
+					0,
+					0.26953125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "PontoonArm",
+					"muzzleM": [
+						0.75,
+						0.197265625,
+						0
+					],
+					"recoilM": 0.123046875,
+					"rangeM": 12,
+					"reloadTicks": 52,
+					"damage": 470,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_prism",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 680,
+			"armourIndex": 1,
+			"cost": 400,
+			"buildTicks": 100,
+			"speed": 68,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "PrismThread",
+					"muzzleM": [
+						0,
+						0.5419921875,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 7,
+					"reloadTicks": 40,
+					"damage": 240,
+					"armourBias": -0.40540540540540543,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_prong",
+			"faction": 1,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 1,
+			"widthM": 2,
+			"hp": 3200,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 165,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": true,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 60,
+				"offsetM": [
+					0,
+					0.3125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "ProngPulse",
+					"muzzleM": [
+						0.5078125,
+						0.439453125,
+						0.09765625
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 8.5,
+					"reloadTicks": 9,
+					"damage": 135,
+					"armourBias": -0.3684210526315789,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -20,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"x",
+				"x"
+			],
+			"plan": [
+				[
+					-0.3125,
+					-1
+				],
+				[
+					0.3125,
+					-0.875
+				],
+				[
+					0.4375,
+					0.3125
+				],
+				[
+					0.03125,
+					1
+				],
+				[
+					-0.4375,
+					0.5625
+				],
+				[
+					-0.4375,
+					-0.3125
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_pylon",
+			"faction": 1,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 1,
+			"widthM": 2,
+			"hp": 3900,
+			"armourIndex": 4,
+			"cost": 800,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 120,
+				"offsetM": [
+					0,
+					0.109375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "PylonThread",
+					"muzzleM": [
+						0,
+						0.875,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 7.5,
+					"reloadTicks": 18,
+					"damage": 260,
+					"armourBias": -0.1282051282051282,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -15,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"x",
+				"x"
+			],
+			"plan": [
+				[
+					-0.375,
+					-1
+				],
+				[
+					0.25,
+					-0.875
+				],
+				[
+					0.5,
+					0.25
+				],
+				[
+					0.0625,
+					1
+				],
+				[
+					-0.4375,
+					0.625
+				],
+				[
+					-0.5,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_quay",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 4,
+			"widthM": 3,
+			"hp": 4200,
+			"armourIndex": 4,
+			"cost": 1500,
+			"buildTicks": 260,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -40,
+			"produces": 1,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxxx",
+				"xxxx",
+				"===="
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_quill",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.7001953125,
+			"widthM": 0.7001953125,
+			"hp": 850,
+			"armourIndex": 1,
+			"cost": 480,
+			"buildTicks": 58,
+			"speed": 64,
+			"locomotor": "ground",
+			"visionM": 11,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "QuillArm",
+					"muzzleM": [
+						0.2099609375,
+						0.1533203125,
+						0
+					],
+					"recoilM": 0.09765625,
+					"rangeM": 9,
+					"reloadTicks": 70,
+					"damage": 340,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_reservoir",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 3,
+			"hp": 3800,
+			"armourIndex": 4,
+			"cost": 900,
+			"buildTicks": 160,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 5000,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"x_",
+				"xx"
+			],
+			"plan": [
+				[
+					-0.625,
+					-1
+				],
+				[
+					0.5,
+					-0.875
+				],
+				[
+					0.75,
+					0.25
+				],
+				[
+					0.125,
+					1
+				],
+				[
+					-0.625,
+					0.75
+				],
+				[
+					-0.75,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_shard",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 750,
+			"armourIndex": 1,
+			"cost": 230,
+			"buildTicks": 65,
+			"speed": 80,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "CyanNeedle",
+					"muzzleM": [
+						0.375,
+						0.375,
+						0
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 4.5,
+					"reloadTicks": 14,
+					"damage": 85,
+					"armourBias": -0.25,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_skiff",
+			"faction": 1,
+			"family": 5,
+			"archetype": "unknown",
+			"lengthM": 1.75,
+			"widthM": 0.7001953125,
+			"hp": 2400,
+			"armourIndex": 1,
+			"cost": 700,
+			"buildTicks": 150,
+			"speed": 72,
+			"locomotor": "naval",
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 128,
+				"offsetM": [
+					0,
+					0.2080078125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "SkiffLance",
+					"muzzleM": [
+						0.5,
+						0.2080078125,
+						0
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 6,
+					"reloadTicks": 18,
+					"damage": 140,
+					"armourBias": -0.35135135135135137,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_skimmer",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1,
+			"widthM": 1.25,
+			"hp": 1400,
+			"armourIndex": 1,
+			"cost": 650,
+			"buildTicks": 125,
+			"speed": 68,
+			"locomotor": "hover",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 20,
+				"offsetM": [
+					0,
+					0.125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "HexLance",
+					"muzzleM": [
+						0.703125,
+						0.078125,
+						0
+					],
+					"recoilM": 0.0830078125,
+					"rangeM": 5.5,
+					"reloadTicks": 24,
+					"damage": 190,
+					"armourBias": -0.10526315789473684,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.28125,
+					-0.625
+				],
+				[
+					0.34375,
+					-0.5
+				],
+				[
+					0.46875,
+					0.1875
+				],
+				[
+					0.09375,
+					0.65625
+				],
+				[
+					-0.3125,
+					0.46875
+				],
+				[
+					-0.4375,
+					-0.125
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_spectra",
+			"faction": 1,
+			"family": 4,
+			"archetype": "fixedWing",
+			"lengthM": 0.7998046875,
+			"widthM": 1.4375,
+			"hp": 1400,
+			"armourIndex": 1,
+			"cost": 700,
+			"buildTicks": 130,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 14,
+			"targetsAir": true,
+			"vtol": false,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "SpectraArm",
+					"muzzleM": [
+						0.2392578125,
+						0.3154296875,
+						0
+					],
+					"recoilM": 0.056640625,
+					"rangeM": 5,
+					"reloadTicks": 18,
+					"damage": 130,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_spindle",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 2600,
+			"armourIndex": 4,
+			"cost": 700,
+			"buildTicks": 130,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -55,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_spire",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.25,
+			"widthM": 0.849609375,
+			"hp": 1900,
+			"armourIndex": 1,
+			"cost": 520,
+			"buildTicks": 85,
+			"speed": 84,
+			"locomotor": "ground",
+			"visionM": 10,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 104,
+				"offsetM": [
+					0,
+					0.2548828125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "SpireArm",
+					"muzzleM": [
+						0.375,
+						0.1865234375,
+						0
+					],
+					"recoilM": 0.05859375,
+					"rangeM": 5,
+					"reloadTicks": 18,
+					"damage": 140,
+					"armourBias": -0.31868131868131866,
+					"burst": 3,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_stilt",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1,
+			"widthM": 1.75,
+			"hp": 3500,
+			"armourIndex": 3,
+			"cost": 1500,
+			"buildTicks": 225,
+			"speed": 46,
+			"locomotor": "ground",
+			"visionM": 6,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 8,
+				"offsetM": [
+					0,
+					0.33203125,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "StiltBeam",
+					"muzzleM": [
+						0.87890625,
+						0,
+						0.17578125
+					],
+					"recoilM": 0.125,
+					"rangeM": 6,
+					"reloadTicks": 40,
+					"damage": 520,
+					"armourBias": 0.23809523809523808,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.375,
+					-0.875
+				],
+				[
+					0.3125,
+					-0.75
+				],
+				[
+					0.5,
+					0.125
+				],
+				[
+					0.1875,
+					0.875
+				],
+				[
+					-0.4375,
+					0.6875
+				],
+				[
+					-0.5,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_trellis",
+			"faction": 1,
+			"family": 7,
+			"archetype": "emplacement",
+			"lengthM": 2,
+			"widthM": 2,
+			"hp": 2800,
+			"armourIndex": 4,
+			"cost": 550,
+			"buildTicks": 100,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 72,
+				"offsetM": [
+					0,
+					0.6396484375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "TrellisArm",
+					"muzzleM": [
+						0.5595703125,
+						0.4794921875,
+						0
+					],
+					"recoilM": 0.09375,
+					"rangeM": 9,
+					"reloadTicks": 44,
+					"damage": 475,
+					"armourBias": 0.06976744186046512,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": -10,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xx",
+				"xx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_truss",
+			"faction": 1,
+			"family": 1,
+			"archetype": "wheeledVehicle",
+			"lengthM": 1.5625,
+			"widthM": 1.0625,
+			"hp": 3000,
+			"armourIndex": 1,
+			"cost": 1150,
+			"buildTicks": 165,
+			"speed": 50,
+			"locomotor": "ground",
+			"visionM": 9,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": {
+				"turnSpeed": 56,
+				"offsetM": [
+					0,
+					0.318359375,
+					0
+				]
+			},
+			"armaments": [
+				{
+					"weapon": "TrussArm",
+					"muzzleM": [
+						0.46875,
+						0.2333984375,
+						0
+					],
+					"recoilM": 0.08984375,
+					"rangeM": 9,
+					"reloadTicks": 40,
+					"damage": 300,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_vault",
+			"faction": 1,
+			"family": 6,
+			"archetype": "plant",
+			"lengthM": 4,
+			"widthM": 4,
+			"hp": 8000,
+			"armourIndex": 4,
+			"cost": 2100,
+			"buildTicks": 300,
+			"speed": null,
+			"locomotor": null,
+			"visionM": null,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [],
+			"powerAmount": -20,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": [
+				"xxxx",
+				"x__x",
+				"x__x",
+				"xxxx"
+			],
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_vector",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.7998046875,
+			"widthM": 0.7998046875,
+			"hp": 1500,
+			"armourIndex": 3,
+			"cost": 600,
+			"buildTicks": 72,
+			"speed": 52,
+			"locomotor": "ground",
+			"visionM": 5,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "VectorArm",
+					"muzzleM": [
+						0.2392578125,
+						0.17578125,
+						0
+					],
+					"recoilM": 0.11328125,
+					"rangeM": 5,
+					"reloadTicks": 56,
+					"damage": 420,
+					"armourBias": 0.024390243902439025,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_vesper",
+			"faction": 1,
+			"family": 4,
+			"archetype": "fixedWing",
+			"lengthM": 0.875,
+			"widthM": 1.75,
+			"hp": 1100,
+			"armourIndex": 1,
+			"cost": 850,
+			"buildTicks": 150,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 11,
+			"targetsAir": true,
+			"vtol": false,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "VesperRay",
+					"muzzleM": [
+						0.25,
+						0,
+						-0.2080078125
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 6.5,
+					"reloadTicks": 12,
+					"damage": 150,
+					"armourBias": -0.47058823529411764,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": [
+				[
+					-0.3125,
+					-0.875
+				],
+				[
+					0.28125,
+					-0.6875
+				],
+				[
+					0.4375,
+					0.1875
+				],
+				[
+					0.0625,
+					0.875
+				],
+				[
+					-0.34375,
+					0.59375
+				],
+				[
+					-0.40625,
+					-0.25
+				]
+			],
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_weaver",
+			"faction": 1,
+			"family": 2,
+			"archetype": "soldier",
+			"lengthM": 0.75,
+			"widthM": 0.75,
+			"hp": 980,
+			"armourIndex": 1,
+			"cost": 390,
+			"buildTicks": 95,
+			"speed": 74,
+			"locomotor": "ground",
+			"visionM": 4,
+			"targetsAir": false,
+			"vtol": null,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "WeaverFork",
+					"muzzleM": [
+						0.375,
+						0.375,
+						0.09375
+					],
+					"recoilM": 0.0419921875,
+					"rangeM": 5,
+					"reloadTicks": 16,
+					"damage": 115,
+					"armourBias": -0.1111111111111111,
+					"burst": 1,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		},
+		{
+			"name": "lattice_zephyr",
+			"faction": 1,
+			"family": 4,
+			"archetype": "fixedWing",
+			"lengthM": 0.900390625,
+			"widthM": 1.5625,
+			"hp": 1800,
+			"armourIndex": 1,
+			"cost": 900,
+			"buildTicks": 160,
+			"speed": null,
+			"locomotor": null,
+			"visionM": 12,
+			"targetsAir": true,
+			"vtol": false,
+			"turret": null,
+			"armaments": [
+				{
+					"weapon": "ZephyrArm",
+					"muzzleM": [
+						0.26953125,
+						0.34375,
+						0
+					],
+					"recoilM": 0.06640625,
+					"rangeM": 6,
+					"reloadTicks": 22,
+					"damage": 180,
+					"armourBias": -0.31868131868131866,
+					"burst": 2,
+					"projectile": "InstantHit"
+				}
+			],
+			"powerAmount": 0,
+			"produces": 0,
+			"storageCapacity": 0,
+			"refinery": false,
+			"cargo": 0,
+			"footprint": null,
+			"plan": null,
+			"techDepth": 1
+		}
+	]
+}

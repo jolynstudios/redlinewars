@@ -1,0 +1,2378 @@
+mpspawn:
+	Immobile:
+		OccupiesSpace: false
+
+^mobile_combatant:
+	Selectable:
+		Class: Infantry
+		Bounds: 768, 768
+		DecorationBounds: 768, 768
+		Voice:
+	Tooltip:
+		Name: actor-foundry-rivet-name
+	Mobile:
+		Locomotor: ground
+		Speed: 64
+		Cursor:
+		BlockedCursor:
+		Voice:
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 1000
+	Targetable:
+		TargetTypes: Ground
+	AttackFrontal:
+		Voice:
+	Armament:
+		Weapon: RivetArc
+		LocalOffset: 384,0,384
+		Recoil: 43
+		RecoilRecovery: 9
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Ground
+		ValidRelationships: Enemy
+	AttackMove:
+		AttackMoveCursor:
+		AttackMoveBlockedCursor:
+		AssaultMoveCursor:
+		AssaultMoveBlockedCursor:
+	RevealsShroud:
+		Range: 4c0
+	Passenger:
+		CargoType: Infantry
+		EnterCursor:
+		EnterBlockedCursor:
+	MustBeDestroyed:
+		RequiredForShortGame: true
+
+^air_combatant:
+	Selectable:
+		Class: Aircraft
+		Bounds: 1280, 1280
+		DecorationBounds: 1280, 1280
+		Voice:
+	Tooltip:
+		Name: actor-foundry-bellows-name
+	Aircraft:
+		Speed: 96
+		TurnSpeed: 512
+		CruiseAltitude: 3c0
+		LandableTerrainTypes: Clear, Resource
+		Cursor:
+		BlockedCursor:
+		EnterCursor:
+		EnterBlockedCursor:
+		Voice:
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 1400
+	Targetable:
+		TargetTypes: Air, Aircraft
+	Armor:
+		Type: LightFrame
+	AttackAircraft:
+		Voice:
+	Armament:
+		Weapon: BellowsSalvo
+		LocalOffset: 0,-213,-85, 0,213,-85
+		Recoil: 85
+		RecoilRecovery: 25
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Ground, Air
+		ValidRelationships: Enemy
+	AttackMove:
+		AttackMoveCursor:
+		AttackMoveBlockedCursor:
+		AssaultMoveCursor:
+		AssaultMoveBlockedCursor:
+	RevealsShroud:
+		Range: 10c0
+		Type: GroundPosition
+	MustBeDestroyed:
+		RequiredForShortGame: true
+
+^foundry_infantry_production:
+	Valued:
+		Cost: 250
+	Buildable:
+		Queue: FoundryInfantry
+		Prerequisites: foundry_rivetworks
+		BuildDuration: 80
+		Icon:
+		IconPalette:
+
+^lattice_infantry_production:
+	Valued:
+		Cost: 250
+	Buildable:
+		Queue: LatticeInfantry
+		Prerequisites: lattice_extruder
+		BuildDuration: 80
+		Icon:
+		IconPalette:
+
+^foundry_vehicle_production:
+	Valued:
+		Cost: 700
+	Buildable:
+		Queue: FoundryVehicle
+		Prerequisites: foundry_trackyard
+		BuildDuration: 140
+		Icon:
+		IconPalette:
+
+^lattice_vehicle_production:
+	Valued:
+		Cost: 650
+	Buildable:
+		Queue: LatticeVehicle
+		Prerequisites: lattice_frameyard
+		BuildDuration: 130
+		Icon:
+		IconPalette:
+
+^naval_combatant:
+	Selectable:
+		Class: Vessel
+		Bounds: 2048, 1024
+		DecorationBounds: 2048, 1024
+		Voice:
+	Tooltip:
+		Name: actor-foundry-bastion-name
+	Mobile:
+		Locomotor: naval
+		Speed: 44
+		Cursor:
+		BlockedCursor:
+		Voice:
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 6000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-512
+			BottomRight: 1024,512
+	Armor:
+		Type: HeavyFrame
+	Targetable:
+		TargetTypes: Ground, Water
+	Turreted:
+		Turret: primary
+		TurnSpeed: 56
+		Offset: 0,0,341
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: BastionGun
+		Turret: primary
+		LocalOffset: 896,0,341
+		Recoil: 128
+		RecoilRecovery: 20
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	AttackMove:
+		AttackMoveCursor:
+		AttackMoveBlockedCursor:
+		AssaultMoveCursor:
+		AssaultMoveBlockedCursor:
+	RevealsShroud:
+		Range: 9c0
+
+^foundry_naval_production:
+	Valued:
+		Cost: 1200
+	Buildable:
+		Queue: FoundryNaval
+		Prerequisites: foundry_slipway
+		BuildDuration: 220
+		Icon:
+		IconPalette:
+
+^lattice_naval_production:
+	Valued:
+		Cost: 1200
+	Buildable:
+		Queue: LatticeNaval
+		Prerequisites: lattice_quay
+		BuildDuration: 220
+		Icon:
+		IconPalette:
+
+^foundry_aircraft_production:
+	Valued:
+		Cost: 1000
+	Buildable:
+		Queue: FoundryAircraft
+		Prerequisites: foundry_skyhook
+		BuildDuration: 180
+		Icon:
+		IconPalette:
+
+^lattice_aircraft_production:
+	Valued:
+		Cost: 1000
+	Buildable:
+		Queue: LatticeAircraft
+		Prerequisites: lattice_aerie
+		BuildDuration: 180
+		Icon:
+		IconPalette:
+
+foundry_rivet:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-rivet-name
+	Mobile:
+		Speed: 72
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 900
+	HitShape:
+		Type: Circle
+			Radius: 320
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: RivetArc
+	Valued:
+		Cost: 240
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 70
+
+foundry_clamp:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-clamp-name
+	Mobile:
+		Speed: 58
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 1250
+	HitShape:
+		Type: Circle
+			Radius: 380
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: ClampDriver
+		LocalOffset: 0,0,555
+		Recoil: 85
+		RecoilRecovery: 25
+	Valued:
+		Cost: 360
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 95
+
+foundry_cinder:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-cinder-name
+	Mobile:
+		Speed: 64
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 1050
+	HitShape:
+		Type: Circle
+			Radius: 420
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: CinderFan
+		LocalOffset: 700,0,500
+		Recoil: 43
+		RecoilRecovery: 9
+	Valued:
+		Cost: 420
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 105
+
+foundry_warden:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-warden-name
+	Mobile:
+		Speed: 44
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 2100
+	HitShape:
+		Type: Circle
+			Radius: 470
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: WardenMaul
+		LocalOffset: 470,0,320
+		Recoil: 128
+		RecoilRecovery: 38
+	Valued:
+		Cost: 650
+	Buildable:
+		BuildPaletteOrder: 40
+		BuildDuration: 145
+
+foundry_tread:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1280, 1024
+		DecorationBounds: 1280, 1024
+	Tooltip:
+		Name: actor-foundry-tread-name
+	Mobile:
+		Speed: 54
+	BodyOrientation:
+		QuantizedFacings: 8
+	Turreted:
+		TurnSpeed: 20
+		Offset: 0,0,128
+	Health:
+		HP: 1800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -680, -400
+			BottomRight: 680, 400
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: ForgePulse
+		LocalOffset: 720,0,80
+		Recoil: 85
+		RecoilRecovery: 25
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 5c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 700
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 135
+
+foundry_rammer:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1120, 704
+		DecorationBounds: 1120, 704
+	Tooltip:
+		Name: actor-foundry-rammer-name
+	Mobile:
+		Speed: 86
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 1150
+	HitShape:
+		Type: Rectangle
+			TopLeft: -560, -320
+			BottomRight: 560, 320
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: RammerSpikes
+		LocalOffset: 560,0,128
+		Recoil: 85
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 7c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 420
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 90
+
+foundry_anvil:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1664, 1152
+		DecorationBounds: 1664, 1152
+	Tooltip:
+		Name: actor-foundry-anvil-name
+	Mobile:
+		Speed: 38
+	BodyOrientation:
+		QuantizedFacings: 8
+	Turreted:
+		TurnSpeed: 8
+		Offset: 0,0,340
+	Health:
+		HP: 4200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -832, -544
+			BottomRight: 832, 544
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: AnvilShell
+		LocalOffset: 900,180,0, 900,-180,0
+		Recoil: 171
+		RecoilRecovery: 30
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 6c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 1600
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 240
+
+foundry_kiln:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1472, 832
+		DecorationBounds: 1472, 832
+	Tooltip:
+		Name: actor-foundry-kiln-name
+	Mobile:
+		Speed: 42
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 1900
+	HitShape:
+		Type: Rectangle
+			TopLeft: -736, -384
+			BottomRight: 736, 384
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: KilnArc
+		LocalOffset: 624,0,208
+		Recoil: 128
+		RecoilRecovery: 38
+	RevealsShroud:
+		Range: 5c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 1100
+	Buildable:
+		BuildPaletteOrder: 40
+		BuildDuration: 190
+
+foundry_rack:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1344, 960
+		DecorationBounds: 1344, 960
+	Tooltip:
+		Name: actor-foundry-rack-name
+	Mobile:
+		Speed: 56
+	BodyOrientation:
+		QuantizedFacings: 8
+	Turreted:
+		TurnSpeed: 40
+		Offset: -298,0,298
+	Health:
+		HP: 2100
+	HitShape:
+		Type: Rectangle
+			TopLeft: -672, -448
+			BottomRight: 672, 448
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: RackBurst
+		LocalOffset: 512,128,192, 512,-128,192
+		Recoil: 43
+		RecoilRecovery: 9
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 6c0
+	Passenger:
+		CargoType: Vehicle
+	AutoTargetPriority:
+		ValidTargets: Ground, Air
+	Valued:
+		Cost: 850
+	Buildable:
+		BuildPaletteOrder: 50
+		BuildDuration: 155
+
+foundry_dragline:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1536, 896
+		DecorationBounds: 1536, 896
+	Tooltip:
+		Name: actor-foundry-dragline-name
+	Mobile:
+		Speed: 48
+	BodyOrientation:
+		QuantizedFacings: 8
+	Health:
+		HP: 2700
+	HitShape:
+		Type: Rectangle
+			TopLeft: -768, -416
+			BottomRight: 768, 416
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: DraglineHook
+		LocalOffset: 768,0,171
+		Recoil: 85
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 4c0
+	Passenger:
+		CargoType: Vehicle
+	Harvester:
+		Resources: Flux
+		BaleUnloadDelay: 1
+		SearchFromProcRadius: 15
+		SearchFromHarvesterRadius: 8
+		HarvestVoice:
+		HarvestCursor:
+	StoresResources:
+		Capacity: 20
+		Resources: Flux
+	DockClientManager:
+		EnterCursor:
+		EnterBlockedCursor:
+		Voice:
+	Valued:
+		Cost: 1250
+	Buildable:
+		BuildPaletteOrder: 60
+		BuildDuration: 205
+
+lattice_shard:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-shard-name
+	Mobile:
+		Speed: 80
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 750
+	HitShape:
+		Type: Circle
+			Radius: 260
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: CyanNeedle
+	Valued:
+		Cost: 230
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 65
+
+lattice_prism:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-prism-name
+	Mobile:
+		Speed: 68
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 680
+	HitShape:
+		Type: Circle
+			Radius: 300
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: PrismThread
+		LocalOffset: 0,0,555
+		Recoil: 85
+		RecoilRecovery: 25
+	Valued:
+		Cost: 400
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 100
+
+lattice_weaver:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-weaver-name
+	Mobile:
+		Speed: 74
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 980
+	HitShape:
+		Type: Circle
+			Radius: 360
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: WeaverFork
+		LocalOffset: 384,96,384, 384,-96,384
+		Recoil: 43
+		RecoilRecovery: 9
+	Valued:
+		Cost: 390
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 95
+
+lattice_chorus:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-chorus-name
+	Mobile:
+		Speed: 52
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 1750
+	HitShape:
+		Type: Circle
+			Radius: 410
+	Targetable:
+		TargetTypes: Ground, Infantry
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: ChorusWave
+		LocalOffset: 410,0,384
+		Recoil: 85
+		RecoilRecovery: 25
+	Valued:
+		Cost: 620
+	Buildable:
+		BuildPaletteOrder: 40
+		BuildDuration: 135
+
+lattice_skimmer:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1024, 1280
+		DecorationBounds: 1024, 1280
+	Tooltip:
+		Name: actor-lattice-skimmer-name
+	Mobile:
+		Locomotor: hover
+		Speed: 68
+	BodyOrientation:
+		QuantizedFacings: 16
+	Turreted:
+		TurnSpeed: 20
+		Offset: 0,0,128
+	Health:
+		HP: 1400
+	HitShape:
+		Type: Polygon
+			Points: -288,-640, 352,-512, 480,192, 96,672, -320,480, -448,-128
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: HexLance
+		LocalOffset: 720,0,80
+		Recoil: 85
+		RecoilRecovery: 25
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 5c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 650
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 125
+
+lattice_kite:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 768, 1280
+		DecorationBounds: 768, 1280
+	Tooltip:
+		Name: actor-lattice-kite-name
+	Mobile:
+		Locomotor: hover
+		Speed: 96
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 900
+	HitShape:
+		Type: Polygon
+			Points: -224,-640, 256,-512, 384,192, 64,640, -256,448, -352,-160
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: KiteDart
+		LocalOffset: 512,0,128
+		Recoil: 43
+		RecoilRecovery: 9
+	RevealsShroud:
+		Range: 7c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 400
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 85
+
+lattice_stilt:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 1024, 1792
+		DecorationBounds: 1024, 1792
+	Tooltip:
+		Name: actor-lattice-stilt-name
+	Mobile:
+		Speed: 46
+	BodyOrientation:
+		QuantizedFacings: 16
+	Turreted:
+		TurnSpeed: 8
+		Offset: 0,0,340
+	Health:
+		HP: 3500
+	HitShape:
+		Type: Polygon
+			Points: -384,-896, 320,-768, 512,128, 192,896, -448,704, -512,-256
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: StiltBeam
+		LocalOffset: 900,180,0, 900,-180,0
+		Recoil: 128
+		RecoilRecovery: 38
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 6c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 1500
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 225
+
+lattice_aperture:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 896, 1536
+		DecorationBounds: 896, 1536
+	Tooltip:
+		Name: actor-lattice-aperture-name
+	Mobile:
+		Speed: 50
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 1650
+	HitShape:
+		Type: Polygon
+			Points: -320,-768, 288,-640, 448,128, 96,768, -352,512, -416,-192
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: ApertureRay
+		LocalOffset: 624,0,208
+		Recoil: 128
+		RecoilRecovery: 38
+	RevealsShroud:
+		Range: 5c0
+	Passenger:
+		CargoType: Vehicle
+	Valued:
+		Cost: 1050
+	Buildable:
+		BuildPaletteOrder: 40
+		BuildDuration: 180
+
+lattice_cantilever:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 960, 1472
+		DecorationBounds: 960, 1472
+	Tooltip:
+		Name: actor-lattice-cantilever-name
+	Mobile:
+		Speed: 62
+	BodyOrientation:
+		QuantizedFacings: 16
+	Turreted:
+		TurnSpeed: 40
+		Offset: 0,0,298
+	Health:
+		HP: 1850
+	HitShape:
+		Type: Polygon
+			Points: -352,-704, 224,-736, 480,64, 160,736, -320,576, -448,-128
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: CantileverPulse
+		LocalOffset: 512,128,192, 512,-128,192
+		Recoil: 43
+		RecoilRecovery: 9
+	-AttackFrontal:
+	AttackTurreted:
+	RevealsShroud:
+		Range: 6c0
+	Passenger:
+		CargoType: Vehicle
+	AutoTargetPriority:
+		ValidTargets: Ground, Air
+	Valued:
+		Cost: 830
+	Buildable:
+		BuildPaletteOrder: 50
+		BuildDuration: 150
+
+lattice_phase:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Selectable:
+		Class: Vehicle
+		Bounds: 832, 1408
+		DecorationBounds: 832, 1408
+	Tooltip:
+		Name: actor-lattice-phase-name
+	Mobile:
+		Locomotor: hover
+		Speed: 72
+	BodyOrientation:
+		QuantizedFacings: 16
+	Health:
+		HP: 2300
+	HitShape:
+		Type: Polygon
+			Points: -256,-704, 320,-544, 416,224, 32,704, -384,416, -416,-224
+	Targetable:
+		TargetTypes: Ground, Vehicle
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: PhaseShear
+		LocalOffset: 768,0,171
+		Recoil: 85
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 4c0
+	Passenger:
+		CargoType: Vehicle
+	Harvester:
+		Resources: Flux
+		BaleUnloadDelay: 1
+		SearchFromProcRadius: 15
+		SearchFromHarvesterRadius: 8
+		HarvestVoice:
+		HarvestCursor:
+	StoresResources:
+		Capacity: 20
+		Resources: Flux
+	DockClientManager:
+		EnterCursor:
+		EnterBlockedCursor:
+		Voice:
+	Valued:
+		Cost: 1200
+	Buildable:
+		BuildPaletteOrder: 60
+		BuildDuration: 195
+
+foundry_bellows:
+	Inherits: ^air_combatant
+	Inherits@production: ^foundry_aircraft_production
+	Selectable:
+		Bounds: 1792, 1152
+		DecorationBounds: 1792, 1152
+	Tooltip:
+		Name: actor-foundry-bellows-name
+	Aircraft:
+		Speed: 76
+		TurnSpeed: 384
+		CanHover: true
+		CanSlide: true
+		VTOL: true
+		IdleSpeed: 0
+	Health:
+		HP: 2600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -896, -512
+			BottomRight: 896, 512
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: BellowsSalvo
+		LocalOffset: 0,-213,-85, 0,213,-85
+		Recoil: 85
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 1300
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 210
+
+foundry_flywheel:
+	Inherits: ^air_combatant
+	Inherits@production: ^foundry_aircraft_production
+	Selectable:
+		Bounds: 1664, 896
+		DecorationBounds: 1664, 896
+	Tooltip:
+		Name: actor-foundry-flywheel-name
+	Aircraft:
+		Speed: 132
+		TurnSpeed: 640
+		IdleSpeed: 84
+	Health:
+		HP: 1350
+	HitShape:
+		Type: Rectangle
+			TopLeft: -832, -384
+			BottomRight: 832, 384
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: FlywheelBolt
+		LocalOffset: 256,-213,0, 256,213,0
+		Recoil: 85
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 11c0
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 160
+
+lattice_vesper:
+	Inherits: ^air_combatant
+	Inherits@production: ^lattice_aircraft_production
+	Selectable:
+		Bounds: 896, 1792
+		DecorationBounds: 896, 1792
+	Tooltip:
+		Name: actor-lattice-vesper-name
+	Aircraft:
+		Speed: 148
+		TurnSpeed: 768
+		IdleSpeed: 96
+	Health:
+		HP: 1100
+	HitShape:
+		Type: Polygon
+			Points: -320,-896, 288,-704, 448,192, 64,896, -352,608, -416,-256
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: VesperRay
+		LocalOffset: 256,-213,0, 256,213,0
+		Recoil: 43
+		RecoilRecovery: 9
+	RevealsShroud:
+		Range: 11c0
+	Valued:
+		Cost: 850
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 150
+
+lattice_helix:
+	Inherits: ^air_combatant
+	Inherits@production: ^lattice_aircraft_production
+	Selectable:
+		Bounds: 1024, 1664
+		DecorationBounds: 1024, 1664
+	Tooltip:
+		Name: actor-lattice-helix-name
+	Aircraft:
+		Speed: 92
+		TurnSpeed: 640
+		CanHover: true
+		CanSlide: true
+		VTOL: true
+		IdleSpeed: 0
+	Health:
+		HP: 2200
+	HitShape:
+		Type: Polygon
+			Points: -384,-832, 256,-768, 512,96, 160,832, -448,640, -512,-192
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: HelixChord
+		LocalOffset: 0,-213,-85, 0,213,-85
+		Recoil: 128
+		RecoilRecovery: 38
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 1250
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 200
+
+foundry_bastion:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-bastion-name
+	Selectable:
+		Bounds: 3072, 1152
+		DecorationBounds: 3072, 1152
+	Mobile:
+		Speed: 34
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-576
+			BottomRight: 1536,576
+	Health:
+		HP: 9600
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 40
+		Offset: 0,0,410
+	Armament:
+		Weapon: BastionGun
+		LocalOffset: 1075,0,410
+		Recoil: 171
+		RecoilRecovery: 16
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 2400
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 340
+
+foundry_grapnel:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-grapnel-name
+	Selectable:
+		Bounds: 2048, 819
+		DecorationBounds: 2048, 819
+	Mobile:
+		Speed: 58
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-409
+			BottomRight: 1024,409
+	Health:
+		HP: 3600
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 96
+		Offset: 0,0,256
+	Armament:
+		Weapon: GrapnelGun
+		LocalOffset: 614,0,256
+		Recoil: 64
+		RecoilRecovery: 28
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 180
+
+foundry_capstan:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-capstan-name
+	Selectable:
+		Bounds: 2560, 1024
+		DecorationBounds: 2560, 1024
+	Mobile:
+		Speed: 42
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1280,-512
+			BottomRight: 1280,512
+	Health:
+		HP: 6400
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 64
+		Offset: 0,0,333
+	Armament:
+		Weapon: CapstanBattery
+		LocalOffset: 870,0,333, 870,0,-333
+		Recoil: 107
+		RecoilRecovery: 22
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 1600
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 260
+
+foundry_hawser:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-hawser-name
+	Selectable:
+		Bounds: 2304, 922
+		DecorationBounds: 2304, 922
+	Mobile:
+		Speed: 50
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1152,-461
+			BottomRight: 1152,461
+	Health:
+		HP: 4800
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 80
+		Offset: 0,0,290
+	Armament:
+		Weapon: HawserRack
+		LocalOffset: 717,0,290
+		Recoil: 85
+		RecoilRecovery: 24
+	RevealsShroud:
+		Range: 12c0
+	Valued:
+		Cost: 1200
+	Buildable:
+		BuildPaletteOrder: 15
+		BuildDuration: 220
+
+lattice_meridian:
+	Inherits: ^naval_combatant
+	Inherits@production: ^lattice_naval_production
+	Tooltip:
+		Name: actor-lattice-meridian-name
+	Selectable:
+		Bounds: 2944, 998
+		DecorationBounds: 2944, 998
+	Mobile:
+		Speed: 46
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1472,-499
+			BottomRight: 1472,499
+	Health:
+		HP: 7600
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 56
+		Offset: 0,0,375
+	Armament:
+		Weapon: MeridianArc
+		LocalOffset: 1024,0,375
+		Recoil: 149
+		RecoilRecovery: 18
+	RevealsShroud:
+		Range: 11c0
+	Valued:
+		Cost: 2200
+	Buildable:
+		BuildPaletteOrder: 30
+		BuildDuration: 320
+
+lattice_skiff:
+	Inherits: ^naval_combatant
+	Inherits@production: ^lattice_naval_production
+	Tooltip:
+		Name: actor-lattice-skiff-name
+	Selectable:
+		Bounds: 1792, 717
+		DecorationBounds: 1792, 717
+	Mobile:
+		Speed: 72
+	HitShape:
+		Type: Rectangle
+			TopLeft: -896,-358
+			BottomRight: 896,358
+	Health:
+		HP: 2400
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 128
+		Offset: 0,0,213
+	Armament:
+		Weapon: SkiffLance
+		LocalOffset: 512,0,213
+		Recoil: 43
+		RecoilRecovery: 32
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 700
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 150
+
+lattice_caisson:
+	Inherits: ^naval_combatant
+	Inherits@production: ^lattice_naval_production
+	Tooltip:
+		Name: actor-lattice-caisson-name
+	Selectable:
+		Bounds: 2688, 1075
+		DecorationBounds: 2688, 1075
+	Mobile:
+		Speed: 38
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1344,-537
+			BottomRight: 1344,537
+	Health:
+		HP: 6800
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 48
+		Offset: 0,0,352
+	Armament:
+		Weapon: CaissonMortar
+		LocalOffset: 939,0,352
+		Recoil: 128
+		RecoilRecovery: 20
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 1700
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 270
+
+lattice_halyard:
+	Inherits: ^naval_combatant
+	Inherits@production: ^lattice_naval_production
+	Tooltip:
+		Name: actor-lattice-halyard-name
+	Selectable:
+		Bounds: 2176, 870
+		DecorationBounds: 2176, 870
+	Mobile:
+		Speed: 64
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1088,-435
+			BottomRight: 1088,435
+	Health:
+		HP: 3200
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 112
+		Offset: 0,0,245
+	Armament:
+		Weapon: HalyardRail
+		LocalOffset: 640,0,245, 640,0,-245
+		Recoil: 53
+		RecoilRecovery: 30
+	RevealsShroud:
+		Range: 13c0
+	Valued:
+		Cost: 1100
+	Buildable:
+		BuildPaletteOrder: 15
+		BuildDuration: 200
+
+
+foundry_bolt:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-bolt-name
+	Selectable:
+		Bounds: 768, 768
+		DecorationBounds: 768, 768
+	Mobile:
+		Speed: 56
+	Health:
+		HP: 1250
+	HitShape:
+		Type: Rectangle
+			TopLeft: -384,-384
+			BottomRight: 384,384
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: BoltArm
+		LocalOffset: 230,0,168
+		Recoil: 54
+		RecoilRecovery: 32
+	RevealsShroud:
+		Range: 4c0
+	Valued:
+		Cost: 180
+	Buildable:
+		BuildPaletteOrder: 1
+		BuildDuration: 30
+
+foundry_ember:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-ember-name
+	Selectable:
+		Bounds: 768, 768
+		DecorationBounds: 768, 768
+	Mobile:
+		Speed: 48
+	Health:
+		HP: 1000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -384,-384
+			BottomRight: 384,384
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: EmberArm
+		LocalOffset: 230,0,168
+		Recoil: 80
+		RecoilRecovery: 28
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 320
+	Buildable:
+		BuildPaletteOrder: 3
+		BuildDuration: 44
+
+foundry_flint:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-flint-name
+	Selectable:
+		Bounds: 819, 819
+		DecorationBounds: 819, 819
+	Mobile:
+		Speed: 40
+	Health:
+		HP: 1700
+	HitShape:
+		Type: Rectangle
+			TopLeft: -409,-409
+			BottomRight: 409,409
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: FlintArm
+		LocalOffset: 245,0,180
+		Recoil: 108
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 4c0
+	Valued:
+		Cost: 420
+	Buildable:
+		BuildPaletteOrder: 4
+		BuildDuration: 55
+
+foundry_ingot:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_infantry_production
+	Tooltip:
+		Name: actor-foundry-ingot-name
+	Selectable:
+		Bounds: 870, 870
+		DecorationBounds: 870, 870
+	Mobile:
+		Speed: 34
+	Health:
+		HP: 2200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -435,-435
+			BottomRight: 435,435
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: IngotArm
+		LocalOffset: 261,0,191
+		Recoil: 92
+		RecoilRecovery: 27
+	RevealsShroud:
+		Range: 3c0
+	Valued:
+		Cost: 560
+	Buildable:
+		BuildPaletteOrder: 5
+		BuildDuration: 70
+
+lattice_cipher:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-cipher-name
+	Selectable:
+		Bounds: 717, 717
+		DecorationBounds: 717, 717
+	Mobile:
+		Speed: 76
+	Health:
+		HP: 900
+	HitShape:
+		Type: Rectangle
+			TopLeft: -358,-358
+			BottomRight: 358,358
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: CipherArm
+		LocalOffset: 215,0,157
+		Recoil: 50
+		RecoilRecovery: 32
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 240
+	Buildable:
+		BuildPaletteOrder: 2
+		BuildDuration: 32
+
+lattice_filament:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-filament-name
+	Selectable:
+		Bounds: 768, 768
+		DecorationBounds: 768, 768
+	Mobile:
+		Speed: 60
+	Health:
+		HP: 1100
+	HitShape:
+		Type: Rectangle
+			TopLeft: -384,-384
+			BottomRight: 384,384
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: FilamentArm
+		LocalOffset: 230,0,168
+		Recoil: 74
+		RecoilRecovery: 29
+	RevealsShroud:
+		Range: 6c0
+	Valued:
+		Cost: 360
+	Buildable:
+		BuildPaletteOrder: 3
+		BuildDuration: 46
+
+lattice_quill:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-quill-name
+	Selectable:
+		Bounds: 717, 717
+		DecorationBounds: 717, 717
+	Mobile:
+		Speed: 64
+	Health:
+		HP: 850
+	HitShape:
+		Type: Rectangle
+			TopLeft: -358,-358
+			BottomRight: 358,358
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: QuillArm
+		LocalOffset: 215,0,157
+		Recoil: 100
+		RecoilRecovery: 26
+	RevealsShroud:
+		Range: 11c0
+	Valued:
+		Cost: 480
+	Buildable:
+		BuildPaletteOrder: 4
+		BuildDuration: 58
+
+lattice_vector:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_infantry_production
+	Tooltip:
+		Name: actor-lattice-vector-name
+	Selectable:
+		Bounds: 819, 819
+		DecorationBounds: 819, 819
+	Mobile:
+		Speed: 52
+	Health:
+		HP: 1500
+	HitShape:
+		Type: Rectangle
+			TopLeft: -409,-409
+			BottomRight: 409,409
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: VectorArm
+		LocalOffset: 245,0,180
+		Recoil: 116
+		RecoilRecovery: 24
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 600
+	Buildable:
+		BuildPaletteOrder: 6
+		BuildDuration: 72
+
+foundry_hammer:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-hammer-name
+	Selectable:
+		Bounds: 1792, 1280
+		DecorationBounds: 1792, 1280
+	Mobile:
+		Speed: 30
+	Health:
+		HP: 5200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -896,-640
+			BottomRight: 896,640
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 24
+		Offset: 0,0,384
+	Armament:
+		Weapon: HammerArm
+		Turret: primary
+		LocalOffset: 537,0,281
+		Recoil: 160
+		RecoilRecovery: 18
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 1400
+	Buildable:
+		BuildPaletteOrder: 14
+		BuildDuration: 190
+
+foundry_mandrel:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-mandrel-name
+	Selectable:
+		Bounds: 1536, 1152
+		DecorationBounds: 1536, 1152
+	Mobile:
+		Speed: 52
+	Health:
+		HP: 3200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -768,-576
+			BottomRight: 768,576
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 60
+		Offset: 0,0,345
+	Armament:
+		Weapon: MandrelArm
+		Turret: primary
+		LocalOffset: 460,0,253
+		Recoil: 84
+		RecoilRecovery: 28
+	RevealsShroud:
+		Range: 6c0
+	Valued:
+		Cost: 760
+	Buildable:
+		BuildPaletteOrder: 7
+		BuildDuration: 120
+
+foundry_tongs:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-tongs-name
+	Selectable:
+		Bounds: 1664, 1216
+		DecorationBounds: 1664, 1216
+	Mobile:
+		Speed: 38
+	Health:
+		HP: 4100
+	HitShape:
+		Type: Rectangle
+			TopLeft: -832,-608
+			BottomRight: 832,608
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 40
+		Offset: 0,0,364
+	Armament:
+		Weapon: TongsArm
+		Turret: primary
+		LocalOffset: 499,0,267
+		Recoil: 122
+		RecoilRecovery: 23
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 1050
+	Buildable:
+		BuildPaletteOrder: 10
+		BuildDuration: 155
+
+foundry_bollard:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-bollard-name
+	Selectable:
+		Bounds: 2048, 1408
+		DecorationBounds: 2048, 1408
+	Mobile:
+		Speed: 24
+	Health:
+		HP: 6400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-704
+			BottomRight: 1024,704
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 16
+		Offset: 0,0,422
+	Armament:
+		Weapon: BollardArm
+		Turret: primary
+		LocalOffset: 614,0,309
+		Recoil: 196
+		RecoilRecovery: 14
+	RevealsShroud:
+		Range: 4c0
+	Valued:
+		Cost: 1900
+	Buildable:
+		BuildPaletteOrder: 19
+		BuildDuration: 250
+
+foundry_girder:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-girder-name
+	Selectable:
+		Bounds: 1408, 1024
+		DecorationBounds: 1408, 1024
+	Mobile:
+		Speed: 62
+	Health:
+		HP: 2600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -704,-512
+			BottomRight: 704,512
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 80
+		Offset: 0,0,307
+	Armament:
+		Weapon: GirderArm
+		Turret: primary
+		LocalOffset: 422,0,225
+		Recoil: 68
+		RecoilRecovery: 30
+	RevealsShroud:
+		Range: 7c0
+	Valued:
+		Cost: 600
+	Buildable:
+		BuildPaletteOrder: 6
+		BuildDuration: 95
+
+foundry_cleat:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^foundry_vehicle_production
+	Tooltip:
+		Name: actor-foundry-cleat-name
+	Selectable:
+		Bounds: 1600, 1152
+		DecorationBounds: 1600, 1152
+	Mobile:
+		Speed: 44
+	Health:
+		HP: 3800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -800,-576
+			BottomRight: 800,576
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 48
+		Offset: 0,0,345
+	Armament:
+		Weapon: CleatArm
+		Turret: primary
+		LocalOffset: 480,0,253
+		Recoil: 98
+		RecoilRecovery: 26
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 9
+		BuildDuration: 135
+
+lattice_apex:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-apex-name
+	Selectable:
+		Bounds: 1728, 1088
+		DecorationBounds: 1728, 1088
+	Mobile:
+		Speed: 46
+	Health:
+		HP: 4600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -864,-544
+			BottomRight: 864,544
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 36
+		Offset: 0,0,326
+	Armament:
+		Weapon: ApexArm
+		Turret: primary
+		LocalOffset: 518,0,239
+		Recoil: 150
+		RecoilRecovery: 20
+	RevealsShroud:
+		Range: 6c0
+	Valued:
+		Cost: 1500
+	Buildable:
+		BuildPaletteOrder: 15
+		BuildDuration: 200
+
+lattice_chord:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-chord-name
+	Selectable:
+		Bounds: 1408, 922
+		DecorationBounds: 1408, 922
+	Mobile:
+		Speed: 70
+	Health:
+		HP: 2400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -704,-461
+			BottomRight: 704,461
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 88
+		Offset: 0,0,276
+	Armament:
+		Weapon: ChordArm
+		Turret: primary
+		LocalOffset: 422,0,202
+		Recoil: 72
+		RecoilRecovery: 29
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 680
+	Buildable:
+		BuildPaletteOrder: 6
+		BuildDuration: 105
+
+lattice_facet:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-facet-name
+	Selectable:
+		Bounds: 1536, 1024
+		DecorationBounds: 1536, 1024
+	Mobile:
+		Speed: 58
+	Health:
+		HP: 3400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -768,-512
+			BottomRight: 768,512
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 64
+		Offset: 0,0,307
+	Armament:
+		Weapon: FacetArm
+		Turret: primary
+		LocalOffset: 460,0,225
+		Recoil: 108
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 7c0
+	Valued:
+		Cost: 980
+	Buildable:
+		BuildPaletteOrder: 9
+		BuildDuration: 145
+
+lattice_node:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-node-name
+	Selectable:
+		Bounds: 1920, 1216
+		DecorationBounds: 1920, 1216
+	Mobile:
+		Speed: 34
+	Health:
+		HP: 5600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -960,-608
+			BottomRight: 960,608
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 28
+		Offset: 0,0,364
+	Armament:
+		Weapon: NodeArm
+		Turret: primary
+		LocalOffset: 576,0,267
+		Recoil: 178
+		RecoilRecovery: 16
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 1750
+	Buildable:
+		BuildPaletteOrder: 17
+		BuildDuration: 235
+
+lattice_spire:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-spire-name
+	Selectable:
+		Bounds: 1280, 870
+		DecorationBounds: 1280, 870
+	Mobile:
+		Speed: 84
+	Health:
+		HP: 1900
+	HitShape:
+		Type: Rectangle
+			TopLeft: -640,-435
+			BottomRight: 640,435
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 104
+		Offset: 0,0,261
+	Armament:
+		Weapon: SpireArm
+		Turret: primary
+		LocalOffset: 384,0,191
+		Recoil: 60
+		RecoilRecovery: 31
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 520
+	Buildable:
+		BuildPaletteOrder: 5
+		BuildDuration: 85
+
+lattice_truss:
+	Inherits: ^mobile_combatant
+	Inherits@production: ^lattice_vehicle_production
+	Tooltip:
+		Name: actor-lattice-truss-name
+	Selectable:
+		Bounds: 1600, 1088
+		DecorationBounds: 1600, 1088
+	Mobile:
+		Speed: 50
+	Health:
+		HP: 3000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -800,-544
+			BottomRight: 800,544
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 56
+		Offset: 0,0,326
+	Armament:
+		Weapon: TrussArm
+		Turret: primary
+		LocalOffset: 480,0,239
+		Recoil: 92
+		RecoilRecovery: 27
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 1150
+	Buildable:
+		BuildPaletteOrder: 11
+		BuildDuration: 165
+
+foundry_gale:
+	Inherits: ^air_combatant
+	Inherits@production: ^foundry_aircraft_production
+	Tooltip:
+		Name: actor-foundry-gale-name
+	Selectable:
+		Bounds: 1664, 1088
+		DecorationBounds: 1664, 1088
+	Aircraft:
+		Speed: 70
+		TurnSpeed: 256
+		CanHover: true
+		CanSlide: true
+		VTOL: true
+		IdleSpeed: 0
+	Health:
+		HP: 3000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -832,-544
+			BottomRight: 832,544
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: GaleArm
+		LocalOffset: 499,0,239
+		Recoil: 100
+		RecoilRecovery: 26
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 1100
+	Buildable:
+		BuildPaletteOrder: 11
+		BuildDuration: 190
+
+foundry_thermal:
+	Inherits: ^air_combatant
+	Inherits@production: ^foundry_aircraft_production
+	Tooltip:
+		Name: actor-foundry-thermal-name
+	Selectable:
+		Bounds: 1536, 1024
+		DecorationBounds: 1536, 1024
+	Aircraft:
+		Speed: 88
+		TurnSpeed: 256
+		CanHover: true
+		CanSlide: true
+		VTOL: true
+		IdleSpeed: 0
+	Health:
+		HP: 2200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -768,-512
+			BottomRight: 768,512
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: ThermalArm
+		LocalOffset: 460,0,225
+		Recoil: 74
+		RecoilRecovery: 29
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 800
+	Buildable:
+		BuildPaletteOrder: 8
+		BuildDuration: 150
+
+foundry_updraft:
+	Inherits: ^air_combatant
+	Inherits@production: ^foundry_aircraft_production
+	Tooltip:
+		Name: actor-foundry-updraft-name
+	Selectable:
+		Bounds: 1856, 1216
+		DecorationBounds: 1856, 1216
+	Aircraft:
+		Speed: 60
+		TurnSpeed: 256
+		CanHover: true
+		CanSlide: true
+		VTOL: true
+		IdleSpeed: 0
+	Health:
+		HP: 3800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -928,-608
+			BottomRight: 928,608
+	Armor:
+		Type: HeavyFrame
+	Armament:
+		Weapon: UpdraftArm
+		LocalOffset: 556,0,267
+		Recoil: 144
+		RecoilRecovery: 20
+	RevealsShroud:
+		Range: 7c0
+	Valued:
+		Cost: 1600
+	Buildable:
+		BuildPaletteOrder: 16
+		BuildDuration: 240
+
+lattice_zephyr:
+	Inherits: ^air_combatant
+	Inherits@production: ^lattice_aircraft_production
+	Tooltip:
+		Name: actor-lattice-zephyr-name
+	Selectable:
+		Bounds: 922, 1600
+		DecorationBounds: 922, 1600
+	Aircraft:
+		Speed: 110
+		TurnSpeed: 256
+		CanHover: false
+		CanSlide: true
+		VTOL: false
+		IdleSpeed: 0
+	Health:
+		HP: 1800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -461,-800
+			BottomRight: 461,800
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: ZephyrArm
+		LocalOffset: 276,0,352
+		Recoil: 68
+		RecoilRecovery: 30
+	RevealsShroud:
+		Range: 12c0
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 9
+		BuildDuration: 160
+
+lattice_cirrus:
+	Inherits: ^air_combatant
+	Inherits@production: ^lattice_aircraft_production
+	Tooltip:
+		Name: actor-lattice-cirrus-name
+	Selectable:
+		Bounds: 1024, 1792
+		DecorationBounds: 1024, 1792
+	Aircraft:
+		Speed: 94
+		TurnSpeed: 256
+		CanHover: false
+		CanSlide: true
+		VTOL: false
+		IdleSpeed: 0
+	Health:
+		HP: 2600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -512,-896
+			BottomRight: 512,896
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: CirrusArm
+		LocalOffset: 307,0,394
+		Recoil: 112
+		RecoilRecovery: 24
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 1300
+	Buildable:
+		BuildPaletteOrder: 13
+		BuildDuration: 205
+
+lattice_spectra:
+	Inherits: ^air_combatant
+	Inherits@production: ^lattice_aircraft_production
+	Tooltip:
+		Name: actor-lattice-spectra-name
+	Selectable:
+		Bounds: 819, 1472
+		DecorationBounds: 819, 1472
+	Aircraft:
+		Speed: 124
+		TurnSpeed: 256
+		CanHover: false
+		CanSlide: true
+		VTOL: false
+		IdleSpeed: 0
+	Health:
+		HP: 1400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -409,-736
+			BottomRight: 409,736
+	Armor:
+		Type: LightFrame
+	Armament:
+		Weapon: SpectraArm
+		LocalOffset: 245,0,323
+		Recoil: 58
+		RecoilRecovery: 31
+	RevealsShroud:
+		Range: 14c0
+	Valued:
+		Cost: 700
+	Buildable:
+		BuildPaletteOrder: 7
+		BuildDuration: 130
+
+foundry_dredger:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-dredger-name
+	Selectable:
+		Bounds: 2432, 973
+		DecorationBounds: 2432, 973
+	Mobile:
+		Speed: 40
+	Health:
+		HP: 5200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1216,-486
+			BottomRight: 1216,486
+	Armor:
+		Type: HeavyFrame
+	Turreted:
+		TurnSpeed: 72
+		Offset: 0,0,291
+	Armament:
+		Weapon: DredgerArm
+		Turret: primary
+		LocalOffset: 729,0,214
+		Recoil: 108
+		RecoilRecovery: 25
+	RevealsShroud:
+		Range: 7c0
+	Valued:
+		Cost: 1300
+	Buildable:
+		BuildPaletteOrder: 13
+		BuildDuration: 240
+
+foundry_tender:
+	Inherits: ^naval_combatant
+	Inherits@production: ^foundry_naval_production
+	Tooltip:
+		Name: actor-foundry-tender-name
+	Selectable:
+		Bounds: 1920, 768
+		DecorationBounds: 1920, 768
+	Mobile:
+		Speed: 66
+	Health:
+		HP: 2800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -960,-384
+			BottomRight: 960,384
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 104
+		Offset: 0,0,230
+	Armament:
+		Weapon: TenderArm
+		Turret: primary
+		LocalOffset: 576,0,168
+		Recoil: 64
+		RecoilRecovery: 30
+	RevealsShroud:
+		Range: 10c0
+	Valued:
+		Cost: 800
+	Buildable:
+		BuildPaletteOrder: 8
+		BuildDuration: 170
+
+lattice_pontoon:
+	Inherits: ^naval_combatant
+	Inherits@production: ^lattice_naval_production
+	Tooltip:
+		Name: actor-lattice-pontoon-name
+	Selectable:
+		Bounds: 2560, 922
+		DecorationBounds: 2560, 922
+	Mobile:
+		Speed: 54
+	Health:
+		HP: 4400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1280,-461
+			BottomRight: 1280,461
+	Armor:
+		Type: LightFrame
+	Turreted:
+		TurnSpeed: 88
+		Offset: 0,0,276
+	Armament:
+		Weapon: PontoonArm
+		Turret: primary
+		LocalOffset: 768,0,202
+		Recoil: 126
+		RecoilRecovery: 23
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 1450
+	Buildable:
+		BuildPaletteOrder: 14
+		BuildDuration: 250

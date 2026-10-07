@@ -1,0 +1,112 @@
+OpenRA Browser third-party notices
+==================================
+
+This distribution includes OpenRA, licensed under GNU GPL version 3 or (at
+your option) any later version. See COPYING. This inventory is checked during
+packaging against the non-Microsoft runtime assemblies in
+_framework/blazor.boot.json and OpenRA.Browser/obj/project.assets.json; an
+unlisted runtime package makes packaging fail.
+
+Permissive and public-domain packages
+-------------------------------------
+
+* DiscordRichPresence 1.2.1.24 — MIT
+  Copyright (c) 2021 Lachee
+  https://github.com/Lachee/discord-rpc-csharp
+* Linguini.Bundle 0.8.1, Linguini.Shared 0.8.0, Linguini.Syntax 0.8.0 —
+  MIT OR Apache-2.0; distributed here under MIT
+  Copyright (c) Daniel Fath 2021
+  https://github.com/Ygg01/Linguini
+* Mono.Nat 3.0.4 — MIT
+  Copyright (c) 2006 Alan McGovern, 2007 Ben Motmans, 2013 Nicholas Terry
+  https://github.com/mono/Mono.Nat
+* NVorbis 0.10.5 — MIT
+  Copyright (c) 2020 Andrew Ward
+  https://github.com/NVorbis/NVorbis
+* Newtonsoft.Json 13.0.1 — MIT
+  Copyright (c) 2007 James Newton-King
+  https://github.com/JamesNK/Newtonsoft.Json
+* OpenRA-Eluant 1.0.22 — MIT
+  Copyright (c) 2013 Chris Howie and the OpenRA Developers and Contributors
+  https://github.com/OpenRA/Eluant/tree/1.0.22
+* Pfim 0.11.3 — MIT
+  Copyright Nick Babcock
+  https://github.com/nickbabcock/Pfim/tree/v0.11.3
+* rix0rrr.BeaconLib 1.0.2 — MIT
+  Copyright (c) 2013 Rico Huijbers
+  https://github.com/rix0rrr/beacon
+* SharpZipLib 1.4.2 — MIT
+  Copyright (c) 2000-2022 SharpZipLib Contributors
+  https://github.com/icsharpcode/SharpZipLib/tree/v1.4.2
+* StbTrueTypeSharp 1.26.12 — Public Domain
+  StbTrueTypeSharpTeam; C# port of stb_truetype by Sean Barrett and
+  contributors. The upstream implementation offers MIT or Public Domain;
+  this distribution uses the Public Domain dedication.
+  https://github.com/rds1983/StbSharp
+  https://github.com/nothings/stb/blob/master/stb_truetype.h
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The applicable copyright notice above and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Copyleft runtime packages
+-------------------------
+
+* OpenRA-FuzzyLogicLibrary 1.0.1 — GNU GPL version 2
+  Modified for OpenRA from Fuzzy Logic Library for Microsoft .NET.
+  Copyright (c) 2008 Dmitry Kaluzhny
+  Package: https://www.nuget.org/packages/OpenRA-FuzzyLogicLibrary/1.0.1
+  Upstream/source: https://sourceforge.net/projects/fuzzynet/
+  License text: COPYING-GPL-2.0.txt
+* MP3Sharp 1.0.5 — GNU LGPL version 3
+  Copyright Robert Burke, Zane Dubya, and contributors
+  Source (included in the NuGet package): https://www.nuget.org/packages/MP3Sharp/1.0.5
+  Project: https://github.com/Nihlus/MP3Sharp
+  License text: COPYING-LGPL-3.0.txt (and GPLv3 terms in COPYING)
+* TagLibSharp 2.3.0 — GNU LGPL version 2.1 only
+  Copyright (c) 2006-2007 Brian Nickel; 2009-2020 other contributors
+  Source: https://github.com/mono/taglib-sharp/tree/TaglibSharp-2.3.0.0
+  License text: COPYING-LGPL-2.1.txt
+
+The LGPL libraries are shipped as distinct managed WebAssembly assemblies
+(`MP3Sharp.wasm` and `TagLibSharp.wasm`). Recipients may replace those
+assemblies with modified, interface-compatible versions. Nothing in this
+distribution restricts reverse engineering for debugging such modifications.
+The links above provide the corresponding library source; OpenRA's own
+corresponding source is identified in SOURCE-CODE.txt.
+
+.NET runtime and Microsoft library packages
+-------------------------------------------
+
+The artifact also contains the .NET browser WebAssembly runtime and Microsoft
+runtime-library packages, including Microsoft.Extensions.DependencyModel,
+Microsoft.Win32.Registry, System.IO, System.IO.Pipelines, System.Memory,
+System.Reflection, System.Reflection.Primitives, System.Runtime,
+System.Runtime.Loader, System.Security.AccessControl,
+System.Security.Principal.Windows, System.Text.Encoding,
+System.Text.Encodings.Web, System.Text.Json, System.Threading.Channels,
+System.Threading.Tasks, and System.ValueTuple. They are distributed under the
+MIT License above.
+
+Copyright (c) .NET Foundation and Contributors
+https://github.com/dotnet/runtime
+
+The .NET WebAssembly runtime carries additional upstream components. Their
+notices from the exact installed runtime pack are copied into
+DOTNET-THIRD-PARTY-NOTICES.txt during packaging.

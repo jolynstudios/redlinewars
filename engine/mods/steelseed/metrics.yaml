@@ -1,0 +1,4 @@
+Metrics:
+	DefaultCursor: default
+	WorldDefaultCursor: default
+	WorldSelectCursor: select

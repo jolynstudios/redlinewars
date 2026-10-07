@@ -1,0 +1,347 @@
+{
+	"schema": 1,
+	"about": "Provenance of every creative file a build can ship, read by web/tools/sourcelicensegate.mjs --inventory. A class describes where a file comes from; it is not a legal approval. review.status is set by a person: NOT_REQUIRED only where the policy below needs no review, REVIEWED only for a review that actually took place (by, date). Evidence is referenced by opaque id; the documents themselves stay private.",
+	"policy": {
+		"classes": [
+			"original",
+			"third-party",
+			"mixed",
+			"generated-with-service"
+		],
+		"reviewStatuses": [
+			"NOT_REQUIRED",
+			"NEEDS_EVIDENCE",
+			"NEEDS_REVIEW",
+			"REVIEWED"
+		],
+		"noReviewNeeded": "original work with an authorship declaration and evidence; third-party work under CC0-1.0, CC-BY-4.0 or OFL-1.1 whose licence text and attribution ship with it",
+		"programFiles": "scripts, source maps, HTML, JSON, the service worker and licence texts are program or notice files: their source correspondence is checked by tools/verify-release.mjs, not here"
+	},
+	"services": {
+		"cartesia": {
+			"name": "Cartesia",
+			"output": "the faction announcer voice banks (text-to-speech with provider stock voices)",
+			"terms": "https://cartesia.ai/legal",
+			"plan": "paid",
+			"generated": null,
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"elevenlabs": {
+			"name": "ElevenLabs",
+			"output": "character voices (Riki, Jackson, the spy, the unit shouts), sound effects and death sounds",
+			"terms": "https://elevenlabs.io/terms-of-use",
+			"plan": "paid",
+			"generated": null,
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"suno": {
+			"name": "Suno",
+			"output": "the five music tracks",
+			"terms": "https://suno.com/terms",
+			"plan": "paid",
+			"generated": null,
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"meshy": {
+			"name": "Meshy",
+			"output": "the Riki model and its source animations (supplied input meshy-riki-commando)",
+			"terms": "https://help.meshy.ai/en/articles/10137554-what-is-the-ownership-of-the-generated-models",
+			"plan": "paid",
+			"generated": "about 2026-09-12 (the owner: two weeks before 2026-09-26)",
+			"evidence": "EV-OWNER-20260926-RIKI: the owner's declaration of 2026-09-26: a paid plan, generated from a photograph of a person who consented",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"macos-system-voices": {
+			"name": "macOS System Voices (the `say` command)",
+			"output": "the british announcer bank, the game's first and last fallback bank",
+			"terms": "https://www.apple.com/legal/sla/ (the macOS software licence agreement)",
+			"plan": null,
+			"generated": null,
+			"evidence": "web/src/audio/eva.ts:78 names it \"the older macOS `say` british render\"; no render script or record exists",
+			"review": {
+				"status": "NEEDS_REVIEW",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null,
+				"note": "Apple's licence allows System Voices for personal, non-commercial use only, not for publishing. The owner decided on 2026-09-26 to re-render the bank with ElevenLabs; until then web/src/audio/eva.ts leaves it out of every build"
+			}
+		}
+	},
+	"records": {
+		"studio-blender": {
+			"class": "original",
+			"author": "Jolyn Studios",
+			"basis": "Blender scenes authored by the studio under art/blender; any external source they use is named in the pack manifest and recorded in art/sources.lock.json",
+			"evidence": "EV-ART-BLENDER-HISTORY (the studio's art/blender history in the private repository)",
+			"review": {
+				"status": "NOT_REQUIRED",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null
+			}
+		},
+		"voices-cartesia": {
+			"class": "generated-with-service",
+			"service": "cartesia",
+			"generator": "web/tools/render-voices-cartesia.mjs",
+			"basis": "text-to-speech output of the studio's scripts",
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"voices-elevenlabs": {
+			"class": "generated-with-service",
+			"service": "elevenlabs",
+			"generator": "web/tools/render-riki-elevenlabs.mjs, render-jackson-elevenlabs.mjs, render-spy-elevenlabs.mjs, gen-shout-voices.mjs, render-bank-voices-elevenlabs.mjs, render-taunts-elevenlabs.mjs, render-joa-lines-elevenlabs.mjs",
+			"basis": "text-to-speech output of the studio's scripts with provider voices",
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"sfx-elevenlabs": {
+			"class": "generated-with-service",
+			"service": "elevenlabs",
+			"generator": "web/tools/render-sfx-elevenlabs.mjs, gen-death-voices.mjs",
+			"basis": "sound-effect and voice output of the studio's scripts",
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"music-owner-suno-20261005": {
+			"class": "generated-with-service",
+			"service": "suno",
+			"generator": null,
+			"basis": "Seven soundtrack tracks created by the project owner with Suno on a paid subscription; exact titles and outputs are pinned below. Exact generation timestamps were not supplied.",
+			"evidence": "EV-OWNER-20261005-SUNO: owner declaration on 2026-10-05: \"ja met suno gemaakt en betaald abbo heb ik\". art/music/manifest.json retains original and AAC output hashes; art/music/README.md records encoding.",
+			"outputManifest": {
+				"path": "art/music/manifest.json",
+				"sha256": "7912b5bad1fe8cd67d673f52e35f65fcd9762d8078b83184f218a439dcc10893"
+			},
+			"outputs": [
+				{
+					"id": "hard-won-victory",
+					"title": "Hard-Won Victory",
+					"sha256": "d8b45c4a69305910cc94bb210c488913d063f6d115786eaed49840744f11c29b"
+				},
+				{
+					"id": "quiet-burial",
+					"title": "Quiet Burial ( game lost )",
+					"sha256": "71373a097940cbc915b6868fcc3a6d2afd74d9d296b89a66f2b749c287b75651"
+				},
+				{
+					"id": "mechanized-expansion",
+					"title": "Mechanized Expansion ( game song )",
+					"sha256": "8c8870e1b681dfbca21ddacd55b5539d9b87ae395789b4bee69433bfc544b01a"
+				},
+				{
+					"id": "dusk-over-the-field",
+					"title": "Dusk Over the Field ( game song )",
+					"sha256": "8f89c77a77c5ddffc1d0bef213cacc8234a9e67ba1456d5ecd5c100be305e9d3"
+				},
+				{
+					"id": "solo-mission",
+					"title": "Solo Mission (Riki Anthem)",
+					"sha256": "a3412a872f4beef95889f03166cf8607a11674acddd517f1783db675f92bf2cf"
+				},
+				{
+					"id": "beyond-the-enemy-lines",
+					"title": "Beyond the Enemy Lines",
+					"sha256": "3edd5044456577e5d539977e33c2ed71777a47b34e6ec30c47ff3d559fd77969"
+				},
+				{
+					"id": "we-hold-the-line",
+					"title": "(redline wars) We Hold the Line",
+					"sha256": "bc71a016d2ce6b08cfd2a59de294e90f4ff543fc9cb0de0099a9104626b96761"
+				}
+			],
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-10-05",
+				"note": "Owner confirmed Suno origin and paid subscription for these seven supplied tracks; existing reviewed Suno service conditions remain unchanged."
+			}
+		},
+		"music-suno": {
+			"class": "generated-with-service",
+			"service": "suno",
+			"generator": null,
+			"basis": "tracks made by the studio with Suno: Theme, Mechanical Groove, Still Standing, Reverse Order, Cold Start",
+			"evidence": "EV-OWNER-20260926-PLANS: the owner's declaration of 2026-09-26 that every generation used a paid plan; the invoices stay with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			}
+		},
+		"font-archivo": {
+			"class": "third-party",
+			"licence": "OFL-1.1",
+			"creator": "The Archivo Project Authors",
+			"source": "https://github.com/Omnibus-Type/Archivo (npm @fontsource-variable/archivo)",
+			"attribution": "Archivo",
+			"evidence": "the OFL text ships as licenses/archivo-OFL.txt",
+			"review": {
+				"status": "NOT_REQUIRED",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null
+			}
+		},
+		"font-martian-mono": {
+			"class": "third-party",
+			"licence": "OFL-1.1",
+			"creator": "The Martian Mono Project Authors",
+			"source": "https://github.com/evilmartians/mono (npm @fontsource-variable/martian-mono)",
+			"attribution": "Martian Mono",
+			"evidence": "the OFL text ships as licenses/martian-mono-OFL.txt",
+			"review": {
+				"status": "NOT_REQUIRED",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null
+			}
+		},
+		"brand-mark": {
+			"class": "third-party",
+			"licence": "commissioned design, the owner's by agreement with the designer",
+			"creator": "Isa Ozler",
+			"source": "brand/ (the Redline Wars logo and icon); shipped as web/public/favicon.svg",
+			"attribution": null,
+			"evidence": "EV-OWNER-20260926-BRAND: the owner's declaration of 2026-09-26 that the logo is fully theirs by agreement with the designer; the agreement stays with the owner",
+			"review": {
+				"status": "REVIEWED",
+				"owner": "Jolyn Studios",
+				"by": "the owner",
+				"date": "2026-09-26"
+			},
+			"credit": "the website's credits page (landing/credits.html); by the owner's rule the texts inside the game name nobody"
+		},
+		"voices-macos-say": {
+			"class": "generated-with-service",
+			"service": "macos-system-voices",
+			"generator": null,
+			"basis": "recordings of the operating system's text-to-speech voice",
+			"evidence": null,
+			"review": {
+				"status": "NEEDS_REVIEW",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null,
+				"note": "not shipped since 2026-09-26: see the service macos-system-voices"
+			}
+		},
+		"studio-ground-library": {
+			"class": "mixed",
+			"author": "Jolyn Studios",
+			"basis": "art/blender/assets/materials/ground-library.blend, built by art/blender/ground_materials.py from three ambientCG CC0 textures (the ground pack's manifest names the .blend, not the textures)",
+			"parents": [
+				"source:ambientcg-grass004",
+				"source:ambientcg-ground037",
+				"source:ambientcg-ground054"
+			],
+			"evidence": "EV-ART-BLENDER-HISTORY; art/sources.lock.json pins the three textures",
+			"review": {
+				"status": "NOT_REQUIRED",
+				"owner": "Jolyn Studios",
+				"by": null,
+				"date": null
+			}
+		}
+	},
+	"rules": [
+		{
+			"match": "forge:ground/**",
+			"record": "studio-ground-library"
+		},
+		{
+			"match": "forge:{blender,damage-states,landmarks,living,surfaces,human-lods,human-motion,human-surfaces,track-lods,tree-lods,environment,foliage,terrain,trees,meadow}/**",
+			"record": "studio-blender"
+		},
+		{
+			"match": "forge:music/*.m4a",
+			"record": "music-suno"
+		},
+		{
+			"match": "art/music/*.m4a",
+			"record": "music-owner-suno-20261005"
+		},
+		{
+			"match": "art/voices/riki/*.m4a",
+			"record": "voices-elevenlabs"
+		},
+		{
+			"match": "forge:voices/{allied,soviet,england,france,germany,russia,ukraine}/{get_down,i_m_under_heavy_fire,man_down,medic_i_need_help,i_m_not_going_to_make_it,taking_heavy_fire,we_are_hit}.m4a",
+			"record": "voices-elevenlabs"
+		},
+		{
+			"match": "forge:voices/{allied,soviet,england,france,germany,russia,ukraine}/*.m4a",
+			"record": "voices-elevenlabs"
+		},
+		{
+			"match": "forge:voices/british/*.m4a",
+			"record": "voices-macos-say"
+		},
+		{
+			"match": "forge:voices/{tanya,jackson,spy}/*.m4a",
+			"record": "voices-elevenlabs"
+		},
+		{
+			"match": "forge:sfx/*/*.{m4a,mp3}",
+			"record": "sfx-elevenlabs"
+		},
+		{
+			"match": "npm:@fontsource-variable/archivo/**",
+			"record": "font-archivo"
+		},
+		{
+			"match": "npm:@fontsource-variable/martian-mono/**",
+			"record": "font-martian-mono"
+		},
+		{
+			"match": "web/public/favicon.svg",
+			"record": "brand-mark"
+		},
+		{
+			"match": "forge:voices/taunts/*.m4a",
+			"record": "voices-elevenlabs"
+		}
+	],
+	"runtimeChannels": []
+}

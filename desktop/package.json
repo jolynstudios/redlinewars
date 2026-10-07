@@ -1,0 +1,18 @@
+{
+  "name": "redline-wars-source-starter",
+  "productName": "Redline Wars Source Starter",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-or-later",
+  "description": "Optional desktop wrapper for the shared open-source AppBundle",
+  "main": "main.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "package": "node package.mjs"
+  },
+  "devDependencies": {
+    "electron": "^44.4.5",
+    "electron-builder": "^26.16.1"
+  }
+}

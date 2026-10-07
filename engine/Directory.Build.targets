@@ -1,0 +1,11 @@
+<Project>
+	<!-- The pinned upstream tree is left as vendored; this build rule excludes one presentation
+	     adapter that belongs to the assetless host, whose renderer intentionally has no fonts. -->
+	<PropertyGroup>
+		<_SteelseedCommonProject>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)openra/OpenRA.Mods.Common/OpenRA.Mods.Common.csproj'))</_SteelseedCommonProject>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(MSBuildProjectFullPath)' == '$(_SteelseedCommonProject)'">
+		<Compile Remove="Effects/FloatingText.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)steelseed-host/presentation/AssetlessFloatingText.cs" Link="Effects/FloatingText.cs" />
+	</ItemGroup>
+</Project>

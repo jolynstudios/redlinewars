@@ -1,0 +1,226 @@
+World:
+	Faction@Foundry:
+		Name: faction-foundry
+		InternalName: foundry
+		Side: foundry
+	Faction@Lattice:
+		Name: faction-lattice
+		InternalName: lattice
+		Side: lattice
+	Faction@Random:
+		Name: faction-random
+		InternalName: Random
+		RandomFactionMembers: foundry, lattice
+	ScreenMap:
+	ActorMap:
+	Selection:
+	ControlGroups:
+	Locomotor@Ground:
+		Name: ground
+		TerrainSpeeds:
+			Clear: 100
+			Resource: 80
+	Locomotor@Hover:
+		Name: hover
+		TerrainSpeeds:
+			Clear: 100
+			Resource: 100
+	Locomotor@Naval:
+		Name: naval
+		TerrainSpeeds:
+			Water: 100
+	PathFinder:
+	BuildingInfluence:
+	CreateMapPlayers:
+	SpawnMapActors:
+	MapStartingLocations:
+		SeparateTeamSpawnsCheckboxLabel: checkbox-separate-spawns
+		SeparateTeamSpawnsCheckboxDescription: checkbox-separate-spawns-description
+		SeparateTeamSpawnsCheckboxVisible: false
+	MapOptions:
+		ShortGameCheckboxLabel: checkbox-short-game
+		ShortGameCheckboxDescription: checkbox-short-game-description
+		ShortGameCheckboxVisible: false
+		TechLevelDropdownLabel: dropdown-tech-level
+		TechLevelDropdownDescription: dropdown-tech-level-description
+		TechLevelDropdownVisible: false
+		GameSpeedDropdownLabel: dropdown-game-speed
+		GameSpeedDropdownDescription: dropdown-game-speed-description
+		GameSpeedDropdownVisible: false
+	ColorPickerManager:
+		PresetColors: F2A51A, C96B16, 8E5C32, 24DCE8, 1A9DB5, 326A8E
+	ResourceLayer:
+		ResourceTypes:
+			Flux:
+				ResourceIndex: 1
+				TerrainType: Resource
+				AllowedTerrainTypes: Clear
+				MaxDensity: 8
+
+Player:
+	TechTree:
+	PlayerResources:
+		DefaultCashDropdownLabel: Starting flux
+		DefaultCashDropdownDescription: Select the initial construction reserve.
+		SelectableCash: 12000
+		DefaultCash: 12000
+		DefaultCashDropdownLocked: true
+		DefaultCashDropdownVisible: false
+		ResourceValues:
+			Flux: 25
+	DeveloperMode:
+		CheckboxLabel: checkbox-developer-mode.label
+		CheckboxDescription: checkbox-developer-mode.description
+		CheckboxLocked: true
+		CheckboxVisible: false
+	PowerManager:
+		AdviceInterval: 0
+	PlaceBuilding:
+	ClassicProductionQueue@FoundryBuilding:
+		Type: FoundryBuilding
+		DisplayOrder: 0
+		Factions: foundry
+	ClassicProductionQueue@FoundryInfantry:
+		Type: FoundryInfantry
+		DisplayOrder: 1
+		Factions: foundry
+	ClassicProductionQueue@FoundryVehicle:
+		Type: FoundryVehicle
+		DisplayOrder: 2
+		Factions: foundry
+	ClassicProductionQueue@FoundryAircraft:
+		Type: FoundryAircraft
+		DisplayOrder: 3
+		Factions: foundry
+	ClassicProductionQueue@FoundryNaval:
+		Type: FoundryNaval
+		DisplayOrder: 4
+		Factions: foundry
+	ClassicProductionQueue@LatticeBuilding:
+		Type: LatticeBuilding
+		DisplayOrder: 0
+		Factions: lattice
+	ClassicProductionQueue@LatticeInfantry:
+		Type: LatticeInfantry
+		DisplayOrder: 1
+		Factions: lattice
+	ClassicProductionQueue@LatticeVehicle:
+		Type: LatticeVehicle
+		DisplayOrder: 2
+		Factions: lattice
+	ClassicProductionQueue@LatticeAircraft:
+		Type: LatticeAircraft
+		DisplayOrder: 3
+		Factions: lattice
+	ClassicProductionQueue@LatticeNaval:
+		Type: LatticeNaval
+		DisplayOrder: 4
+		Factions: lattice
+	Shroud:
+		FogCheckboxLabel: checkbox-fog
+		FogCheckboxDescription: checkbox-fog-description
+		FogCheckboxVisible: false
+		ExploredMapCheckboxLabel: checkbox-explored
+		ExploredMapCheckboxDescription: checkbox-explored-description
+		ExploredMapCheckboxVisible: false
+		ExploredMapCheckboxEnabled: true
+	FrozenActorLayer:
+	MissionObjectives:
+		EarlyGameOver: true
+		GameOverDelay: 0
+	ConquestVictoryConditions:
+		SuppressNotifications: true
+		NotificationDelay: 0
+		Objective: Eliminate every opposing command force.
+	ModularBot:
+		Name: bot-name
+		Type: normal
+		MinOrderQuotientPerTick: 1
+	SquadManagerBotModule:
+		SquadSize: 1
+		SquadSizeRandomBonus: 1
+		AssignRolesInterval: 5
+		AttackForceInterval: 5
+		RushInterval: 25
+		MinimumAttackForceDelay: 1
+		IdleScanRadius: 64
+		AttackScanRadius: 64
+
+EditorWorld:
+	Faction@Foundry:
+		Name: faction-foundry
+		InternalName: foundry
+		Side: foundry
+	Faction@Lattice:
+		Name: faction-lattice
+		InternalName: lattice
+		Side: lattice
+	Faction@Random:
+		Name: faction-random
+		InternalName: Random
+		RandomFactionMembers: foundry, lattice
+	Locomotor@Ground:
+		Name: ground
+		TerrainSpeeds:
+			Clear: 100
+			Resource: 80
+	Locomotor@Hover:
+		Name: hover
+		TerrainSpeeds:
+			Clear: 100
+			Resource: 100
+	SteelseedMapGenerator:
+		Type: seedline
+		Name: map-generator-seedline
+		MapTitle: map-title-seedline
+		Tilesets: STEELWORKS
+		Options:
+			MultiChoiceOption@Preset:
+				Label: map-generator-option-preset
+				Default: amber-crossing
+				Choice@amber-crossing:
+					Label: map-preset-amber-crossing
+					Parameters:
+						Seed: 104729
+						Players: 2
+						MapWidth: 32
+						MapHeight: 32
+						Biome: RivetedPlate
+						Symmetry: Horizontal
+						ResourceDensity: 18
+						ChokepointBias: 28
+				Choice@cyan-fold:
+					Label: map-preset-cyan-fold
+					Parameters:
+						Seed: 130363
+						Players: 2
+						MapWidth: 40
+						MapHeight: 40
+						Biome: CeramicHex
+						Symmetry: Vertical
+						ResourceDensity: 24
+						ChokepointBias: 42
+				Choice@ceramic-quadrant:
+					Label: map-preset-ceramic-quadrant
+					Parameters:
+						Seed: 155921
+						Players: 4
+						MapWidth: 48
+						MapHeight: 48
+						Biome: CyanLattice
+						Symmetry: Rotational
+						ResourceDensity: 20
+						ChokepointBias: 36
+				Choice@foundry-cross:
+					Label: map-preset-foundry-cross
+					Parameters:
+						Seed: 196613
+						Players: 4
+						MapWidth: 56
+						MapHeight: 56
+						Biome: AmberForge
+						Symmetry: Rotational
+						ResourceDensity: 28
+						ChokepointBias: 52
+
+EditorPlayer:

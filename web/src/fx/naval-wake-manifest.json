@@ -1,0 +1,59 @@
+{
+  "schema": 1,
+  "actors": {
+    "dd": {
+      "variants": [
+        {
+          "state": "baseline",
+          "sourcePath": ".artifacts/planx/naval/promotion/baseline/sources/dd.blend",
+          "sourceSha256": "ffa93ec93dcabb581482c1f9e54c6210c0dd3239b3151a43f6be740129c56903",
+          "waterlineY": 0,
+          "bow": {
+            "x": 1.0648108324632253,
+            "leftZ": -0.013967145033804473,
+            "rightZ": 0.013967132827023731
+          },
+          "stern": {
+            "x": -0.9864089362547617,
+            "leftZ": -0.2356695217498825,
+            "rightZ": 0.23566952194270488
+          },
+          "beam": 0.5863906575244175,
+          "length": 2.0912197687179868,
+          "lifetimeS": 4,
+          "basis": "Measured evaluated source triangle waterline; formula comparison recorded in source audit; centerline stern turbulence is an explicit visual approximation on baseline hull"
+        },
+        {
+          "state": "canonical",
+          "sourcePath": "art/blender/assets/dd.blend",
+          "sourceSha256": "2f68723ed33c552abaa5fed35538a79e7b786db740797860ea1b1956409e8412",
+          "waterlineY": 0,
+          "bow": {
+            "x": 0.9,
+            "leftZ": -0.04863907004271255,
+            "rightZ": 0.04863907004271255
+          },
+          "stern": {
+            "x": -1.029,
+            "leftZ": -0.1833664828226227,
+            "rightZ": 0.1833664828226227
+          },
+          "beam": 0.5366823598987399,
+          "length": 1.948578981657597,
+          "lifetimeS": 4,
+          "basis": "Measured evaluated source triangle waterline; formula comparison recorded in source audit",
+          "propulsion": [
+            {
+              "x": -1.0499999523162842,
+              "z": -0.12999999864647785
+            },
+            {
+              "x": -1.0499999523162842,
+              "z": 0.12999999864647785
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

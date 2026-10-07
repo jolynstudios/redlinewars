@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "actor": "ssherobridge",
+  "width": 8,
+  "height": 5,
+  "templates": {"intact":4080,"partial":4081,"dead":4082},
+  "meshOffsetM": [0,-1.236,0.06],
+  "deckSurfaceM": 0,
+  "bedM": -1.236,
+  "waterM": -0.82,
+  "halfLengthM": 4,
+  "healthyLaneZ": [-2.04,-0.08],
+  "failedLaneZ": [0.08,2.04],
+  "failedBayX": [-1.28,1.39],
+  "masks": {
+    "intact": ["RRRRRRRR","BBBBBBBB","RRRRRRRR","BBBBBBBB","RRRRRRRR"],
+    "partial": ["RRRRRRRR","BBBBBBBB","RRRRRRRR","BBB##BBB","RRRRRRRR"],
+    "dead": ["RRRRRRRR","BBB##BBB","RRRRRRRR","BBB##BBB","RRRRRRRR"]
+  }
+}

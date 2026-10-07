@@ -1,0 +1,464 @@
+{
+  "schema": 1,
+  "coordinates": "Source render metres; Blender Y maps to negative render Z. Runtime applies Units fitScale once.",
+  "actors": {
+    "1tnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/1tnk.blend",
+      "sourceSha256": "772107bf18f9178273b742604c84873931bf3ee86e632bf718b9ea78f372bd45",
+      "contactObjects": [
+        "PLANX continuous carrier belt -1",
+        "PLANX continuous carrier belt -1.001",
+        "PLANX continuous carrier belt +1",
+        "PLANX continuous carrier belt +1.001"
+      ],
+      "leftZ": -0.3352000117301941,
+      "rightZ": 0.3352000117301941,
+      "width": 0.10559999942779541,
+      "pitch": 0.19611407339572906,
+      "contactMinX": -0.6047658324241638,
+      "contactMaxX": 0.48475679755210876,
+      "contactLength": 1.0895226299762726,
+      "uvRepeatM": 0.051788387510532746,
+      "visualLoad": 0.45,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "2tnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/2tnk.blend",
+      "sourceSha256": "a4cdd88a38ec3902ca56f420120c3a5fd289e0a7544d9961518c05aa97e80383",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.3922000080347061,
+      "rightZ": 0.3922000080347061,
+      "width": 0.13159999251365662,
+      "pitch": 0.2264416229724884,
+      "contactMinX": -0.6990045309066772,
+      "contactMaxX": 0.5590044856071472,
+      "contactLength": 1.2580090165138245,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.72,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "3tnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/3tnk.blend",
+      "sourceSha256": "3cb299fcb0ebff910df37fabf6c7cdef237aa26a7c391f6263fb57148195819e",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.3967500180006027,
+      "rightZ": 0.3967500180006027,
+      "width": 0.22050002217292786,
+      "pitch": 0.21859674096107481,
+      "contactMinX": -0.6972131729125977,
+      "contactMaxX": 0.5172131657600403,
+      "contactLength": 1.214426338672638,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.82,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "4tnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/4tnk.blend",
+      "sourceSha256": "6e38e6054a3ddb2fe4c8e89b97cfb3d92dec416964029ab257eef0b111b70891",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.45799998939037323,
+      "rightZ": 0.45799998939037323,
+      "width": 0.2719999849796295,
+      "pitch": 0.28,
+      "contactMinX": -0.8229895830154419,
+      "contactMaxX": 0.7839540839195251,
+      "contactLength": 1.606943666934967,
+      "uvRepeatM": 0.47626791614859226,
+      "visualLoad": 1,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "apc": {
+      "kind": "tracked",
+      "source": "art/blender/assets/apc.blend",
+      "sourceSha256": "572a06d0d5e447f0b9c9c82303bf2ee5ab1a4352db9145540dc22730e94c6c06",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.41200000047683716,
+      "rightZ": 0.41200000047683716,
+      "width": 0.10600000619888306,
+      "pitch": 0.28,
+      "contactMinX": -0.8379999995231628,
+      "contactMaxX": 0.8600257635116577,
+      "contactLength": 1.6980257630348206,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.6,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "arty": {
+      "kind": "tracked",
+      "source": "art/blender/assets/arty.blend",
+      "sourceSha256": "086deb71070cbc255aac7b015f3a75192b4beb6f16de03410c00755a5fe2c544",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.36640000343322754,
+      "rightZ": 0.36640000343322754,
+      "width": 0.12319999933242798,
+      "pitch": 0.21189972639083862,
+      "contactMinX": -0.6586103439331055,
+      "contactMaxX": 0.5186103582382202,
+      "contactLength": 1.1772207021713257,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.65,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "ctnk": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/ctnk.blend",
+      "sourceSha256": "a9d0b937b00da8bf70207a3aa48ad13ae17cc9ced3085669a6b41beef4df1018",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.33799999952316284,
+      "rightZ": 0.33799999952316284,
+      "width": 0.11500000953674316,
+      "pitch": 0.21060000300407408,
+      "contactMinX": -0.5724999904632568,
+      "contactMaxX": 0.5975000262260437,
+      "contactLength": 1.1700000166893005,
+      "uvRepeatM": 0,
+      "visualLoad": 0.72,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "dtrk": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/dtrk.blend",
+      "sourceSha256": "e14105199001cf5acd234171e212e9fc0c9d0cc91f27b1a6e6e9941a992d7d9d",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003"
+      ],
+      "leftZ": -0.32499998807907104,
+      "rightZ": 0.32499998807907104,
+      "width": 0.07200002670288086,
+      "pitch": 0.17740799903869628,
+      "contactMinX": -0.5199999809265137,
+      "contactMaxX": 0.46560001373291016,
+      "contactLength": 0.9855999946594238,
+      "uvRepeatM": 0,
+      "visualLoad": 0.85,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "ftrk": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/ftrk.blend",
+      "sourceSha256": "4db418641b2e6614e506e992f03c86747e289a54d3b61d38b2e280efd4557e69",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.32499998807907104,
+      "rightZ": 0.32499998807907104,
+      "width": 0.09959999720255534,
+      "pitch": 0.19111680150032043,
+      "contactMinX": -0.6028800010681152,
+      "contactMaxX": 0.4588800072669983,
+      "contactLength": 1.0617600083351135,
+      "uvRepeatM": 0,
+      "visualLoad": 0.65,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "harv": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/harv.blend",
+      "sourceSha256": "9d1d5283ab0b5acdbcc70a711d8b667de473cdc7ca8e60d834e22f2f06478332",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.3822000026702881,
+      "rightZ": 0.3822000026702881,
+      "width": 0.11500000953674316,
+      "pitch": 0.25343999862670896,
+      "contactMinX": -0.6890000104904175,
+      "contactMaxX": 0.718999981880188,
+      "contactLength": 1.4079999923706055,
+      "uvRepeatM": 0,
+      "visualLoad": 1,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "jeep": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/jeep.blend",
+      "sourceSha256": "44a2197f4d10de2c416a1e81606c96533ed070a8dd2afa387e72aec3444af829",
+      "contactObjects": [
+        "road wheel",
+        "road wheel.001",
+        "road wheel.002",
+        "road wheel.003"
+      ],
+      "leftZ": -0.2759999930858612,
+      "rightZ": 0.2759999930858612,
+      "width": 0.0559999942779541,
+      "pitch": 0.13273410737514496,
+      "contactMinX": -0.4085058569908142,
+      "contactMaxX": 0.32890585064888,
+      "contactLength": 0.7374117076396942,
+      "uvRepeatM": 0,
+      "visualLoad": 0.25,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mcv": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/mcv.blend",
+      "sourceSha256": "8b2a28b44b4a896e96e39fbbef2ae8217727279b5ad2d26726de57c2ce3cd7ae",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005",
+        "road wheel tire.006",
+        "road wheel tire.007"
+      ],
+      "leftZ": -0.33810002356767654,
+      "rightZ": 0.33810001239180565,
+      "width": 0.11500001326203346,
+      "pitch": 0.24480000257492066,
+      "contactMinX": -0.6650000214576721,
+      "contactMaxX": 0.6949999928474426,
+      "contactLength": 1.3600000143051147,
+      "uvRepeatM": 0,
+      "visualLoad": 0.95,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mgg": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/mgg.blend",
+      "sourceSha256": "8671bfb4449c1e8183d974afd0c07cd3bedf6fe04cb7b0f8e1cf600e93cf0d17",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.33810001611709595,
+      "rightZ": 0.33810001611709595,
+      "width": 0.11500000953674316,
+      "pitch": 0.2124000012874603,
+      "contactMinX": -0.5774999856948853,
+      "contactMaxX": 0.6025000214576721,
+      "contactLength": 1.1800000071525574,
+      "uvRepeatM": 0,
+      "visualLoad": 0.75,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mnly": {
+      "kind": "tracked",
+      "source": "art/blender/assets/mnly.blend",
+      "sourceSha256": "cef63a9e1367e3910b89f46b90d0f143cb042013c9835fe9e249065e4643abf3",
+      "contactObjects": [
+        "continuous track belt",
+        "continuous track belt.001"
+      ],
+      "leftZ": -0.35999999940395355,
+      "rightZ": 0.35999999940395355,
+      "width": 0.21000000834465027,
+      "pitch": 0.22679999828338623,
+      "contactMinX": -0.6480000019073486,
+      "contactMaxX": 0.6119999885559082,
+      "contactLength": 1.2599999904632568,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.5,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mnly.ap": {
+      "kind": "tracked",
+      "source": "art/blender/assets/mnly.ap.blend",
+      "sourceSha256": "9da98372772afc4fcc4bae5dabac11303c0ea7a72366d5310cf049190cb05dcd",
+      "contactObjects": [
+        "continuous track belt",
+        "continuous track belt.001"
+      ],
+      "leftZ": -0.35999999940395355,
+      "rightZ": 0.35999999940395355,
+      "width": 0.21000000834465027,
+      "pitch": 0.22679999828338623,
+      "contactMinX": -0.6480000019073486,
+      "contactMaxX": 0.6119999885559082,
+      "contactLength": 1.2599999904632568,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.5,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mnly.at": {
+      "kind": "tracked",
+      "source": "art/blender/assets/mnly.at.blend",
+      "sourceSha256": "68c646f2cb26b1d8ad6ec9ee376b26e9808fedaf8fdef64ea5478ff8242201fb",
+      "contactObjects": [
+        "continuous track belt",
+        "continuous track belt.001"
+      ],
+      "leftZ": -0.35999999940395355,
+      "rightZ": 0.35999999940395355,
+      "width": 0.21000000834465027,
+      "pitch": 0.22679999828338623,
+      "contactMinX": -0.6480000019073486,
+      "contactMaxX": 0.6119999885559082,
+      "contactLength": 1.2599999904632568,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.5,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "mrj": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/mrj.blend",
+      "sourceSha256": "7b36c11a96f5279d3783ade9331b8bd8276612e1070ba36c42c7fec044c75e6a",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003"
+      ],
+      "leftZ": -0.3230000138282776,
+      "rightZ": 0.3230000138282776,
+      "width": 0.06200003623962402,
+      "pitch": 0.17028000712394714,
+      "contactMinX": -0.5260000228881836,
+      "contactMaxX": 0.42000001668930054,
+      "contactLength": 0.9460000395774841,
+      "uvRepeatM": 0,
+      "visualLoad": 0.5,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "qtnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/qtnk.blend",
+      "sourceSha256": "befc3ac05ed6b825ff548c177020c0071e3dd9078c4202504a06378ae044048d",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.3999999910593033,
+      "rightZ": 0.3999999910593033,
+      "width": 0.21199998259544373,
+      "pitch": 0.21586309790611266,
+      "contactMinX": -0.699619710445404,
+      "contactMaxX": 0.499619722366333,
+      "contactLength": 1.199239432811737,
+      "uvRepeatM": 0.5,
+      "visualLoad": 1,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "stnk": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/stnk.blend",
+      "sourceSha256": "42dd6ee83f659a53eeaeab72c0841f76636a5780fda98d93f331a6df862a547b",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003"
+      ],
+      "leftZ": -0.33900000154972076,
+      "rightZ": 0.33900000154972076,
+      "width": 0.07000002264976501,
+      "pitch": 0.16924657344818114,
+      "contactMinX": -0.5280293822288513,
+      "contactMaxX": 0.41222935914993286,
+      "contactLength": 0.9402587413787842,
+      "uvRepeatM": 0,
+      "visualLoad": 0.58,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "truk": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/truk.blend",
+      "sourceSha256": "2d7ff208f95b0632fde01e0cf029b9bdc3374ae23ec3bb762d165e20eaa1003d",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.33810001611709595,
+      "rightZ": 0.33810001611709595,
+      "width": 0.11500000953674316,
+      "pitch": 0.2124000012874603,
+      "contactMinX": -0.5774999856948853,
+      "contactMaxX": 0.6025000214576721,
+      "contactLength": 1.1800000071525574,
+      "uvRepeatM": 0,
+      "visualLoad": 0.55,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "ttnk": {
+      "kind": "tracked",
+      "source": "art/blender/assets/ttnk.blend",
+      "sourceSha256": "3febdf9c8f126eefde191748c12d613516934b3023db5ffd0c7082fc7bb7b9ac",
+      "contactObjects": [
+        "track belt",
+        "track belt.001"
+      ],
+      "leftZ": -0.3840000033378601,
+      "rightZ": 0.3840000033378601,
+      "width": 0.1980000138282776,
+      "pitch": 0.2078553307056427,
+      "contactMinX": -0.6773759126663208,
+      "contactMaxX": 0.47737592458724976,
+      "contactLength": 1.1547518372535706,
+      "uvRepeatM": 0.5,
+      "visualLoad": 0.8,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    },
+    "v2rl": {
+      "kind": "wheeled",
+      "source": "art/blender/assets/v2rl.blend",
+      "sourceSha256": "ebb1b834f15ce87ac90e98cab91ca3eda4869f40c7d7f6d508c162cc9f045679",
+      "contactObjects": [
+        "road wheel tire",
+        "road wheel tire.001",
+        "road wheel tire.002",
+        "road wheel tire.003",
+        "road wheel tire.004",
+        "road wheel tire.005"
+      ],
+      "leftZ": -0.3479999899864197,
+      "rightZ": 0.3479999899864197,
+      "width": 0.10513333479563396,
+      "pitch": 0.22723200559616089,
+      "contactMinX": -0.7102000117301941,
+      "contactMaxX": 0.5522000193595886,
+      "contactLength": 1.2624000310897827,
+      "uvRepeatM": 0,
+      "visualLoad": 0.75,
+      "loadBasis": "authored relative visual contact load; not simulation mass"
+    }
+  }
+}

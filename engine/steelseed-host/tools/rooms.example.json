@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "rooms": [
+    {
+      "name": "Community #1",
+      "slots": 5,
+      "password": "",
+      "maps": [
+        "d56dcfc95e162e6c53240320529efe60595575a3",
+        "6eacef4cdf58a7afb1491a0f90608d24a27a34af",
+        "25ca42030358afecbbb5b5bcb0004374695697aa"
+      ],
+      "settings": { "gamespeed": "default", "tod": "auto", "weather": "on" }
+    }
+  ]
+}

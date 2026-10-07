@@ -1,0 +1,158 @@
+{
+	"schemaVersion": 1,
+	"id": "allied-e3-mass",
+	"version": 2,
+	"title": "Rocket Screen",
+	"faction": "allies",
+	"archetype": "pressure",
+	"openingSummary": "POWR>TENT>PROC; produce E1 scouts then a sustained E3 screen; add walls and anti-infantry cover.",
+	"when": [
+		"Enemy armor or aircraft is known and terrain can deny direct crush paths."
+	],
+	"avoidWhen": [
+		"Flame, Tesla, dog, or vehicle-crush access is open around the intended line."
+	],
+	"effectiveAgainst": [
+		"vehicle.heavy",
+		"air.strike",
+		"terrain.choke"
+	],
+	"hardCounteredBy": [
+		"vehicle.crush",
+		"weapon.flame",
+		"weapon.tesla"
+	],
+	"requirements": [
+		"landRoute"
+	],
+	"opening": [
+		"POWR > TENT > PROC with 3 E1 scouts out first",
+		"Nonstop E3 from the first TENT; second TENT when the bank supports it",
+		"GUN + BRIK lanes at the front to deny crush paths"
+	],
+	"composition": [
+		"14-18 E3 as the AT+AA core — every rocket soldier is a SAM that walks",
+		"4-6 E1 in front to absorb anti-infantry fire; 2 MEDI healing the mass",
+		"2 PBOX each garrisoned with an E3 (the bunker fires the rockets)"
+	],
+	"execution": [
+		"queueMission sweep with the E1 screen only — never scout with E3s",
+		"guard E3 groups onto the GUN line and harvesters as a walking AA net",
+		"queueMission strike posture=assault targetPriority=production, hugging walls and cliffs — crush is the only cheap answer and terrain denies it",
+		"queueMission pincer with two wings so a crush dive eats only one",
+		"reinforce both wings continuously from both TENTs",
+		"On enemyRetreating do NOT pursue (E3s are slow) — strike their economy instead"
+	],
+	"targets": {
+		"harvesters": 3,
+		"refineries": 2,
+		"missionDriven": true
+	},
+	"phases": [
+		{
+			"name": "screen",
+			"objective": "Form a spread rocket screen behind walls, terrain, or anti-infantry defenses.",
+			"actionTypes": [
+				"queueBuildPlan",
+				"assignGroup",
+				"guard"
+			],
+			"claimRefs": [
+				"RF1",
+				"RF2",
+				"CH1"
+			]
+		},
+		{
+			"name": "pressure",
+			"objective": "Advance only with a screen and split legs so a single crush route cannot erase the force.",
+			"actionTypes": [
+				"queueMission",
+				"controlMission",
+				"repair"
+			],
+			"claimRefs": [
+				"DC1",
+				"CH2"
+			]
+		}
+	],
+	"abortTransitions": [
+		{
+			"when": "Two groups are lost to crush, flame, or Tesla damage, or the enemy has no armor or air to counter.",
+			"transitionTo": "allied-fast-boom",
+			"claimRefs": [
+				"RF2",
+				"CH2"
+			]
+		}
+	],
+	"retrieval": {
+		"situationIds": [
+			"T1.air",
+			"T1.base",
+			"T2.reinforcement"
+		],
+		"counterRows": [
+			"anti-armor",
+			"anti-air",
+			"crush"
+		],
+		"actorCodes": [
+			"tent",
+			"e1",
+			"e3",
+			"gun",
+			"brik"
+		]
+	},
+	"claims": [
+		{
+			"id": "RF1",
+			"epistemic": "ruleFact",
+			"statement": "The E3 carries anti-armor and anti-air weapons and costs 300 credits.",
+			"sourceRefs": [
+				"actor:e3",
+				"weapon:Dragon",
+				"weapon:RedEye",
+				"source:mods/ra/rules/infantry.yaml#e3"
+			]
+		},
+		{
+			"id": "RF2",
+			"epistemic": "ruleFact",
+			"statement": "E3 remains infantry and can be crushed by compatible vehicle locomotors.",
+			"sourceRefs": [
+				"actor:e3",
+				"counter:crush",
+				"source:mods/ra/rules/defaults.yaml#crush"
+			]
+		},
+		{
+			"id": "DC1",
+			"epistemic": "derivedComparison",
+			"statement": "Terrain and walls improve E3 value by denying the direct movement needed to crush the screen.",
+			"sourceRefs": [
+				"actor:e3",
+				"actor:brik",
+				"counter:crush"
+			]
+		},
+		{
+			"id": "CH1",
+			"epistemic": "curatedHeuristic",
+			"statement": "Mix cheap rifle scouts into the opening rather than exposing the rocket core to first contact.",
+			"sourceRefs": [
+				"corpus:mtactics#allied-infantry-screen"
+			]
+		},
+		{
+			"id": "CH2",
+			"epistemic": "curatedHeuristic",
+			"statement": "Transition to mobile armor or siege when the opponent stops presenting armor and air targets.",
+			"sourceRefs": [
+				"corpus:majorslack#composition-transition"
+			]
+		}
+	]
+}

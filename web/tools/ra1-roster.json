@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"description": "RA1-identity roster: every item the RA1 briefing names, mapped to its SteelSeed actor id. The ra1roster gate fails unless each entry resolves in the visual manifest and (for identity kinds) carries an authored Blender asset.",
+	"entries": [
+		{ "actor": "thf", "ra1": "Thief", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "mrj", "ra1": "Radar Jammer", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "spen", "ra1": "Sub Pen", "faction": "soviet", "kind": "structure", "identity": "standard" },
+		{ "actor": "pt", "ra1": "Gunboat", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "dd", "ra1": "Destroyer", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "lst", "ra1": "Transport (naval)", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "mnly.at", "ra1": "Minelayer (AT mines)", "faction": "allied", "kind": "unit", "identity": "standard" },
+		{ "actor": "mnly.ap", "ra1": "Minelayer (AP mines)", "faction": "soviet", "kind": "unit", "identity": "standard" },
+		{ "actor": "4tnk", "ra1": "Mammoth Tank", "faction": "soviet", "kind": "unit", "identity": "hero" },
+		{ "actor": "ca", "ra1": "Cruiser", "faction": "allied", "kind": "unit", "identity": "hero" },
+		{ "actor": "shok", "ra1": "Shock Trooper", "faction": "soviet", "kind": "unit", "identity": "hero" },
+		{ "actor": "fix", "ra1": "Service Depot", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "afld", "ra1": "Airfield", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "syrd", "ra1": "Naval Yard", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "mslo", "ra1": "Nuke Silo", "faction": "soviet", "kind": "structure", "identity": "standard" },
+		{ "actor": "silo", "ra1": "Ore Silo", "faction": "neutral", "kind": "structure", "identity": "standard" },
+		{ "actor": "agun", "ra1": "AA Gun", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "iron", "ra1": "Iron Curtain", "faction": "soviet", "kind": "structure", "identity": "standard" },
+		{ "actor": "pdox", "ra1": "Chronosphere", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "gap", "ra1": "Gap Generator", "faction": "allied", "kind": "structure", "identity": "standard" },
+		{ "actor": "badr", "ra1": "Paratroop transport (VFX)", "faction": "soviet", "kind": "support", "identity": "vfx-only" },
+		{ "actor": "u2", "ra1": "Spy plane (VFX)", "faction": "allied", "kind": "support", "identity": "vfx-only" },
+		{ "actor": "mslo", "ra1": "Atom bomb launch (VFX)", "faction": "soviet", "kind": "support", "identity": "vfx-only" },
+		{ "actor": "pdox", "ra1": "Chronoshift (VFX)", "faction": "allied", "kind": "support", "identity": "vfx-only" },
+		{ "actor": "iron", "ra1": "Iron Curtain pulse (VFX)", "faction": "soviet", "kind": "support", "identity": "vfx-only" },
+		{ "actor": "ss", "ra1": "Sonar pulse (VFX)", "faction": "soviet", "kind": "support", "identity": "vfx-only" }
+	]
+}

@@ -1,0 +1,890 @@
+RivetArc:
+	ReloadDelay: 18
+	Range: 4c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 110
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 65
+
+ClampDriver:
+	ReloadDelay: 36
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 70
+			HeavyFrame: 110
+
+CinderFan:
+	ReloadDelay: 10
+	Range: 3c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 65
+		Versus:
+			LightFrame: 150
+			HeavyFrame: 55
+
+WardenMaul:
+	ReloadDelay: 48
+	Range: 2c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 520
+		Versus:
+			LightFrame: 90
+			HeavyFrame: 125
+
+ForgePulse:
+	ReloadDelay: 28
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 260
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 90
+
+RammerSpikes:
+	ReloadDelay: 14
+	Range: 2c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 170
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 45
+
+AnvilShell:
+	ReloadDelay: 46
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 620
+		Versus:
+			LightFrame: 85
+			HeavyFrame: 125
+
+KilnArc:
+	ReloadDelay: 72
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 480
+		Versus:
+			LightFrame: 145
+			HeavyFrame: 65
+
+RackBurst:
+	ReloadDelay: 12
+	Range: 6c0
+	ValidTargets: Ground, Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 130
+		ValidTargets: Ground, Air
+		Versus:
+			LightFrame: 115
+			HeavyFrame: 55
+
+DraglineHook:
+	ReloadDelay: 32
+	Range: 4c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 340
+		Versus:
+			LightFrame: 80
+			HeavyFrame: 120
+
+CyanNeedle:
+	ReloadDelay: 14
+	Range: 4c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 85
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 60
+
+PrismThread:
+	ReloadDelay: 40
+	Range: 7c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 240
+		Versus:
+			LightFrame: 130
+			HeavyFrame: 55
+
+WeaverFork:
+	ReloadDelay: 16
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 115
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 80
+
+ChorusWave:
+	ReloadDelay: 30
+	Range: 4c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 260
+		Versus:
+			LightFrame: 85
+			HeavyFrame: 120
+
+HexLance:
+	ReloadDelay: 24
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 190
+		Versus:
+			LightFrame: 105
+			HeavyFrame: 85
+
+KiteDart:
+	ReloadDelay: 10
+	Range: 4c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 100
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 40
+
+StiltBeam:
+	ReloadDelay: 40
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 520
+		Versus:
+			LightFrame: 80
+			HeavyFrame: 130
+
+ApertureRay:
+	ReloadDelay: 64
+	Range: 10c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 420
+		Versus:
+			LightFrame: 150
+			HeavyFrame: 55
+
+CantileverPulse:
+	ReloadDelay: 11
+	Range: 6c512
+	ValidTargets: Ground, Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 120
+		ValidTargets: Ground, Air
+		Versus:
+			LightFrame: 115
+			HeavyFrame: 50
+
+PhaseShear:
+	ReloadDelay: 26
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 280
+		Versus:
+			LightFrame: 95
+			HeavyFrame: 110
+
+BellowsSalvo:
+	ReloadDelay: 24
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 330
+		Versus:
+			LightFrame: 105
+			HeavyFrame: 85
+
+FlywheelBolt:
+	ReloadDelay: 14
+	Range: 6c0
+	ValidTargets: Ground, Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 180
+		ValidTargets: Ground, Air
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 50
+
+VesperRay:
+	ReloadDelay: 12
+	Range: 6c512
+	ValidTargets: Ground, Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 150
+		ValidTargets: Ground, Air
+		Versus:
+			LightFrame: 125
+			HeavyFrame: 45
+
+HelixChord:
+	ReloadDelay: 26
+	Range: 5c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 360
+		Versus:
+			LightFrame: 90
+			HeavyFrame: 115
+
+BulwarkDriver:
+	ReloadDelay: 22
+	Range: 7c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 95
+			StructureFrame: 45
+
+FlakrackBurst:
+	Burst: 4
+	BurstDelays: 3
+	ReloadDelay: 10
+	Range: 8c0
+	ValidTargets: Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 150
+		ValidTargets: Air
+		Versus:
+			LightFrame: 125
+			HeavyFrame: 65
+
+PylonThread:
+	ReloadDelay: 18
+	Range: 7c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 260
+		Versus:
+			LightFrame: 110
+			HeavyFrame: 85
+			StructureFrame: 40
+
+ProngPulse:
+	ReloadDelay: 9
+	Range: 8c512
+	ValidTargets: Air
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 135
+		ValidTargets: Air
+		Versus:
+			LightFrame: 130
+			HeavyFrame: 60
+
+BastionGun:
+	ReloadDelay: 60
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 690
+		Versus:
+			LightFrame: 90
+			HeavyFrame: 130
+
+GrapnelGun:
+	ReloadDelay: 22
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 175
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 65
+
+CapstanBattery:
+	ReloadDelay: 40
+	Range: 7c512
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 420
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 110
+
+HawserRack:
+	ReloadDelay: 34
+	Range: 11c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 115
+			HeavyFrame: 85
+
+MeridianArc:
+	ReloadDelay: 48
+	Range: 11c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 545
+		Versus:
+			LightFrame: 95
+			HeavyFrame: 120
+
+SkiffLance:
+	ReloadDelay: 18
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 140
+		Versus:
+			LightFrame: 125
+			HeavyFrame: 60
+
+CaissonMortar:
+	ReloadDelay: 72
+	Range: 8c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 640
+		Versus:
+			LightFrame: 80
+			HeavyFrame: 135
+
+HalyardRail:
+	ReloadDelay: 28
+	Range: 13c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 245
+		Versus:
+			LightFrame: 110
+			HeavyFrame: 95
+
+BoltArm:
+	ReloadDelay: 20
+	Range: 3c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 110
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+EmberArm:
+	ReloadDelay: 44
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 240
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+FlintArm:
+	ReloadDelay: 62
+	Range: 4c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 380
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+IngotArm:
+	ReloadDelay: 40
+	Range: 3c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+CipherArm:
+	ReloadDelay: 16
+	Range: 4c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 90
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+FilamentArm:
+	ReloadDelay: 38
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 210
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+QuillArm:
+	ReloadDelay: 70
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 340
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+VectorArm:
+	ReloadDelay: 56
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 420
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+HammerArm:
+	ReloadDelay: 70
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 640
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+MandrelArm:
+	ReloadDelay: 30
+	Range: 4c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 260
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+TongsArm:
+	ReloadDelay: 52
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 450
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+BollardArm:
+	ReloadDelay: 96
+	Range: 7c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 820
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+GirderArm:
+	ReloadDelay: 22
+	Range: 3c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 180
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+CleatArm:
+	ReloadDelay: 46
+	Range: 8c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 330
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+ApexArm:
+	ReloadDelay: 66
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 590
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+ChordArm:
+	ReloadDelay: 24
+	Range: 4c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 200
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+FacetArm:
+	ReloadDelay: 44
+	Range: 7c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 380
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+NodeArm:
+	ReloadDelay: 84
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 730
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+SpireArm:
+	ReloadDelay: 18
+	Range: 5c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 140
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+TrussArm:
+	ReloadDelay: 40
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+GaleArm:
+	ReloadDelay: 40
+	Range: 5c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 340
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+ThermalArm:
+	ReloadDelay: 26
+	Range: 4c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 210
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+UpdraftArm:
+	ReloadDelay: 64
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 560
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+ZephyrArm:
+	ReloadDelay: 22
+	Range: 6c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 180
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+CirrusArm:
+	ReloadDelay: 46
+	Range: 8c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 400
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+SpectraArm:
+	ReloadDelay: 18
+	Range: 5c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 130
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+RedoubtArm:
+	ReloadDelay: 60
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 520
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+RavelinArm:
+	ReloadDelay: 88
+	Range: 8c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 780
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+CasemateArm:
+	ReloadDelay: 36
+	Range: 5c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 300
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+TrellisArm:
+	ReloadDelay: 28
+	Range: 7c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 240
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+ObeliskArm:
+	ReloadDelay: 80
+	Range: 10c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 690
+		Versus:
+			LightFrame: 82
+			HeavyFrame: 132
+
+BeaconArm:
+	ReloadDelay: 44
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 360
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+DredgerArm:
+	ReloadDelay: 36
+	Range: 6c0
+	Burst: 2
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 380
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+TenderArm:
+	ReloadDelay: 20
+	Range: 7c0
+	Burst: 3
+	BurstDelays: 4
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 160
+		Versus:
+			LightFrame: 120
+			HeavyFrame: 62
+
+PontoonArm:
+	ReloadDelay: 52
+	Range: 12c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 470
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 105
+
+RedoubtArm:
+	ReloadDelay: 54
+	Range: 6c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 600
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115
+
+RavelinArm:
+	ReloadDelay: 63
+	Range: 5c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 712
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115
+
+CasemateArm:
+	ReloadDelay: 47
+	Range: 7c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 512
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115
+
+TrellisArm:
+	ReloadDelay: 44
+	Range: 9c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 475
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115
+
+ObeliskArm:
+	ReloadDelay: 57
+	Range: 8c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 637
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115
+
+BeaconArm:
+	ReloadDelay: 48
+	Range: 12c0
+	TargetActorCenter: true
+	Projectile: InstantHit
+	Warhead@Damage: TargetDamage
+		Damage: 525
+		Versus:
+			LightFrame: 100
+			HeavyFrame: 115

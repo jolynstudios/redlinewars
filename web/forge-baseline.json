@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "repository": "nillo/redline-wars",
+  "tag": "forge-baseline-v8",
+  "asset": "redline-forge-baseline-v8.tar.zst",
+  "sha256": "2df15875f98f5c7c2dfe09b1e8673033c67bab15112482a42fdff1aee7afbba9",
+  "bytes": 427018448,
+  "blender": "5.2.1"
+}

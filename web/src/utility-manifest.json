@@ -1,0 +1,169 @@
+{
+  "schema": 1,
+  "states": {
+    "v01.d2": {
+      "sourceSha256": "7ad9b2d49bab62c51e3f53badc38f75c7b62125f9a0cd2aa508d60fb6dbe7fd5",
+      "emitters": [
+        {
+          "id": "water-service",
+          "kind": "pressurized-water",
+          "bone": 0,
+          "positionM": [
+            0.81566,
+            0.182,
+            0.49536
+          ],
+          "direction": [
+            0.96996,
+            0.223091,
+            0.096996
+          ],
+          "breakRadiusM": 0.008,
+          "jetSpeedMps": 2.4,
+          "pressureScale": 0.55,
+          "state": "Medium",
+          "availableStates": [
+            "Medium",
+            "Heavy"
+          ],
+          "sourceGeometry": "Utility buried supply and open rupture",
+          "supply": "buried municipal service",
+          "wetting": {
+            "target": "terrain-or-deck-raycast",
+            "previewGroundImpactM": [
+              1.40878,
+              0.0,
+              0.55467
+            ],
+            "maximumRadiusM": 0.38,
+            "maximumReachM": 1.1
+          },
+          "stopPolicy": "No continuous jet in Critical/Dead; permit a short residual dribble only when transitioning from a supplied live state."
+        }
+      ]
+    },
+    "v01.d3": {
+      "sourceSha256": "16cb3e0685701eafc46d35a834f866905f2b9b2e1052c221bd128252df2fb267",
+      "emitters": [
+        {
+          "id": "water-service",
+          "kind": "pressurized-water",
+          "bone": 0,
+          "positionM": [
+            0.7976,
+            0.104,
+            0.49536
+          ],
+          "direction": [
+            0.718386,
+            0.688453,
+            0.099776
+          ],
+          "breakRadiusM": 0.015000000000000001,
+          "jetSpeedMps": 2.8,
+          "pressureScale": 0.78,
+          "state": "Heavy",
+          "availableStates": [
+            "Medium",
+            "Heavy"
+          ],
+          "sourceGeometry": "Utility buried supply and open rupture",
+          "supply": "buried municipal service",
+          "wetting": {
+            "target": "terrain-or-deck-raycast",
+            "previewGroundImpactM": [
+              1.68481,
+              0.0,
+              0.61858
+            ],
+            "maximumRadiusM": 0.55,
+            "maximumReachM": 1.1
+          },
+          "stopPolicy": "No continuous jet in Critical/Dead; permit a short residual dribble only when transitioning from a supplied live state."
+        }
+      ]
+    },
+    "v03.d2": {
+      "sourceSha256": "72d1ae59c272a25e59c34d05449e4390b422415a57693d5a9432d97fbeef6c0a",
+      "emitters": [
+        {
+          "id": "water-service",
+          "kind": "pressurized-water",
+          "bone": 0,
+          "positionM": [
+            2.28036,
+            0.182,
+            1.584
+          ],
+          "direction": [
+            0.96996,
+            0.223091,
+            0.096996
+          ],
+          "breakRadiusM": 0.008,
+          "jetSpeedMps": 2.4,
+          "pressureScale": 0.55,
+          "state": "Medium",
+          "availableStates": [
+            "Medium",
+            "Heavy"
+          ],
+          "sourceGeometry": "Utility buried supply and open rupture",
+          "supply": "buried municipal service",
+          "wetting": {
+            "target": "terrain-or-deck-raycast",
+            "previewGroundImpactM": [
+              2.87348,
+              0.0,
+              1.64331
+            ],
+            "maximumRadiusM": 0.38,
+            "maximumReachM": 1.1
+          },
+          "stopPolicy": "No continuous jet in Critical/Dead; permit a short residual dribble only when transitioning from a supplied live state."
+        }
+      ]
+    },
+    "v03.d3": {
+      "sourceSha256": "86007c5d16ab3391ec9466b4bc902db26f73e5e5cdc279aec78254522643b21d",
+      "emitters": [
+        {
+          "id": "water-service",
+          "kind": "pressurized-water",
+          "bone": 0,
+          "positionM": [
+            2.258,
+            0.104,
+            1.584
+          ],
+          "direction": [
+            0.718386,
+            0.688453,
+            0.099776
+          ],
+          "breakRadiusM": 0.019999999999999997,
+          "jetSpeedMps": 2.8,
+          "pressureScale": 0.78,
+          "state": "Heavy",
+          "availableStates": [
+            "Medium",
+            "Heavy"
+          ],
+          "sourceGeometry": "Utility buried supply and open rupture",
+          "supply": "buried municipal service",
+          "wetting": {
+            "target": "terrain-or-deck-raycast",
+            "previewGroundImpactM": [
+              3.14521,
+              0.0,
+              1.70722
+            ],
+            "maximumRadiusM": 0.55,
+            "maximumReachM": 1.1
+          },
+          "stopPolicy": "No continuous jet in Critical/Dead; permit a short residual dribble only when transitioning from a supplied live state."
+        }
+      ]
+    }
+  }
+}

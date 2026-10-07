@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!--
+Copyright (c) The OpenRA Developers and Contributors
+This file is part of OpenRA, which is free software. It is made
+available to you under the terms of the GNU General Public License
+as published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version. For more
+information, see COPYING.
+-->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>OpenRA Browser</title>
+	<style>
+		html, body { height: 100%; }
+		body { font-family: ui-monospace, monospace; background: #101418; color: #d8dee4; margin: 0; overflow: hidden; }
+		button, input, textarea { font: inherit; }
+
+		/* The game fills the window; the drawing buffer is sized from this CSS size at boot. */
+		#openra-canvas { position: fixed; inset: 0; display: block; width: 100vw; height: 100vh; background: #000; image-rendering: pixelated; cursor: none; touch-action: none; outline: none; }
+		#openra-canvas[hidden] { display: none; }
+
+		/* Boot/lifecycle banner: visible while loading or after a crash/stop, hidden during play. */
+		#status { position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%); z-index: 30; max-width: min(46rem, 92vw); padding: .8rem 1.2rem; font-weight: bold; text-align: center; background: rgba(16, 20, 24, .88); border: 1px solid #46515c; }
+		body.game-running #status { display: none; }
+
+		#overlay-buttons { position: fixed; top: .6rem; right: .6rem; z-index: 40; display: flex; gap: .4rem; }
+		#overlay-buttons button { padding: .35rem .75rem; color: #d8dee4; background: rgba(23, 29, 35, .88); border: 1px solid #46515c; cursor: pointer; }
+		#overlay-buttons button:hover { background: rgba(35, 43, 51, .95); }
+
+		/* Debug drawer: page title + boot/tick log, hidden until toggled. */
+		#debug-panel { position: fixed; top: 0; left: 0; bottom: 0; z-index: 35; width: min(560px, 90vw); overflow: auto; padding: 1rem; background: rgba(13, 17, 23, .93); border-right: 1px solid #30363d; }
+		#debug-panel[hidden] { display: none; }
+		#debug-panel h1 { font-size: 1rem; margin: 0 0 .8rem; }
+		#log { white-space: pre-wrap; font-size: 12px; color: #9aa5b1; margin: 0; }
+
+		#content-installer { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 45; width: min(42rem, 92vw); max-height: 90vh; overflow: auto; margin: 0; padding: 1rem; border: 1px solid #46515c; background: #171d23; }
+		#content-installer h2 { margin-top: 0; }
+		#content-installer progress { width: 100%; margin: .5rem 0 1rem; }
+		#content-installer button { padding: .55rem .8rem; }
+		.content-installer-note { color: #9aa5b1; font-size: .8rem; }
+
+		/* Agent operator console: right-side overlay column, toggleable via the Agents button. */
+		#agent-mode { position: fixed; top: 0; right: 0; bottom: 0; z-index: 25; width: min(460px, 92vw); overflow-y: auto; margin: 0; padding: 3rem 1rem 1rem; border: none; border-left: 1px solid #46515c; background: rgba(13, 17, 23, .92); }
+		#agent-mode[hidden] { display: none; }
+		#agent-mode h2, #agent-mode h3 { margin: 0 0 .7rem; }
+		.agent-setup-grid { display: grid; grid-template-columns: 1fr; gap: .7rem 1rem; }
+		.agent-setup-grid label { display: flex; flex-direction: column; gap: .25rem; color: #9aa5b1; font-size: .8rem; }
+		.agent-setup-grid input, .agent-setup-grid textarea { color: #e6edf3; background: #0d1117; border: 1px solid #46515c; padding: .45rem; }
+		.agent-setup-grid textarea { min-height: 6rem; resize: vertical; }
+		.agent-wide { grid-column: 1 / -1; }
+		.agent-checkbox { flex-direction: row !important; align-items: center; color: #ffcc66 !important; }
+		.agent-controls { display: flex; align-items: center; flex-wrap: wrap; gap: .7rem; margin: .8rem 0; }
+		.agent-controls button { padding: .55rem .8rem; }
+		#agent-estimate, #agent-match-status { color: #9aa5b1; font-size: .8rem; }
+		#agent-live-spend { color: #7ee787; font-weight: bold; }
+		.agent-error { color: #ff7b72 !important; }
+		#agent-feeds { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1rem; }
+		.agent-feed { height: 22rem; overflow: auto; padding: .5rem; border: 1px solid #30363d; background: #0d1117; }
+		.agent-bubble { margin: 0 0 .65rem; padding: .6rem; border-radius: .7rem; border: 1px solid #30363d; background: #161b22; box-shadow: inset 3px 0 var(--agent-seat-color, transparent); }
+		.agent-bubble strong { display: block; margin-bottom: .3rem; color: #c9d1d9; }
+		.agent-bubble-body { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .78rem; line-height: 1.35; }
+		.agent-bubble-observing { border-color: #1f6feb; }
+		.agent-bubble-thinking { border-color: #a371f7; }
+		.agent-bubble-decided { border-color: #d29922; }
+		.agent-bubble-result { border-color: #238636; }
+		.agent-bubble-error { border-color: #da3633; }
+		.agent-bubble-fallback { border-color: #d2a8ff; background: #21152d; }
+		.agent-bubble-alert { border-color: #f0883e; background: #2a1a10; }
+		.agent-bubble-reflex { border-color: #58a6ff; }
+		.agent-bubble-doctrine { border-color: #bc8cff; background: #1d1530; }
+
+		/* Agent-vs-agent spectator layout (?Host.AgentMode=1): the agent consoles flank
+		   the game instead of overlapping it. body.spectator is set by the first inline
+		   script before the game boots, so the drawing buffer is sized to the center
+		   column. Without the URL parameter none of the rules below apply (the two
+		   spectator-slide keyframes are inert unless referenced from here). */
+		body.spectator { display: grid; grid-template-columns: 320px minmax(0, 1fr) 320px; grid-template-rows: minmax(0, 1fr); }
+		body.spectator #openra-canvas { position: static; grid-column: 2; grid-row: 1; width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; background: #101418; }
+		body.spectator #overlay-buttons { top: 2.5rem; right: calc(320px + .6rem); }
+
+		/* Side bars: identity card, thought feed, mini metrics strip (elements are
+		   built and re-parented by openra-agent-mode.js at initialize). */
+		body.spectator .spectator-bar { grid-row: 1; display: flex; flex-direction: column; gap: .6rem; min-height: 0; padding: .6rem; overflow: hidden; background: #0d1117; }
+		body.spectator #spectator-bar-1 { grid-column: 1; border-right: 1px solid #30363d; }
+		body.spectator #spectator-bar-2 { grid-column: 3; border-left: 1px solid #30363d; }
+		body.spectator .agent-card { flex: none; padding: .6rem; border: 1px solid #30363d; border-top: 4px solid var(--agent-seat-color, #30363d); background: #161b22; font-size: .78rem; }
+		body.spectator .agent-card strong { display: block; margin-bottom: .3rem; color: #c9d1d9; }
+		body.spectator .agent-card div { color: #9aa5b1; overflow-wrap: anywhere; }
+		body.spectator .agent-card .agent-card-model { color: #e6edf3; }
+		body.spectator .spectator-bar .agent-feed { flex: 1 1 0; height: auto; min-height: 0; }
+		body.spectator .agent-metrics { flex: none; padding: .45rem .6rem; border: 1px solid #30363d; background: #161b22; color: #9aa5b1; font-size: .72rem; overflow-wrap: anywhere; }
+
+		/* The operator console becomes a centered pre-match panel over the game column;
+		   openra-agent-mode.js hides it while a match runs and moves the feed divs into
+		   the side bars (their old wrappers stay hidden). */
+		body.spectator #agent-mode { top: 50%; left: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); width: clamp(320px, calc(100vw - 680px), 46rem); max-height: 88vh; padding: 1rem; border: 1px solid #46515c; }
+		body.spectator .agent-setup-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+		body.spectator #agent-feeds { display: none; }
+
+		/* Thin non-interactive status strip over the top of the game column, mirroring
+		   #agent-match-status and #agent-live-spend. */
+		body.spectator #spectator-topbar { position: fixed; top: 0; left: 320px; right: 320px; z-index: 20; display: flex; justify-content: space-between; gap: 1rem; padding: .35rem .8rem; background: rgba(13, 17, 23, .85); border-bottom: 1px solid #30363d; font-size: .78rem; pointer-events: none; }
+		body.spectator #spectator-topbar-status { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+		body.spectator #spectator-topbar-spend { color: #7ee787; font-weight: bold; white-space: nowrap; }
+
+		/* ALERT/REFLEX toasts slide in beside the acting agent's bar; newest at the
+		   bottom, capped at three per side by openra-agent-mode.js. */
+		body.spectator .spectator-toasts { position: fixed; top: 5rem; z-index: 22; display: flex; flex-direction: column; gap: .5rem; width: min(20rem, 26vw); pointer-events: none; }
+		body.spectator #spectator-toasts-1 { left: calc(320px + .8rem); }
+		body.spectator #spectator-toasts-2 { right: calc(320px + .8rem); }
+		body.spectator .spectator-toast { padding: .5rem .7rem; border: 1px solid #f0883e; background: rgba(42, 26, 16, .92); font-size: .75rem; overflow-wrap: anywhere; animation: spectator-slide-left .25s ease-out; }
+		body.spectator .spectator-toast strong { display: block; margin-bottom: .25rem; color: #c9d1d9; }
+		body.spectator .spectator-toast-reflex { border-color: #58a6ff; background: rgba(16, 26, 40, .92); }
+		body.spectator #spectator-toasts-2 .spectator-toast { animation-name: spectator-slide-right; }
+		@keyframes spectator-slide-left { from { transform: translateX(-1.5rem); opacity: 0; } }
+		@keyframes spectator-slide-right { from { transform: translateX(1.5rem); opacity: 0; } }
+	</style>
+</head>
+<body>
+	<script>
+		// Agent-vs-agent spectator layout: the drawing buffer is sized from the
+		// canvas's CSS size when the game boots, so the three-column grid must
+		// be in force before anything is measured. Agent mode is declared in
+		// the URL, so it can be decided here, before the first layout pass.
+		if (new URLSearchParams(location.search).get('Host.AgentMode') === '1') {
+			document.body.classList.add('spectator');
+		}
+	</script>
+	<canvas id="openra-canvas" width="1280" height="720" tabindex="0" hidden></canvas>
+	<div id="status">Starting…</div>
+	<div id="overlay-buttons">
+		<button id="agents-toggle" type="button" hidden>Agents</button>
+		<button id="debug-toggle" type="button">Debug</button>
+	</div>
+	<aside id="debug-panel" hidden>
+		<h1>OpenRA — browser port</h1>
+		<pre id="log"></pre>
+	</aside>
+	<section id="agent-mode" hidden>
+		<h2>Agent vs Agent</h2>
+		<p class="content-installer-note">Two Mastra agents control normal bot-owned orders. Model calls cost money and are nondeterministic.</p>
+		<ol class="content-installer-note">
+			<li>Start the local sidecar from <code>OpenRA.Browser/agent-sidecar</code> with <code>npm ci &amp;&amp; npm run build &amp;&amp; npm start</code>.</li>
+			<li>Paste your OpenRouter key below (and an optional second key). Keys go only to a dedicated Worker and the sidecar, and are cleared on stop; they are never stored, logged, or written to replays.</li>
+			<li>Review the model ids, editable prompts, estimate, and pre-filled $2 cap. Start performs a fresh estimate before launching the skirmish.</li>
+		</ol>
+		<div class="agent-setup-grid">
+			<label class="agent-wide">Agent preset
+				<select id="agent-preset">
+					<option value="rts-agent" selected>RTS Agent — full play stack: strategy arsenal + doctrine executor + exact action guidance (recommended)</option>
+					<option value="raw">Raw benchmark — model-only turns, no compiled assists (scored track; thinking costs tempo)</option>
+				</select>
+			</label>
+			<label class="agent-wide">Mastra sidecar URL
+				<input id="agent-sidecar" type="url" value="http://127.0.0.1:4112" spellcheck="false">
+			</label>
+			<label>Shared OpenRouter key
+				<input id="agent-key-1" type="password" autocomplete="off" spellcheck="false">
+			</label>
+			<label>Optional Agent 2 key
+				<input id="agent-key-2" type="password" autocomplete="off" spellcheck="false" placeholder="Uses shared key when blank">
+			</label>
+			<label>Agent 1 model
+				<input id="agent-model-1" value="x-ai/grok-4.5" spellcheck="false">
+			</label>
+			<label>Agent 2 model
+				<input id="agent-model-2" value="x-ai/grok-4.5" spellcheck="false">
+			</label>
+			<label>Agent 1 faction
+				<input id="agent-faction-1" value="russia" spellcheck="false">
+			</label>
+			<label>Agent 2 faction
+				<input id="agent-faction-2" value="russia" spellcheck="false">
+			</label>
+			<label>Opponent seat
+				<select id="agent-opponent">
+					<option value="" selected>Second LLM commander</option>
+					<option value="normal">OpenRA Normal AI</option>
+				</select>
+			</label>
+			<label>Agent 1 reasoning effort
+				<select id="agent-effort-1">
+					<option value="" selected>Provider default</option>
+					<option value="low">Low (tempo)</option>
+					<option value="medium">Medium</option>
+					<option value="high">High (deep)</option>
+				</select>
+			</label>
+			<label>Agent 2 reasoning effort
+				<select id="agent-effort-2">
+					<option value="" selected>Provider default</option>
+					<option value="low">Low (tempo)</option>
+					<option value="medium">Medium</option>
+					<option value="high">High (deep)</option>
+				</select>
+			</label>
+			<label>Agent 1 system prompt
+				<textarea id="agent-prompt-1" maxlength="8000"></textarea>
+			</label>
+			<label>Agent 2 system prompt
+				<textarea id="agent-prompt-2" maxlength="8000"></textarea>
+			</label>
+			<label>Skirmish map UID or filename (blank = default)
+				<input id="agent-map" spellcheck="false">
+			</label>
+			<label>Decision interval (world ticks)
+				<input id="agent-interval" type="number" min="25" max="2500" step="25" value="250">
+			</label>
+			<label>Maximum output tokens/request
+				<input id="agent-max-tokens" type="number" min="128" max="8192" step="128" value="2048">
+			</label>
+			<label>Hard total match spend cap (USD)
+				<input id="agent-spend-cap" type="number" min="0.01" max="1000" step="0.25" value="2.00">
+			</label>
+			<label>Agent 1 spend cap (USD)
+				<input id="agent-spend-cap-1" type="number" min="0.01" max="1000" step="0.25" value="1.00">
+			</label>
+			<label>Agent 2 spend cap (USD)
+				<input id="agent-spend-cap-2" type="number" min="0.01" max="1000" step="0.25" value="1.00">
+			</label>
+			<label class="agent-wide agent-checkbox">
+				<input id="agent-omniscient" type="checkbox">
+				Omniscient research observations (explicit opt-in; recorded in replay metadata)
+			</label>
+			<label class="agent-wide agent-checkbox">
+				<input id="agent-advisor-fallback" type="checkbox">
+				Assisted advisor fallback (default off; every fallback is labeled and scored separately)
+			</label>
+			<label class="agent-wide agent-checkbox">
+				<input id="agent-prematch-planning" type="checkbox" checked>
+				Pre-match planning (agents commit a build plan and standing policy before tick 0)
+			</label>
+		</div>
+		<div class="agent-controls">
+			<button id="agent-estimate-button" type="button">Estimate cost</button>
+			<button id="agent-start" type="button">Start Agent match</button>
+			<button id="agent-stop" type="button" disabled>Stop</button>
+			<span>Live spend: <span id="agent-live-spend">$0.0000</span></span>
+		</div>
+		<div id="agent-estimate">Estimate assumes 20 decisions per agent and 8k input tokens per decision.</div>
+		<div id="agent-match-status" role="status"></div>
+		<div id="agent-feeds" hidden>
+			<section><h3>Agent 1 thoughts</h3><div id="agent-feed-1" class="agent-feed" aria-live="polite"></div></section>
+			<section><h3>Agent 2 thoughts</h3><div id="agent-feed-2" class="agent-feed" aria-live="polite"></div></section>
+		</div>
+	</section>
+	<script>
+		document.getElementById('debug-toggle').addEventListener('click', () => {
+			const panel = document.getElementById('debug-panel');
+			panel.hidden = !panel.hidden;
+		});
+
+		if (new URLSearchParams(location.search).get('Host.AgentMode') === '1') {
+			const agentsToggle = document.getElementById('agents-toggle');
+			agentsToggle.hidden = false;
+			agentsToggle.addEventListener('click', () => {
+				const panel = document.getElementById('agent-mode');
+				panel.hidden = !panel.hidden;
+			});
+		}
+	</script>
+	<script type="module" src="./main.js"></script>
+</body>
+</html>

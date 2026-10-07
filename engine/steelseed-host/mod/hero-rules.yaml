@@ -1,0 +1,37 @@
+# A distinct hero actor. Positive Allied prerequisite prevents unknown factions inheriting him.
+JACKSON:
+	Inherits: E3
+	Buildable:
+		Queue: Infantry
+		BuildAtProductionType: Soldier
+		BuildPaletteOrder: 35
+		Prerequisites: ~tent, ~infantry.allies, ~techlevel.infonly
+		BuildLimit: 1
+		BuildDuration: 1050
+		Description: actor-jackson.description
+	Valued:
+		Cost: 700
+	Tooltip:
+		Name: actor-jackson.name
+	Selectable:
+		Class: JACKSON
+	-ChangesHealth@ELITE:
+	-ChangesHealth@HOSPITAL:
+	AttackFrontal:
+		Armaments: primary, secondary, air
+	Health:
+		HP: 5000
+	RenderSprites:
+		Image: e3
+	Armament@PRIMARY:
+		Weapon: JacksonRifle
+	Armament@SECONDARY:
+		Weapon: JacksonRocket
+	Armament@AIR:
+		Name: air
+		Weapon: RedEye
+		LocalOffset: 0,0,555
+	Armament@GARRISONED:
+		Weapon: JacksonRifle
+	Armament@GARRISONEDSECONDARY:
+		Weapon: JacksonRocket

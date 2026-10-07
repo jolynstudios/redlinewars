@@ -1,0 +1,3195 @@
+{
+  "date": "2026-09-19T06:12:12.096Z",
+  "url": "http://127.0.0.1:8562/steelseed/index.html?mode=game&platform=null",
+  "out": "web/shots/nightlights",
+  "reference": null,
+  "field": {
+    "x": 0,
+    "y": 60,
+    "w": 1140,
+    "h": 780
+  },
+  "cameraHeight": 11,
+  "runs": {
+    "on": {
+      "views": {
+        "base": {
+          "x": 62.5,
+          "z": 15.5,
+          "label": "mcv"
+        },
+        "village": {
+          "x": 54,
+          "z": 54,
+          "label": "v04",
+          "neighbours": 13
+        },
+        "owned": [
+          "mcv",
+          "e1",
+          "e1",
+          "e1",
+          "e3",
+          "e3",
+          "jeep",
+          "1tnk",
+          "2tnk",
+          "2tnk",
+          "2tnk"
+        ],
+        "civilians": 20
+      },
+      "errors": [],
+      "inventory": [
+        {
+          "id": "1tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "2tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "3tnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "4tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "afld",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 11
+        },
+        {
+          "id": "afld.ukraine",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 11
+        },
+        {
+          "id": "apc",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "apwr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "arty",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "asianhut",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "asianhut.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "asianhut.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "asianhut.d3",
+          "emitters": 51,
+          "lights": 51,
+          "glows": 1
+        },
+        {
+          "id": "atef",
+          "emitters": 26,
+          "lights": 26,
+          "glows": 1
+        },
+        {
+          "id": "atef.d1",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 0
+        },
+        {
+          "id": "atek",
+          "emitters": 26,
+          "lights": 26,
+          "glows": 1
+        },
+        {
+          "id": "atek.d1",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 0
+        },
+        {
+          "id": "barr",
+          "emitters": 37,
+          "lights": 37,
+          "glows": 1
+        },
+        {
+          "id": "bio",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "c1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c10",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c11",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c3",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c4",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c5",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c6",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c7",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c8",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c9",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "chan",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "ctnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "delphi",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "dog",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "dome",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 5
+        },
+        {
+          "id": "dome.d1",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d2",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d3",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d4",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 5
+        },
+        {
+          "id": "domf.d1",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d2",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d3",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d4",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dtrk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "e1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e1r1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e3",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e3r1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e4",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e6",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e7",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "einstein",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "facf",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "facf.d1",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "facf.d2",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "facf.d3",
+          "emitters": 30,
+          "lights": 30,
+          "glows": 3
+        },
+        {
+          "id": "facf.d4",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "facf.d5",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fact",
+          "emitters": 38,
+          "lights": 36,
+          "glows": 5
+        },
+        {
+          "id": "fact.colorpicker",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "fact.d1",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "fact.d2",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "fact.d3",
+          "emitters": 30,
+          "lights": 30,
+          "glows": 3
+        },
+        {
+          "id": "fact.d4",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fact.d5",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fapw",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "fcom",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "fix",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "fixf",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "fpwr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "ftrk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "gap",
+          "emitters": 7,
+          "lights": 7,
+          "glows": 3
+        },
+        {
+          "id": "gnrl",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "harv",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "hosp",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "hosp.d1",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 4
+        },
+        {
+          "id": "hpad",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 11
+        },
+        {
+          "id": "hpad.d1",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "hpad.d2",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "hpad.d3",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "jeep",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "kenn",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 1
+        },
+        {
+          "id": "kenn.d1",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 0
+        },
+        {
+          "id": "mcv",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mech",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "medi",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "mgg",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "miss",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "mnly",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mnly.ap",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mnly.at",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mrj",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "powr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "proc",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 1
+        },
+        {
+          "id": "qtnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "rushouse",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "rushouse.d1",
+          "emitters": 69,
+          "lights": 69,
+          "glows": 1
+        },
+        {
+          "id": "rushouse.d2",
+          "emitters": 79,
+          "lights": 79,
+          "glows": 1
+        },
+        {
+          "id": "rushouse.d3",
+          "emitters": 41,
+          "lights": 41,
+          "glows": 1
+        },
+        {
+          "id": "shok",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "snowhut",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "snowhut.d1",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "snowhut.d2",
+          "emitters": 107,
+          "lights": 107,
+          "glows": 1
+        },
+        {
+          "id": "snowhut.d3",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "spef",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "spen",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "spy",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "spy.england",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "stek",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "stnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "syrd",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 3
+        },
+        {
+          "id": "tecn",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "tecn2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "thf",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "truk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "ttnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "v01",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 2
+        },
+        {
+          "id": "v01.d1",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v01.d2",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v01.d3",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 1
+        },
+        {
+          "id": "v02",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v02.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v02.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v02.d3",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "v03",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v03.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v03.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v03.d3",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "v04",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v04.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v04.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v04.d3",
+          "emitters": 127,
+          "lights": 127,
+          "glows": 1
+        },
+        {
+          "id": "v05",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v05.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v05.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v05.d3",
+          "emitters": 83,
+          "lights": 83,
+          "glows": 1
+        },
+        {
+          "id": "v06",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v06.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v06.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v06.d3",
+          "emitters": 59,
+          "lights": 59,
+          "glows": 1
+        },
+        {
+          "id": "v07",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v07.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v07.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v07.d3",
+          "emitters": 65,
+          "lights": 65,
+          "glows": 1
+        },
+        {
+          "id": "v08",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v08.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v08.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v08.d3",
+          "emitters": 49,
+          "lights": 49,
+          "glows": 1
+        },
+        {
+          "id": "v09",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v09.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v09.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v09.d3",
+          "emitters": 49,
+          "lights": 49,
+          "glows": 1
+        },
+        {
+          "id": "v10",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v10.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v10.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v10.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v11",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v11.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v11.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v11.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v19",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "v20",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v20.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v20.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v20.d3",
+          "emitters": 115,
+          "lights": 115,
+          "glows": 1
+        },
+        {
+          "id": "v21",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v21.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v21.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v21.d3",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v22",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v22.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v22.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v22.d3",
+          "emitters": 59,
+          "lights": 59,
+          "glows": 1
+        },
+        {
+          "id": "v23",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v23.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v23.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v23.d3",
+          "emitters": 63,
+          "lights": 63,
+          "glows": 1
+        },
+        {
+          "id": "v24",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v24.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v24.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v24.d3",
+          "emitters": 109,
+          "lights": 109,
+          "glows": 1
+        },
+        {
+          "id": "v25",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 2
+        },
+        {
+          "id": "v25.d1",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v25.d2",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v25.d3",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 1
+        },
+        {
+          "id": "v26",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v26.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v26.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v26.d3",
+          "emitters": 83,
+          "lights": 83,
+          "glows": 1
+        },
+        {
+          "id": "v27",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v27.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v27.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v27.d3",
+          "emitters": 41,
+          "lights": 41,
+          "glows": 1
+        },
+        {
+          "id": "v28",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v28.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v28.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v28.d3",
+          "emitters": 39,
+          "lights": 39,
+          "glows": 1
+        },
+        {
+          "id": "v29",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v29.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v29.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v29.d3",
+          "emitters": 51,
+          "lights": 51,
+          "glows": 1
+        },
+        {
+          "id": "v2rl",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "v30",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v30.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v30.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v30.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v31",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v31.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v31.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v31.d3",
+          "emitters": 71,
+          "lights": 71,
+          "glows": 1
+        },
+        {
+          "id": "v32",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v32.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v32.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v32.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v33",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v33.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v33.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v33.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v34",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v34.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v34.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v34.d3",
+          "emitters": 39,
+          "lights": 39,
+          "glows": 1
+        },
+        {
+          "id": "v35",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v35.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v35.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v35.d3",
+          "emitters": 63,
+          "lights": 63,
+          "glows": 1
+        },
+        {
+          "id": "v36",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v36.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v36.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v36.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v37",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v37.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v37.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v37.d3",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "weaf",
+          "emitters": 25,
+          "lights": 25,
+          "glows": 1
+        },
+        {
+          "id": "weap",
+          "emitters": 25,
+          "lights": 25,
+          "glows": 1
+        },
+        {
+          "id": "zombie",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        }
+      ],
+      "base-day": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 720,
+        "sunIntensity": 4.032213151692459,
+        "moonIntensity": 0,
+        "drawCalls": 135,
+        "triangles": 789027,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 171,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 94.145,
+        "p50": 102,
+        "p90": 121,
+        "p99": 135,
+        "p999": 163,
+        "max": 221,
+        "clipped": 0,
+        "file": "web/shots/nightlights/base-day-lamps-on.png"
+      },
+      "base-night": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 0,
+        "sunIntensity": 0.7784061968326569,
+        "moonIntensity": 0.7784061968326569,
+        "drawCalls": 135,
+        "triangles": 789469,
+        "lights": 46,
+        "lightsDropped": 0,
+        "particles": 392,
+        "night": {
+          "factor": 1,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 94,
+          "lights": 46,
+          "windowLights": 0,
+          "glows": 58,
+          "held": 94,
+          "overflow": 0
+        },
+        "meanLuma": 17.868,
+        "p50": 15,
+        "p90": 35,
+        "p99": 113,
+        "p999": 166,
+        "max": 255,
+        "clipped": 1,
+        "file": "web/shots/nightlights/base-night-lamps-on.png"
+      },
+      "village-day": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 720,
+        "sunIntensity": 4.032213151692459,
+        "moonIntensity": 0,
+        "drawCalls": 119,
+        "triangles": 321327,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 497,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 54.668,
+        "p50": 46,
+        "p90": 101,
+        "p99": 174,
+        "p999": 176,
+        "max": 202,
+        "clipped": 0,
+        "file": "web/shots/nightlights/village-day-lamps-on.png"
+      },
+      "village-night": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 0,
+        "sunIntensity": 0.7784061968326569,
+        "moonIntensity": 0.7784061968326569,
+        "drawCalls": 119,
+        "triangles": 321687,
+        "lights": 40,
+        "lightsDropped": 0,
+        "particles": 677,
+        "night": {
+          "factor": 1,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 283,
+          "lights": 40,
+          "windowLights": 24,
+          "glows": 16,
+          "held": 40,
+          "overflow": 0
+        },
+        "meanLuma": 10.61,
+        "p50": 6,
+        "p90": 27,
+        "p99": 158,
+        "p999": 212,
+        "max": 255,
+        "clipped": 5,
+        "file": "web/shots/nightlights/village-night-lamps-on.png"
+      }
+    },
+    "off": {
+      "views": {
+        "base": {
+          "x": 62.5,
+          "z": 15.5,
+          "label": "mcv"
+        },
+        "village": {
+          "x": 54,
+          "z": 54,
+          "label": "v04",
+          "neighbours": 13
+        },
+        "owned": [
+          "mcv",
+          "e1",
+          "e1",
+          "e1",
+          "e3",
+          "e3",
+          "jeep",
+          "1tnk",
+          "2tnk",
+          "2tnk",
+          "2tnk"
+        ],
+        "civilians": 20
+      },
+      "errors": [],
+      "inventory": [
+        {
+          "id": "1tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "2tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "3tnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "4tnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "afld",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 11
+        },
+        {
+          "id": "afld.ukraine",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 11
+        },
+        {
+          "id": "apc",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "apwr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "arty",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "asianhut",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "asianhut.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "asianhut.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "asianhut.d3",
+          "emitters": 51,
+          "lights": 51,
+          "glows": 1
+        },
+        {
+          "id": "atef",
+          "emitters": 26,
+          "lights": 26,
+          "glows": 1
+        },
+        {
+          "id": "atef.d1",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 0
+        },
+        {
+          "id": "atek",
+          "emitters": 26,
+          "lights": 26,
+          "glows": 1
+        },
+        {
+          "id": "atek.d1",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 0
+        },
+        {
+          "id": "barr",
+          "emitters": 37,
+          "lights": 37,
+          "glows": 1
+        },
+        {
+          "id": "bio",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "c1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c10",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c11",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c3",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c4",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c5",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c6",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c7",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c8",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "c9",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "chan",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "ctnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "delphi",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "dog",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "dome",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 5
+        },
+        {
+          "id": "dome.d1",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d2",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d3",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dome.d4",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 5
+        },
+        {
+          "id": "domf.d1",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d2",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d3",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "domf.d4",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "dtrk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "e1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e1r1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e3",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e3r1",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e4",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e6",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "e7",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "einstein",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "facf",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "facf.d1",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "facf.d2",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "facf.d3",
+          "emitters": 30,
+          "lights": 30,
+          "glows": 3
+        },
+        {
+          "id": "facf.d4",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "facf.d5",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fact",
+          "emitters": 38,
+          "lights": 36,
+          "glows": 5
+        },
+        {
+          "id": "fact.colorpicker",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "fact.d1",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "fact.d2",
+          "emitters": 34,
+          "lights": 34,
+          "glows": 3
+        },
+        {
+          "id": "fact.d3",
+          "emitters": 30,
+          "lights": 30,
+          "glows": 3
+        },
+        {
+          "id": "fact.d4",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fact.d5",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 3
+        },
+        {
+          "id": "fapw",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "fcom",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "fix",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "fixf",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "fpwr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "ftrk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "gap",
+          "emitters": 7,
+          "lights": 7,
+          "glows": 3
+        },
+        {
+          "id": "gnrl",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "harv",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "hosp",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "hosp.d1",
+          "emitters": 12,
+          "lights": 12,
+          "glows": 4
+        },
+        {
+          "id": "hpad",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 11
+        },
+        {
+          "id": "hpad.d1",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "hpad.d2",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "hpad.d3",
+          "emitters": 10,
+          "lights": 10,
+          "glows": 10
+        },
+        {
+          "id": "jeep",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "kenn",
+          "emitters": 5,
+          "lights": 5,
+          "glows": 1
+        },
+        {
+          "id": "kenn.d1",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 0
+        },
+        {
+          "id": "mcv",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mech",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "medi",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "mgg",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "miss",
+          "emitters": 17,
+          "lights": 17,
+          "glows": 5
+        },
+        {
+          "id": "mnly",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mnly.ap",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mnly.at",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "mrj",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "powr",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "proc",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 1
+        },
+        {
+          "id": "qtnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "rushouse",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "rushouse.d1",
+          "emitters": 69,
+          "lights": 69,
+          "glows": 1
+        },
+        {
+          "id": "rushouse.d2",
+          "emitters": 79,
+          "lights": 79,
+          "glows": 1
+        },
+        {
+          "id": "rushouse.d3",
+          "emitters": 41,
+          "lights": 41,
+          "glows": 1
+        },
+        {
+          "id": "shok",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "snowhut",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "snowhut.d1",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "snowhut.d2",
+          "emitters": 107,
+          "lights": 107,
+          "glows": 1
+        },
+        {
+          "id": "snowhut.d3",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "spef",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "spen",
+          "emitters": 2,
+          "lights": 2,
+          "glows": 2
+        },
+        {
+          "id": "spy",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "spy.england",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "stek",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "stnk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "syrd",
+          "emitters": 3,
+          "lights": 3,
+          "glows": 3
+        },
+        {
+          "id": "tecn",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "tecn2",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "thf",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "truk",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "ttnk",
+          "emitters": 5,
+          "lights": 3,
+          "glows": 2
+        },
+        {
+          "id": "v01",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 2
+        },
+        {
+          "id": "v01.d1",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v01.d2",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v01.d3",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 1
+        },
+        {
+          "id": "v02",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v02.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v02.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v02.d3",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "v03",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v03.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v03.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v03.d3",
+          "emitters": 91,
+          "lights": 91,
+          "glows": 1
+        },
+        {
+          "id": "v04",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v04.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v04.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v04.d3",
+          "emitters": 127,
+          "lights": 127,
+          "glows": 1
+        },
+        {
+          "id": "v05",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v05.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v05.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v05.d3",
+          "emitters": 83,
+          "lights": 83,
+          "glows": 1
+        },
+        {
+          "id": "v06",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v06.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v06.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v06.d3",
+          "emitters": 59,
+          "lights": 59,
+          "glows": 1
+        },
+        {
+          "id": "v07",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v07.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v07.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v07.d3",
+          "emitters": 65,
+          "lights": 65,
+          "glows": 1
+        },
+        {
+          "id": "v08",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v08.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v08.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v08.d3",
+          "emitters": 49,
+          "lights": 49,
+          "glows": 1
+        },
+        {
+          "id": "v09",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v09.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v09.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v09.d3",
+          "emitters": 49,
+          "lights": 49,
+          "glows": 1
+        },
+        {
+          "id": "v10",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v10.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v10.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v10.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v11",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v11.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v11.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v11.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v19",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        },
+        {
+          "id": "v20",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v20.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v20.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v20.d3",
+          "emitters": 115,
+          "lights": 115,
+          "glows": 1
+        },
+        {
+          "id": "v21",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v21.d1",
+          "emitters": 119,
+          "lights": 119,
+          "glows": 1
+        },
+        {
+          "id": "v21.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v21.d3",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v22",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v22.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v22.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v22.d3",
+          "emitters": 59,
+          "lights": 59,
+          "glows": 1
+        },
+        {
+          "id": "v23",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v23.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v23.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v23.d3",
+          "emitters": 63,
+          "lights": 63,
+          "glows": 1
+        },
+        {
+          "id": "v24",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v24.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v24.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v24.d3",
+          "emitters": 109,
+          "lights": 109,
+          "glows": 1
+        },
+        {
+          "id": "v25",
+          "emitters": 14,
+          "lights": 14,
+          "glows": 2
+        },
+        {
+          "id": "v25.d1",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v25.d2",
+          "emitters": 11,
+          "lights": 11,
+          "glows": 1
+        },
+        {
+          "id": "v25.d3",
+          "emitters": 13,
+          "lights": 13,
+          "glows": 1
+        },
+        {
+          "id": "v26",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v26.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v26.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v26.d3",
+          "emitters": 83,
+          "lights": 83,
+          "glows": 1
+        },
+        {
+          "id": "v27",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v27.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v27.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v27.d3",
+          "emitters": 41,
+          "lights": 41,
+          "glows": 1
+        },
+        {
+          "id": "v28",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v28.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v28.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v28.d3",
+          "emitters": 39,
+          "lights": 39,
+          "glows": 1
+        },
+        {
+          "id": "v29",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v29.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v29.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v29.d3",
+          "emitters": 51,
+          "lights": 51,
+          "glows": 1
+        },
+        {
+          "id": "v2rl",
+          "emitters": 7,
+          "lights": 3,
+          "glows": 4
+        },
+        {
+          "id": "v30",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v30.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v30.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v30.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v31",
+          "emitters": 114,
+          "lights": 114,
+          "glows": 2
+        },
+        {
+          "id": "v31.d1",
+          "emitters": 95,
+          "lights": 95,
+          "glows": 1
+        },
+        {
+          "id": "v31.d2",
+          "emitters": 103,
+          "lights": 103,
+          "glows": 1
+        },
+        {
+          "id": "v31.d3",
+          "emitters": 71,
+          "lights": 71,
+          "glows": 1
+        },
+        {
+          "id": "v32",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v32.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v32.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v32.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v33",
+          "emitters": 86,
+          "lights": 86,
+          "glows": 2
+        },
+        {
+          "id": "v33.d1",
+          "emitters": 77,
+          "lights": 77,
+          "glows": 1
+        },
+        {
+          "id": "v33.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v33.d3",
+          "emitters": 57,
+          "lights": 57,
+          "glows": 1
+        },
+        {
+          "id": "v34",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v34.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v34.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v34.d3",
+          "emitters": 39,
+          "lights": 39,
+          "glows": 1
+        },
+        {
+          "id": "v35",
+          "emitters": 82,
+          "lights": 82,
+          "glows": 2
+        },
+        {
+          "id": "v35.d1",
+          "emitters": 67,
+          "lights": 67,
+          "glows": 1
+        },
+        {
+          "id": "v35.d2",
+          "emitters": 75,
+          "lights": 75,
+          "glows": 1
+        },
+        {
+          "id": "v35.d3",
+          "emitters": 63,
+          "lights": 63,
+          "glows": 1
+        },
+        {
+          "id": "v36",
+          "emitters": 62,
+          "lights": 62,
+          "glows": 2
+        },
+        {
+          "id": "v36.d1",
+          "emitters": 53,
+          "lights": 53,
+          "glows": 1
+        },
+        {
+          "id": "v36.d2",
+          "emitters": 55,
+          "lights": 55,
+          "glows": 1
+        },
+        {
+          "id": "v36.d3",
+          "emitters": 33,
+          "lights": 33,
+          "glows": 1
+        },
+        {
+          "id": "v37",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 2
+        },
+        {
+          "id": "v37.d1",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v37.d2",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "v37.d3",
+          "emitters": 128,
+          "lights": 128,
+          "glows": 1
+        },
+        {
+          "id": "weaf",
+          "emitters": 25,
+          "lights": 25,
+          "glows": 1
+        },
+        {
+          "id": "weap",
+          "emitters": 25,
+          "lights": 25,
+          "glows": 1
+        },
+        {
+          "id": "zombie",
+          "emitters": 1,
+          "lights": 1,
+          "glows": 1
+        }
+      ],
+      "base-day": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 720,
+        "sunIntensity": 4.032213151692459,
+        "moonIntensity": 0,
+        "drawCalls": 135,
+        "triangles": 789027,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 171,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 94.153,
+        "p50": 102,
+        "p90": 121,
+        "p99": 135,
+        "p999": 163,
+        "max": 226,
+        "clipped": 0,
+        "file": "web/shots/nightlights/base-day-lamps-off.png"
+      },
+      "base-night": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 0,
+        "sunIntensity": 0.7784061968326569,
+        "moonIntensity": 0.7784061968326569,
+        "drawCalls": 135,
+        "triangles": 789353,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 334,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 11.994,
+        "p50": 14,
+        "p90": 21,
+        "p99": 28,
+        "p999": 53,
+        "max": 177,
+        "clipped": 0,
+        "file": "web/shots/nightlights/base-night-lamps-off.png"
+      },
+      "village-day": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 720,
+        "sunIntensity": 4.032213151692459,
+        "moonIntensity": 0,
+        "drawCalls": 119,
+        "triangles": 321329,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 498,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 54.673,
+        "p50": 46,
+        "p90": 101,
+        "p99": 174,
+        "p999": 176,
+        "max": 202,
+        "clipped": 0,
+        "file": "web/shots/nightlights/village-day-lamps-off.png"
+      },
+      "village-night": {
+        "tick": 283,
+        "actors": 206,
+        "timeOfDay": 0,
+        "sunIntensity": 0.7784061968326569,
+        "moonIntensity": 0.7784061968326569,
+        "drawCalls": 119,
+        "triangles": 321655,
+        "lights": 0,
+        "lightsDropped": 0,
+        "particles": 661,
+        "night": {
+          "factor": 0,
+          "assets": 239,
+          "emitters": 11073,
+          "candidates": 0,
+          "lights": 0,
+          "windowLights": 0,
+          "glows": 0,
+          "held": 0,
+          "overflow": 0
+        },
+        "meanLuma": 4.306,
+        "p50": 1,
+        "p90": 18,
+        "p99": 54,
+        "p999": 60,
+        "max": 178,
+        "clipped": 0,
+        "file": "web/shots/nightlights/village-night-lamps-off.png"
+      }
+    }
+  }
+}

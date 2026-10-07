@@ -1,0 +1,166 @@
+{
+	"schemaVersion": 1,
+	"id": "allied-fast-boom",
+	"version": 2,
+	"title": "Allied Fast Boom",
+	"faction": "allies",
+	"archetype": "boom",
+	"openingSummary": "POWR>TENT>PROC>PROC; defend and scout; WEAP>DOME>FIX; add a second WEAP only after income stabilizes.",
+	"when": [
+		"Rush distance is long, multiple ore fields exist, and no all-in force is known."
+	],
+	"avoidWhen": [
+		"A pre-vehicle rush or repeated harvester pressure is already visible."
+	],
+	"effectiveAgainst": [
+		"economy.passive",
+		"defense.turtle",
+		"game.long"
+	],
+	"hardCounteredBy": [
+		"rush.pre-vehicle",
+		"attack.harvester",
+		"attack.power-denial"
+	],
+	"requirements": [],
+	"opening": [
+		"POWR, then TENT with 3 E1 scouts",
+		"PROC #1 then PROC #2 quickly — each brings a free harvester",
+		"WEAP > DOME > FIX; keep POWR ahead of the drain",
+		"Second WEAP only after income is stable; ATEK -> GPS late"
+	],
+	"composition": [
+		"4-5 harvesters on two refineries — the whole strategy is this line",
+		"8-12 2TNK as the core once the boom stands; 5 E3 for AA",
+		"2 JEEP as raiders and scouts"
+	],
+	"execution": [
+		"queueMission sweep early and wide — a boom without eyes dies to the first all-in",
+		"Foot raiders: crush them with the harvester; vehicles: let it flee",
+		"queueMission strike posture=raid targetPriority=economy with the JEEPs while booming — trade their income for yours",
+		"At 2-WEAP mass: strike posture=assault targetPriority=production",
+		"pursue on enemyRetreating; reinforce the front with every fresh pair"
+	],
+	"targets": {
+		"harvesters": 5,
+		"refineries": 2,
+		"missionDriven": true
+	},
+	"phases": [
+		{
+			"name": "expand",
+			"objective": "Establish two refineries while maintaining scouting and a minimal defensive screen.",
+			"actionTypes": [
+				"queueBuildPlan",
+				"assignGroup",
+				"queueMission",
+				"setPolicy"
+			],
+			"claimRefs": [
+				"RF1",
+				"RF2",
+				"CH1"
+			]
+		},
+		{
+			"name": "convert",
+			"objective": "Convert the income lead into parallel vehicle production and sustained pressure.",
+			"actionTypes": [
+				"queueBuildPlan",
+				"queueMission",
+				"controlMission"
+			],
+			"claimRefs": [
+				"RF3",
+				"DC1",
+				"CH2"
+			]
+		}
+	],
+	"abortTransitions": [
+		{
+			"when": "A material force arrives before vehicle production or harvesters are repeatedly denied.",
+			"transitionTo": "allied-e3-mass",
+			"claimRefs": [
+				"RF1",
+				"CH1"
+			]
+		}
+	],
+	"retrieval": {
+		"situationIds": [
+			"T3.harv",
+			"E1.power"
+		],
+		"counterRows": [
+			"economy",
+			"anti-armor",
+			"power-denial"
+		],
+		"actorCodes": [
+			"powr",
+			"tent",
+			"proc",
+			"harv",
+			"weap",
+			"fix",
+			"2tnk"
+		]
+	},
+	"claims": [
+		{
+			"id": "RF1",
+			"epistemic": "ruleFact",
+			"statement": "A refinery provides a harvester and is the core ore-processing structure.",
+			"sourceRefs": [
+				"actor:proc",
+				"actor:harv",
+				"source:mods/ra/rules/structures.yaml#proc"
+			]
+		},
+		{
+			"id": "RF2",
+			"epistemic": "ruleFact",
+			"statement": "Low power slows production by a factor of three.",
+			"sourceRefs": [
+				"actor:powr",
+				"source:mods/ra/rules/defaults.yaml#low-power-production"
+			]
+		},
+		{
+			"id": "RF3",
+			"epistemic": "ruleFact",
+			"statement": "Additional production buildings reduce build time for their queue with diminishing returns.",
+			"sourceRefs": [
+				"actor:weap",
+				"source:mods/ra/rules/player.yaml#production-queue"
+			]
+		},
+		{
+			"id": "DC1",
+			"epistemic": "derivedComparison",
+			"statement": "A second refinery and later second factory trade opening defense for stronger sustained production.",
+			"sourceRefs": [
+				"actor:proc",
+				"actor:weap",
+				"counter:economy"
+			]
+		},
+		{
+			"id": "CH1",
+			"epistemic": "curatedHeuristic",
+			"statement": "Cancel the expansion sequence when an early all-in is confirmed and buy the nearest valid counter.",
+			"sourceRefs": [
+				"corpus:majorslack#fast-expand-defense"
+			]
+		},
+		{
+			"id": "CH2",
+			"epistemic": "curatedHeuristic",
+			"statement": "Spend a proven income lead on production and army rather than accumulating idle cash.",
+			"sourceRefs": [
+				"corpus:mtactics#economic-conversion"
+			]
+		}
+	]
+}

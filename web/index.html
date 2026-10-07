@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="data:," />
+		<title>Redline Wars — public source edition</title>
+		<meta name="description" content="A minimal local skirmish interface for the OpenRA-based simulation and WebGPU renderer." />
+		<style>
+			* { box-sizing: border-box; }
+			html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #17191c; color: #f4f4f4; font: 14px/1.5 system-ui, sans-serif; }
+			#viewport { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: crosshair; }
+			.host-hidden { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+			#sim-alarm { position: fixed; inset: auto 0 70px; text-align: center; background: #17191c; }
+			#boot { position: fixed; inset: 0; display: grid; place-items: center; background: #17191c; z-index: 10; }
+			#boot[hidden], #boot.done { display: none; }
+			.boot-content { width: min(420px, 90vw); }
+			h1 { font-size: 19px; font-weight: 600; }
+			.meter { height: 5px; background: #41454a; }
+			#boot-bar { height: 100%; width: 0; background: white; }
+			#boot-fail { margin-top: 20px; }
+			#boot-fail-raw { max-height: 200px; overflow: auto; white-space: pre-wrap; }
+			button { font: inherit; padding: 8px 14px; cursor: pointer; }
+			a { color: inherit; }
+			#legal { position: fixed; top: 10px; right: 12px; z-index: 20; max-width: min(420px, 90vw); padding: 6px 10px; background: #17191ced; border: 1px solid #53575c; font-size: 12px; }
+			#legal summary { cursor: pointer; }
+			#legal p { margin: 8px 0; }
+		</style>
+	</head>
+	<body>
+		<div id="status" class="host-hidden" aria-hidden="true"></div>
+		<pre id="log" class="host-hidden" aria-hidden="true"></pre>
+		<canvas id="openra-canvas" class="host-hidden" hidden aria-hidden="true"></canvas>
+		<canvas id="viewport" aria-label="Battlefield"></canvas>
+		<div id="sim-alarm" hidden role="alert"></div>
+		<div id="boot" role="status" aria-label="Loading source edition" data-state="loading">
+			<div class="boot-content">
+				<h1>Redline Wars · source edition</h1>
+				<p id="boot-status">Initialising</p>
+				<div class="meter"><div id="boot-bar" class="indeterminate"></div></div>
+				<p><span id="boot-percent">0</span>%</p>
+				<div id="boot-fail" hidden>
+					<p>The application could not start.</p>
+					<pre id="boot-fail-raw"></pre>
+					<button id="boot-retry" type="button">Reload</button>
+				</div>
+			</div>
+		</div>
+		<details id="legal">
+			<summary>Licence &amp; source</summary>
+			<p>© 2026 Jolyn Studios. Based on OpenRA, © The OpenRA Developers and Contributors.</p>
+			<p>This software is provided under GNU GPL version 3 or later, without warranty. Third-party components retain their respective licences.</p>
+			<p><a href="./licenses/COPYING-GPLv3.txt" target="_blank" rel="noopener">GNU GPL</a> · <a href="./licenses/THIRD-PARTY-NOTICES.txt" target="_blank" rel="noopener">Third-party notices</a> · <a href="https://github.com/jolynstudios/redlinewars" target="_blank" rel="noopener">Source code</a></p>
+		</details>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
+</html>

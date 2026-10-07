@@ -1,0 +1,219 @@
+{
+	"schemaVersion": 1,
+	"calibrationId": "golden-score-v1-frozen-test-vector",
+	"status": "frozen-test-vector",
+	"scope": "golden-score-gate-only",
+	"productionDefault": false,
+	"specVersion": "benchmark-lockstep-v1",
+	"description": "Synthetic frozen calibration used only to prove ledger-to-scorer wiring. It is not the candidate leaderboard calibration.",
+	"weights": {
+		"liveHpAdjustedPower": 0.25,
+		"structuresByValue": 0.2,
+		"economy": 0.2,
+		"unitReplacementValue": 0.15,
+		"tech": 0.1,
+		"regionControl": 0.1
+	},
+	"drawBand": 0.1,
+	"floors": {
+		"liveHpAdjustedPower": 2500,
+		"structuresByValue": 1200,
+		"economy": 5000,
+		"unitReplacementValue": 600,
+		"tech": 4000,
+		"regionControl": 2
+	},
+	"controlRegionHash": "78dc45d7a98d2588571d94d7006fc2453444bc84f5374cf780478fa32610062d",
+	"regions": [
+		{
+			"id": "golden-east",
+			"cells": [
+				{
+					"x": 61,
+					"y": 33
+				},
+				{
+					"x": 62,
+					"y": 33
+				}
+			]
+		},
+		{
+			"id": "golden-north",
+			"cells": [
+				{
+					"x": 46,
+					"y": 24
+				},
+				{
+					"x": 46,
+					"y": 25
+				}
+			]
+		},
+		{
+			"id": "golden-south",
+			"cells": [
+				{
+					"x": 51,
+					"y": 40
+				},
+				{
+					"x": 51,
+					"y": 41
+				}
+			]
+		},
+		{
+			"id": "golden-west",
+			"cells": [
+				{
+					"x": 34,
+					"y": 31
+				},
+				{
+					"x": 34,
+					"y": 32
+				}
+			]
+		}
+	],
+	"expectedScenarios": [
+		{
+			"id": "opening-economy-tech-split",
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 1500,
+						"structuresByValue": 0,
+						"economy": 3462,
+						"unitReplacementValue": 0,
+						"tech": 2800,
+						"regionControl": 1.5
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 1600,
+						"structuresByValue": 0,
+						"economy": 3099.5,
+						"unitReplacementValue": 0,
+						"tech": 2200,
+						"regionControl": 1
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				}
+			],
+			"score": 0.03498478662186312,
+			"verdict": "Draw",
+			"terminalOverride": false
+		},
+		{
+			"id": "strategic-structure-breakthrough",
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 1800,
+						"structuresByValue": 2300,
+						"economy": 5352.25,
+						"unitReplacementValue": 700,
+						"tech": 5000,
+						"regionControl": 2.5
+					},
+					"ownStructureLossValue": 500,
+					"ownCombatUnitLossValue": 400
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 900,
+						"structuresByValue": 500,
+						"economy": 3044.75,
+						"unitReplacementValue": 400,
+						"tech": 1800,
+						"regionControl": 1
+					},
+					"ownStructureLossValue": 2300,
+					"ownCombatUnitLossValue": 700
+				}
+			],
+			"score": 0.39768992399974057,
+			"verdict": "SideA",
+			"terminalOverride": false
+		},
+		{
+			"id": "counterattack-unequal-intervals",
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 700,
+						"structuresByValue": 0,
+						"economy": 3198.25,
+						"unitReplacementValue": 800,
+						"tech": 1800,
+						"regionControl": 1.625
+					},
+					"ownStructureLossValue": 1000,
+					"ownCombatUnitLossValue": 800
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 1900,
+						"structuresByValue": 1000,
+						"economy": 4211.75,
+						"unitReplacementValue": 800,
+						"tech": 4300,
+						"regionControl": 2.125
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 800
+				}
+			],
+			"score": -0.3637231477179708,
+			"verdict": "SideB",
+			"terminalOverride": false
+		},
+		{
+			"id": "terminal-override-contradictory-ledger",
+			"seats": [
+				{
+					"ordinal": 0,
+					"components": {
+						"liveHpAdjustedPower": 3000,
+						"structuresByValue": 2000,
+						"economy": 5893,
+						"unitReplacementValue": 1200,
+						"tech": 5200,
+						"regionControl": 4
+					},
+					"ownStructureLossValue": 0,
+					"ownCombatUnitLossValue": 0
+				},
+				{
+					"ordinal": 1,
+					"components": {
+						"liveHpAdjustedPower": 500,
+						"structuresByValue": 0,
+						"economy": 1794,
+						"unitReplacementValue": 0,
+						"tech": 1200,
+						"regionControl": 0
+					},
+					"ownStructureLossValue": 2000,
+					"ownCombatUnitLossValue": 1200
+				}
+			],
+			"score": -1,
+			"verdict": "SideB",
+			"terminalOverride": true
+		}
+	]
+}

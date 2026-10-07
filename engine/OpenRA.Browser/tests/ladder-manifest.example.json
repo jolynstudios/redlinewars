@@ -1,0 +1,17 @@
+{
+	"era": "era1",
+	"entrants": [
+		{ "model": "openai/gpt-5-mini", "effort": "low" },
+		{ "model": "google/gemini-2.5-flash", "effort": "low" },
+		{ "model": "x-ai/grok-4.5", "effort": "low" }
+	],
+	"tracks": ["raw", "assisted"],
+	"gamesPerPairing": 3,
+	"assistedPlaybook": "classic-doctrine",
+	"faction": "russia",
+	"capPerGameUsd": "2.00",
+	"budgetTotalUsd": 20,
+	"minutesPerGame": 45,
+	"cooldownSeconds": 30,
+	"resultsDir": "match-results"
+}

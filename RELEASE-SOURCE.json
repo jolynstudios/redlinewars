@@ -1,0 +1,26 @@
+{
+  "schema": 2,
+  "edition": "public-source",
+  "product": "Redline Wars public source edition",
+  "version": "0.1.0",
+  "modified": "2026-10-07",
+  "sourceCommit": "20b18c5ac10f0b8fdb3b8ca8697668f433a5b0e4",
+  "sourceCommitDate": "2026-10-07T08:24:57+02:00",
+  "baselinePublicCommit": "b74053108cbbcea54920cc38a7067119864f7f09",
+  "provenance": "Core source extracted read-only from the recorded upstream commit using the earlier public exporter, then adapted in this separate checkout. sourceCommit identifies upstream input, not the resulting public source tree or a production binary.",
+  "excludedFeatures": [
+    "production HUD and GUI",
+    "JOA companion app and integration",
+    "Freehop integration",
+    "production artwork and audio",
+    "production hosting configuration and credentials"
+  ],
+  "publicChanges": [
+    "Restore earlier public build, architecture and applicable licensing documentation.",
+    "Keep the shared OpenRA/WASM engine and WebGPU/procedural presentation pipeline.",
+    "Provide a neutral minimal interface and generated stand-in assets.",
+    "Remove excluded optional client, desktop and host features and dependencies.",
+    "Package only this public edition; release tools have no production deployment action."
+  ],
+  "artifactIdentity": "Builds of this edition use their own public Git commit, tag and computed simBuild. No correspondence with separate production binaries is asserted."
+}

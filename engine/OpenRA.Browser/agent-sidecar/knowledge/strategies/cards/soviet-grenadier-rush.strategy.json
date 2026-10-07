@@ -1,0 +1,165 @@
+{
+	"schemaVersion": 1,
+	"id": "soviet-grenadier-rush",
+	"version": 2,
+	"title": "Grenadier Flood",
+	"faction": "soviets",
+	"archetype": "rush",
+	"openingSummary": "POWR>BARR; stream split E2 waves; PROC after the first force; scout before committing.",
+	"when": [
+		"Short land routes and no completed anti-infantry defense line is known."
+	],
+	"avoidWhen": [
+		"Flame towers, Tesla coils, pillboxes, or vehicle-crush lanes are already confirmed."
+	],
+	"effectiveAgainst": [
+		"economy.tech-greed",
+		"structure.wood",
+		"structure.concrete"
+	],
+	"hardCounteredBy": [
+		"defense.anti-infantry",
+		"vehicle.crush",
+		"weapon.machine-gun"
+	],
+	"requirements": [
+		"landRoute"
+	],
+	"opening": [
+		"POWR then BARR immediately; income limits you early, not build speed",
+		"Stream E2 grenadiers continuously; the first two walk out as scouts",
+		"PROC after ~8 E2 so the flood never starves",
+		"Second BARR only if cash idles"
+	],
+	"composition": [
+		"12+ E2 grenadiers as the flood core",
+		"2 DOG as an anti-scout/anti-spy screen",
+		"Split into 2-3 waves — E2 death explosions chain-kill a single clump"
+	],
+	"execution": [
+		"queueMission sweep on the scout pair from minute one",
+		"queueMission pincer posture=assault targetPriority=production with two wings onto their FACT/WEAP",
+		"If defenses appear: strike targetPriority=economy instead — grenades erase power plants and refineries",
+		"reinforce the attacking squads with the fresh E2 stream every wave",
+		"pursue on enemyRetreating to convert a repelled defense into kills",
+		"Foot raiders at home: order your harvester over them — it crushes infantry"
+	],
+	"targets": {
+		"harvesters": 2,
+		"refineries": 1,
+		"missionDriven": true
+	},
+	"phases": [
+		{
+			"name": "opening",
+			"objective": "Create early map contact and a critical mass before vehicle production stabilizes.",
+			"actionTypes": [
+				"queueBuildPlan",
+				"assignGroup",
+				"queueMission"
+			],
+			"claimRefs": [
+				"RF1",
+				"RF2",
+				"CH1"
+			]
+		},
+		{
+			"name": "pressure",
+			"objective": "Use separated assault legs against production or exposed economy; keep reinforcements grouped.",
+			"actionTypes": [
+				"queueMission",
+				"controlMission"
+			],
+			"claimRefs": [
+				"RF3",
+				"DC1",
+				"CH2"
+			]
+		}
+	],
+	"abortTransitions": [
+		{
+			"when": "Two grouped attacks fail against confirmed anti-infantry defenses or vehicles.",
+			"transitionTo": "soviet-tank-pressure",
+			"claimRefs": [
+				"RF3",
+				"CH2"
+			]
+		}
+	],
+	"retrieval": {
+		"situationIds": [
+			"T1.base",
+			"T2.reinforcement",
+			"O2"
+		],
+		"counterRows": [
+			"anti-infantry",
+			"crush",
+			"structure-damage"
+		],
+		"actorCodes": [
+			"powr",
+			"barr",
+			"proc",
+			"e2",
+			"dog"
+		]
+	},
+	"claims": [
+		{
+			"id": "RF1",
+			"epistemic": "ruleFact",
+			"statement": "Grenadiers are produced from the Soviet infantry queue and cost 150 credits.",
+			"sourceRefs": [
+				"actor:e2",
+				"source:mods/ra/rules/infantry.yaml#e2"
+			]
+		},
+		{
+			"id": "RF2",
+			"epistemic": "ruleFact",
+			"statement": "Grenade damage is effective against wood and concrete but reduced against vehicle armor.",
+			"sourceRefs": [
+				"weapon:Grenade",
+				"source:mods/ra/weapons/infantry.yaml#Grenade"
+			]
+		},
+		{
+			"id": "RF3",
+			"epistemic": "ruleFact",
+			"statement": "Grenadiers can explode on death, making tight friendly clumps hazardous.",
+			"sourceRefs": [
+				"actor:e2",
+				"source:mods/ra/rules/infantry.yaml#e2-explodes"
+			]
+		},
+		{
+			"id": "DC1",
+			"epistemic": "derivedComparison",
+			"statement": "Separated mission legs reduce death-explosion overlap while preserving simultaneous pressure.",
+			"sourceRefs": [
+				"actor:e2",
+				"counter:anti-infantry",
+				"source:mission:pincer"
+			]
+		},
+		{
+			"id": "CH1",
+			"epistemic": "curatedHeuristic",
+			"statement": "Scout with the first small group instead of sending the complete production stream blind.",
+			"sourceRefs": [
+				"corpus:smtactics#grenadier-scouting"
+			]
+		},
+		{
+			"id": "CH2",
+			"epistemic": "curatedHeuristic",
+			"statement": "Stop the all-in after two failed waves and convert the economy into vehicle pressure.",
+			"sourceRefs": [
+				"corpus:majorslack#rush-abort"
+			]
+		}
+	]
+}

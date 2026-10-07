@@ -1,0 +1,114 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>OpenRA.Browser</AssemblyName>
+    <RootNamespace>OpenRA</RootNamespace>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <WasmMainJSPath>wwwroot/main.js</WasmMainJSPath>
+    <OutputPath>$(EngineRootPath)/bin-browser-legacy</OutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <!-- STEELSEED tier 0. ARCHITECTURE.md §11 carries the measurements these produce.
+         Both were `false` upstream: the engine ran on the Mono interpreter, which the
+         project's own audit flagged as its top perf blocker (21.8 s to a ticking world).
+         Set via properties so `-p:RunAOTCompilation=false` still gives a fast dev loop. -->
+    <PublishTrimmed Condition="'$(PublishTrimmed)' == ''">true</PublishTrimmed>
+    <RunAOTCompilation Condition="'$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
+    <!-- Stays false, permanently. The simulation is single-threaded and must remain so;
+         procedural generation runs in JS Web Workers instead (ARCHITECTURE.md §6). -->
+    <WasmEnableThreads>false</WasmEnableThreads>
+    <EmccMaximumHeapSize>2147483648</EmccMaximumHeapSize>
+
+    <!-- Trimming is safe for the framework but NOT for OpenRA: the engine discovers
+         traits, activities and widgets by reflecting over assembly types named in
+         MiniYAML. A trimmer cannot see those references, so it would strip most of the
+         mod's runtime surface and fail at load with an unhelpful "trait not found".
+         The OpenRA assemblies are therefore rooted whole (see TrimmerRootAssembly
+         below) and only the BCL is trimmed. -->
+    <TrimMode>partial</TrimMode>
+    <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
+    <!-- MUST stay false. An earlier Tier 0 revision set this true on the reasoning that,
+         with no .mix parsing and a DOM/CSS HUD, nothing in the C# layer formats
+         culture-sensitive text. That was wrong: it missed Fluent, the localisation system.
+         OpenRA.Game/Manifest.cs:77 hardcodes `FluentCulture = "en"` and FluentProvider
+         constructs a real CultureInfo from it for EVERY mod, so invariant mode fails at
+         boot with CultureNotFoundException: CultureNotSupportedInInvariantMode — before
+         the game reaches a single frame.
+
+         Manifest.cs is frozen under rule 2, so this cannot be worked around mod-side.
+         Cost is icudt at ~1.1 MB, which the size gate absorbs comfortably (§11.1). -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Root the reflection-driven assemblies whole. Removing any of these trades a
+         smaller bundle for a runtime failure that only appears when a specific trait
+         is first instantiated — i.e. mid-match, not at boot. -->
+    <TrimmerRootAssembly Include="OpenRA.Game" />
+    <TrimmerRootAssembly Include="OpenRA.Mods.Common" />
+    <TrimmerRootAssembly Include="OpenRA.Mods.Cnc" />
+    <TrimmerRootAssembly Include="OpenRA.Mods.Steelseed" />
+    <TrimmerRootAssembly Include="OpenRA.Platforms.Browser" />
+    <TrimmerRootAssembly Include="OpenRA.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Public Domain and GPLv3+ compatible, but the 1.26.12 NuGet omits its license file.
+         If this spike becomes a shipped backend, retain upstream attribution in the third-party notices. -->
+    <PackageReference Include="StbTrueTypeSharp" Version="1.26.12" />
+    <ProjectReference Include="../OpenRA.Game/OpenRA.Game.csproj" />
+    <ProjectReference Include="../OpenRA.Mods.Common/OpenRA.Mods.Common.csproj" />
+    <ProjectReference Include="../OpenRA.Mods.Cnc/OpenRA.Mods.Cnc.csproj" />
+    <ProjectReference Include="../OpenRA.Mods.Steelseed/OpenRA.Mods.Steelseed.csproj" />
+    <ProjectReference Include="../OpenRA.Platforms.Browser/OpenRA.Platforms.Browser.csproj" />
+  </ItemGroup>
+	<ItemGroup>
+		<WasmExtraFilesToDeploy Include="wwwroot/index.html" />
+			<WasmExtraFilesToDeploy Include="wwwroot/agent-worker.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-agent-mode.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-audio.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-fs.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-gl.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-input.js" />
+			<WasmExtraFilesToDeploy Include="wwwroot/openra-steelseed-bridge.js" />
+	</ItemGroup>
+  <!-- Directory.Build.props strips all analyzers in Release for speed, which would also
+	       remove the System.Runtime.InteropServices.JavaScript source generator that emits
+	       the [JSImport]/[JSExport] interop. Keep analyzers for this project. -->
+	  <Target Name="DisableAnalyzers" />
+	  <ItemGroup>
+	    <!-- STEELSEED Tier 0 removed the legacy shader, mod, shellmap, and freeware-content
+	         VFS trees. -->
+	    <WasmFilesToIncludeInFileSystem Include="$(MSBuildThisFileDirectory)../VERSION" TargetPath="/openra/engine/VERSION" />
+		<WasmFilesToIncludeInFileSystem Include="$(MSBuildThisFileDirectory)AgentMode/agent-rules.yaml" TargetPath="/openra/browser/agent-rules.yaml" />
+
+		<!-- The steelseed mod tree. Program.cs sets Engine.EngineDir=/openra/engine, so the
+		     manifest must land at /openra/engine/mods/steelseed/ or Game.Mod=steelseed cannot
+		     resolve in a published AppBundle.
+
+		     A recursive glob rather than an explicit list: the mod is pure MiniYAML and grows
+		     a file at a time as the roster fills in, and an explicit list would silently drop
+		     new rules files with no build error — the failure would surface as a missing trait
+		     at match start.
+
+		     This embeds TEXT ONLY and that is not incidental. Rule 13 forbids any binary in
+		     the tree, and rulecheck.mjs enforces it over engine/mods; if a binary ever appears
+		     here, that gate fails before this glob can ship it. -->
+		<WasmFilesToIncludeInFileSystem
+			Include="$(MSBuildThisFileDirectory)../mods/steelseed/**/*"
+			TargetPath="/openra/engine/mods/steelseed/%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- Inert stub shaders. OpenRA.Game/Graphics/ShaderBindings.cs:52 does an
+		     unconditional File.ReadAllText(EngineDir/glsl/...) in its constructor, before any
+		     graphics context is consulted — so it fires even under NullPlatform, where the
+		     source is then discarded. OpenRA.Game is frozen (rule 2), so the read cannot be
+		     made conditional and the files must exist.
+
+		     These are NOT the inherited sprite shaders, which Tier 0 deleted on purpose. They
+		     are minimal STEELSEED-authored stubs that draw nothing. The real renderer is
+		     WGSL in web/src/render/. See engine/glsl/combined.vert for the full rationale. -->
+		<WasmFilesToIncludeInFileSystem
+			Include="$(MSBuildThisFileDirectory)../glsl/*"
+			TargetPath="/openra/engine/glsl/%(Filename)%(Extension)" />
+	  </ItemGroup>
+</Project>

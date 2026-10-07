@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "baselineSha256": "80ee284cbd245833fd660d802f0a68fbe68baa447fb561bc709c04adeee2be0a",
+  "overrides": [
+    {
+      "image": "fact",
+      "sequence": "make",
+      "baselineFrames": 32,
+      "appendedFrames": 64,
+      "frames": 96,
+      "frameMilliseconds": 40
+    }
+  ],
+  "purpose": "Steelseed authored yard closure: preserve original 32-frame unfold, append 64 frames; forward construction and reverse sell/undeploy both take 3.84 seconds at normal speed."
+}

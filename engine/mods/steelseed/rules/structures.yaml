@@ -1,0 +1,1146 @@
+^foundry_structure:
+	Selectable:
+		Class: Structure
+		Bounds: 2048, 1536
+		DecorationBounds: 2048, 1536
+		Voice:
+	Tooltip:
+		Name: actor-foundry-crucible-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+		LocalCenterOffset: 0,0,0
+		TerrainTypes: Clear
+	BodyOrientation:
+		QuantizedFacings: 1
+	Health:
+		HP: 4000
+	HitShape:
+		UseTargetableCellsOffsets: true
+		Type: Rectangle
+			TopLeft: -1024, -768
+			BottomRight: 1024, 768
+	Targetable:
+		TargetTypes: Ground, Structure
+	Armor:
+		Type: StructureFrame
+	Valued:
+		Cost: 800
+	Buildable:
+		Queue: FoundryBuilding
+		Prerequisites: foundry_crucible
+		BuildDuration: 150
+		Icon:
+		IconPalette:
+	ProvidesPrerequisite:
+	Power:
+		Amount: -10
+	MustBeDestroyed:
+		RequiredForShortGame: true
+
+^lattice_structure:
+	Selectable:
+		Class: Structure
+		Bounds: 1536, 2048
+		DecorationBounds: 1536, 2048
+		Voice:
+	Tooltip:
+		Name: actor-lattice-nexus-name
+	Building:
+		Footprint: xx x_ xx
+		Dimensions: 2,3
+		LocalCenterOffset: -128,0,0
+		TerrainTypes: Clear
+	BodyOrientation:
+		QuantizedFacings: 1
+	Health:
+		HP: 3600
+	HitShape:
+		UseTargetableCellsOffsets: true
+		Type: Polygon
+			Points: -640,-1024, 512,-896, 768,256, 128,1024, -640,768, -768,-256
+	Targetable:
+		TargetTypes: Ground, Structure
+	Armor:
+		Type: StructureFrame
+	Valued:
+		Cost: 800
+	Buildable:
+		Queue: LatticeBuilding
+		Prerequisites: lattice_nexus
+		BuildDuration: 150
+		Icon:
+		IconPalette:
+	ProvidesPrerequisite:
+	Power:
+		Amount: -10
+	MustBeDestroyed:
+		RequiredForShortGame: true
+
+foundry_crucible:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 2560
+		DecorationBounds: 3072, 2560
+	Tooltip:
+		Name: actor-foundry-crucible-name
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	Health:
+		HP: 9000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536, -1280
+			BottomRight: 1536, 1280
+	Valued:
+		Cost: 2000
+	Buildable:
+		# Removal, not an empty override. `^foundry_structure` / `^lattice_structure` set
+		# `Prerequisites: <the HQ itself>` because every other building needs the HQ; an
+		# empty `Prerequisites:` does NOT clear an inherited node in MiniYAML, so the HQ
+		# ended up requiring itself and ProductionQueue silently rejected StartProduction
+		# at BuildableItems().All(...) — the order was accepted and nothing was ever queued.
+		-Prerequisites:
+		BuildPaletteOrder: 10
+		BuildDuration: 300
+	Production:
+		Produces: FoundryBuilding
+	Power:
+		Amount: 50
+
+foundry_rivetworks:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 1792
+		DecorationBounds: 3072, 1792
+	Tooltip:
+		Name: actor-foundry-rivetworks-name
+	Building:
+		Footprint: xxx xxx
+		Dimensions: 3,2
+	Health:
+		HP: 4600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536, -896
+			BottomRight: 1536, 896
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 225
+	Production:
+		Produces: FoundryInfantry
+	Exit:
+		ExitCell: 1,2
+		ProductionTypes: FoundryInfantry
+	Power:
+		Amount: -20
+
+foundry_trackyard:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 5120, 1664
+		DecorationBounds: 5120, 1664
+	Tooltip:
+		Name: actor-foundry-trackyard-name
+	Building:
+		Footprint: xxxxx xxxxx
+		Dimensions: 5,2
+	Health:
+		HP: 6200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -2560, -832
+			BottomRight: 2560, 832
+	Valued:
+		Cost: 1400
+	Buildable:
+		Prerequisites: foundry_rivetworks
+		BuildPaletteOrder: 30
+		BuildDuration: 230
+	Production:
+		Produces: FoundryVehicle
+	Exit:
+		ExitCell: 1,3
+		ProductionTypes: FoundryVehicle
+	Power:
+		Amount: -30
+
+foundry_skyhook:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 2816
+		DecorationBounds: 3072, 2816
+	Tooltip:
+		Name: actor-foundry-skyhook-name
+	Building:
+		Footprint: xxx xxx xx_
+		Dimensions: 3,3
+	Health:
+		HP: 5200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536, -1408
+			BottomRight: 1536, 1408
+	Valued:
+		Cost: 1600
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 40
+		BuildDuration: 250
+	Production:
+		Produces: FoundryAircraft
+	Exit:
+		SpawnOffset: 0,0,3072
+		ExitCell: 1,3
+		ProductionTypes: FoundryAircraft
+	Power:
+		Amount: -35
+
+foundry_boiler:
+	Inherits: ^foundry_structure
+	Tooltip:
+		Name: actor-foundry-boiler-name
+	Health:
+		HP: 3800
+	Valued:
+		Cost: 700
+	Buildable:
+		BuildPaletteOrder: 50
+		BuildDuration: 130
+	Power:
+		Amount: 120
+
+foundry_store:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 1792
+		DecorationBounds: 3072, 1792
+	Tooltip:
+		Name: actor-foundry-store-name
+	Building:
+		Footprint: xxx xxx
+		Dimensions: 3,2
+	Health:
+		HP: 4200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536, -896
+			BottomRight: 1536, 896
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 60
+		BuildDuration: 160
+	StoresResources:
+		Capacity: 5000
+
+foundry_bulwark:
+	Inherits: ^foundry_structure
+	Tooltip:
+		Name: actor-foundry-bulwark-name
+	Health:
+		HP: 4400
+	Valued:
+		Cost: 800
+	Buildable:
+		Prerequisites: foundry_rivetworks
+		BuildPaletteOrder: 70
+		BuildDuration: 150
+	Turreted:
+		TurnSpeed: 48
+		Offset: 0,0,320
+	AttackTurreted:
+	Armament:
+		Weapon: BulwarkDriver
+		LocalOffset: 512,0,0
+		Recoil: 85
+		RecoilRecovery: 25
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Ground
+		ValidRelationships: Enemy
+	Power:
+		Amount: -15
+
+foundry_flakrack:
+	Inherits: ^foundry_structure
+	Tooltip:
+		Name: actor-foundry-flakrack-name
+	Health:
+		HP: 3500
+	Valued:
+		Cost: 900
+	Buildable:
+		Prerequisites: foundry_rivetworks
+		BuildPaletteOrder: 80
+		BuildDuration: 165
+	Turreted:
+		TurnSpeed: 60
+		Offset: 0,0,320
+	AttackTurreted:
+	Armament:
+		Weapon: FlakrackBurst
+		LocalOffset: 520,100,450, 520,-150,450
+		Recoil: 43
+		RecoilRecovery: 9
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Air
+		ValidRelationships: Enemy
+	Power:
+		Amount: -20
+
+foundry_forge:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 2048, 3584
+		DecorationBounds: 2048, 3584
+	Tooltip:
+		Name: actor-foundry-forge-name
+	Building:
+		Footprint: xx xx xx xx
+		Dimensions: 2,4
+	Health:
+		HP: 5000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024, -1792
+			BottomRight: 1024, 1792
+	Valued:
+		Cost: 1800
+	Buildable:
+		Prerequisites: foundry_trackyard
+		BuildPaletteOrder: 90
+		BuildDuration: 270
+	Power:
+		Amount: -50
+
+foundry_relay:
+	Inherits: ^foundry_structure
+	Tooltip:
+		Name: actor-foundry-relay-name
+	Health:
+		HP: 3200
+	Valued:
+		Cost: 1100
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 100
+		BuildDuration: 190
+	RevealsShroud:
+		Range: 12c0
+	Power:
+		Amount: -30
+
+lattice_nexus:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2560, 3328
+		DecorationBounds: 2560, 3328
+	Tooltip:
+		Name: actor-lattice-nexus-name
+	Building:
+		Footprint: xxx xx_ xxx
+		Dimensions: 3,3
+	Health:
+		HP: 8200
+	HitShape:
+		Type: Polygon
+			Points: -1152,-1664, 896,-1472, 1280,384, 256,1664, -1152,1216, -1344,-384
+	Valued:
+		Cost: 2000
+	Buildable:
+		# Removal, not an empty override. `^foundry_structure` / `^lattice_structure` set
+		# `Prerequisites: <the HQ itself>` because every other building needs the HQ; an
+		# empty `Prerequisites:` does NOT clear an inherited node in MiniYAML, so the HQ
+		# ended up requiring itself and ProductionQueue silently rejected StartProduction
+		# at BuildableItems().All(...) — the order was accepted and nothing was ever queued.
+		-Prerequisites:
+		BuildPaletteOrder: 10
+		BuildDuration: 300
+	Production:
+		Produces: LatticeBuilding
+	Power:
+		Amount: 50
+
+lattice_extruder:
+	Inherits: ^lattice_structure
+	Tooltip:
+		Name: actor-lattice-extruder-name
+	Health:
+		HP: 4200
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 20
+		BuildDuration: 170
+	Production:
+		Produces: LatticeInfantry
+	Exit:
+		ExitCell: 1,3
+		ProductionTypes: LatticeInfantry
+	Power:
+		Amount: -20
+
+lattice_frameyard:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2816, 4096
+		DecorationBounds: 2816, 4096
+	Tooltip:
+		Name: actor-lattice-frameyard-name
+	Building:
+		Footprint: xxx xx_ xxx xx_
+		Dimensions: 3,4
+		LocalCenterOffset: -256,-128,0
+	Health:
+		HP: 5600
+	HitShape:
+		Type: Polygon
+			Points: -1152,-2048, 896,-1856, 1408,512, 256,2048, -1280,1472, -1408,-512
+	Valued:
+		Cost: 1400
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 30
+		BuildDuration: 230
+	Production:
+		Produces: LatticeVehicle
+	Exit:
+		ExitCell: 1,4
+		ProductionTypes: LatticeVehicle
+	Power:
+		Amount: -30
+
+lattice_aerie:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 1536, 4352
+		DecorationBounds: 1536, 4352
+	Tooltip:
+		Name: actor-lattice-aerie-name
+	Building:
+		Footprint: xx xx x_ x_
+		Dimensions: 2,4
+	Health:
+		HP: 4700
+	HitShape:
+		Type: Polygon
+			Points: -640,-2176, 512,-1984, 768,448, 128,2176, -704,1664, -768,-576
+	Valued:
+		Cost: 1600
+	Buildable:
+		Prerequisites: lattice_mandala
+		BuildPaletteOrder: 40
+		BuildDuration: 250
+	Production:
+		Produces: LatticeAircraft
+	Exit:
+		SpawnOffset: 0,0,3072
+		ExitCell: 1,3
+		ProductionTypes: LatticeAircraft
+	Power:
+		Amount: -35
+
+lattice_cell:
+	Inherits: ^lattice_structure
+	Tooltip:
+		Name: actor-lattice-cell-name
+	Health:
+		HP: 3400
+	Valued:
+		Cost: 700
+	Buildable:
+		BuildPaletteOrder: 50
+		BuildDuration: 130
+	Power:
+		Amount: 120
+
+lattice_reservoir:
+	Inherits: ^lattice_structure
+	Tooltip:
+		Name: actor-lattice-reservoir-name
+	Health:
+		HP: 3800
+	Valued:
+		Cost: 900
+	Buildable:
+		BuildPaletteOrder: 60
+		BuildDuration: 160
+	StoresResources:
+		Capacity: 5000
+
+lattice_pylon:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 1024, 2048
+		DecorationBounds: 1024, 2048
+	Tooltip:
+		Name: actor-lattice-pylon-name
+	Building:
+		Footprint: x x
+		Dimensions: 1,2
+		LocalCenterOffset: 0,0,0
+	Health:
+		HP: 3900
+	HitShape:
+		Type: Polygon
+			Points: -384,-1024, 256,-896, 512,256, 64,1024, -448,640, -512,-256
+	Valued:
+		Cost: 800
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 70
+		BuildDuration: 150
+	Turreted:
+		TurnSpeed: 120
+		Offset: 0,0,112
+	AttackTurreted:
+	Armament:
+		Weapon: PylonThread
+		LocalOffset: 0,0,896
+		Recoil: 85
+		RecoilRecovery: 25
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Ground
+		ValidRelationships: Enemy
+	Power:
+		Amount: -15
+
+lattice_prong:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 1024, 2048
+		DecorationBounds: 1024, 2048
+	Tooltip:
+		Name: actor-lattice-prong-name
+	Building:
+		Footprint: x x
+		Dimensions: 1,2
+		LocalCenterOffset: 0,0,0
+	Health:
+		HP: 3200
+	HitShape:
+		Type: Polygon
+			Points: -320,-1024, 320,-896, 448,320, 32,1024, -448,576, -448,-320
+	Valued:
+		Cost: 900
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 80
+		BuildDuration: 165
+	Turreted:
+		TurnSpeed: 60
+		Offset: 0,0,320
+	AttackTurreted:
+	Armament:
+		Weapon: ProngPulse
+		LocalOffset: 520,100,450, 520,-150,450
+		Recoil: 43
+		RecoilRecovery: 9
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 64
+	AutoTargetPriority:
+		ValidTargets: Air
+		ValidRelationships: Enemy
+	Power:
+		Amount: -20
+
+lattice_mandala:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2560, 3328
+		DecorationBounds: 2560, 3328
+	Tooltip:
+		Name: actor-lattice-mandala-name
+	Building:
+		Footprint: xxx x_x xxx
+		Dimensions: 3,3
+		LocalCenterOffset: 0,0,0
+	Health:
+		HP: 4500
+	HitShape:
+		Type: Polygon
+			Points: -1024,-1664, 960,-1408, 1280,448, 128,1664, -1216,1152, -1280,-512
+	Valued:
+		Cost: 1800
+	Buildable:
+		Prerequisites: lattice_frameyard
+		BuildPaletteOrder: 90
+		BuildDuration: 270
+	Power:
+		Amount: -50
+
+lattice_lens:
+	Inherits: ^lattice_structure
+	Tooltip:
+		Name: actor-lattice-lens-name
+	Health:
+		HP: 2900
+	Valued:
+		Cost: 1100
+	Buildable:
+		Prerequisites: lattice_mandala
+		BuildPaletteOrder: 100
+		BuildDuration: 190
+	RevealsShroud:
+		Range: 12c0
+	Power:
+		Amount: -30
+
+foundry_slipway:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 4096, 2816
+		DecorationBounds: 4096, 2816
+	Tooltip:
+		Name: actor-foundry-slipway-name
+	Building:
+		Footprint: xxxx xxxx
+		Dimensions: 4,2
+	Health:
+		HP: 3600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -2048, -1408
+			BottomRight: 2048, 1408
+	Valued:
+		Cost: 1500
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 45
+		BuildDuration: 260
+	Production:
+		Produces: FoundryNaval
+	Exit:
+		SpawnOffset: 0,0,3072
+		ExitCell: 2,3
+		ProductionTypes: FoundryNaval
+	Power:
+		Amount: -40
+
+lattice_quay:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 4096, 2816
+		DecorationBounds: 4096, 2816
+	Tooltip:
+		Name: actor-lattice-quay-name
+	Building:
+		Footprint: xxxx xxxx ====
+		Dimensions: 4,3
+	Health:
+		HP: 4200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -2048, -1408
+			BottomRight: 2048, 1408
+	Valued:
+		Cost: 1500
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 45
+		BuildDuration: 260
+	Production:
+		Produces: LatticeNaval
+	Exit:
+		SpawnOffset: 0,0,3072
+		ExitCell: 2,3
+		ProductionTypes: LatticeNaval
+	Power:
+		Amount: -40
+
+foundry_redoubt:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-foundry-redoubt-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	Health:
+		HP: 4800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Turreted:
+		Turret: primary
+		TurnSpeed: 32
+		Offset: 0,0,655
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: RedoubtArm
+		Turret: primary
+		LocalOffset: 573,0,491
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 6c0
+	Valued:
+		Cost: 900
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 9
+		BuildDuration: 150
+
+foundry_ravelin:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 3072
+		DecorationBounds: 3072, 3072
+	Tooltip:
+		Name: actor-foundry-ravelin-name
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	Health:
+		HP: 6600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-1536
+			BottomRight: 1536,1536
+	Turreted:
+		Turret: primary
+		TurnSpeed: 20
+		Offset: 0,0,983
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: RavelinArm
+		Turret: primary
+		LocalOffset: 860,0,737
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 5c0
+	Valued:
+		Cost: 1400
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 14
+		BuildDuration: 210
+
+foundry_casemate:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-foundry-casemate-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	Health:
+		HP: 3400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Turreted:
+		Turret: primary
+		TurnSpeed: 48
+		Offset: 0,0,655
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: CasemateArm
+		Turret: primary
+		LocalOffset: 573,0,491
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 7c0
+	Valued:
+		Cost: 600
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 6
+		BuildDuration: 110
+
+lattice_trellis:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-lattice-trellis-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	Health:
+		HP: 2800
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Turreted:
+		Turret: primary
+		TurnSpeed: 72
+		Offset: 0,0,655
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: TrellisArm
+		Turret: primary
+		LocalOffset: 573,0,491
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 9c0
+	Valued:
+		Cost: 550
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 5
+		BuildDuration: 100
+
+lattice_obelisk:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 3072, 3072
+		DecorationBounds: 3072, 3072
+	Tooltip:
+		Name: actor-lattice-obelisk-name
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	Health:
+		HP: 5400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-1536
+			BottomRight: 1536,1536
+	Turreted:
+		Turret: primary
+		TurnSpeed: 24
+		Offset: 0,0,983
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: ObeliskArm
+		Turret: primary
+		LocalOffset: 860,0,737
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 8c0
+	Valued:
+		Cost: 1250
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 12
+		BuildDuration: 195
+
+lattice_beacon:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-lattice-beacon-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	Health:
+		HP: 3600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Turreted:
+		Turret: primary
+		TurnSpeed: 56
+		Offset: 0,0,655
+	AttackTurreted:
+		Turrets: primary
+		Voice:
+	Armament:
+		Weapon: BeaconArm
+		Turret: primary
+		LocalOffset: 573,0,491
+		Recoil: 96
+		RecoilRecovery: 18
+		Cursor:
+		OutsideRangeCursor:
+		MuzzlePalette:
+	AutoTarget:
+		ScanRadius: 96
+	AutoTargetPriority:
+		ValidTargets: Ground, Water
+		ValidRelationships: Enemy
+	RevealsShroud:
+		Range: 12c0
+	Valued:
+		Cost: 800
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 8
+		BuildDuration: 140
+
+foundry_retort:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 3072
+		DecorationBounds: 3072, 3072
+	Tooltip:
+		Name: actor-foundry-retort-name
+	Building:
+		Footprint: xx_ xxx xxx
+		Dimensions: 3,3
+	Health:
+		HP: 5600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-1536
+			BottomRight: 1536,1536
+	Valued:
+		Cost: 1500
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 15
+		BuildDuration: 230
+	Power:
+		Amount: -45
+
+foundry_cupola:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-foundry-cupola-name
+	Building:
+		Footprint: xxx xxx
+		Dimensions: 3,2
+	Health:
+		HP: 5600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Valued:
+		Cost: 800
+	Buildable:
+		Prerequisites: foundry_boiler
+		BuildPaletteOrder: 8
+		BuildDuration: 150
+	Power:
+		Amount: 75
+
+foundry_tapping:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 4096, 3072
+		DecorationBounds: 4096, 3072
+	Tooltip:
+		Name: actor-foundry-tapping-name
+	Building:
+		Footprint: xxxx xxxx xxxx
+		Dimensions: 4,3
+	Health:
+		HP: 7200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -2048,-1536
+			BottomRight: 2048,1536
+	Valued:
+		Cost: 1900
+	Buildable:
+		Prerequisites: foundry_forge
+		BuildPaletteOrder: 19
+		BuildDuration: 280
+	Power:
+		Amount: -25
+
+foundry_hearth:
+	Inherits: ^foundry_structure
+	Selectable:
+		Bounds: 3072, 2048
+		DecorationBounds: 3072, 2048
+	Tooltip:
+		Name: actor-foundry-hearth-name
+	Building:
+		Footprint: xxx xxx
+		Dimensions: 3,2
+	Health:
+		HP: 4400
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-1024
+			BottomRight: 1536,1024
+	Valued:
+		Cost: 1100
+	Buildable:
+		Prerequisites: foundry_boiler
+		BuildPaletteOrder: 11
+		BuildDuration: 190
+	Power:
+		Amount: 60
+
+lattice_array:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2048, 3072
+		DecorationBounds: 2048, 3072
+	Tooltip:
+		Name: actor-lattice-array-name
+	Building:
+		Footprint: xx xx xx
+		Dimensions: 2,3
+	Health:
+		HP: 3200
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1536
+			BottomRight: 1024,1536
+	Valued:
+		Cost: 950
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 9
+		BuildDuration: 170
+	Power:
+		Amount: -15
+
+lattice_plenum:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 3072, 3072
+		DecorationBounds: 3072, 3072
+	Tooltip:
+		Name: actor-lattice-plenum-name
+	Building:
+		Footprint: xxx xxx xxx
+		Dimensions: 3,3
+	Health:
+		HP: 6000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1536,-1536
+			BottomRight: 1536,1536
+	Valued:
+		Cost: 1700
+	Buildable:
+		Prerequisites: lattice_cell
+		BuildPaletteOrder: 17
+		BuildDuration: 260
+	Power:
+		Amount: 130
+
+lattice_spindle:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 2048, 2048
+		DecorationBounds: 2048, 2048
+	Tooltip:
+		Name: actor-lattice-spindle-name
+	Building:
+		Footprint: xx xx
+		Dimensions: 2,2
+	Health:
+		HP: 2600
+	HitShape:
+		Type: Rectangle
+			TopLeft: -1024,-1024
+			BottomRight: 1024,1024
+	Valued:
+		Cost: 700
+	Buildable:
+		Prerequisites: lattice_extruder
+		BuildPaletteOrder: 7
+		BuildDuration: 130
+	Power:
+		Amount: -55
+
+lattice_vault:
+	Inherits: ^lattice_structure
+	Selectable:
+		Bounds: 4096, 4096
+		DecorationBounds: 4096, 4096
+	Tooltip:
+		Name: actor-lattice-vault-name
+	Building:
+		Footprint: xxxx x__x x__x xxxx
+		Dimensions: 4,4
+	Health:
+		HP: 8000
+	HitShape:
+		Type: Rectangle
+			TopLeft: -2048,-2048
+			BottomRight: 2048,2048
+	Valued:
+		Cost: 2100
+	Buildable:
+		Prerequisites: lattice_nexus
+		BuildPaletteOrder: 21
+		BuildDuration: 300
+	Power:
+		Amount: -20

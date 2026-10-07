@@ -1,0 +1,11 @@
+JacksonRifle:
+	Inherits: Colt45
+	ReloadDelay: 10
+	ValidTargets: Infantry
+	Warhead@1Dam: SpreadDamage
+		Damage: 5000
+		ValidTargets: Infantry
+
+JacksonRocket:
+	Inherits: Dragon
+	InvalidTargets: Infantry, Underwater

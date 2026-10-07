@@ -1,0 +1,26 @@
+{
+	"name": "openra-agent-sidecar",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"check": "tsc -p tsconfig.json --noEmit",
+		"test": "node --test test/*.test.mjs",
+		"start": "node dist/server.js",
+		"dev": "tsx src/server.ts"
+	},
+	"dependencies": {
+		"@ai-sdk/openai-compatible": "3.0.11",
+		"@mastra/core": "1.51.0",
+		"zod": "4.4.3"
+	},
+	"devDependencies": {
+		"@types/node": "24.10.1",
+		"tsx": "4.20.6",
+		"typescript": "5.9.3"
+	},
+	"engines": {
+		"node": ">=22"
+	}
+}

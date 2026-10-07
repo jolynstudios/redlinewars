@@ -1,0 +1,33 @@
+[Unit]
+Description=Steelthorn spine (room directory + player tunnel relay)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=steelthorn
+Group=steelthorn
+WorkingDirectory=/opt/redline/engine/steelseed-host/tools
+StateDirectory=steelthorn-spine
+EnvironmentFile=-/etc/steelthorn/spine.env
+ExecStart=/usr/bin/node /opt/redline/engine/steelseed-host/tools/spine.mjs --config /etc/steelthorn/relay.json --owner-token-file /etc/steelthorn/owner-token --http 13600 --ws 13601 --trust-proxy --data-dir /var/lib/steelthorn-spine
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+TimeoutStopSec=1900
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

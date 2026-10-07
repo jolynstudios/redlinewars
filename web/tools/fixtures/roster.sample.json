@@ -1,0 +1,85 @@
+{
+	"_comment": "Hand-authored fixture for rostergate, using REAL actor names from engine/mods/steelseed/rules/. It is NOT a substitute for the exported roster: it exists so the gate can be run and witnessed red before the mod carries the traits §14.13 needs, and so a regression in params.ts is catchable without a dotnet build. Numbers here are plausible archetype values, not tuned balance. When .forge/spec/roster.json exists, that is the input and this file stays only as the gate's own self-test.",
+	"actors": [
+		{
+			"name": "foundry_rivet", "faction": 0, "family": 2, "archetype": "rifleman",
+			"lengthM": 0.7, "widthM": 0.6, "hp": 5000, "armourIndex": 0,
+			"cost": 100, "buildTicks": 60, "speed": 54, "locomotor": "foot", "visionM": 5,
+			"turret": null, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "carbine", "muzzleM": [0.25, 0.05, 0.55], "recoilM": 0.01, "rangeM": 4, "reloadTicks": 25, "damage": 18, "burst": 1, "projectile": "directFire" }]
+		},
+		{
+			"name": "foundry_tread", "faction": 0, "family": 0, "archetype": "lightTank",
+			"lengthM": 2.4, "widthM": 1.6, "hp": 24000, "armourIndex": 2,
+			"cost": 620, "buildTicks": 120, "speed": 78, "locomotor": "tracked", "visionM": 6,
+			"turret": { "turnSpeed": 20, "offsetM": [-0.15, 0.55, 0] }, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "cannon57", "muzzleM": [1.55, 0.62, 0.0], "recoilM": 0.12, "rangeM": 5, "reloadTicks": 45, "damage": 42, "burst": 1, "projectile": "ballistic" }]
+		},
+		{
+			"name": "foundry_warden", "faction": 0, "family": 0, "archetype": "mbt",
+			"lengthM": 3.4, "widthM": 2.2, "hp": 62000, "armourIndex": 3,
+			"cost": 1180, "buildTicks": 210, "speed": 58, "locomotor": "tracked", "visionM": 7,
+			"turret": { "turnSpeed": 9, "offsetM": [-0.2, 0.78, 0] }, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "cannon120", "muzzleM": [2.35, 0.92, 0.09], "recoilM": 0.34, "rangeM": 7, "reloadTicks": 110, "damage": 110, "burst": 1, "projectile": "ballistic" }]
+		},
+		{
+			"name": "foundry_rack", "faction": 0, "family": 0, "archetype": "artillery",
+			"lengthM": 3.0, "widthM": 1.9, "hp": 18000, "armourIndex": 1,
+			"cost": 900, "buildTicks": 180, "speed": 42, "locomotor": "tracked", "visionM": 5,
+			"turret": { "turnSpeed": 5, "offsetM": [-0.4, 0.6, 0] }, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "rocketpack", "muzzleM": [1.1, 1.05, 0.22], "recoilM": 0.04, "rangeM": 11, "reloadTicks": 175, "damage": 88, "burst": 6, "projectile": "rocket" }]
+		},
+		{
+			"name": "foundry_dragline", "faction": 0, "family": 0, "archetype": "harvester",
+			"lengthM": 3.2, "widthM": 2.4, "hp": 40000, "armourIndex": 2,
+			"cost": 1400, "buildTicks": 200, "speed": 48, "locomotor": "tracked", "visionM": 4,
+			"turret": null, "powerAmount": 0, "cargo": 20, "armaments": []
+		},
+		{
+			"name": "lattice_shard", "faction": 1, "family": 2, "archetype": "rifleman",
+			"lengthM": 0.7, "widthM": 0.55, "hp": 4600, "armourIndex": 0,
+			"cost": 110, "buildTicks": 60, "speed": 58, "locomotor": "foot", "visionM": 6,
+			"turret": null, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "carbine", "muzzleM": [0.25, 0.05, 0.52], "recoilM": 0.01, "rangeM": 4, "reloadTicks": 22, "damage": 16, "burst": 1, "projectile": "directFire" }]
+		},
+		{
+			"name": "lattice_skimmer", "faction": 1, "family": 1, "archetype": "scout",
+			"lengthM": 2.2, "widthM": 1.3, "hp": 11000, "armourIndex": 1,
+			"cost": 380, "buildTicks": 80, "speed": 102, "locomotor": "wheeled", "visionM": 11,
+			"turret": { "turnSpeed": 30, "offsetM": [0.1, 0.5, 0] }, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "autocannon", "muzzleM": [1.05, 0.58, 0.04], "recoilM": 0.05, "rangeM": 4, "reloadTicks": 18, "damage": 22, "burst": 3, "projectile": "ballistic" }]
+		},
+		{
+			"name": "lattice_stilt", "faction": 1, "family": 1, "archetype": "assaultGun",
+			"lengthM": 3.1, "widthM": 1.7, "hp": 34000, "armourIndex": 2,
+			"cost": 1050, "buildTicks": 190, "speed": 62, "locomotor": "wheeled", "visionM": 7,
+			"turret": { "turnSpeed": 11, "offsetM": [-0.1, 0.82, 0] }, "powerAmount": 0, "cargo": 0,
+			"armaments": [{ "weapon": "cannon90", "muzzleM": [2.0, 0.95, 0.0], "recoilM": 0.24, "rangeM": 8, "reloadTicks": 95, "damage": 84, "burst": 1, "projectile": "ballistic" }]
+		},
+		{
+			"name": "foundry_crucible", "faction": 0, "family": 6, "archetype": "constructionYard",
+			"lengthM": 6.0, "widthM": 6.0, "hp": 140000, "armourIndex": 4,
+			"cost": 2500, "buildTicks": 400, "speed": null, "locomotor": null, "visionM": 8,
+			"turret": null, "powerAmount": -30, "cargo": 0, "armaments": []
+		},
+		{
+			"name": "foundry_boiler", "faction": 0, "family": 6, "archetype": "powerPlant",
+			"lengthM": 4.0, "widthM": 4.0, "hp": 60000, "armourIndex": 4,
+			"cost": 500, "buildTicks": 130, "speed": null, "locomotor": null, "visionM": 4,
+			"turret": null, "powerAmount": 100, "cargo": 0, "armaments": []
+		},
+		{
+			"name": "foundry_flakrack", "faction": 0, "family": 7, "archetype": "aaTower",
+			"lengthM": 2.0, "widthM": 2.0, "hp": 26000, "armourIndex": 3,
+			"cost": 700, "buildTicks": 140, "speed": null, "locomotor": null, "visionM": 9,
+			"turret": { "turnSpeed": 26, "offsetM": [0, 1.2, 0] }, "powerAmount": -20, "cargo": 0,
+			"armaments": [{ "weapon": "flak40", "muzzleM": [0.7, 1.65, 0.11], "recoilM": 0.06, "rangeM": 6, "reloadTicks": 30, "damage": 30, "burst": 2, "projectile": "ballistic" }]
+		},
+		{
+			"name": "foundry_bulwark", "faction": 0, "family": 7, "archetype": "wall",
+			"lengthM": 1.0, "widthM": 1.0, "hp": 30000, "armourIndex": 4,
+			"cost": 60, "buildTicks": 20, "speed": null, "locomotor": null, "visionM": null,
+			"turret": null, "powerAmount": 0, "cargo": 0, "armaments": []
+		}
+	]
+}

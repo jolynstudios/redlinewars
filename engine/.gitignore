@@ -1,0 +1,98 @@
+# Visual Studio
+Release
+bin
+obj
+*.ncb
+*.vcproj*
+*.suo
+*.user
+*.sln.cache
+*.manifest
+*.CodeAnalysisLog.xml
+*.lastcodeanalysissucceeded
+_ReSharper.*/
+/.vs
+
+# Visual Studio Code
+/.vscode/settings.json
+
+# binaries
+IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP
+
+# backup files by various editors
+*~
+*.orig
+\#*
+.*.sw?
+
+# Mac OS X
+.DS_Store
+
+# auto-generated documentation
+DOCUMENTATION.md
+WEAPONS.md
+Lua-API.md
+Settings.md
+*.html
+openra.6
+update.log
+
+# SublimeText
+*.sublime-project
+*.sublime-workspace
+
+# NUnit
+/TestResult.xml
+/lib/
+
+# Support directory
+/Support
+
+# Browser (wasm) build output
+/bin-browser
+/bin-browser-reference
+/bin-browser-aot
+
+# Browser test harness
+/OpenRA.Browser/tests/node_modules
+/OpenRA.Browser/tests/test-results
+/OpenRA.Browser/tests/playwright-report
+
+# IntelliJ files
+.idea
+
+# ws-relay tool deps
+/OpenRA.Browser/tools/ws-relay/node_modules
+/OpenRA.Browser/tools/ws-relay/package-lock.json
+/OpenRA.Browser/tests/p10-menu-boot.png
+/.env
+# Browser benchmark publication evidence. Current-era series use the
+# benchmark-lockstep-v1-* namespace; historical pre-era matches remain ignored.
+# Keep matching directories traversable so the allowlisted audit payload can be
+# committed while bulk/runtime artifacts remain ignored. The /**/ exception
+# must precede the file exceptions: git does not descend into an excluded
+# directory.
+/OpenRA.Browser/tests/match-results/*
+!/OpenRA.Browser/tests/match-results/LEADERBOARD.md
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/
+/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/outcome.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/metrics.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/scorecard.md
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/quarantine.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/log.jsonl
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/winner.txt
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*.series-report.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*.sweep-report.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*.sweep-ledger.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*.era-stamp.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*/**/*.lock.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*.series-report.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*.sweep-report.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*.sweep-ledger.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*.era-stamp.json
+!/OpenRA.Browser/tests/match-results/benchmark-lockstep-v1-*.lock.json
+
+# Work-graph driver: the ledger is machine-written run evidence, the lock is transient.
+OpenRA.Browser/tests/work-graph/ledger.json.lock

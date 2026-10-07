@@ -1,0 +1,962 @@
+#region Copyright & License Information
+/*
+ * Copyright (c) The OpenRA Developers and Contributors
+ * This file is part of OpenRA, which is free software. It is made
+ * available to you under the terms of the GNU General Public License
+ * as published by the Free Software Foundation, either version 3 of
+ * the License, or (at your option) any later version. For more
+ * information, see COPYING.
+ */
+#endregion
+
+// Network session exports for the shipping host, ported from the legacy
+// browser host (engine/OpenRA.Browser) so drivers and the session UI can join
+// an authoritative OpenRA server through the WebSocket relay. The simulation,
+// lobby, slot validation, order serialization, and sync hashing all stay on
+// the OpenRA server side (MULTIPLAYER-BOUNDARY.md): these exports only drive
+// the connection lifecycle and read back probe strings.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.IO;
+using System.Text;
+using System.Text.Json;
+using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.Versioning;
+using OpenRA.Network;
+
+namespace OpenRA
+{
+	[SupportedOSPlatform("browser")]
+	public static partial class Program
+	{
+		static string wsEndpoint;
+		static string wsScheme = "ws";
+
+		// Monotonic per-process join counter. Every join stamps its own epoch into
+		// the connection probe, so a UI can discard probes that outlive the
+		// connection they described (the 250 ms cache can still hold the previous
+		// room's probe when a second join starts on the same page).
+		static int joinEpoch;
+
+		// Called from Main for the Host.WsEndpoint launch argument; SetWsEndpoint
+		// is the runtime path.
+		internal static void SetWsEndpointFields(string endpoint, string scheme)
+		{
+			wsEndpoint = endpoint;
+			wsScheme = scheme;
+		}
+
+
+		/// <summary>
+		/// Runtime counterpart of the Host.WsEndpoint launch argument: point
+		/// future JoinServer calls at an absolute ws/wss URI (typically the
+		/// relay mux path for a room). Rebinds Game.ConnectionFactory
+		/// immediately so the next join uses the new endpoint.
+		/// </summary>
+		[JSExport]
+		internal static string SetWsEndpoint(string endpoint)
+		{
+			try
+			{
+				if (!Uri.TryCreate(endpoint, UriKind.Absolute, out var uri) ||
+					(uri.Scheme != Uri.UriSchemeWs && uri.Scheme != Uri.UriSchemeWss))
+					return $"invalid endpoint: {endpoint}";
+
+				wsEndpoint = endpoint;
+				wsScheme = uri.Scheme;
+				Game.ConnectionFactory = target => new BrowserWebSocketConnection(BuildWsUri(target, wsEndpoint, wsScheme));
+				return $"endpoint {endpoint}";
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"[mp] SetWsEndpoint failed: {e.GetType().FullName}: {e.Message}");
+				return $"failed: {e.Message}";
+			}
+		}
+
+		// Pump-facing surface for the JS transport bridge (openra-mp-socket.js).
+		// These must live on Program: the JS side holds only exports.OpenRA.Program.
+		[JSExport]
+		internal static bool MpHasWork() => BrowserWebSocketConnection.MpHasWork();
+
+		[JSExport]
+		internal static int MpWorkKind() => BrowserWebSocketConnection.MpWorkKind();
+
+		[JSExport]
+		internal static int MpWorkId() => BrowserWebSocketConnection.MpWorkId();
+
+		[JSExport]
+		internal static int MpSendLen() => BrowserWebSocketConnection.MpSendLen();
+
+		[JSExport]
+		internal static string MpWorkUrl() => BrowserWebSocketConnection.MpWorkUrl();
+
+		[JSExport]
+		internal static int MpRecvPtr() => BrowserWebSocketConnection.MpRecvPtr();
+
+		[JSExport]
+		internal static int MpRecvCap() => BrowserWebSocketConnection.MpRecvCap();
+
+		[JSExport]
+		internal static int MpSendPtr() => BrowserWebSocketConnection.MpSendPtr();
+
+		[JSExport]
+		internal static int MpSendCap() => BrowserWebSocketConnection.MpSendCap();
+
+		[JSExport]
+		internal static void MpWorkDone() => BrowserWebSocketConnection.MpWorkDone();
+
+		// JS-interop entry points for BrowserWebSocketConnection. They must live on
+		// Program (the main assembly's export surface the JS side already holds);
+		// BrowserWebSocketConnection.WsOn* do the actual work.
+		[JSExport]
+		internal static void MpWsOnOpen(int id) => BrowserWebSocketConnection.WsOnOpen(id);
+		[JSExport]
+		internal static void MpWsOnMessage(int id, int length) => BrowserWebSocketConnection.WsOnMessage(id, length);
+
+		[JSExport]
+		internal static void MpWsOnError(int id) => BrowserWebSocketConnection.WsOnError(id);
+
+		[JSExport]
+		internal static void MpWsOnClose(int id) => BrowserWebSocketConnection.WsOnClose(id);
+
+		static Uri BuildWsUri(ConnectionTarget target, string endpoint, string scheme)
+		{
+			if (!string.IsNullOrEmpty(endpoint))
+				return new Uri(endpoint, UriKind.Absolute);
+
+			if (scheme != Uri.UriSchemeWs && scheme != Uri.UriSchemeWss)
+				throw new ArgumentException($"Unsupported WebSocket scheme '{scheme}'.", nameof(scheme));
+
+			var firstEndpoint = target.FirstEndpoint;
+			return new UriBuilder(scheme, firstEndpoint.Host, firstEndpoint.Port).Uri;
+		}
+
+		[JSExport]
+		internal static string JoinMultiplayer(string host, int port, string password)
+		{
+			try
+			{
+				if (Game.ModData == null)
+					return "not initialized";
+
+				// Game.JoinServer prefers a still-waiting in-process server
+				// (local skirmish) over dialing out; shut it down first so a
+				// network join can never be hijacked by the local server.
+				Game.CloseServer();
+				joinEpoch++;
+				Game.JoinServer(new ConnectionTarget(host, port), password ?? "");
+				return $"joining {host}:{port} epoch={joinEpoch}";
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"[mp] JoinMultiplayer failed: {e.GetType().FullName}: {e.Message}\ninner={e.InnerException}\n{e.StackTrace}");
+				return $"failed: {e.Message}";
+			}
+		}
+
+		// Rooms are single-use and OpenRA has no reconnect (L9): Leave tears the
+		// OrderManager down and returns to the local session. The server frees the
+		// slot as soon as the connection drops.
+		[JSExport]
+		internal static string LeaveMultiplayer()
+		{
+			try
+			{
+				Game.Disconnect();
+				return "left";
+			}
+			catch (Exception e)
+			{
+				return $"failed: {e.Message}";
+			}
+		}
+
+		[JSExport]
+		internal static string LobbyClaimPlayerSlot()
+		{
+			try
+			{
+				var orderManager = Game.OrderManager;
+				var localClient = orderManager?.LocalClient;
+				if (localClient == null)
+					return "not connected";
+
+				if (orderManager.GameStarted)
+					return "game already started";
+
+				// Fail closed before touching the lobby: claiming a seat on a server
+				// whose map this client cannot load would park the player in a lobby
+				// that can never start (a build mismatch in practice — the UI maps
+				// this answer to the update-required string). Only when the map is
+				// available locally does the claim also send `state NotReady`.
+				var lobbyMap = orderManager.LobbyInfo?.GlobalSettings?.Map;
+				if (string.IsNullOrEmpty(lobbyMap) ||
+					Game.ModData.MapCache[lobbyMap].Status != MapStatus.Available)
+					return "map unavailable";
+
+				var slot = localClient.Slot;
+				var orders = new List<Order>();
+				if (slot == null)
+				{
+					slot = orderManager.LobbyInfo.FirstEmptySlot();
+					if (slot == null)
+						return "no open player slot";
+
+					orders.Add(Order.Command($"slot {slot}"));
+				}
+
+				// LobbyLogic normally performs this transition when the selected map
+				// becomes available. Headless browser clients do not construct that UI.
+				if (localClient.State == Session.ClientState.Invalid)
+					orders.Add(Order.Command($"state {Session.ClientState.NotReady}"));
+
+				if (orders.Count == 0)
+					return $"slot {slot}, state {localClient.State}";
+
+				orderManager.IssueOrders(orders.ToArray());
+				return $"claiming slot {slot}, state {Session.ClientState.NotReady}";
+			}
+			catch (Exception e)
+			{
+				return $"failed: {e.Message}";
+			}
+		}
+
+		// Community rooms: the creator may open a room without playing. The
+		// engine's own `spectate` lobby command releases the server-assigned
+		// slot (Slot = null → IsObserver) and the spectator stays a full lobby
+		// client — first validated connection keeps admin, so a spectating
+		// creator still owns roster, kick and start. AllowSpectators defaults
+		// to true in the mod, so no map or rules change is involved.
+		[JSExport]
+		internal static string LobbyBecomeSpectator()
+		{
+			try
+			{
+				var orderManager = Game.OrderManager;
+				var localClient = orderManager?.LocalClient;
+				if (localClient == null)
+					return "not connected";
+
+				if (orderManager.GameStarted)
+					return "game already started";
+
+				// Same fail-closed map check as the player claim: a spectator
+				// parked in a lobby whose map the client cannot load can never
+				// see the match start either.
+				var lobbyMap = orderManager.LobbyInfo?.GlobalSettings?.Map;
+				if (string.IsNullOrEmpty(lobbyMap) ||
+					Game.ModData.MapCache[lobbyMap].Status != MapStatus.Available)
+					return "map unavailable";
+
+				orderManager.IssueOrder(Order.Command("spectate"));
+				return "spectating";
+			}
+			catch (Exception e)
+			{
+				return $"failed: {e.Message}";
+			}
+		}
+
+		[JSExport]
+		internal static void LobbySetReady()
+		{
+			Game.OrderManager?.IssueOrder(Order.Command($"state {Session.ClientState.Ready}"));
+		}
+
+		// The lobby rule (L8): nobody is auto-readied. The Ready toggle drops back
+		// out of Ready with the same order the in-game lobby uses.
+		[JSExport]
+		internal static void LobbySetNotReady()
+		{
+			Game.OrderManager?.IssueOrder(Order.Command($"state {Session.ClientState.NotReady}"));
+		}
+
+		// LobbyCommands (server trait) parses these as "<name> <args>" command orders,
+		// exactly like `state` above. The server validates permissions: a client may
+		// change only its own faction/team/color/...; `option` is host (admin) only.
+		[JSExport]
+		internal static string LobbySetFaction(string factionId)
+		{
+			var orderManager = Game.OrderManager;
+			var client = orderManager?.LocalClient;
+			if (client == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"faction {client.Index} {factionId}"));
+			return $"faction {factionId}";
+		}
+
+		[JSExport]
+		internal static string LobbySetTeam(int team)
+		{
+			var orderManager = Game.OrderManager;
+			var client = orderManager?.LocalClient;
+			if (client == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"team {client.Index} {team}"));
+			return $"team {team}";
+		}
+
+		[JSExport]
+		internal static string LobbySetColor(string color)
+		{
+			var orderManager = Game.OrderManager;
+			var client = orderManager?.LocalClient;
+			if (client == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"color {client.Index} {color}"));
+			return $"color {color}";
+		}
+
+		[JSExport]
+		internal static string LobbySetOption(string optionId, string value)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "not connected";
+			if (optionId is "tod" or "weather")
+			{
+				var global = orderManager.LobbyInfo.GlobalSettings;
+				return LobbySetAmbience(optionId == "tod" ? value : global.TimeOfDay,
+					optionId == "weather" ? value : global.Weather);
+			}
+			orderManager.IssueOrder(Order.Command($"option {optionId} {value}"));
+			return $"option {optionId} {value}";
+		}
+		[JSExport]
+		internal static string LobbySetSpawn(int point)
+		{
+			var orderManager = Game.OrderManager;
+			var client = orderManager?.LocalClient;
+			if (client == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"spawn {client.Index} {point}"));
+			return $"spawn {point}";
+		}
+
+		// Host-side spawn reassignment: LobbyCommands.Spawn accepts `spawn <client> <point>`
+		// from the admin for ANY client, and `clear_spawn <point>` for any occupied point.
+		[JSExport]
+		internal static string LobbySetSpawnFor(int clientIndex, int point)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"spawn {clientIndex} {point}"));
+			return $"spawn {clientIndex} {point}";
+		}
+
+		// Only targets OCCUPIED points: clearing an EMPTY point would disable it
+		// (LobbyCommands.ClearPlayerSpawn toggles DisabledSpawnPoints for empty ones).
+		[JSExport]
+		internal static string LobbyClearSpawns()
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+
+			var issued = 0;
+			foreach (var client in orderManager.LobbyInfo.Clients.Where(c => c.SpawnPoint != 0))
+			{
+				orderManager.IssueOrder(Order.Command($"clear_spawn {client.SpawnPoint}"));
+				issued++;
+			}
+			return $"cleared {issued} spawns";
+		}
+
+		/// <summary>
+		/// Per-client session/shroud truth for gates: which player the snapshot
+		/// emitter resolves for this client (world.RenderPlayer ?? world.LocalPlayer,
+		/// exactly what PollSnapshotToken emits), and the owner relationship of every
+		/// actor this client can currently see. With fog on and separated spawns the
+		/// enemy count must be zero at match start. See mp-shroudgate.mjs.
+		/// </summary>
+		[JSExport]
+		internal static string GetVisibilityProbe()
+		{
+			try
+			{
+			var world = Game.OrderManager?.World;
+			if (world == null)
+				return "world=null";
+
+			var renderPlayer = world.RenderPlayer;
+			var localPlayer = world.LocalPlayer;
+			var viewer = renderPlayer ?? localPlayer;
+			var tick = world.WorldTick;
+			if (viewer == null)
+				return $"renderPlayer={renderPlayer?.InternalName ?? "null"} localPlayer={localPlayer?.InternalName ?? "null"} viewer=null netframe={tick}";
+
+			int own = 0, allied = 0, neutral = 0, enemy = 0;
+			var enemyDetail = new List<string>();
+			foreach (var actor in world.Actors)
+			{
+				try
+				{
+					if (actor.IsDead || !actor.IsInWorld || actor.Owner == null)
+						continue;
+
+					// Player actors are per-player system actors (not sim units); they
+					// have no meaningful visibility and their detail fields NRE. OpenRA
+					// names them "player" (case-insensitive in practice).
+					if (string.Equals(actor.Info?.Name, "player", StringComparison.OrdinalIgnoreCase))
+						continue;
+
+					if (world.FogObscures(actor))
+						continue;
+
+					if (actor.Owner == viewer || actor.Owner.IsAlliedWith(viewer))
+						own++;
+					else if (actor.Owner.NonCombatant)
+						neutral++;
+					else
+						{
+							enemy++;
+							var eOwner = "<nre>";
+							var eInfo = "<nre>";
+							var ePos = "<nre>";
+							try { eOwner = actor.Owner.InternalName; } catch { }
+							try { eInfo = actor.Info?.Name ?? "null-info"; } catch { }
+							try { ePos = actor.CenterPosition.ToString(); } catch { }
+							enemyDetail.Add($"{eOwner}:{eInfo}@{ePos}");
+						}
+				}
+				catch (Exception)
+				{
+					// A single torn-down actor must not kill the probe; count nothing.
+				}
+			}
+
+			var enemyInfo = enemyDetail.Count > 0 ? $" enemyList=[{string.Join("; ", enemyDetail)}]" : "";
+			return $"renderPlayer={renderPlayer?.InternalName ?? "null"} localPlayer={localPlayer?.InternalName ?? "null"} " +
+				$"viewer={viewer?.InternalName ?? "null"} netframe={tick} own={own} allied={allied} neutral={neutral} enemy={enemy}{enemyInfo}";
+			}
+			catch (Exception e)
+			{
+				return $"probe failed: {e.GetType().Name}: {e.Message}";
+			}
+		}
+		[JSExport]
+		internal static void LobbyStartGame()
+		{
+			Game.OrderManager?.IssueOrder(Order.Command("startgame"));
+		}
+
+		[JSExport]
+		internal static string LobbyAddBots()
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			var admin = orderManager.LobbyInfo.Clients.FirstOrDefault(c => c.IsAdmin);
+			if (admin == null)
+				return "no admin";
+
+			// The server refuses every non-state command from a Ready client, and
+			// changing the table is exactly when a host stops being ready — so
+			// unready first and let the lobby show it.
+			if (orderManager.LocalClient?.State == Session.ClientState.Ready)
+				orderManager.IssueOrder(Order.Command("state NotReady"));
+
+			var added = 0;
+			foreach (var slot in orderManager.LobbyInfo.Slots)
+			{
+				if (slot.Value.Closed || !slot.Value.AllowBots || orderManager.LobbyInfo.ClientInSlot(slot.Key) != null)
+					continue;
+
+				orderManager.IssueOrder(Order.Command($"slot_bot {slot.Key} {admin.Index} normal"));
+				added++;
+			}
+			return $"added {added} bots";
+		}
+
+		/// <summary>
+		/// Admin removes every seated bot: the server's `slot_open` already treats
+		/// a bot occupant as removable, so re-opening each bot's slot evicts it.
+		/// The counterpart of LobbyAddBots — a host who added a bot to fill the
+		/// table must also be able to unfill it.
+		/// </summary>
+		[JSExport]
+		internal static string LobbyRemoveBots()
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (!orderManager.LobbyInfo.Clients.Any(c => c.IsAdmin))
+				return "no admin";
+
+			// Same Ready-lock as LobbyAddBots: unready before touching the table.
+			if (orderManager.LocalClient?.State == Session.ClientState.Ready)
+				orderManager.IssueOrder(Order.Command("state NotReady"));
+
+			var removed = 0;
+			foreach (var slot in orderManager.LobbyInfo.Slots)
+			{
+				var occupant = orderManager.LobbyInfo.ClientInSlot(slot.Key);
+				if (occupant?.Bot == null)
+					continue;
+
+				orderManager.IssueOrder(Order.Command($"slot_open {slot.Key}"));
+				removed++;
+			}
+			return $"removed {removed} bots";
+		}
+
+		/// <summary>
+		/// Admin closes every still-open UNCLAIMED slot. Used by the shroud gate to
+		/// force a two-player match: with all remaining slots closed the two humans
+		/// are guaranteed distinct spawn points, so fog must hide the opponent at
+		/// match start.
+		/// </summary>
+		[JSExport]
+		internal static string LobbyCloseEmptySlots()
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (!orderManager.LobbyInfo.Clients.Any(c => c.IsAdmin))
+				return "no admin";
+
+			var closed = 0;
+			foreach (var slot in orderManager.LobbyInfo.Slots)
+			{
+				if (slot.Value.Closed || orderManager.LobbyInfo.ClientInSlot(slot.Key) != null)
+					continue;
+
+				orderManager.IssueOrder(Order.Command($"slot_close {slot.Key}"));
+				closed++;
+			}
+			return $"closed {closed} slots";
+		}
+
+		/// <summary>
+		/// Admin closes open UNCLAIMED slots until open + occupied seats equals
+		/// <paramref name="seats"/> — the room's advertised seat count. The lobby
+		/// rule (L8): when the admin handover happens mid-lobby the room must not
+		/// stay bigger than the room browser advertised, so the new admin shrinks
+		/// it (same `slot_close` orders as LobbyCloseEmptySlots, counted down).
+		/// </summary>
+		[JSExport]
+		internal static string LobbyCloseSlotsDownTo(int seats)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (!orderManager.LobbyInfo.Clients.Any(c => c.IsAdmin))
+				return "no admin";
+
+			var occupied = orderManager.LobbyInfo.Clients.Count(c => c.Slot != null);
+			var open = orderManager.LobbyInfo.Slots
+				.Where(s => !s.Value.Closed && orderManager.LobbyInfo.ClientInSlot(s.Key) == null)
+				.Select(s => s.Key)
+				.ToList();
+			var excess = open.Count - Math.Max(0, seats - occupied);
+			var closed = 0;
+			foreach (var slot in open)
+			{
+				if (closed >= excess)
+					break;
+
+				orderManager.IssueOrder(Order.Command($"slot_close {slot}"));
+				closed++;
+			}
+			return $"closed {closed} slots";
+		}
+
+		/// <summary>
+		/// Admin removes a player from the room through the server's own `kick`
+		/// lobby command (LobbyCommands), so every rule stays server-side:
+		/// admin only, never self, never an active player mid-match, with the
+		/// victim getting the standard ServerError notice and disconnect — they
+		/// land on the ordinary S16 leave path, not a crash.
+		/// </summary>
+		[JSExport]
+		internal static string LobbyKick(int clientIndex)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			var target = orderManager.LobbyInfo.ClientWithIndex(clientIndex);
+			if (target?.IsBot == true)
+				return LobbyRemoveBot(clientIndex);
+			orderManager.IssueOrder(Order.Command($"kick {clientIndex} False"));
+			return $"kick {clientIndex} sent";
+		}
+
+		/// <summary>
+		/// Admin changes the room's map through the server's own `map` lobby
+		/// command (LobbyCommands): the server rebuilds the slot list, resets
+		/// client states and notifies everyone. Fail-closed like the slot claim:
+		/// the client must hold the target map locally (every catalog map ships
+		/// in the AppBundle) or the sender would strand itself in an unloadable
+		/// lobby.
+		/// </summary>
+		[JSExport]
+		internal static string LobbySetMap(string mapUid)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			if (orderManager.GameStarted)
+				return "game already started";
+
+			if (string.IsNullOrEmpty(mapUid) ||
+				Game.ModData.MapCache[mapUid].Status != MapStatus.Available)
+				return "map unavailable";
+
+			orderManager.IssueOrder(Order.Command($"map {mapUid}"));
+			return $"map {mapUid} sent";
+		}
+
+		/// <summary>
+		/// Admin resizes the room to <paramref name="seats"/> seats: opens closed
+		/// unclaimed slots up to the target and closes surplus open ones (the
+		/// same `slot_open`/`slot_close` orders the server validates). The lobby
+		/// mirror's host controls call this so a community room is never stuck at
+		/// the seat count it booted with — the standing-room host may grow it to
+		/// the map's own ceiling.
+		/// </summary>
+		[JSExport]
+		internal static string LobbySetSeats(int seats)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager == null)
+				return "no order manager";
+
+			if (orderManager.LocalClient is not { IsAdmin: true })
+				return "not admin";
+
+			if (orderManager.GameStarted)
+				return "game already started";
+
+			if (seats < 2 || seats > 5)
+				return "invalid capacity";
+			orderManager.IssueOrder(Order.Command($"capacity {seats}"));
+			return $"seats {seats} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySetFactionFor(int clientIndex, string factionId)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"faction {clientIndex} {factionId}"));
+			return $"faction {clientIndex} {factionId} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySetTeamFor(int clientIndex, int team)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			orderManager.IssueOrder(Order.Command($"team {clientIndex} {team}"));
+			return $"team {clientIndex} {team} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySetAmbience(string tod, string weather)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			if (tod is not ("auto" or "day" or "night") || weather is not ("off" or "on"))
+				return "invalid ambience";
+			orderManager.IssueOrder(Order.Command($"ambience {tod} {weather}"));
+			return "ambience sent";
+		}
+
+		[JSExport]
+		internal static string LobbyRemoveBot(int clientIndex)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient is not { IsAdmin: true })
+				return "not admin";
+			var target = orderManager.LobbyInfo.ClientWithIndex(clientIndex);
+			if (target?.IsBot != true || target.Slot == null)
+				return "not a bot";
+			orderManager.IssueOrder(Order.Command($"slot_open {target.Slot}"));
+			return $"removed bot {clientIndex} sent";
+		}
+
+		[JSExport]
+		internal static string LobbySendChat(string text)
+		{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.LocalClient == null)
+				return "not connected";
+			if (orderManager.GameStarted)
+				return "game already started";
+			text = EphemeralLobbyChat.Sanitize(text);
+			if (text.Length == 0)
+				return "empty message";
+			var request = orderManager.LobbyChat.BeginSend();
+			if (request == 0)
+				return "a message is awaiting confirmation";
+			orderManager.IssueOrder(Order.FromTargetString("LobbyChat", text, true, request));
+			return $"chat queued {request}";
+		}
+
+		[JSExport]
+		internal static string GetLobbyChatSendStatus(int request)
+		{
+			var manager = Game.OrderManager;
+			if (manager == null)
+				return "chat session ended";
+			if (manager.Connection is NetworkConnection { ConnectionState: ConnectionState.NotConnected })
+				manager.LobbyChat.Clear();
+			return manager.LobbyChat.SendStatus((uint)request) ?? "chat session ended";
+		}
+
+		[JSExport]
+		internal static void CancelLobbyChatSend(int request)
+		{
+			Game.OrderManager?.LobbyChat.ConfirmSend((uint)request, "Chat confirmation timed out. Retry shortly.");
+		}
+
+		[JSExport]
+		internal static string GetLobbySnapshotProbe()
+		{
+			var manager = Game.OrderManager;
+			if (manager?.LobbyInfo == null || manager.LocalClient == null)
+				return "null";
+			if (manager.Connection is NetworkConnection { ConnectionState: ConnectionState.NotConnected })
+				manager.LobbyChat.Clear();
+			var lobby = manager.LobbyInfo;
+			var global = lobby.GlobalSettings;
+			var mapCache = Game.ModData?.MapCache;
+			// Leaving multiplayer installs a local manager before its map is set.
+			if (global == null || string.IsNullOrEmpty(global.Map) || mapCache == null)
+				return "null";
+			var map = mapCache[global.Map];
+			var mapAvailable = map.Status == MapStatus.Available;
+			var reason = mapAvailable ? LobbyPolicy.StartReason(lobby, map.SpawnPoints.Length) : "Map unavailable.";
+			using var stream = new MemoryStream();
+			using (var json = new Utf8JsonWriter(stream))
+			{
+				json.WriteStartObject();
+				json.WriteBoolean("started", manager.GameStarted);
+				json.WriteNumber("localClientIndex", manager.LocalClient.Index);
+				json.WriteNumber("adminClientIndex", lobby.Clients.FirstOrDefault(c => c.IsAdmin)?.Index ?? -1);
+				json.WriteBoolean("ranked", global.Ranked);
+				json.WriteString("map", global.Map);
+				json.WriteNumber("capacity", lobby.Slots.Count(s => !s.Value.Closed));
+				json.WriteNumber("requestedCapacity", global.RequestedCapacity);
+				json.WriteString("tod", global.TimeOfDay);
+				json.WriteString("weather", global.Weather);
+				json.WriteBoolean("startAllowed", !manager.GameStarted && reason == null);
+				json.WriteString("startReason", reason);
+				json.WriteStartArray("options");
+				if (mapAvailable)
+					foreach (var option in MapOptions(map).Values.Where(o => o.IsVisible).OrderBy(o => o.DisplayOrder))
+					{
+						if (!global.LobbyOptions.TryGetValue(option.Id, out var state))
+							continue;
+						WriteLobbyOption(json, option.Id, option.Name, state.Value, state.IsLocked, option.Values);
+					}
+				WriteLobbyOption(json, "tod", "Time of day", global.TimeOfDay, global.Ranked,
+					new Dictionary<string, string> { ["auto"] = "Auto", ["day"] = "Day", ["night"] = "Night" });
+				WriteLobbyOption(json, "weather", "Weather", global.Weather, global.Ranked,
+					new Dictionary<string, string> { ["off"] = "Off", ["on"] = "On" });
+				json.WriteEndArray();
+				json.WriteStartArray("clients");
+				foreach (var client in lobby.Clients)
+				{
+					json.WriteStartObject();
+					json.WriteNumber("index", client.Index);
+					json.WriteString("name", client.Name);
+					json.WriteBoolean("bot", client.IsBot);
+					json.WriteBoolean("admin", client.IsAdmin);
+					json.WriteString("slot", client.Slot);
+					json.WriteString("state", client.State.ToString());
+					json.WriteString("faction", client.Faction);
+					json.WriteString("color", client.Color.ToString());
+					json.WriteNumber("team", client.Team);
+					json.WriteNumber("spawn", client.SpawnPoint);
+					json.WriteEndObject();
+				}
+				json.WriteEndArray();
+				json.WriteStartArray("slots");
+				foreach (var slot in lobby.Slots)
+				{
+					json.WriteStartObject();
+					json.WriteString("id", slot.Key);
+					json.WriteBoolean("closed", slot.Value.Closed);
+					json.WriteBoolean("required", slot.Value.Required);
+					json.WriteBoolean("lockFaction", global.Ranked || slot.Value.LockFaction);
+					json.WriteBoolean("lockTeam", global.Ranked || slot.Value.LockTeam);
+					json.WriteBoolean("lockSpawn", global.Ranked || slot.Value.LockSpawn);
+					json.WriteEndObject();
+				}
+				json.WriteEndArray();
+				json.WriteStartArray("chat");
+				if (!manager.GameStarted)
+					foreach (var message in manager.LobbyChat.Messages)
+					{
+						json.WriteStartObject();
+						json.WriteNumber("sequence", message.Sequence);
+						json.WriteNumber("clientIndex", message.ClientIndex);
+						json.WriteString("name", message.Name);
+						json.WriteString("text", message.Text);
+						json.WriteEndObject();
+					}
+				json.WriteEndArray();
+				json.WriteEndObject();
+			}
+			return Encoding.UTF8.GetString(stream.ToArray());
+		}
+
+		static void WriteLobbyOption(Utf8JsonWriter json, string id, string name, string value, bool locked, IReadOnlyDictionary<string, string> values)
+		{
+			json.WriteStartObject();
+			json.WriteString("id", id);
+			json.WriteString("name", name);
+			json.WriteString("value", value);
+			json.WriteBoolean("locked", locked);
+			json.WriteStartArray("values");
+			foreach (var choice in values)
+			{
+				json.WriteStartObject();
+				json.WriteString("id", choice.Key);
+				json.WriteString("label", choice.Value);
+				json.WriteEndObject();
+			}
+			json.WriteEndArray();
+			json.WriteEndObject();
+		}
+
+		/// <summary>
+		/// Per-player list for the bottom-left session HUD: name, connection
+		/// quality (Good/Moderate/Poor — the server pings every 5s and broadcasts
+		/// SyncConnectionQuality), lobby state (Disconnected marks a dropped
+		/// player), bot flag and admin flag. Read-only; drives the player panel.
+		/// </summary>
+		[JSExport]
+		internal static string GetLobbyPlayersProbe()
+		{
+			try
+			{
+				var orderManager = Game.OrderManager;
+				if (orderManager?.LobbyInfo == null)
+					return "lobby=null";
+
+				// Per-client fields beyond the original player-panel format are appended at
+				// hex (exactly what OpenRA renders and what LobbyCommands `color` parses
+				// back through FieldLoader), team, and spawn point (0 = unassigned/random).
+				var entries = orderManager.LobbyInfo.Clients.Select(c =>
+					$"{c.Name}|bot:{(c.Bot != null)}|{c.State}|q:{c.ConnectionQuality}|ms:{c.PingMs}|admin:{c.IsAdmin}|slot:{c.Slot ?? "none"}" +
+					$"|idx:{c.Index}|faction:{c.Faction}|color:{c.Color}|team:{c.Team}|spawn:{c.SpawnPoint}");
+				var openSeats = orderManager.LobbyInfo.Slots.Count(s => !s.Value.Closed);
+				return $"started={orderManager.GameStarted} clients=[{string.Join(";;", entries)}] " +
+					$"map={orderManager.LobbyInfo.GlobalSettings.Map ?? ""} seats={openSeats}";
+			}
+			catch (Exception e)
+			{
+				return $"probe failed: {e.GetType().Name}: {e.Message}";
+			}
+		}
+
+		[JSExport]
+		internal static string GetConnectionProbe()
+		{
+			try
+			{
+			var orderManager = Game.OrderManager;
+			if (orderManager?.Connection == null)
+				return "no connection";
+
+			var state = orderManager.Connection is NetworkConnection network
+				? network.ConnectionState.ToString()
+				: "local";
+
+			var localClient = orderManager.LocalClient;
+			var clientState = localClient?.State.ToString() ?? "none";
+			var isAdmin = localClient?.IsAdmin ?? false;
+
+			var slot = localClient?.Slot ?? "observer";
+			var faction = localClient?.Faction ?? "none";
+
+			return $"state={state} clientid={orderManager.Connection.LocalClientId} " +
+				$"clients={orderManager.LobbyInfo.Clients.Count} netframe={orderManager.NetFrameNumber} " +
+				$"started={orderManager.GameStarted} outofsync={orderManager.IsOutOfSync} " +
+				$"clientstate={clientState} admin={isAdmin} slot={slot} faction={faction} epoch={joinEpoch}";
+			}
+			catch (Exception e)
+			{
+				return $"probe failed: {e.GetType().Name}: {e.Message}";
+			}
+		}
+
+		[JSExport]
+		internal static string SetPlayerName(string name)
+		{
+			try
+			{
+				Game.Settings.Player.Name = name;
+				Game.Settings.Save();
+				return $"name {Game.Settings.Player.Name}";
+			}
+			catch (Exception e)
+			{
+				return $"failed: {e.Message}";
+			}
+		}
+
+		[JSExport]
+		internal static string GetServerErrorProbe()
+		{
+			return Game.OrderManager?.ServerError ?? "none";
+		}
+
+		/// <summary>
+		/// World tick and sync hash as one atomic string so tick and hash cannot be
+		/// read from either side of a tick boundary. Pairwise equality between two
+		/// clients at the same tick is the desync gate.
+		/// </summary>
+		[JSExport]
+		internal static string GetSyncProbe()
+		{
+			var world = Game.OrderManager?.World;
+			if (world == null)
+				return "tick=- hash=- world=null";
+
+			return $"tick={world.WorldTick} hash={unchecked((uint)world.SyncHash())}";
+		}
+
+		[JSExport]
+		internal static bool IsRunning()
+		{
+			return Game.State == RunStatus.Running;
+		}
+
+		[JSExport]
+		internal static int GetNetFrame()
+		{
+			// Game.NetFrameNumber throws before an OrderManager exists.
+			try
+			{
+				return Game.NetFrameNumber;
+			}
+			catch (NullReferenceException)
+			{
+				return -1;
+			}
+		}
+	}
+}

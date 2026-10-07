@@ -1,0 +1,159 @@
+{
+	"schemaVersion": 1,
+	"id": "soviet-tank-pressure",
+	"version": 2,
+	"title": "Soviet Tank Pressure",
+	"faction": "soviets",
+	"archetype": "pressure",
+	"openingSummary": "POWR>BARR>PROC>WEAP>FIX; stream 3TNK with FTRK support; add a second WEAP when funded.",
+	"when": [
+		"A usable land route exists and massed rocket infantry or mine walls are not confirmed."
+	],
+	"avoidWhen": [
+		"The opponent has a dense E3 screen, anti-tank mines, or an established artillery line."
+	],
+	"effectiveAgainst": [
+		"vehicle.light",
+		"vehicle.medium",
+		"structure.production"
+	],
+	"hardCounteredBy": [
+		"infantry.anti-armor",
+		"terrain.mine-wall",
+		"weapon.artillery"
+	],
+	"requirements": [
+		"landRoute"
+	],
+	"opening": [
+		"POWR > BARR > PROC with E1 scouts out early",
+		"WEAP as income allows, then FIX — the Service Depot gates tank production",
+		"First 3TNK immediately; add a second WEAP for a faster stream",
+		"Second PROC when the first wave rolls out"
+	],
+	"composition": [
+		"6-8 3TNK as the fist (twin 105mm, strong versus Heavy)",
+		"2-3 FTRK riding with the tanks — tank cannons cannot shoot air",
+		"Keep the E1 screen alive for vision, not combat"
+	],
+	"execution": [
+		"queueMission sweep on the ore line and midmap before committing anywhere",
+		"spyPlane the target base right before each wave",
+		"queueMission strike posture=assault targetPriority=production with 6+ 3TNK",
+		"guard the FTRK onto the tank squad so the AA umbrella travels",
+		"queueMission pincer posture=raid targetPriority=economy with 2-3 spare tanks",
+		"pursue on enemyRetreating and CRUSH rocket infantry under tracks instead of trading shots",
+		"reinforce the front squad with every fresh tank pair; setPolicy autoRepairBuildings=true"
+	],
+	"targets": {
+		"harvesters": 4,
+		"refineries": 2,
+		"missionDriven": true
+	},
+	"phases": [
+		{
+			"name": "mobilize",
+			"objective": "Reach a six-tank core without sacrificing scouting or anti-air coverage.",
+			"actionTypes": [
+				"queueBuildPlan",
+				"assignGroup",
+				"guard"
+			],
+			"claimRefs": [
+				"RF1",
+				"RF2",
+				"CH1"
+			]
+		},
+		{
+			"name": "pressure",
+			"objective": "Strike production with the main body and raid economy only with a bounded fast detachment.",
+			"actionTypes": [
+				"queueMission",
+				"controlMission",
+				"spyPlane"
+			],
+			"claimRefs": [
+				"DC1",
+				"CH2"
+			]
+		}
+	],
+	"abortTransitions": [
+		{
+			"when": "Two waves fail against confirmed anti-armor infantry, mines, or static guns.",
+			"transitionTo": "soviet-grenadier-rush",
+			"claimRefs": [
+				"RF2",
+				"CH2"
+			]
+		}
+	],
+	"retrieval": {
+		"situationIds": [
+			"T1.base",
+			"T2.reinforcement",
+			"O1.retreat"
+		],
+		"counterRows": [
+			"anti-armor",
+			"anti-air",
+			"artillery"
+		],
+		"actorCodes": [
+			"weap",
+			"fix",
+			"3tnk",
+			"ftrk",
+			"v2rl"
+		]
+	},
+	"claims": [
+		{
+			"id": "RF1",
+			"epistemic": "ruleFact",
+			"statement": "The 3TNK is a heavy Soviet vehicle with two 105mm weapons and cannot attack air targets.",
+			"sourceRefs": [
+				"actor:3tnk",
+				"weapon:105mm",
+				"source:mods/ra/rules/vehicles.yaml#3tnk"
+			]
+		},
+		{
+			"id": "RF2",
+			"epistemic": "ruleFact",
+			"statement": "Rocket infantry deal full anti-heavy damage and are a material threat to unsupported tanks.",
+			"sourceRefs": [
+				"actor:e3",
+				"weapon:Dragon",
+				"source:mods/ra/weapons/infantry.yaml#Dragon"
+			]
+		},
+		{
+			"id": "DC1",
+			"epistemic": "derivedComparison",
+			"statement": "FTRK support covers the tank group's air-targeting gap but does not replace anti-infantry positioning.",
+			"sourceRefs": [
+				"actor:3tnk",
+				"actor:ftrk",
+				"weapon:FLAK-23-AA"
+			]
+		},
+		{
+			"id": "CH1",
+			"epistemic": "curatedHeuristic",
+			"statement": "Delay the second War Factory until the first tank stream and economy are stable.",
+			"sourceRefs": [
+				"corpus:smtactics#soviet-heavy-production"
+			]
+		},
+		{
+			"id": "CH2",
+			"epistemic": "curatedHeuristic",
+			"statement": "When direct armor trades fail twice, convert to ranged siege instead of feeding another wave.",
+			"sourceRefs": [
+				"corpus:majorslack#armor-transition"
+			]
+		}
+	]
+}

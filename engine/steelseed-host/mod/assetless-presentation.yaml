@@ -1,0 +1,74 @@
+^AssetlessPalettes:
+	PaletteFromRGBA@terrain:
+		Name: terrain
+	PaletteFromRGBA@player:
+		Name: player
+	PaletteFromRGBA@player-noshadow:
+		Name: player-noshadow
+	PaletteFromRGBA@chrome:
+		Name: chrome
+	PaletteFromRGBA@effect:
+		Name: effect
+	PaletteFromRGBA@desert:
+		Name: desert
+	PaletteFromRGBA@shadow:
+		Name: shadow
+	PaletteFromRGBA@shroud:
+		Name: shroud
+		R: 0
+		G: 0
+		B: 0
+		A: 255
+	PaletteFromRGBA@fog:
+		Name: fog
+		R: 0
+		G: 0
+		B: 0
+		A: 128
+	PaletteFromRGBA@moveflash:
+		Name: moveflash
+	PaletteFromRGBA@colorpicker:
+		Name: colorpicker
+	PaletteFromRGBA@civilian2:
+		Name: civilian2
+	PaletteFromRGBA@civilian4:
+		Name: civilian4
+	PaletteFromRGBA@civilian5:
+		Name: civilian5
+	PaletteFromRGBA@civilian6:
+		Name: civilian6
+	PaletteFromRGBA@civilian7:
+		Name: civilian7
+	PaletteFromRGBA@civilian8:
+		Name: civilian8
+	PaletteFromRGBA@civilian9:
+		Name: civilian9
+	PaletteFromRGBA@civilian10:
+		Name: civilian10
+	PlayerColorPalette@player:
+		BasePalette: player
+		BaseName: player
+	PlayerColorPalette@player-noshadow:
+		BasePalette: player-noshadow
+		BaseName: player-noshadow
+
+World:
+	Inherits@ASSETLESS: ^AssetlessPalettes
+	AssetlessTerrainRenderer:
+	AssetlessResourceRenderer:
+	SteelseedEventSink:
+	DisconnectDefeat:
+
+^ExistsInWorld:
+	SteelseedEventObserver:
+
+EditorWorld:
+	Inherits@ASSETLESS: ^AssetlessPalettes
+	AssetlessTerrainRenderer:
+
+# Only the paired deployment actors carry transform provenance.
+MCV:
+	SteelseedDeployment:
+
+FACT:
+	SteelseedDeployment:

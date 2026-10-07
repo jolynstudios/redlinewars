@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>OpenRA.FontMetrics</RootNamespace>
+		<OutputPath>bin/$(Configuration)</OutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="StbTrueTypeSharp" Version="1.26.12" />
+		<ProjectReference Include="..\..\OpenRA.Game\OpenRA.Game.csproj" />
+		<ProjectReference Include="..\..\OpenRA.Platforms.Default\OpenRA.Platforms.Default.csproj" />
+	</ItemGroup>
+</Project>

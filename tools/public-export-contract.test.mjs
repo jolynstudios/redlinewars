@@ -1,0 +1,93 @@
+import assert from 'node:assert/strict'
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
+import { spawnSync } from 'node:child_process'
+import test from 'node:test'
+import { createExportPolicy } from './export-policy.mjs'
+import { validatePublicSource } from './public-source-gate.mjs'
+import { PUBLIC_MUSIC_FILES, PUBLIC_MUSIC_SHA256, writePublicMusicFallbacks } from './public-music-fallback.mjs'
+import { assertPublicAudioStandins } from './public-audio-standins.mjs'
+import { createHash } from 'node:crypto'
+
+function fixture(fn) {
+ const root = mkdtempSync(join(tmpdir(), 'redline-public-edition-'))
+ const write = (path, text = '') => {
+  const file = join(root, path); mkdirSync(join(file, '..'), { recursive: true }); writeFileSync(file, text)
+ }
+ try { return fn({ root, write }) } finally { rmSync(root, { recursive: true, force: true }) }
+}
+function inputs(write) {
+ write('RELEASE-SOURCE.json', JSON.stringify({ schema: 2, edition: 'public-source', version: '0.1.0', sourceCommit: 'a'.repeat(40) }))
+ for (const path of ['LICENSE', 'NOTICE.md', 'AUTHORS', 'THIRD_PARTY_NOTICES.md',
+  'web/src/ui/index.ts', 'web/index.html', 'web/tools/compose.mjs',
+  'engine/steelseed-host/OpenRA.Browser/OpenRA.Browser.csproj',
+  'release/game-version.mjs', 'release/game-version.json']) write(path)
+ for (const area of ['engine', 'desktop', 'web']) {
+  write(area + '/package.json', JSON.stringify({ scripts: { build: 'tsc --noEmit && vite build', compose: 'node tools/compose.mjs' } }))
+  write(area + '/package-lock.json', '{}')
+ }
+}
+test('public source inputs validate without private Git history or proprietary components', () => fixture(({ root, write }) => {
+ inputs(write); assert.equal(validatePublicSource(root), 'a'.repeat(40))
+}))
+test('excluded UI, media dependency and missing engine input each fail the gate', () => fixture(({ root, write }) => {
+ inputs(write); write('web/src/hud/index.ts', 'private UI')
+ assert.throws(() => validatePublicSource(root), /excluded input present/)
+ rmSync(join(root, 'web/src/hud'), { recursive: true })
+ write('engine/package-lock.json', JSON.stringify({ packages: { 'node_modules/freehop': {} } }))
+ assert.throws(() => validatePublicSource(root), /excluded media dependency/)
+ write('engine/package-lock.json', '{}')
+ rmSync(join(root, 'engine/steelseed-host/OpenRA.Browser/OpenRA.Browser.csproj'))
+ assert.throws(() => validatePublicSource(root), /required input missing/)
+}))
+test('a legacy production export record cannot masquerade as a public edition', () => fixture(({ root, write }) => {
+ inputs(write); write('RELEASE-SOURCE.json', JSON.stringify({ schema: 1, sourceCommit: 'a'.repeat(40) }))
+ assert.throws(() => validatePublicSource(root), /unsupported edition/)
+}))
+test('source archive policy rejects unknown paths, excluded features and generated binaries', () => {
+ const { decide } = createExportPolicy()
+ for (const path of ['web/src/hud/index.ts', 'web/src/companion/index.ts', 'web/src/core/freehop-call.ts',
+  'engine/steelseed-host/tools/freehop-seat-signal.mjs', 'web/node_modules/foo/index.js',
+  'engine/bin-browser/AppBundle/_framework/runtime.wasm', 'art/music/private.m4a', 'desktop/shell/landing.html'])
+  assert.equal(decide(path).publish, false, path)
+ assert.equal(decide('unknown/private.txt'), null)
+ for (const path of ['web/src/ui/index.ts', 'web/src/render/index.ts', 'engine/steelseed-host/tools/roomhost.mjs',
+  'LICENSE', 'NOTICE.md', 'tools/build.mjs', 'release/game-version.json'])
+  assert.equal(decide(path).publish, true, path)
+})
+const silentMusic = () => Buffer.from(readFileSync(new URL('./fallback-art.mjs', import.meta.url), 'utf8').match(/const SILENT_M4A = Buffer.from\('([^']+)', 'base64'\)/)[1], 'base64')
+function samples(write) {
+ const bytes = silentMusic()
+ assert.equal(createHash('sha256').update(bytes).digest('hex'), PUBLIC_MUSIC_SHA256)
+ writePublicMusicFallbacks(write, bytes)
+ write('web/.forge/fallback-art.json', JSON.stringify({ schema: 1, tool: 'tools/fallback-art.mjs',
+  files: PUBLIC_MUSIC_FILES.map(path => ({ path, sha256: PUBLIC_MUSIC_SHA256 })) }))
+}
+test('all seven fallback songs are exact generated silence', () => fixture(({ root, write }) => {
+ samples(write); assert.equal(assertPublicAudioStandins(root), 7)
+}))
+test('modified placeholder music fails even if its hash record is also changed', () => fixture(({ root, write }) => {
+ samples(write); write(PUBLIC_MUSIC_FILES[0], 'tampered')
+ assert.throws(() => assertPublicAudioStandins(root), /bytes differ/)
+ const marker = JSON.parse(readFileSync(join(root, 'web/.forge/fallback-art.json'), 'utf8'))
+ marker.files[0].sha256 = createHash('sha256').update('tampered').digest('hex')
+ write('web/.forge/fallback-art.json', JSON.stringify(marker))
+ assert.throws(() => assertPublicAudioStandins(root), /exact generated silence/)
+}))
+test('unknown song files do not inherit the placeholder licence record', () => fixture(({ root, write }) => {
+ samples(write); write('art/music/unknown.m4a', silentMusic())
+ assert.throws(() => assertPublicAudioStandins(root), /unknown files/)
+}))
+test('gate CLI validates through filesystem aliases and fails on a leaked HUD', () => fixture(({ root, write }) => {
+ inputs(write); write('tools/public-source-gate.mjs', readFileSync(new URL('./public-source-gate.mjs', import.meta.url)))
+ const run = () => spawnSync(process.execPath, [join(root, 'tools/public-source-gate.mjs')], { encoding: 'utf8' })
+ assert.equal(run().status, 0)
+ write('web/src/hud/index.ts', 'private UI')
+ assert.notEqual(run().status, 0)
+}))
+test('release helper refuses production deployment flags', () => {
+ const run = spawnSync(process.execPath, [new URL('./release.mjs', import.meta.url).pathname, '--deploy'], { encoding: 'utf8' })
+ assert.equal(run.status, 2)
+ assert.match(run.stderr, /local checks only/)
+})

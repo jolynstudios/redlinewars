@@ -1,0 +1,1308 @@
+{
+	"schemaVersion": 1,
+	"graphId": "benchmark-to-leaderboard-v1",
+	"ledger": "work-graph/ledger.json",
+	"doc": "../WORK-GRAPH.md",
+	"terminal": "RUN-03",
+	"defaults": {
+		"retryBudget": 2,
+		"timeoutMs": 600000,
+		"cwd": "tests"
+	},
+	"budget": {
+		"ceilingUsd": 60,
+		"authorizedBy": "human plan approval 2026-07-26",
+		"note": "--cap is forbidden on the skill track (match-runner.mjs:193); the ceiling is enforceable only between games. SWP-03 is the only mechanism that can honour it, which is why every provider node depends on it. THREE stages share this one ceiling, in order: PIL-01 (shakeout, not rankable), CAL-03 (calibration corpus), RUN-02 (the ranked sweep). The ceiling is the total across all three, not per stage. CHANGED 2026-07-26 (human): runs go through a local sublet subscription proxy, not metered openrouter.ai, and run-with-sublet.sh clears OPENROUTER_API_KEY so a run meant to be free cannot quietly fall back to billing. usage.cost is still populated but is now a MODELLED price -- what the call would have cost metered -- so the ceiling stops being a bill and becomes a runaway-usage brake. Keep it: the accounting is still the efficiency metric, and an imputed 60 dollars of tokens is still a signal that something has gone wrong. Do not read spend columns in a published table as money changing hands."
+	},
+	"nodes": [
+		{
+			"id": "INF-01",
+			"title": "Gate manifest: every gate on disk declared with tier and spend class",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 0,
+			"deps": [],
+			"rationale": [
+				"No aggregate gate inventory exists; every gate is invoked by bare path.",
+				"The manifest is what INF-06 checks declared tiers against, and it makes a",
+				"silently-omitted gate a failure rather than an absence. Same 'no silent gaps'",
+				"principle as coverage-audit.mjs."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"gates-manifest-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "gates manifest gate passed",
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/gates-manifest.json",
+				"OpenRA.Browser/tests/gates-manifest-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-02",
+			"title": "Author work-graph.json (structure only, no status field)",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"INF-03"
+			],
+			"rationale": [
+				"Status is derived from the ledger and never stored, so this file carries",
+				"structure and rationale only. It lands when the validator accepts it."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-runner.mjs",
+					"--graph",
+					"work-graph.json",
+					"--plan"
+				],
+				"expectExit": 0,
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph.json"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/work-graph.json"
+			]
+		},
+		{
+			"id": "INF-03",
+			"title": "work-graph-runner --plan: schema, cycle detection, argv allowlist, frontier",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [],
+			"rationale": [
+				"Mirrors ladder-runner.mjs --dry-run: resolve and validate, print one JSON",
+				"document, touch nothing. The argv allowlist and forbidden-token scan run at",
+				"graph-load time, so a spending gate is rejected before anything executes."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-runner-test.mjs",
+					"--plan"
+				],
+				"expectExit": 0,
+				"expectStdout": "work graph runner plan tests passed",
+				"strength": "unit"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs",
+				"OpenRA.Browser/tests/work-graph-runner-test.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-04",
+			"title": "work-graph-runner --run: hash-chained ledger, tier preflight, watchdog, breakers",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"INF-03"
+			],
+			"rationale": [
+				"Atomic temp+rename ledger per ladder-runner.mjs:286. A node whose tier",
+				"prerequisite is absent records infrastructure-censored, never fail, and never",
+				"burns a retry."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-runner-test.mjs",
+					"--run"
+				],
+				"expectExit": 0,
+				"expectStdout": "work graph runner run tests passed",
+				"strength": "unit"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-05",
+			"title": "work-graph-runner --report: generated, timestamp-free WORK-GRAPH.md",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"INF-04"
+			],
+			"rationale": [
+				"Follows leaderboard.mjs and coverage-audit.mjs as generated markdown, and",
+				"era-lock.mjs's no-timestamps rule so the same tree regenerates byte-identically."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-runner-test.mjs",
+					"--report"
+				],
+				"expectExit": 0,
+				"expectStdout": "work graph runner report tests passed",
+				"strength": "unit"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/WORK-GRAPH.md"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-06",
+			"title": "work-graph-gate.mjs: chain integrity, doc==regeneration, anti-gate-weakening",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"INF-05",
+				"INF-01"
+			],
+			"rationale": [
+				"The auditor and the audited must not share an author, so this one is mine.",
+				"Asserts: doc equals a regeneration; ledger hash chain intact; every pass entry's",
+				"log digest matches; declared tiers match a static grep of the gate source; no",
+				"pass regressed its ok-line count; ledger is append-only versus HEAD~1.",
+				"Without this, INF-03..05 are a system that can lie."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "work graph gate passed",
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs",
+				"OpenRA.Browser/tests/work-graph.json"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/work-graph-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-07",
+			"title": "FIX and escalation protocol: retry budget, identical-failure, flaky, gate-mutation",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"INF-06"
+			],
+			"rationale": [
+				"The cheapest way to make a red node green is to weaken its gate. Gate-script",
+				"mutation during a FIX cycle and ok-line regression both escalate immediately."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"work-graph-runner-test.mjs",
+					"--fix"
+				],
+				"expectExit": 0,
+				"expectStdout": "work graph runner fix tests passed",
+				"strength": "unit"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/work-graph-runner.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "ERA-01",
+			"title": "Fix the era-lock validator schema mismatch so --era-lock can succeed at all",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 1,
+			"deps": [],
+			"rationale": [
+				"era-lock.mjs writes files{}; match-runner.mjs:296-298 reads flat actionSchemaHash",
+				"/ primerHash / knowledgeHash, which a generated lock never contains. All three",
+				"read undefined, all three score as drift, exit 3. Verified against era1.lock.json:",
+				"six top-level keys, files{} has 9 entries, no flat keys. Known as C6 in",
+				"SAFE-COMBAT-ORCHESTRATION-PLAN.md:111. Nothing can be era-stamped until this lands."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"era-lock-stamp-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "era lock stamp gate passed",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/tests/era-lock.mjs",
+				"OpenRA.Browser/tests/era1.lock.json"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/era-lock-stamp-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "ERA-02",
+			"title": "Mint the benchmark-lockstep era lock: extend eraFiles, add benchmark identity",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 1,
+			"deps": [
+				"ERA-01",
+				"ERA-03",
+				"INT-01",
+				"INT-02",
+				"INT-03",
+				"CAL-01",
+				"ERA-04"
+			],
+			"rationale": [
+				"era-lock.mjs:38-41 states that changing the pinned file list is itself",
+				"era-defining, so this decision is the coordinator's. None of the benchmark",
+				"surfaces are pinned today. Also asserts the six scattered copies of",
+				"benchmark-lockstep-v1 agree, so the spec version cannot silently split.",
+				"MINTED LAST BY CONSTRUCTION: every node that edits a surface this lock will",
+				"pin must land first, or the lock drifts the moment the next node commits.",
+				"That is why this depends on ERA-03, the INT track and CAL-01 rather than",
+				"gating them.",
+				"PIN LIST IS DERIVED, NOT CHOSEN (revised 2026-07-26). An earlier draft named a",
+				"hand-picked ~21 surfaces. Checking it against the tree showed it was wrong in",
+				"two ways that would have shipped a benchmark whose era identity ignores things",
+				"the models demonstrably read:",
+				"  (a) OpenRA.Browser.csproj sets no explicit Compile items and does not disable",
+				"      default compile items, so ALL 27 AgentMode/*.cs are compiled into the",
+				"      served assembly. The draft pinned 8. Unpinned were AgentSpatialSummary.cs",
+				"      and AgentFogMemory.cs, which shape what the model can SEE, plus the whole",
+				"      doctrine layer, which changed 10 times in the last 30 commits.",
+				"  (b) strategy-catalog.ts reads ra-arsenal.json (:177), strategies/catalog.json,",
+				"      situation-manual.json (:190) and 4 strategy cards at RUNTIME. None are",
+				"      pinned and none are doctrines, so the unit stats table the models reason",
+				"      from is invisible to era identity. doctrineHashes covers only",
+				"      knowledge/playbooks/*.md.",
+				"The rule, applied mechanically at mint time: pin every file that is compiled",
+				"into the served agent assembly, executed by the sidecar, read as model-facing",
+				"knowledge, or is the benchmark's own player or scheduler. That is AgentMode/**,",
+				"agent-sidecar/src/**, agent-sidecar/knowledge/** except playbooks/ (already",
+				"covered by doctrineHashes), wwwroot/index.html + wwwroot/*.js except the",
+				"standalone s3/s4audio demo pages that index.html never loads, and",
+				"tests/benchmark-scripted-anchor.mjs + tests/benchmark-series-lib.mjs. Roughly 50",
+				"surfaces. Also asserts the scattered copies of benchmark-lockstep-v1 agree, so",
+				"the spec version cannot silently split.",
+				"RETRY BUDGET IS 12, NOT THE DEFAULT 2, and the reason is the point of the node.",
+				"ERA-02 is DESIGNED to fail every time a pinned surface moves. On 2026-07-26 it",
+				"failed twice in an hour, both times correctly: INT-05 edited server.ts and",
+				"INT-06 edited benchmark-series-lib.mjs, and each time the committed lock stopped",
+				"reproducing from the tree and the gate said so by name. Two strikes escalated it",
+				"and the driver stopped asking. A budget that treats the era lock noticing a",
+				"changed measured surface as unreliability defeats the lock. The fix each time is",
+				"a one-command re-mint, so the failure is informative and self-healing.",
+				"FOR INF-07, which is deferred: an escalated node has no documented way back. The",
+				"only in-band route here was to raise this budget. That is honest but it is not a",
+				"protocol, and INF-07 should define one.",
+				"Deliberately NOT pinned: match-runner.mjs, because it is the code that VALIDATES",
+				"the lock -- pinning it makes every future era definition self-invalidating.",
+				"The previous exclusion of AgentAdjudication.cs is dropped: it was justified by a",
+				"claim about its callers that turned out to be wrong once already, and a rule that",
+				"pins the whole compiled surface does not need that judgment call to be right."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"era-lock-stamp-gate.mjs",
+					"--benchmark-era"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK the benchmark-lockstep era lock pins every measured surface",
+				"strength": "behavioral"
+			},
+			"retryBudget": 12,
+			"watch": [
+				"OpenRA.Browser/tests/era-lock.mjs",
+				"OpenRA.Browser/tests/era-surfaces.mjs",
+				"OpenRA.Browser/tests/benchmark-lockstep-v1.lock.json",
+				"OpenRA.Browser/AgentMode",
+				"OpenRA.Browser/agent-sidecar/src",
+				"OpenRA.Browser/agent-sidecar/knowledge",
+				"OpenRA.Browser/wwwroot",
+				"OpenRA.Browser/tests/benchmark-scripted-anchor.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-lockstep-v1.lock.json"
+			],
+			"planned": true
+		},
+		{
+			"id": "ERA-03",
+			"title": "Pass --era-lock through matchRunnerArgs; carry era identity in aggregateSeries",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"ERA-01"
+			],
+			"rationale": [
+				"benchmark-series-lib.mjs matchRunnerArgs never passes --era-lock, so every swept",
+				"game writes eraLock:null and leaderboard.mjs:336 files the whole series as",
+				"pre-era. This is the node that makes a paid sweep rankable.",
+				"Wires the flag against a manifest-supplied lock path, so it lands BEFORE the",
+				"lock is minted; it edits benchmark-series-lib.mjs, which ERA-02 will pin."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK every scheduled invocation carries the manifest era lock",
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs"
+			]
+		},
+		{
+			"id": "INT-01",
+			"title": "Make the anchor policy digest actually cover the anchor's behaviour",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"benchmark-scripted-anchor.mjs:10-21 hashes PolicyDescriptor, which is PROSE.",
+				"StructurePreference, InfantryPreference, VehiclePreference,",
+				"DesiredStructureCount, the 11/12 action caps and the patrol math are all",
+				"outside the digest, so the anchor can be made stronger or weaker with a",
+				"byte-identical policyDigest. The anchor is the Elo origin (rating pinned 1200,",
+				"'arbitrary fixed scale origin'), so a silent anchor change silently reprices",
+				"every model on the leaderboard. Fold the behavioural constants into the",
+				"descriptor; prove it with a mutation test."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK anchor policy digest covers the behavioural policy arrays",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-scripted-anchor.mjs"
+			]
+		},
+		{
+			"id": "INT-02",
+			"title": "Enforce raw-track purity mechanically, not by policy",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"match-runner.mjs:189-206 rejects --cap/--play/--fallback-strike/--staff-seat",
+				"under --benchmark-lockstep but NOT --executor/--arsenal/--guided. The skill",
+				"track is raw only because matchRunnerArgs declines to pass them: policy, not",
+				"mechanism. And scoreGame checks enabled/specVersion/oos/map/calibration but",
+				"never outcome.assistance, which match-runner.mjs:1229 already stamps.",
+				"Add the flags to the incompatibility block and make scoreGame refuse any",
+				"outcome whose assistance is not all-false. Also assert AgentAdjudication.cs's",
+				"const weights still equal LockedWeights, so the dead C# mirror cannot drift."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK lockstep refuses assists and scoring refuses an assisted outcome",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs"
+			]
+		},
+		{
+			"id": "INT-03",
+			"title": "Stamp and assert the effective decision interval",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"wwwroot/index.html:209's agent-interval value=\"250\" seeds decisionIntervalTicks",
+				"on the lockstep track; match-runner overrides it only for --staff-seat, which",
+				"lockstep forbids. Editing that one HTML attribute halves or doubles how many",
+				"paired decisions fit the tick horizon, for every model, with no visibility",
+				"anywhere in the evidence.",
+				"CORRECTED 2026-07-26: an earlier draft of this rationale called index.html the",
+				"ONLY source. It is not. AgentModeHost.cs:503 computes the value it actually",
+				"uses via AgentCadence.EffectiveDecisionInterval, and neither AgentMatchStartResult",
+				"nor AgentMatchState exposed the result, so requested and effective could differ",
+				"silently. Stamping the DOM value would have satisfied this gate while proving",
+				"nothing. Stamp the value the host ACTUALLY USED -- reusing the already-computed",
+				"field, never recomputing at stamp time -- carry it into outcome.json, and have",
+				"the series lib REJECT any game whose host-reported value differs from the",
+				"manifest. Absence at benchmark start is a hard failure, never a default."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK the effective decision interval is stamped and cross-checked",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/wwwroot/index.html",
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/AgentMode/AgentModeContracts.cs",
+				"OpenRA.Browser/AgentMode/AgentModeHost.cs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs",
+				"OpenRA.Browser/tests/benchmark-sweep-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-sweep/benchmark-sweep-v1.fixture.json"
+			]
+		},
+		{
+			"id": "INT-04",
+			"title": "Bundle freshness gate: the served build must match the pinned source",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 3,
+			"deps": [],
+			"rationale": [
+				"The era lock pins SOURCE, but tests/server.mjs serves bin-browser/AppBundle, a",
+				"build output. match-runner.mjs:246-248 deliberately does not check engineCommit",
+				"at match time, so nothing stops a paid match measuring stale compiled code",
+				"against a clean-looking lock. They happen to be byte-identical right now; that",
+				"is luck, not a guarantee."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"bundle-freshness-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "bundle freshness gate passed",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/wwwroot"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/bundle-freshness-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "SWP-01",
+			"title": "Give benchmark-sweep-runner a resumable label-keyed ledger",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"benchmark-sweep-runner.mjs:193 refuses to start if any result directory exists,",
+				"so a crash at game 33 of 36 forces a new seriesId and re-pays for everything.",
+				"A 36-game sweep is 12-16 hours of paid wall clock. Port ladder-runner's ledger,",
+				"--resume, fresh-start guard and resolved|unfinished|infrastructure-censored",
+				"taxonomy. Hard prerequisite for spending money.",
+				"NOT hypothetical: 19 of 41 existing match-results directories have a log.jsonl",
+				"and no outcome.json — a 46% historical abort rate. Over 36 games that is a",
+				"near-certainty, not a risk.",
+				"Two specific holes this node must close. (1) executeSweep reads",
+				"match-results/<label>/outcome.json unconditionally after every game, so a dead",
+				"page takes the whole series down with it. (2) match-runner.mjs:1232 sets",
+				"infrastructureCensored from providerTerminal ALONE, so a crashed page, a lost",
+				"WebGL context (BrowserGL2Window.cs:47-52 throws rather than degrading, and a",
+				"tab suspend or GPU reset during a multi-hour sweep will hit it) or a watchdog",
+				"kill is not classified at all. A game that died for harness reasons must be",
+				"retryable and must never be scored or charged as a model result."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-resume-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "benchmark sweep resume gate passed",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-sweep-runner.mjs",
+				"OpenRA.Browser/tests/match-runner.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-sweep-resume-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "SWP-02",
+			"title": "Offline --score-only mode for an already-run series",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"executeSweep already separates run from score (scoreGame at :213), but there is",
+				"no free entry point, so re-scoring today means re-running and re-paying. Reuses",
+				"resolveSweep + scoreGame + aggregateSeries."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-score-only-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "benchmark sweep score-only gate passed",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-sweep-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-sweep-score-only-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "SWP-03",
+			"title": "Between-games budget ceiling with conservative spend reservation",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"SWP-01"
+			],
+			"rationale": [
+				"The sweep runner has no budget gate at all, and --cap is forbidden per-game on",
+				"the skill track. This is the only mechanism that can honour the $60 ceiling.",
+				"Unparseable spend is charged at the full estimate, per ladder-runner: stop early,",
+				"never overspend. Every provider node depends on this."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-budget-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "benchmark sweep budget gate passed",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-sweep-runner.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-sweep-budget-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "CAL-01",
+			"title": "Pin candidate calibration to one map; correct the stale README blocker",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"The README's stated freeze blocker is stale: the map pin landed in 9f4fa1f697.",
+				"What remains is that the calibration generator independently emits both",
+				"a-nuclear-winter and Siberian-Pass, and outcome/metrics record only the requested",
+				"map string, not the host's canonical resolved uid. Omitted-map default stays",
+				"a-nuclear-winter so the boot world agrees with the actual match."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"golden-score-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "GOLDEN SCORE GATE RESULT: PASS",
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/benchmark-calibration-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-calibration/candidates/benchmark-calibration-v1.candidate.json",
+				"OpenRA.Browser/tests/match-runner.mjs"
+			]
+		},
+		{
+			"id": "CAL-02",
+			"title": "Record the calibration identity (README-BENCHMARK section 1, seven items)",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 0,
+			"deps": [
+				"CAL-01",
+				"ERA-02"
+			],
+			"rationale": [
+				"Spec versions, canonical map uid and package hash, scorer revision, horizons,",
+				"seeds and scenario identities, proposed control-region digest. Validated the way",
+				"control-harness-gate.mjs validates a plan document against code."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"calibration-identity-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "calibration identity gate passed",
+				"strength": "artifact"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/README-BENCHMARK.md"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/calibration-identity-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "CAL-03",
+			"title": "Run the model-blind calibration corpus",
+			"owner": "claude",
+			"spend": "provider",
+			"tier": 3,
+			"deps": [
+				"CAL-02",
+				"ERA-03",
+				"SWP-03",
+				"INT-04",
+				"INF-04",
+				"PIL-01",
+				"INF-08"
+			],
+			"rationale": [
+				"Production floors cannot be frozen from the synthetic scenarios; those prove the",
+				"tooling only (README-BENCHMARK.md:547). Floors are the nearest-rank p25 of",
+				"positive paired totals from a real corpus, exercising all six components at low,",
+				"medium and high totals. Blind: derived before model rankings are looked at.",
+				"Depends on PIL-01 because a plumbing bug found here contaminates the corpus and",
+				"forces it to be re-paid for; the pilot is the cheap place to find it. Depends on",
+				"INF-08 because this corpus is the evidence CAL-05's freeze rests on, and",
+				"untracked evidence cannot support a frozen calibration."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"calibration-corpus-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "calibration corpus gate passed",
+				"strength": "behavioral"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/calibration-corpus-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "CAL-04",
+			"title": "Derive and blind-review the candidate bundle",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"CAL-03"
+			],
+			"rationale": [
+				"Codex derives, Claude reviews against README-BENCHMARK.md:558-568's eight checks.",
+				"No OOS, mixed-map, duplicate, post-outcome or provider-fault sample may enter."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-calibration-runner.mjs",
+					"--map",
+					"Siberian-Pass.oramap",
+					"--check",
+					"benchmark-calibration/candidates/benchmark-calibration-v1.candidate.json"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK calibration floors derive from the model-blind corpus",
+				"strength": "artifact"
+			}
+		},
+		{
+			"id": "CAL-05",
+			"title": "HUMAN FREEZE: promote the reviewed candidate to status frozen",
+			"owner": "human",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"CAL-04"
+			],
+			"rationale": [
+				"A repo invariant, not a preference: README-BENCHMARK.md:572 states only a human",
+				"may promote, and both automated paths actively assert the candidate is NOT",
+				"promoted. The driver prepares the bundle and the checklist, then stops."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"golden-score-gate.mjs",
+					"--frozen"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK production frozen calibration bundle validates end to end",
+				"strength": "artifact"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-calibration/siberian-pass-v1.frozen.json"
+			],
+			"planned": true
+		},
+		{
+			"id": "RUN-01",
+			"title": "Author the sweep manifest: 3 models plus the scripted anchor, 3 pairs",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"CAL-05"
+			],
+			"rationale": [
+				"C(4,2)=6 matchups x 3 pairs x 2 legs = 36 games. The anchor is a versioned",
+				"deterministic scripted controller in a normal lockstep seat behind a loopback",
+				"proxy, rating pinned at 1200, costing $0 per anchor seat."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-runner.mjs",
+					"--manifest",
+					"benchmark-sweep/era-lockstep-v1.json",
+					"--dry-run"
+				],
+				"expectExit": 0,
+				"strength": "artifact"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-sweep/era-lockstep-v1.json"
+			],
+			"planned": true
+		},
+		{
+			"id": "RUN-02",
+			"title": "Execute the paired sweep",
+			"owner": "claude",
+			"spend": "provider",
+			"tier": 3,
+			"deps": [
+				"RUN-01",
+				"INF-08"
+			],
+			"rationale": [
+				"Resumable, budget-capped, era-stamped. Every scheduled label must reach a",
+				"terminal record with oos=false and total spend at or under the ceiling.",
+				"Depends on INF-08 so the retention policy is settled BEFORE the money is spent:",
+				"discovering afterwards that 36 game directories cannot be committed as they",
+				"stand means hand-curating the evidence that is supposed to prove the ratings."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-completeness-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "benchmark sweep completeness gate passed",
+				"strength": "behavioral"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/benchmark-sweep-completeness-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "RUN-03",
+			"title": "Publish: era-partitioned leaderboard with anchored Elo and paired intervals",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 2,
+			"deps": [
+				"RUN-02",
+				"INT-08"
+			],
+			"rationale": [
+				"Done is one line changing: LEADERBOARD.md must show era-locked ranked rows",
+				"instead of 'Pre-era (research preview) - excluded from rankings'.",
+				"Every dependency of this node is artifact or behavioral strength, never grep:",
+				"a publishable claim may not rest on a chain of symbol-existence checks."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"publication-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "publication gate passed",
+				"strength": "artifact"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/publication-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INF-08",
+			"title": "Make the sweep payload publishable: evidence retention, tracked in git",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 0,
+			"deps": [],
+			"rationale": [
+				"FOUND 2026-07-26, and it is a defect in the terminal state itself. .gitignore:68",
+				"ignores OpenRA.Browser/tests/match-results/ wholesale: `git ls-files` returns ZERO",
+				"tracked files under it, and match-results/LEADERBOARD.md -- the single artifact",
+				"RUN-03 exists to change -- is present on disk and absent from git. A benchmark",
+				"whose pitch is 'reproducible from checked-in artifacts' currently cannot check in",
+				"the artifact. Every outcome.json, metrics.json, scorecard and era stamp from both",
+				"paid stages would live only on one laptop.",
+				"Not solved by tracking everything: 36 games of screenshots is hundreds of",
+				"megabytes, and log.jsonl carries raw provider traffic, which is a retention AND a",
+				"key-exposure question rather than a size one. Settle a policy -- what is evidence",
+				"that backs a rating, what is bulk, and what must never be committed -- express it",
+				"as .gitignore exceptions, and gate it: given a completed series directory, every",
+				"file the leaderboard derives a number from must be tracked, and nothing matching",
+				"the never-commit set may be.",
+				"Deliberately blocks both paid nodes. Settling this after the money is spent means",
+				"hand-curating the evidence that is supposed to prove the ratings."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"publication-evidence-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK the published evidence set is complete, tracked, and free of never-commit files",
+				"strength": "behavioral"
+			},
+			"watch": [
+				".gitignore",
+				"OpenRA.Browser/tests/leaderboard.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/publication-evidence-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "PIL-01",
+			"title": "Shakeout pilot: prove the paid path with real money before the corpus",
+			"owner": "claude",
+			"spend": "provider",
+			"tier": 3,
+			"deps": [
+				"ERA-02",
+				"SWP-03",
+				"INT-04",
+				"INF-04",
+				"CAL-01",
+				"INF-08",
+				"INT-05",
+				"INT-06",
+				"INT-07",
+				"INT-09",
+				"INT-10"
+			],
+			"rationale": [
+				"A human decision of 2026-07-26 that the graph did not represent, so the graph",
+				"would have driven CAL-02 straight into a paid corpus. One seed pair, one cheap",
+				"matchup, about 4 games, roughly $2-4 of the $60.",
+				"DELIBERATELY NOT RANKABLE: the clustered CI needs at least 3 pairs, so this",
+				"cannot and must not produce a rating. Its only job is to prove that resume,",
+				"budget reservation, era stamping, crash classification and scoring survive",
+				"contact with real money and a real provider -- every one of which has so far",
+				"only been exercised against scripted fixtures.",
+				"Kept separate from CAL-03 so a plumbing bug cannot contaminate the calibration",
+				"corpus and force it to be paid for twice. The gate must assert the pilot",
+				"produced era-stamped, re-scorable results AND that it claims no ranking, because",
+				"a pilot that quietly looked rankable is the failure mode worth guarding.",
+				"CORRECTED 2026-07-26 -- this node could not have run as first written. It was",
+				"specified as a small sweep, but benchmark-series-lib.mjs:65 requires a",
+				"calibration with status=frozen and CAL-05 does not freeze one until after",
+				"CAL-03. A pilot scheduled before the freeze can therefore never resolve a",
+				"sweep. That is not a bug in the guard; the guard is right.",
+				"So the pilot runs as direct match-runner invocations, not a sweep:",
+				"--benchmark-lockstep --era-lock with NO --benchmark-calibration, which",
+				"match-runner.mjs:147/363 already treats as optional. That produces era-stamped",
+				"outcome.json with raw component ledgers and no score, which is precisely what",
+				"'deliberately not rankable' should mean mechanically rather than by intention.",
+				"Scoring happens later from those raw outcomes once floors are frozen -- SWP-02's",
+				"--score-only path exists for exactly that.",
+				"The sweep-level mechanics it was meant to prove -- resume, budget reservation,",
+				"crash classification -- are already proven by SWP-01/02/03 against fixtures. What",
+				"only real money and a real provider can prove, and what this node is now for, is",
+				"the live path: proxy to sidecar to host to an era-stamped outcome, with INT-05's",
+				"per-decision proof that the model named in the evidence is the model that",
+				"answered. Series id must begin benchmark-lockstep-v1- or INF-08's retention",
+				"policy will not track the evidence it produces.",
+				"SECOND CORRECTION 2026-07-26, from the live demo match: moving this node to direct",
+				"match-runner invocations to dodge the frozen-calibration requirement also threw away",
+				"the crash protection SWP-01 built. classifySweepAttempt (benchmark-sweep-runner.mjs:506)",
+				"classifies harness deaths and retries them; a bare match-runner invocation has nothing.",
+				"Proved by the demo: the headed browser window closed at tick 21173 after 17 good minutes",
+				"and the run died on page.evaluate with no outcome.json written. 19 accepted decisions of",
+				"real work, unrecoverable. The pilot needs its own crash handling, or a way to reach the",
+				"sweep path without a frozen calibration. Do not run PIL-01 until that is settled."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"shakeout-pilot-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK the shakeout pilot proved the paid path end to end and claims no ranking",
+				"strength": "behavioral"
+			},
+			"artifacts": [
+				"OpenRA.Browser/tests/shakeout-pilot-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-05",
+			"title": "Prove the model that answered is the model on the leaderboard",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"REQUIRED BY THE MOVE TO A SUBSCRIPTION PROXY (human decision 2026-07-26): all",
+				"runs now go through a local sublet proxy at OPENROUTER_BASE_URL rather than",
+				"openrouter.ai, and the pool is x-ai/grok-4.5 + z-ai/glm-5.2 + the scripted",
+				"anchor.",
+				"server.ts:527/774 SEND a model and never read one back. Nothing anywhere in the",
+				"harness compares the model that answered against the model that was asked for.",
+				"That was survivable against a single metered endpoint; it is not survivable now.",
+				"sublet CAN resolve an unknown slug down a ladder to a default model, which",
+				"would publish a rating for grok-4.5 that claude-haiku-4.5 actually earned. It",
+				"reports such a swap honestly as sublet.substituted_for -- but only to something",
+				"that looks, and nothing in this harness looks.",
+				"Two guards already exist and neither is sufficient. Probed 2026-07-26: the",
+				"running proxy REFUSES an unknown model with HTTP 400 rather than substituting,",
+				"and run-with-sublet.sh re-probes that at startup and will not launch a sidecar",
+				"against a substituting proxy. Both are start-time facts about a configuration.",
+				"Neither is evidence about a decision that was recorded three hours later, and",
+				"neither survives a backend that changes behaviour mid-series. The published",
+				"claim is per-match, so the proof has to be per-match too.",
+				"Verified by probe before writing this: both pool models answer through the",
+				"OpenRouter dialect, return their true id, need no repair path (strict",
+				"json_schema returns clean conformant JSON for both, so neither model is",
+				"disadvantaged by a different structured-output route), and route-pinned slugs",
+				"grok:x-ai/grok-4.5 / zai:z-ai/glm-5.2 resolve to the canonical id with no colon",
+				"leaking downstream. Pin the route so a dead backend fails loudly instead of",
+				"substituting.",
+				"Two things to record, both absent today: the served model per decision, and the",
+				"ENDPOINT PROVENANCE. The era lock pins 53 source surfaces but not the endpoint,",
+				"so 'grok-4.5 via subscription proxy' and 'grok-4.5 via metered OpenRouter' are",
+				"indistinguishable in the evidence while being different competitors.",
+				"A substituted seat is INFRASTRUCTURE-CENSORED, never a model failure and never a",
+				"silent success -- scoring a swap as a loss would libel the model that never",
+				"played.",
+				"Touches agent-sidecar/src/server.ts, which ERA-02 pins, so the era lock must be",
+				"re-minted after this lands. ERA-02 now watches every pinned surface directory,",
+				"so the driver marks it stale by itself rather than relying on anyone remembering."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"model-identity-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK every recorded decision proves which model and which route answered",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/agent-sidecar/src/server.ts",
+				"OpenRA.Browser/agent-sidecar/src/contracts.ts",
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs",
+				"OpenRA.Browser/tests/benchmark-anchor-proxy.mjs",
+				"OpenRA.Browser/tests/a2a-metrics.mjs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/model-identity-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-06",
+			"title": "Forbid cross-match lessons on the skill track, and record that they were absent",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"match-runner.mjs:204/206/208 reject --executor, --arsenal and --guided under",
+				"--benchmark-lockstep with 'the skill track is raw'. --lessons is NOT in that",
+				"list, and benchmark-series-lib.mjs:26 AssistanceFields is",
+				"[arsenal, executor, guided, fallbackStrike, play, staffSeat] -- lessons is",
+				"absent there too. So a lockstep match run with --lessons on injects prior-match",
+				"learnings into the seat prompt, and produces an outcome.json that is",
+				"indistinguishable from a clean one. scoreGame would accept it.",
+				"PROJECT-AUDIT-2026-07-16.md item 10 names the harm: lessons files are global per",
+				"model, so they leak across opponents and make results order-dependent -- in a",
+				"track whose entire claim is that it measures raw model skill under identical",
+				"conditions.",
+				"Swept games are safe today only BY OMISSION: benchmark-series-lib.mjs never",
+				"passes --lessons when it builds match argv. That is not a mechanism, it is a",
+				"coincidence of the current call site, and INT-02 exists precisely because raw",
+				"purity should not depend on one.",
+				"It became live rather than theoretical when PIL-01 was corrected to run DIRECT",
+				"match-runner invocations instead of a sweep: the pilot bypasses the very argv",
+				"construction that was accidentally protecting us.",
+				"Two halves, and the second matters as much as the first: REFUSE --lessons under",
+				"--benchmark-lockstep, and add lessons to the recorded assistance block so an",
+				"outcome PROVES it ran without them. A refusal alone leaves older or",
+				"hand-edited outcomes unfalsifiable."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK cross-match lessons cannot enter the skill track undetected",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs",
+				"OpenRA.Browser/tests/benchmark-sweep-runner.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-07",
+			"title": "Structure loss must count possession, not death",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"FOUND by the adversarial validity audit 2026-07-26 and independently confirmed",
+				"at high confidence. This is the one defect found so far that can invert a",
+				"published winner, and it falsifies the benchmark's own anti-gaming claim at",
+				"README-BENCHMARK.md:129.",
+				"AgentAdjudicationLedger.RecordDestroyed has exactly ONE call site,",
+				"AgentModeHost.NotifyKilled (:341), reached only via AgentDamageObserver's",
+				"INotifyKilled. Selling ends at Sell.cs:56 self.Dispose() -- no Kill(), so",
+				"INotifyKilled never fires. Capture ends at CaptureActor.cs:122 ChangeOwnerSync --",
+				"also no kill. OpenRA.Browser implements INotifySold, INotifyActorDisposing and",
+				"INotifyOwnerChanged exactly zero times, so no compensating sensor exists.",
+				"A seat's structuresByValue component IS opponent.StructureLossValue",
+				"(AgentAdjudicationLedger.cs:196), so a player who SELLS each threatened building",
+				"instead of losing it keeps their own loss at zero and collapses the attacker's",
+				"20% component.",
+				"It pays the seller three times: the refund routes to GiveCash with isRefund",
+				"FALSE so it increments PlayerResources.Earned and is booked as incomePerMinute",
+				"inside the 20% ECONOMY component; ^Building carries SpawnActorsOnSell",
+				"(mods/ra/rules/defaults.yaml:752) at ValuePercent 40, returning ~40% of the value",
+				"as mobile AttackBase infantry that adds to the 25% LIVE POWER and can add REGION",
+				"OCCUPANCY; and the structure loss itself vanishes.",
+				"Reachable in exactly the ranked configuration: sell is in the model-facing action",
+				"catalog (host:1437), the contract manifest (:1752), applied with NO benchmark",
+				"gate (:6887), and the host ships a SellRefundEstimate in the raw observation",
+				"(AgentSituationEngine.cs:478, unguarded).",
+				"Measured against the current candidate floors: a 0.270 swing in S, against a",
+				"0.10 draw band. A game the attacker won publishes as a loss.",
+				"THE PRINCIPLE, not a patch to one path: a structure that leaves its owner's",
+				"possession is an irreversible loss to that owner, whatever removed it. Death is",
+				"one mechanism, not the definition. Capture is simultaneously a loss for the",
+				"original owner and a gain for the capturer.",
+				"CONSTRAINT: do not patch upstream engine files. Observers in AgentMode/",
+				"implementing OpenRA's notification interfaces are the shape; AgentDamageObserver",
+				"is the precedent. If refund-as-income cannot be fixed without an engine patch,",
+				"that must be reported rather than reached for."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"adjudication-integrity-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK structure loss counts possession and cannot be zeroed by selling",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/AgentMode/AgentAdjudicationLedger.cs",
+				"OpenRA.Browser/AgentMode/AgentDamageObserver.cs",
+				"OpenRA.Browser/AgentMode/AgentModeHost.cs"
+			],
+			"artifacts": [
+				"OpenRA.Browser/tests/adjudication-integrity-gate.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-08",
+			"title": "The leaderboard must partition by track, not by era alone",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"FOUND by the validity audit 2026-07-26, confirmed. leaderboard.mjs:157",
+				"partitions era tables by eraLock.lockHash ALONE. BENCHMARK.md states the raw and",
+				"assisted tracks are never pooled, but nothing in the partition key encodes the",
+				"track, so both land in one W-L / Wilson / Elo table.",
+				"That is the single confound the whole two-track design exists to prevent: an",
+				"assisted result credits the model for what the harness did, and pooling it with",
+				"raw results means a better controller is published as a better model.",
+				"Publication-time defect, so it blocks RUN-03 rather than the pilot."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"publication-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK no published table pools two tracks or two eras",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/leaderboard.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-09",
+			"title": "A wall-clock safety stop must be censored, not scored",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"FOUND by the validity audit 2026-07-26, confirmed. match-runner.mjs:1363 ends a",
+				"match on the wall-clock safety stop and the result is scored as an ordinary",
+				"horizon-capped game rather than censored.",
+				"The cut tick therefore depends on how fast the MACHINE was, not on how the game",
+				"went, and that machine-dependent cut feeds the composite. Two runs of the same",
+				"seeded matchup on different hardware can produce different scores, which breaks",
+				"the reproducibility claim directly.",
+				"Blocks PIL-01: this is match-time classification, so a pilot run under it",
+				"produces evidence that cannot be rescued by re-scoring later."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-sweep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK a wall-clock safety stop is censored and never scored",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/match-runner.mjs",
+				"OpenRA.Browser/tests/benchmark-series-lib.mjs"
+			],
+			"planned": true
+		},
+		{
+			"id": "INT-10",
+			"title": "The barrier must not wake a seat on its opponent's private alert",
+			"owner": "codex",
+			"spend": "none",
+			"tier": 2,
+			"deps": [],
+			"rationale": [
+				"FOUND by the validity audit 2026-07-26, confirmed. Under lockstep the union",
+				"trigger at AgentModeHost.cs:2664 wakes BOTH seats when either one's trigger",
+				"fires. A seat whose own trigger is idle is therefore woken by its opponent's",
+				"PRIVATE alert -- and is told so, as decisionTrigger:'paired' in its observation.",
+				"That is a fog leak through the barrier itself: the timing of an opponent's alert",
+				"is information about the opponent's situation that the seat has not earned. Worse",
+				"than a raw timing side channel, because it is labelled.",
+				"The barrier exists to remove latency from the score, not to synchronise",
+				"knowledge. Equal decision OPPORTUNITIES is the requirement; equal decision",
+				"CAUSES is not.",
+				"Blocks PIL-01: a match played under the leak is contaminated at generation time",
+				"and no amount of re-scoring repairs it."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"benchmark-lockstep-gate.mjs"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK a paired wake leaks nothing about why the other seat woke",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/AgentMode/AgentModeHost.cs",
+				"OpenRA.Browser/AgentMode/AgentLockstepBarrier.cs"
+			],
+			"planned": true
+		},
+		{
+			"id": "ERA-04",
+			"title": "Pin the rules that denominate every score component",
+			"owner": "claude",
+			"spend": "none",
+			"tier": 1,
+			"deps": [],
+			"rationale": [
+				"FOUND by the validity audit 2026-07-26, confirmed, and it is a hole in MY OWN",
+				"53-surface derivation. Not to be confused with the ERA-04 proposal declined",
+				"earlier (relaxing era-lock's engineCommit check); that was a different node and",
+				"is still declined.",
+				"era-surfaces.mjs derives the pin list from what is agent-FACING: compiled into",
+				"the served assembly, executed by the sidecar, read as model knowledge. It does",
+				"not include the engine or the mod rules. But mods/ra/rules defines Valued.Cost,",
+				"which is the unit EVERY score component is denominated in -- structure value,",
+				"unit value, replacement cost, tech value.",
+				"So editing a cost in mods/ra/rules produces ZERO drift and pools the new games",
+				"with the old corpus under an identical lockHash, while every published number",
+				"silently changes meaning. era1 died of an incomplete pin list and this is the",
+				"same failure one level down: I fixed which agent files are pinned and missed",
+				"that the scoreboard's units are defined elsewhere.",
+				"Decide deliberately how far this reaches -- the full mods/ tree is large and",
+				"most of it does not touch scoring -- but a rule that pins nothing of the",
+				"ruleset is indefensible for a benchmark whose scores are denominated in it."
+			],
+			"gate": {
+				"argv": [
+					"node",
+					"era-lock-stamp-gate.mjs",
+					"--benchmark-era"
+				],
+				"expectExit": 0,
+				"expectStdout": "OK the era pins the rules its scores are denominated in",
+				"strength": "behavioral"
+			},
+			"watch": [
+				"OpenRA.Browser/tests/era-surfaces.mjs"
+			],
+			"retryBudget": 12,
+			"planned": true
+		}
+	]
+}
