@@ -1,5 +1,29 @@
 # Public source edition release record
 
+## v0.2.0 — 7 October 2026
+
+This public source edition aligns its first-party package and game version records to 0.2.0. It preserves the shared OpenRA/WASM engine, WebGPU renderer, neutral minimal interface, generated stand-in assets, minimal desktop wrapper, licensing notices and architecture documentation from the reviewed public edition. The simulation and renderer are unchanged.
+
+The public node packagers now read `release/game-version.json` for the app version in ZIP/npm release manifests and for the npm package version and installation example. This focused metadata adaptation replaces the npm packager's old fixed version and fills the previously absent manifest app version. Public packaging, licence notices, simulation identity and feature exclusions are preserved.
+
+The production HUD and launcher, JOA, Freehop integration, production artwork/audio and deployment configuration remain excluded. The private development blog is not part of this edition. The upstream commit in [RELEASE-SOURCE.json](../RELEASE-SOURCE.json) records provenance; this edition is not asserted to be corresponding source for the separate production game or its installers.
+
+Validation of this edition's source and package-version changes:
+
+| Check | Result |
+|---|---|
+| Source inventory and credential-pattern audit | PASS; all 4,214 source paths checked, including the public package-version regression test |
+| Source/export, artifact-verifier and package-version tests | 69 passed |
+| Node package version regression | PASS; tiny fixture ZIP/sidecar and npm metadata follow canonical versions 0.2.0 and 0.7.2 without changing simulation identity |
+| Shared native, WebAssembly and WebGPU client build | PASS |
+| Web TypeScript | PASS |
+| Desktop wrapper and source-identity tests | 13 passed |
+| Built client sources and notices | PASS; 156 client source files match; licence and author notices match |
+| Generated stand-in asset licence/provenance gate | PASS; six creative files, no pending rights evidence |
+| Real browser skirmish | PASS; tick 30, selection and accepted contextual order, legal documents, zero external requests or runtime/console errors |
+
+The build and browser checks ran in an isolated public-source candidate containing the same engine, renderer and first-party package versions. The later node-packager metadata adaptation was tested separately with the fixture checks above. The final Git checkout repeated the source audit, guard tests, built-source verification and stand-in asset licence gate. The simulation identity remains `6ad027ce9dd7`. These checks do not qualify production binaries, installers, node archives or physical platform performance. No production correspondence is claimed.
+
 ## v0.1.0 — 7 October 2026
 
 First release of the replacement public source repository. Scope: the minimal public source edition described in [README.md](../README.md). The production game was not rebuilt or deployed.

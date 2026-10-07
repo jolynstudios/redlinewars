@@ -1,6 +1,6 @@
 // Build the distributable Steelthorn node:
 //   dist/steelthorn-node/            npm package (node code + generated mod)
-//     -> npm pack => steelthorn-node-1.0.0.tgz   (publish/install this)
+//     -> npm pack => steelthorn-node-<game-version>.tgz   (publish/install this)
 //   dist/steelthorn-node-assets.tar.gz           heavy artifacts (~150 MB):
 //     bin/ (desktop server runtime) and AppBundle/ (client for players)
 //
@@ -20,9 +20,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assembleNode } from './assemble-node.mjs';
 import { releaseManifest, writeManifest } from './release-manifest.mjs';
+import { readGameVersion } from '../../../release/game-version.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, '../../..');
+const appVersion = readGameVersion().version;
 const engineRoot = path.join(repoRoot, 'engine');
 const outRoot = path.resolve(repoRoot, 'dist/steelthorn-node');
 const assetsTar = path.resolve(repoRoot, 'dist/steelthorn-node-assets.tar.gz');
@@ -66,7 +68,7 @@ fs.copyFileSync(path.join(repoRoot, 'THIRD_PARTY_NOTICES.md'), path.join(outRoot
 for (const name of ['GPL-2.0.txt', 'LGPL-2.1.txt', 'LGPL-3.0.txt']) fs.copyFileSync(path.join(engineRoot, 'licenses', name), path.join(outRoot, name));
 fs.writeFileSync(path.join(outRoot, 'package.json'), JSON.stringify({
 	name: '@steelthorn/node',
-	version: '1.0.0',
+	version: appVersion,
 	publishConfig: { access: 'public' },
 	description: 'Steelthorn (codename SteelSeed) volunteer node: hosts rooms and authoritative match servers for a Steelthorn spine.',
 	license: 'GPL-3.0-or-later',
@@ -91,7 +93,7 @@ no port-forwarding is needed.
 
 ## Start
 \`\`\`sh
-npm install -g ./steelthorn-node-1.0.0.tgz
+npm install -g ./steelthorn-node-${appVersion}.tgz
 export SPINE_URL=wss://<spine-address>/node
 export ASSETS_URL=https://<releases>/steelthorn-node-assets.tar.gz
 cp "$(npm root -g)/@steelthorn/node/rooms.example.json" ./rooms.json
@@ -124,13 +126,13 @@ if (process.argv.includes('--with-assets')) {
 }
 
 // compliance.md §3: the release manifest names the public source of this package. `npm pack`
-// names the tarball after the package: @steelthorn/node@1.0.0 -> steelthorn-node-1.0.0.tgz;
+// names the tarball after the package's canonical game version;
 // "node release-manifest.mjs <tgz>" writes its <tgz>.release.json afterwards.
 const pkg = JSON.parse(fs.readFileSync(path.join(outRoot, 'package.json'), 'utf8'));
 writeManifest(outRoot, releaseManifest({
 	artifact: `${pkg.name.replace(/^@/, '').replace('/', '-')}-${pkg.version}.tgz`,
 	kind: 'npm-node',
-	build: JSON.parse(fs.readFileSync(path.join(outRoot, 'steelseed-host/generated/build.json'), 'utf8')),
+	build: { ...JSON.parse(fs.readFileSync(path.join(outRoot, 'steelseed-host/generated/build.json'), 'utf8')), app: appVersion },
 	// npm strips node_modules/ from the tarball (ws installs as a dependency instead).
 	contents: { node: { dir: outRoot, skip: ['node_modules/'] } },
 	licenseTexts: ['COPYING', 'AUTHORS', 'THIRD-PARTY-NOTICES.txt', 'GPL-2.0.txt', 'LGPL-2.1.txt', 'LGPL-3.0.txt'],
