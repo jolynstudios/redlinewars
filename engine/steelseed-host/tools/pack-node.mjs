@@ -41,9 +41,11 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { assembleNode, resolveRid } from './assemble-node.mjs';
 import { releaseManifest, writeManifest, writeSidecar } from './release-manifest.mjs';
+import { readGameVersion } from '../../../release/game-version.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, '../../..');
+const appVersion = readGameVersion().version;
 
 const argv = process.argv.slice(2);
 const outBase = path.resolve(argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : path.join(repoRoot, 'dist'));
@@ -189,7 +191,7 @@ const manifest = releaseManifest({
 	artifact: `${stageName}.zip`,
 	kind: 'node-zip',
 	rid,
-	build: generatedBuild,
+	build: { ...generatedBuild, app: appVersion },
 	contents: { node: stageRoot },
 	licenseTexts: ['COPYING-GPLv3.txt', 'AUTHORS-OpenRA.txt', 'THIRD-PARTY-NOTICES.txt', 'GPL-2.0.txt', 'LGPL-2.1.txt', 'LGPL-3.0.txt'],
 });

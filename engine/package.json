@@ -1,6 +1,6 @@
 {
   "name": "engine",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "A Libre/Free Real Time Strategy game engine supporting early Westwood classics.",
   "main": "index.js",
   "scripts": {

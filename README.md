@@ -4,7 +4,7 @@ An OpenRA-based engine, WebAssembly host and WebGPU client with procedural visua
 playable interface. Developers can use this source edition as the starting point for their own
 presentation and product.
 
-This is the first release of this replacement source repository. It includes:
+This is version 0.2.0 of the public source edition. Its version number follows Redline Wars, while its scope and build identity remain separate from the production game. It includes:
 
 - the OpenRA fork, game rules, WebAssembly host and dedicated server;
 - the WebGPU renderer, procedural geometry, materials, animation, effects and synthetic audio;
