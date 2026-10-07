@@ -3,10 +3,10 @@ name: Public source
 on:
   pull_request:
   push:
-    branches: ['**']
+    branches: [main]
 
 concurrency:
-  group: public-source-${{ github.head_ref || github.ref_name }}
+  group: public-source-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
