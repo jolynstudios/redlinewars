@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict'
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync, symlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import test from 'node:test'
 import { createExportPolicy } from './export-policy.mjs'
-import { validatePublicSource } from './public-source-gate.mjs'
+import { REQUIRED, validatePublicSource } from './public-source-gate.mjs'
 import { PUBLIC_MUSIC_FILES, PUBLIC_MUSIC_SHA256, writePublicMusicFallbacks } from './public-music-fallback.mjs'
 import { assertPublicAudioStandins } from './public-audio-standins.mjs'
 import { createHash } from 'node:crypto'
@@ -19,10 +19,7 @@ function fixture(fn) {
 }
 function inputs(write) {
  write('RELEASE-SOURCE.json', JSON.stringify({ schema: 2, edition: 'public-source', version: '0.1.0', sourceCommit: 'a'.repeat(40) }))
- for (const path of ['LICENSE', 'NOTICE.md', 'AUTHORS', 'THIRD_PARTY_NOTICES.md',
-  'web/src/ui/index.ts', 'web/index.html', 'web/tools/compose.mjs',
-  'engine/steelseed-host/OpenRA.Browser/OpenRA.Browser.csproj',
-  'release/game-version.mjs', 'release/game-version.json']) write(path)
+ for (const path of REQUIRED) write(path)
  for (const area of ['engine', 'desktop', 'web']) {
   write(area + '/package.json', JSON.stringify({ scripts: { build: 'tsc --noEmit && vite build', compose: 'node tools/compose.mjs' } }))
   write(area + '/package-lock.json', '{}')
@@ -30,6 +27,29 @@ function inputs(write) {
 }
 test('public source inputs validate without private Git history or proprietary components', () => fixture(({ root, write }) => {
  inputs(write); assert.equal(validatePublicSource(root), 'a'.repeat(40))
+}))
+for (const kind of ['ordinary', 'credential', 'symlink']) test(`archive export audits committed ${kind} content before success`, () => fixture(({ root, write }) => {
+ inputs(write)
+ for (const file of ['export-release.mjs', 'source-audit.mjs', 'public-source-gate.mjs', 'export-policy.mjs'])
+  write('tools/' + file, readFileSync(new URL('./' + file, import.meta.url)))
+ const secret = 'ghp_' + 'a'.repeat(36)
+ if (kind === 'credential') write('tools/unexpected.txt', secret)
+ if (kind === 'symlink') symlinkSync('../LICENSE', join(root, 'tools/link.txt'))
+ const git = args => {
+  const result = spawnSync('git', ['-c', 'user.name=Source test', '-c', 'user.email=test@example.invalid', ...args], { cwd: root, encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stderr)
+ }
+ git(['init', '-q']); git(['add', '.']); git(['-c', 'commit.gpgsign=false', 'commit', '-qm', 'Fixture'])
+ const out = join(root, 'export')
+ const result = spawnSync(process.execPath, [join(root, 'tools/export-release.mjs'), '--commit', 'HEAD', '--out', out], { encoding: 'utf8' })
+ if (kind === 'ordinary') {
+  assert.equal(result.status, 0, result.stderr)
+  assert.ok(existsSync(join(out, 'web/src/render/renderer.ts')))
+ } else {
+  assert.notEqual(result.status, 0)
+  assert.equal(existsSync(out), false)
+  assert.ok(!result.stderr.includes(secret))
+ }
 }))
 test('excluded UI, media dependency and missing engine input each fail the gate', () => fixture(({ root, write }) => {
  inputs(write); write('web/src/hud/index.ts', 'private UI')
@@ -45,15 +65,26 @@ test('a legacy production export record cannot masquerade as a public edition', 
  inputs(write); write('RELEASE-SOURCE.json', JSON.stringify({ schema: 1, sourceCommit: 'a'.repeat(40) }))
  assert.throws(() => validatePublicSource(root), /unsupported edition/)
 }))
+test('the public edition cannot drop its WebGPU renderer or shader sources', () => fixture(({ root, write }) => {
+ inputs(write)
+ for (const path of ['web/src/render/renderer.ts', 'web/src/render/shaders.ts', 'web/src/render/cutout-shaders.ts']) {
+  rmSync(join(root, path))
+  assert.throws(() => validatePublicSource(root), { message: 'public source: required input missing: ' + path })
+  write(path)
+ }
+}))
 test('source archive policy rejects unknown paths, excluded features and generated binaries', () => {
  const { decide } = createExportPolicy()
  for (const path of ['web/src/hud/index.ts', 'web/src/companion/index.ts', 'web/src/core/freehop-call.ts',
   'engine/steelseed-host/tools/freehop-seat-signal.mjs', 'web/node_modules/foo/index.js',
-  'engine/bin-browser/AppBundle/_framework/runtime.wasm', 'art/music/private.m4a', 'desktop/shell/landing.html'])
+  'engine/bin-browser/AppBundle/_framework/runtime.wasm', 'art/music/private.m4a', 'desktop/shell/landing.html',
+  'web/../brand/private.svg', '/web/src/main.ts', 'web//src/main.ts', 'web\\src\\main.ts'])
   assert.equal(decide(path).publish, false, path)
  assert.equal(decide('unknown/private.txt'), null)
+ for (const path of ['.github/workflows/deploy.yml', '.github/workflows/other.yml', '.github/actions/build/action.yml'])
+  assert.equal(decide(path), null, path)
  for (const path of ['web/src/ui/index.ts', 'web/src/render/index.ts', 'engine/steelseed-host/tools/roomhost.mjs',
-  'LICENSE', 'NOTICE.md', 'tools/build.mjs', 'release/game-version.json'])
+  'LICENSE', 'NOTICE.md', 'tools/build.mjs', 'release/game-version.json', '.github/workflows/public-source.yml'])
   assert.equal(decide(path).publish, true, path)
 })
 const silentMusic = () => Buffer.from(readFileSync(new URL('./fallback-art.mjs', import.meta.url), 'utf8').match(/const SILENT_M4A = Buffer.from\('([^']+)', 'base64'\)/)[1], 'base64')

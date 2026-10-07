@@ -8,8 +8,13 @@ const OUTPUT = new Set(['node_modules', 'bin', 'obj', 'bin-browser', 'bin-browse
 export function createExportPolicy() {
  return { decide(path) {
   const parts = path.split('/')
+  if (path.includes('\\') || parts.some(part => !part || part === '.' || part === '..'))
+   return { publish: false, why: 'invalid source path' }
+  // Admit this read-only build workflow, never an arbitrary deployment workflow.
+  if (path === '.github/workflows/public-source.yml') return { publish: true, why: 'public source CI' }
   if (parts.some(part => OUTPUT.has(part))) return { publish: false, why: 'build output' }
   if (/^(web\/src\/(hud|companion|core\/tactical)\/|desktop\/shell\/|brand\/|landing\/|deploy\/)/.test(path)
+    || path === 'web/public/phone.html'
     || /(?:^|\/)[^/]*(?:freehop|companion|joa)[^/]*$/i.test(path)
     || /^art\/(?!sources\.lock\.json$|supplied-inputs\.lock\.json$|content-provenance\.json$)/.test(path))
    return { publish: false, why: 'outside the public edition' }

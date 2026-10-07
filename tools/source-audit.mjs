@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 // Check all tracked and unignored public-edition source files. Findings never print secret values.
 import { execFileSync } from 'node:child_process'
-import { lstatSync, readFileSync } from 'node:fs'
+import { lstatSync, readFileSync, realpathSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createExportPolicy } from './export-policy.mjs'
 import { validatePublicSource } from './public-source-gate.mjs'
-const root = resolve(import.meta.dirname, '..')
-validatePublicSource(root)
-const files = [...new Set(execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], {
- cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
-}).split('\0').filter(Boolean))].sort()
 const secrets = [
  ['private key', /-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----/],
  ['GitHub token', /\b(?:gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{50,})\b/],
@@ -20,20 +16,35 @@ const secrets = [
  ['npm token', /\bnpm_[A-Za-z0-9]{36}\b/],
  ['credential URL', /\b[a-z][a-z0-9+.-]*:\/\/[^\s:@/'"\x60]+:[^\s@/'"\x60]{6,}@/i],
 ]
-const failures = [], { decide } = createExportPolicy()
-for (const path of files) {
- if (!decide(path)?.publish) failures.push(path + ': outside source archive policy')
- if (/(?:^|\/)\.env(?:\.|$)|\.(pem|key|p12|pfx|keystore|jks)$|(?:^|\/)\.(npmrc|netrc)$/.test(path))
-  failures.push(path + ': secret-like filename')
- const file = resolve(root, path), stat = lstatSync(file)
- if (!stat.isFile()) { failures.push(path + ': unsupported filesystem entry'); continue }
- const data = readFileSync(file)
- if (data.subarray(0, 8000).includes(0)) continue
- const text = data.toString('utf8')
- for (const [kind, re] of secrets) if (re.test(text)) failures.push(path + ': ' + kind)
+export function auditSourceFiles(root, files) {
+ const failures = [], { decide } = createExportPolicy()
+ for (const path of files) {
+  const decision = decide(path)
+  if (!decision?.publish) failures.push(path + ': outside source archive policy')
+  if (decision?.why === 'invalid source path') continue
+  if (/(?:^|\/)\.env(?:\.|$)|\.(pem|key|p12|pfx|keystore|jks)$|(?:^|\/)\.(npmrc|netrc)$/i.test(path))
+   failures.push(path + ': secret-like filename')
+  const file = resolve(root, path)
+  let stat
+  try { stat = lstatSync(file) } catch { failures.push(path + ': source file unavailable'); continue }
+  if (!stat.isFile()) { failures.push(path + ': unsupported filesystem entry'); continue }
+  const data = readFileSync(file)
+  if (data.subarray(0, 8000).includes(0)) continue
+  const text = data.toString('utf8')
+  for (const [kind, re] of secrets) if (re.test(text)) failures.push(path + ': ' + kind)
+ }
+ return failures
 }
-if (failures.length) {
- console.error('source-audit: FAIL\n' + failures.join('\n'))
- process.exit(1)
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
+ const root = resolve(import.meta.dirname, '..')
+ validatePublicSource(root)
+ const files = [...new Set(execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'], {
+  cwd: root, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
+ }).split('\0').filter(Boolean))].sort()
+ const failures = auditSourceFiles(root, files)
+ if (failures.length) {
+  console.error('source-audit: FAIL\n' + failures.join('\n'))
+  process.exit(1)
+ }
+ console.log('source-audit: PASS — ' + files.length + ' source files; path inventory and credential patterns checked')
 }
-console.log('source-audit: PASS — ' + files.length + ' source files; path inventory and credential patterns checked')
